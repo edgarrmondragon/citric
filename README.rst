@@ -35,8 +35,10 @@ Features
 Testing
 -------
 
+I use `tox` for runinng tests on different Python versions:
+
 ```bash
-pytest --cov=limette tests/
+tox
 ```
 
 Credits
