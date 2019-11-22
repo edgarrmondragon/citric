@@ -32,6 +32,13 @@ Features
 
 * TODO
 
+Testing
+-------
+
+```bash
+pytest --cov=limette tests/
+```
+
 Credits
 -------
 
