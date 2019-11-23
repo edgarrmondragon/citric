@@ -122,7 +122,7 @@ pytest tests.test_limette
 ## Deploying
 
 A reminder for the maintainers on how to deploy. Make sure all your
-changes are committed (including an entry in HISTORY.rst). Then run:
+changes are committed (including an entry in HISTORY.md). Then run:
 
 ```bash
 bump2version patch # possible: major / minor / patch
