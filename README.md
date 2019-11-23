@@ -2,7 +2,7 @@
 
 [//]: # (Badges)
 [![PyPI](https://img.shields.io/pypi/v/limette.svg)][pypi]
-[![Travis builds](https://img.shields.io/travis/mrfunnyshoes/limette.svg)][travis]
+[![Travis builds](https://api.travis-ci.com/mrfunnyshoes/limette.svg?branch=master)][travis]
 [![Documentation Status](https://readthedocs.org/projects/limette/badge/?version=latest)][docs]
 [![Updates](https://pyup.io/repos/github/mrfunnyshoes/limette/shield.svg)][pyup]
 
@@ -33,7 +33,7 @@ tox
 This package was created with [Cookiecutter] and the [audreyr/cookiecutter-pypackage] project template.
 
 [pypi]: https://pypi.python.org/pypi/limette
-[travis]: https://travis-ci.org/mrfunnyshoes/limette
+[travis]: https://travis-ci.com/mrfunnyshoes/limette
 [docs]: https://limette.readthedocs.io/en/latest/?badge=latest
 [pyup]: https://pyup.io/repos/github/mrfunnyshoes/limette/
 
