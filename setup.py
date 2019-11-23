@@ -4,14 +4,13 @@
 """The setup script."""
 
 from setuptools import setup, find_packages
+from limette import __version__
 
 with open('README.md', encoding='utf-8') as readme_file:
     readme = readme_file.read()
 
 with open('HISTORY.md') as history_file:
     history = history_file.read()
-
-__version__ = '0.0.1'
 
 requirements = [
     'requests>=2.22.0',
@@ -54,6 +53,6 @@ setup(
     test_suite='tests',
     tests_require=test_requirements,
     url='https://github.com/mrfunnyshoes/limette',
-    version=__version__,
+    version='0.0.1',
     zip_safe=False,
 )
