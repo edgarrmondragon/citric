@@ -1,5 +1,4 @@
-Limette
-=======
+# Limette
 
 [//]: # (Badges)
 [![PyPI](https://img.shields.io/pypi/v/limette.svg)][pypi]
@@ -9,16 +8,19 @@ Limette
 
 Interacting with LimeSurvey's RC2 API
 
-* Free software: MIT license
-* Documentation: https://limette.readthedocs.io.
+## Features
 
-Features
---------
+### Low-level JSON-RPC API
 
-* TODO
+```python
+from limette.rpc import Session
 
-Testing
--------
+with Session('http://my-ls-server.com', 'iamadmin', 'secret') as session:
+    response = session.rpc('list_surveys', 'iamadmin')
+    surveys = response.result
+```
+
+## Testing
 
 This project uses [`tox`](https://tox.readthedocs.io/en/latest/) for runinng tests on different Python versions:
 
@@ -26,8 +28,7 @@ This project uses [`tox`](https://tox.readthedocs.io/en/latest/) for runinng tes
 tox
 ```
 
-Credits
--------
+## Credits
 
 This package was created with [Cookiecutter] and the [audreyr/cookiecutter-pypackage] project template.
 
