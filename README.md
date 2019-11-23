@@ -5,6 +5,7 @@
 [![Travis builds](https://api.travis-ci.com/mrfunnyshoes/limette.svg?branch=master)][travis]
 [![Documentation Status](https://readthedocs.org/projects/limette/badge/?version=latest)][docs]
 [![Updates](https://pyup.io/repos/github/mrfunnyshoes/limette/shield.svg)][pyup]
+[![codecov](https://codecov.io/gh/mrfunnyshoes/limette/branch/master/graph/badge.svg)][codecov]
 
 A client to the LimeSurvey Remote Control API 2, written in modern Python.
 
@@ -36,6 +37,7 @@ This package was created with [Cookiecutter] and the [audreyr/cookiecutter-pypac
 [travis]: https://travis-ci.com/mrfunnyshoes/limette
 [docs]: https://limette.readthedocs.io/en/latest/?badge=latest
 [pyup]: https://pyup.io/repos/github/mrfunnyshoes/limette/
+[codecov]: https://codecov.io/gh/mrfunnyshoes/limette
 
 [Cookiecutter]: https://github.com/audreyr/cookiecutter
 [audreyr/cookiecutter-pypackage]: https://github.com/audreyr/cookiecutter-pypackage
