@@ -6,7 +6,7 @@
 [![Documentation Status](https://readthedocs.org/projects/limette/badge/?version=latest)][docs]
 [![Updates](https://pyup.io/repos/github/mrfunnyshoes/limette/shield.svg)][pyup]
 
-Interacting with LimeSurvey's RC2 API
+A client to the LimeSurvey Remote Control API 2, written in modern Python.
 
 ## Features
 
