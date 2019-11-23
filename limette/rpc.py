@@ -31,7 +31,7 @@ class BaseRPC:
 class JSONRPC(BaseRPC):
     _headers = {
         'content-type': 'application/json',
-        'user-agent': 'jsonrpc-client',
+        'user-agent': 'limette',
     }
 
     def __init__(self):
