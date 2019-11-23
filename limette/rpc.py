@@ -15,7 +15,11 @@ class BaseRPC:
 
     @staticmethod
     def raise_for_response(response: RPCResponse):
-        """"""
+        """Raise a LimeSurvey exception.
+
+        A exception is raised when LimeSurvey responds with an explicit error
+        or a bad status.
+        """
         if isinstance(response.result, dict):
             status = response.result.get('status')
             if status is not None:
