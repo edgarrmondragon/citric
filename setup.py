@@ -38,7 +38,8 @@ setup(
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
     ],
-    description="Interacting with LimeSurvey's RC2 API",
+    description=("A client to the LimeSurvey Remote Control API 2, written in "
+                 "modern Python."),
     install_requires=requirements,
     license="MIT license",
     long_description=readme + '\n\n' + history,
