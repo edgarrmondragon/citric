@@ -29,3 +29,12 @@ History
 -  New badges: supported python runtimes, codecov, pyup.io Python 3
 -  Render docs in reStructuredText using Sphinx
 -  Upgrade ``pip`` to 19.3.1
+
+.. _section-4:
+
+1.0.2 (2019-11-23)
+------------------
+
+-  Change Content-Type of project description.
+-  Fix flake8 check by using a raw dosctring.
+-  Use requests-mock pre-packaged pytest fixture.
