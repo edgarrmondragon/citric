@@ -1,15 +1,26 @@
 """Low level wrapper for connecting to the LSRC2."""
-from collections import namedtuple
+from typing import NamedTuple, Any
 
 import requests
 
 from limette.exceptions import LimeSurveyStatusError, LimeSurveyApiError
 
 
-RPCResponse = namedtuple('RPCResponse', 'result error id')
+class RPCResponse(NamedTuple):
+    """LimeSurvey RPC response object.
+
+    :param result: RPC result.
+    :param error: Error message, if any.
+    :param id: RPC Request ID.
+    """
+    result: Any
+    error: Any
+    id: Any
 
 
 class BaseRPC:
+    """Base class for executing RPC in the LimeSurvey."""
+
     def invoke(self):
         raise NotImplementedError
 
@@ -29,6 +40,8 @@ class BaseRPC:
 
 
 class JSONRPC(BaseRPC):
+    """Execute JSON-RPC in LimeSurvey."""
+
     _headers = {
         'content-type': 'application/json',
         'user-agent': 'limette',
@@ -76,7 +89,7 @@ class Session(object):
         self.key = self.get_session_key(admin_user, admin_pass)
 
     def rpc(self, method, *args, request_id=1):
-        r"""Authenticated call to an RPC method on LimeSurvey.
+        """Authenticated execution of an RPC method on LimeSurvey.
 
         :param method: Name of the method to call.
         :type method: ``str``
@@ -93,7 +106,16 @@ class Session(object):
                                 )
 
     def get_session_key(self, admin_user, admin_pass, request_id=1):
-        """Get RC API session key."""
+        """Get RC API session key.
+
+        :param admin_user: LimeSurvey admin username.
+        :type admin_user: ``str``
+        :param admin_pass: LimeSurvey admin password.
+        :type admin_pass: ``str``
+        :param request_id: LimeSurvey RPC request ID.
+        :type request_id: ``Any``
+        """
+
         response = self.spec.invoke(self.url,
                                     'get_session_key',
                                     admin_user,
