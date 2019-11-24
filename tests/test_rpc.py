@@ -2,8 +2,6 @@
 import uuid
 
 import pytest
-import requests_mock
-import requests
 
 from limette.rpc import Session, RPCResponse, BaseRPC, JSONRPC
 from limette.exceptions import (LimeSurveyStatusError,
@@ -89,13 +87,12 @@ def session():
     session.close()
 
 
-def test_json_rpc():
+def test_json_rpc(requests_mock):
 
     spec = JSONRPC()
 
-    with requests_mock.mock() as m:
-        m.post(MOCK_URL, text='{"error":null,"result":"OK","id":1}')
-        response = spec.invoke(MOCK_URL, 'some_method')
+    requests_mock.post(MOCK_URL, text='{"error":null,"result":"OK","id":1}')
+    response = spec.invoke(MOCK_URL, 'some_method')
 
     assert response.result == 'OK'
     assert response.error is None
