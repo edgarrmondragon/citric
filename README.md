@@ -2,6 +2,7 @@
 
 [//]: # (Badges)
 [![PyPI](https://img.shields.io/pypi/v/limette.svg)][pypi]
+[![Python versions](https://img.shields.io/pypi/pyversions/limette.svg?longCache=True)][pypi]
 [![Travis builds](https://api.travis-ci.com/mrfunnyshoes/limette.svg?branch=master)][travis]
 [![Documentation Status](https://readthedocs.org/projects/limette/badge/?version=latest)][docs]
 [![Updates](https://pyup.io/repos/github/mrfunnyshoes/limette/shield.svg)][pyup]
