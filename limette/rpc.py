@@ -89,7 +89,7 @@ class Session(object):
         self.key = self.get_session_key(admin_user, admin_pass)
 
     def rpc(self, method, *args, request_id=1):
-        """Authenticated execution of an RPC method on LimeSurvey.
+        r"""Authenticated execution of an RPC method on LimeSurvey.
 
         :param method: Name of the method to call.
         :type method: ``str``
