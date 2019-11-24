@@ -2,7 +2,7 @@ Limette
 =======
 
 |PyPI| |Python versions| |Travis builds| |Documentation Status|
-|Updates| |codecov|
+|Updates| |Python 3| |codecov|
 
 A client to the LimeSurvey Remote Control API 2, written in modern
 Python.
@@ -49,5 +49,8 @@ project template.
    :target: https://limette.readthedocs.io/en/latest/?badge=latest
 .. |Updates| image:: https://pyup.io/repos/github/mrfunnyshoes/limette/shield.svg
    :target: https://pyup.io/repos/github/mrfunnyshoes/limette/
+.. |Python 3| image:: https://pyup.io/repos/github/mrfunnyshoes/limette/python-3-shield.svg
+   :target: https://pyup.io/repos/github/mrfunnyshoes/limette/
+   :alt: Python 3
 .. |codecov| image:: https://codecov.io/gh/mrfunnyshoes/limette/branch/master/graph/badge.svg
    :target: https://codecov.io/gh/mrfunnyshoes/limette
