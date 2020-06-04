@@ -37,15 +37,33 @@ For the full reference, see https://api.limesurvey.org/classes/remotecontrol_han
                    print(q["title"], q["question"])
 
 
+Development
+-----------
+
+Use pyenv to setup default Python versions for this repo:
+
+.. code:: bash
+
+   pyenv local 3.8.3 3.7.7 3.6.10
+
+
+Install project dependencies
+
+.. code:: bash
+
+   poetry install
+
+
 Testing
 -------
 
-This project uses `tox <https://tox.readthedocs.io/en/latest/>`__
+This project uses [`Nox`][nox]__
 for runinng tests on different Python versions:
 
 .. code:: bash
 
-   tox
+   pip install --user --upgrade nox
+   nox -r
 
 Credits
 -------
@@ -67,3 +85,4 @@ Credits
    :alt: Python 3
 .. |codecov| image:: https://codecov.io/gh/edgarrmondragon/limette/branch/master/graph/badge.svg
    :target: https://codecov.io/gh/edgarrmondragon/limette
+.. |nox| target:: https://nox.thea.codes/en/stable/
