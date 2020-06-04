@@ -54,8 +54,42 @@ Install project dependencies
    poetry install
 
 
+Docker
+~~~~~~
+
+You can setup a local instance of LimeSurvey with `Docker Compose <https://docs.docker.com/compose/>`_:
+
+.. code:: bash
+
+   docker-compose up -d
+
+Now you can access LimeSurvey at http://localhost:8001/index.php/admin.
+
+Import an existing survey file and start testing with it:
+
+.. code:: python
+
+   import base64
+
+   from limette.rpc import Session
+
+   LS_URL = "http://localhost:8001/index.php/admin/remotecontrol"
+   SURVEY_FILE = "examples/limesurvey_survey_432535.lss"
+
+   with Session(LS_URL, "iamadmin", "secret") as session, open(SURVEY_FILE, "rb") as file:
+       # Import survey from file
+       contents = file.read()
+
+       string = base64.b64encode(contents).decode()
+       r = session.rpc("import_survey", string, "lss")
+
+       if r.error is None:
+           survey_id = r.result
+           print("New survey:", survey_id)
+
+
 Testing
--------
+~~~~~~~
 
 This project uses nox_ for running tests and linting on different Python versions:
 
@@ -73,7 +107,7 @@ Run only a linting session
 
 
 pre-commit
-----------
+~~~~~~~~~~
 
 .. code:: bash
 
@@ -82,7 +116,7 @@ pre-commit
 
 
 Releasing an upgrade
---------------------
+~~~~~~~~~~~~~~~~~~~~
 
 Bump the package version
 
