@@ -50,10 +50,7 @@ for runinng tests on different Python versions:
 Credits
 -------
 
-This package was created with
-`Cookiecutter <https://github.com/audreyr/cookiecutter>`__ and the
-`audreyr/cookiecutter-pypackage <https://github.com/audreyr/cookiecutter-pypackage>`__
-project template.
+
 
 .. |PyPI| image:: https://img.shields.io/pypi/v/limette.svg
    :target: https://pypi.python.org/pypi/limette
