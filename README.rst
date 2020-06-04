@@ -73,6 +73,26 @@ Run only a linting session
    nox -rs lint
 
 
+pre-commit
+----------
+
+.. code:: bash
+
+   pip install --user --upgrade pre-commit
+   pre-commit install
+
+
+Releasing an upgrade
+--------------------
+
+Bump the package version
+
+.. code:: bash
+
+   poetry version <version>
+   poetry publish
+
+
 Credits
 -------
 
