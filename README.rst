@@ -13,13 +13,29 @@ Features
 Low-level JSON-RPC API
 ~~~~~~~~~~~~~~~~~~~~~~
 
+For the full reference, see https://api.limesurvey.org/classes/remotecontrol_handle.html.
+
 .. code:: python
 
    from limette.rpc import Session
 
-   with Session('http://my-ls-server.com', 'iamadmin', 'secret') as session:
-       response = session.rpc('list_surveys', 'iamadmin')
-       surveys = response.result
+   LS_URL = 'http://my-ls-server.com/index.php/admin/remotecontrol'
+
+   with Session(LS_URL, 'iamadmin', 'secret') as session:
+       # Get all surveys from user 'iamadmin'
+       r = session.rpc('list_surveys', 'iamadmin')
+
+       if r.error is None:
+           surveys = r.result
+           for s in surveys:
+               print(s["surveyls_title"])
+
+               # Get all questions, regardless of group
+               r = session.rpc("list_questions", s["sid"])
+               questions = r.result
+               for q in questions:
+                   print(q["title"], q["question"])
+
 
 Testing
 -------
