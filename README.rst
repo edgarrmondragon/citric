@@ -57,8 +57,7 @@ Install project dependencies
 Testing
 -------
 
-This project uses [`Nox`][nox]__
-for runinng tests on different Python versions:
+This project uses nox_ for running tests and linting on different Python versions:
 
 .. code:: bash
 
@@ -113,4 +112,4 @@ Credits
    :alt: Python 3
 .. |codecov| image:: https://codecov.io/gh/edgarrmondragon/limette/branch/master/graph/badge.svg
    :target: https://codecov.io/gh/edgarrmondragon/limette
-.. |nox| target:: https://nox.thea.codes/en/stable/
+.. _nox: https://nox.thea.codes/en/stable/
