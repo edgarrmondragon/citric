@@ -30,14 +30,19 @@ def tests(session):
     session.run("pytest", *args)
 
 
+@nox.session(python="3.8")
+def coverage(session) -> None:
+    """Upload coverage data."""
+    install_with_constraints(session, "coverage[toml]", "codecov")
+    session.run("coverage", "xml", "--fail-under=0")
+    session.run("codecov", *session.posargs)
+
+
 @nox.session(python=["3.8"])
 def lint(session):
     args = session.posargs or locations
     install_with_constraints(
-        session,
-        "flake8",
-        "flake8-black",
-        "flake8-isort",
+        session, "flake8", "flake8-black", "flake8-isort",
     )
     session.run("flake8", *args)
 
