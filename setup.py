@@ -50,7 +50,7 @@ setup(
     setup_requires=setup_requirements,
     test_suite='tests',
     tests_require=test_requirements,
-    url='https://github.com/mrfunnyshoes/limette',
+    url='https://github.com/edgarrmondragon/limette',
     version='1.0.2',
     zip_safe=False,
 )

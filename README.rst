@@ -59,14 +59,14 @@ project template.
    :target: https://pypi.python.org/pypi/limette
 .. |Python versions| image:: https://img.shields.io/pypi/pyversions/limette.svg?longCache=True
    :target: https://pypi.python.org/pypi/limette
-.. |Travis builds| image:: https://api.travis-ci.com/mrfunnyshoes/limette.svg?branch=master
-   :target: https://travis-ci.com/mrfunnyshoes/limette
+.. |Travis builds| image:: https://api.travis-ci.com/edgarrmondragon/limette.svg?branch=master
+   :target: https://travis-ci.com/edgarrmondragon/limette
 .. |Documentation Status| image:: https://readthedocs.org/projects/limette/badge/?version=latest
    :target: https://limette.readthedocs.io/en/latest/?badge=latest
-.. |Updates| image:: https://pyup.io/repos/github/mrfunnyshoes/limette/shield.svg
-   :target: https://pyup.io/repos/github/mrfunnyshoes/limette/
-.. |Python 3| image:: https://pyup.io/repos/github/mrfunnyshoes/limette/python-3-shield.svg
-   :target: https://pyup.io/repos/github/mrfunnyshoes/limette/
+.. |Updates| image:: https://pyup.io/repos/github/edgarrmondragon/limette/shield.svg
+   :target: https://pyup.io/repos/github/edgarrmondragon/limette/
+.. |Python 3| image:: https://pyup.io/repos/github/edgarrmondragon/limette/python-3-shield.svg
+   :target: https://pyup.io/repos/github/edgarrmondragon/limette/
    :alt: Python 3
-.. |codecov| image:: https://codecov.io/gh/mrfunnyshoes/limette/branch/master/graph/badge.svg
-   :target: https://codecov.io/gh/mrfunnyshoes/limette
+.. |codecov| image:: https://codecov.io/gh/edgarrmondragon/limette/branch/master/graph/badge.svg
+   :target: https://codecov.io/gh/edgarrmondragon/limette

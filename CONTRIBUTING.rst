@@ -12,7 +12,7 @@ Types of Contributions
 Report Bugs
 ~~~~~~~~~~~
 
-Report bugs at https://github.com/mrfunnyshoes/limette/issues.
+Report bugs at https://github.com/edgarrmondragon/limette/issues.
 
 If you are reporting a bug, please include:
 
@@ -45,7 +45,7 @@ Submit Feedback
 ~~~~~~~~~~~~~~~
 
 The best way to send feedback is to file an issue at
-https://github.com/mrfunnyshoes/limette/issues.
+https://github.com/edgarrmondragon/limette/issues.
 
 If you are proposing a feature:
 
@@ -117,7 +117,7 @@ Before you submit a pull request, check that it meets these guidelines:
    the feature to the list in README.rst.
 3. The pull request should work for Python 3.5, 3.6, 3.7 and 3.8, and
    for PyPy. Check
-   https://travis-ci.com/mrfunnyshoes/limette/pull_requests and make
+   https://travis-ci.com/edgarrmondragon/limette/pull_requests and make
    sure that the tests pass for all supported Python versions.
 
 Tips
