@@ -65,6 +65,14 @@ for runinng tests on different Python versions:
    pip install --user --upgrade nox
    nox -r
 
+
+Run only a linting session
+
+.. code:: bash
+
+   nox -rs lint
+
+
 Credits
 -------
 
