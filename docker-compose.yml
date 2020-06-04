@@ -1,0 +1,34 @@
+version: '3'
+
+services:
+  limesurvey:
+    image: martialblog/limesurvey
+    volumes:
+      - "surveys:/var/www/html/upload/surveys"
+    depends_on:
+      - db
+    ports:
+     - "8001:80"
+    environment:
+      DB_TYPE: pgsql
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: limesurvey
+      DB_USERNAME: limesurvey
+      DB_PASSWORD: secret
+      ADMIN_USER: iamadmin
+      ADMIN_NAME: Lime Administrator
+      ADMIN_PASSWORD: secret
+
+  db:
+    image: postgres:11
+    environment:
+      POSTGRES_USER: limesurvey
+      POSTGRES_DB: limesurvey
+      POSTGRES_PASSWORD: secret
+    volumes:
+      - "limedb:/var/lib/postgresql/data"
+
+volumes:
+  limedb:
+  surveys:
