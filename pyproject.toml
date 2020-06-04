@@ -1,0 +1,51 @@
+[tool.poetry]
+name = "limette"
+version = "1.0.2"
+description="A client to the LimeSurvey Remote Control API 2, written in modern Python."
+license = "MIT"
+authors = ["Edgar Ramírez-Mondragón <edgarrm358@gmail.com>"]
+homepage='https://github.com/edgarrmondragon/limette'
+repository='https://github.com/edgarrmondragon/limette'
+readme = "README.rst"
+documentation=""
+classifiers=[
+    "License :: OSI Approved :: MIT License",
+    "Natural Language :: English",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+]
+keywords = ["limesurvey", "json-rpc"]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+requests = "^2.23.0"
+importlib_metadata = {version = "^1.6.0", python = "<3.8"}
+
+[tool.poetry.dev-dependencies]
+Sphinx = "^3.0.4"
+pytest = "^5.4.3"
+requests-mock = "^1.8.0"
+pytest-cov = "^2.9.0"
+coverage = {extras = ["toml"], version = "^5.1"}
+black = "^19.10b0"
+flake8 = "^3.8.2"
+flake8-black = "^0.2.0"
+flake8-isort = "^3.0.0"
+safety = "^1.9.0"
+codecov = "^2.1.4"
+
+[tool.coverage.paths]
+source = ["src", "*/site-packages"]
+
+[tool.coverage.run]
+branch = true
+source = ["limette"]
+
+[tool.coverage.report]
+show_missing = true
+fail_under = 90
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"

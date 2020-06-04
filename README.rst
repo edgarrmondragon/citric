@@ -37,23 +37,65 @@ For the full reference, see https://api.limesurvey.org/classes/remotecontrol_han
                    print(q["title"], q["question"])
 
 
-Testing
--------
+Development
+-----------
 
-This project uses `tox <https://tox.readthedocs.io/en/latest/>`__
-for runinng tests on different Python versions:
+Use pyenv to setup default Python versions for this repo:
 
 .. code:: bash
 
-   tox
+   pyenv local 3.8.3 3.7.7 3.6.10
+
+
+Install project dependencies
+
+.. code:: bash
+
+   poetry install
+
+
+Testing
+-------
+
+This project uses nox_ for running tests and linting on different Python versions:
+
+.. code:: bash
+
+   pip install --user --upgrade nox
+   nox -r
+
+
+Run only a linting session
+
+.. code:: bash
+
+   nox -rs lint
+
+
+pre-commit
+----------
+
+.. code:: bash
+
+   pip install --user --upgrade pre-commit
+   pre-commit install
+
+
+Releasing an upgrade
+--------------------
+
+Bump the package version
+
+.. code:: bash
+
+   poetry version <version>
+   poetry publish
+
 
 Credits
 -------
 
-This package was created with
-`Cookiecutter <https://github.com/audreyr/cookiecutter>`__ and the
-`audreyr/cookiecutter-pypackage <https://github.com/audreyr/cookiecutter-pypackage>`__
-project template.
+
 
 .. |PyPI| image:: https://img.shields.io/pypi/v/limette.svg
    :target: https://pypi.python.org/pypi/limette
@@ -70,3 +112,4 @@ project template.
    :alt: Python 3
 .. |codecov| image:: https://codecov.io/gh/edgarrmondragon/limette/branch/master/graph/badge.svg
    :target: https://codecov.io/gh/edgarrmondragon/limette
+.. _nox: https://nox.thea.codes/en/stable/
