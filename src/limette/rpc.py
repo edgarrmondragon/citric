@@ -1,12 +1,12 @@
 """Low level wrapper for connecting to the LSRC2."""
-from typing import NamedTuple, Any
+from typing import Any, NamedTuple
 
 import requests
 
 from limette.exceptions import (
-    LimeSurveyStatusError,
     LimeSurveyApiError,
     LimeSurveyError,
+    LimeSurveyStatusError,
 )
 
 
@@ -17,6 +17,7 @@ class RPCResponse(NamedTuple):
     :param error: Error message, if any.
     :param id: RPC Request ID.
     """
+
     result: Any
     error: Any
     id: Any
@@ -36,7 +37,7 @@ class BaseRPC:
         or a bad status.
         """
         if isinstance(response.result, dict):
-            status = response.result.get('status')
+            status = response.result.get("status")
             if status is not None:
                 raise LimeSurveyStatusError(response)
         elif response.error is not None:
@@ -47,8 +48,8 @@ class JSONRPC(BaseRPC):
     """Execute JSON-RPC in LimeSurvey."""
 
     _headers = {
-        'content-type': 'application/json',
-        'user-agent': 'limette',
+        "content-type": "application/json",
+        "user-agent": "limette",
     }
 
     def __init__(self):
@@ -58,15 +59,15 @@ class JSONRPC(BaseRPC):
     def invoke(self, url, method, *args, request_id=1):
 
         payload = {
-            'method': method,
-            'params': [*args],
-            'id': request_id,
+            "method": method,
+            "params": [*args],
+            "id": request_id,
         }
 
         res = self.request_session.post(url, json=payload)
 
-        if res.text == '':
-            raise LimeSurveyError('RPC interface not enabled')
+        if res.text == "":
+            raise LimeSurveyError("RPC interface not enabled")
 
         response = RPCResponse(**res.json())
 
@@ -88,7 +89,7 @@ class Session(object):
     :type spec: ``BaseRPC``
     """
 
-    __attrs__ = ['url', 'key']
+    __attrs__ = ["url", "key"]
 
     def __init__(self, url, admin_user, admin_pass, spec=JSONRPC()):
         """Create LimeSurvey wrapper."""
@@ -106,12 +107,9 @@ class Session(object):
         :param request_id: Request ID for response validation.
         :type request_id: ``int``
         """
-        return self.spec.invoke(self.url,
-                                method,
-                                self.key,
-                                *args,
-                                request_id=request_id,
-                                )
+        return self.spec.invoke(
+            self.url, method, self.key, *args, request_id=request_id,
+        )
 
     def get_session_key(self, admin_user, admin_pass, request_id=1):
         """Get RC API session key.
@@ -124,19 +122,16 @@ class Session(object):
         :type request_id: ``Any``
         """
 
-        response = self.spec.invoke(self.url,
-                                    'get_session_key',
-                                    admin_user,
-                                    admin_pass,
-                                    request_id=request_id,
-                                    )
+        response = self.spec.invoke(
+            self.url, "get_session_key", admin_user, admin_pass, request_id=request_id,
+        )
 
         if response.error is None:
             return response.result
 
     def close(self):
         """Close RC API session."""
-        self.rpc('release_session_key')
+        self.rpc("release_session_key")
 
     def __enter__(self):
         """Context manager for API session."""

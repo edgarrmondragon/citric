@@ -3,7 +3,8 @@
 
 class LimeSurveyError(Exception):
     """Basic exception raised by LimeSurvey."""
-    default = 'An error occured while requesting data from the LSRC2 API.'
+
+    default = "An error occured while requesting data from the LSRC2 API."
 
     def __init__(self, msg=None):
         if msg is None:
@@ -13,15 +14,15 @@ class LimeSurveyError(Exception):
 
 class LimeSurveyStatusError(LimeSurveyError):
     """Exception raised when LimeSurvey responds with an error status."""
+
     def __init__(self, response, msg=None):
-        super(LimeSurveyStatusError, self).__init__(
-            msg=response.result['status'])
+        super(LimeSurveyStatusError, self).__init__(msg=response.result["status"])
         self.response = response
 
 
 class LimeSurveyApiError(LimeSurveyError):
     """Exception raised when LimeSurvey responds with a non-null error."""
+
     def __init__(self, response, msg=None):
-        super(LimeSurveyApiError, self).__init__(
-            msg=response.error)
+        super(LimeSurveyApiError, self).__init__(msg=response.error)
         self.response = response
