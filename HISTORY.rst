@@ -4,6 +4,8 @@ History
 1.0.3 (xxxx-xx-xx)
 ------------------
 
+- Raise `LimeSurveyError` when JSON-RPC is not enabled.
+
 .. _section:
 
 1.0.2 (2019-11-23)

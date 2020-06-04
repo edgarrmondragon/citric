@@ -3,7 +3,11 @@ from typing import NamedTuple, Any
 
 import requests
 
-from limette.exceptions import LimeSurveyStatusError, LimeSurveyApiError
+from limette.exceptions import (
+    LimeSurveyStatusError,
+    LimeSurveyApiError,
+    LimeSurveyError,
+)
 
 
 class RPCResponse(NamedTuple):
@@ -60,6 +64,10 @@ class JSONRPC(BaseRPC):
         }
 
         res = self.request_session.post(url, json=payload)
+
+        if res.text == '':
+            raise LimeSurveyError('RPC interface not enabled')
+
         response = RPCResponse(**res.json())
 
         self.raise_for_response(response)
