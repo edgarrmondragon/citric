@@ -37,7 +37,7 @@ def coverage(session) -> None:
     session.run("codecov", *session.posargs)
 
 
-@nox.session(python=["3.8"])
+@nox.session(python=["3.8", "3.7", "3.6"])
 def lint(session):
     args = session.posargs or locations
     install_with_constraints(
