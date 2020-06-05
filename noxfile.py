@@ -41,7 +41,10 @@ def coverage(session) -> None:
 def lint(session):
     args = session.posargs or locations
     install_with_constraints(
-        session, "flake8", "flake8-black", "flake8-isort",
+        session,
+        "flake8",
+        "flake8-black",
+        # "flake8-isort",
     )
     session.run("flake8", *args)
 
