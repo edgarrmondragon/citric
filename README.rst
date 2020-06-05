@@ -146,6 +146,6 @@ Credits
    :alt: Python 3
 .. |codecov| image:: https://codecov.io/gh/edgarrmondragon/limette/branch/master/graph/badge.svg
    :target: https://codecov.io/gh/edgarrmondragon/limette
-.. |Tests| image:: https://github.com/<your-username>/hypermodern-python/workflows/Tests/badge.svg
-   :target: https://github.com/<your-username>/hypermodern-python/actions?workflow=Tests
+.. |Tests| image:: https://github.com/edgarrmondragon/limette/workflows/Tests/badge.svg
+   :target: https://github.com/edgarrmondragon/limette/actions?workflow=Tests
 .. _nox: https://nox.thea.codes/en/stable/
