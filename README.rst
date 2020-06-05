@@ -2,7 +2,7 @@ Limette
 =======
 
 |PyPI| |Python versions| |Travis builds| |Documentation Status|
-|Updates| |Python 3| |codecov|
+|Updates| |Python 3| |codecov| |Tests|
 
 A client to the LimeSurvey Remote Control API 2, written in modern
 Python.
@@ -146,4 +146,6 @@ Credits
    :alt: Python 3
 .. |codecov| image:: https://codecov.io/gh/edgarrmondragon/limette/branch/master/graph/badge.svg
    :target: https://codecov.io/gh/edgarrmondragon/limette
+.. |Tests| image:: https://github.com/<your-username>/hypermodern-python/workflows/Tests/badge.svg
+   :target: https://github.com/<your-username>/hypermodern-python/actions?workflow=Tests
 .. _nox: https://nox.thea.codes/en/stable/

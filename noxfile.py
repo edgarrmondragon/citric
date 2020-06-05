@@ -3,7 +3,6 @@ import tempfile
 import nox
 
 # Default sessions
-nox.options.sessions = "lint", "safety", "tests"
 locations = "src", "tests", "noxfile.py"
 
 
@@ -38,11 +37,14 @@ def coverage(session) -> None:
     session.run("codecov", *session.posargs)
 
 
-@nox.session(python=["3.8"])
+@nox.session(python=["3.8", "3.7", "3.6"])
 def lint(session):
     args = session.posargs or locations
     install_with_constraints(
-        session, "flake8", "flake8-black", "flake8-isort",
+        session,
+        "flake8",
+        "flake8-black",
+        # "flake8-isort",
     )
     session.run("flake8", *args)
 
