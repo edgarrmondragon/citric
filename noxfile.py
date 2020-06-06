@@ -37,12 +37,13 @@ def coverage(session) -> None:
     session.run("codecov", *session.posargs)
 
 
-@nox.session(python=["3.8", "3.7", "3.6"])
+@nox.session(python=["3.8"])
 def lint(session):
     args = session.posargs or locations
     install_with_constraints(
         session,
         "flake8",
+        "flake8-annotations",
         "flake8-black",
         # "flake8-isort",
     )
