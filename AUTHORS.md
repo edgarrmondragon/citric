@@ -1,12 +1,9 @@
-Credits
-=======
+# Credits
 
-Development Lead
-----------------
+## Development Lead
 
--  Edgar Ramírez Mondragón edgarrm358@gmail.com
+- Edgar Ramírez Mondragón edgarrm358@gmail.com
 
-Contributors
-------------
+## Contributors
 
 None yet. Why not be the first?
