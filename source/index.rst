@@ -1,9 +1,9 @@
-.. limette documentation master file, created by
+.. citric documentation master file, created by
    sphinx-quickstart on Sat Nov 23 18:44:31 2019.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to limette's documentation!
+Welcome to citric's documentation!
 ===================================
 
 .. toctree::
@@ -22,5 +22,5 @@ Indices and tables
 rpc
 ====
 
-.. automodule:: limette.rpc
+.. automodule:: citric.rpc
    :members:

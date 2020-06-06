@@ -1,12 +1,12 @@
 [tool.poetry]
-name = "limette"
-version = "1.0.2"
+name = "citric"
+version = "0.0.1"
 description="A client to the LimeSurvey Remote Control API 2, written in modern Python."
 license = "MIT"
 authors = ["Edgar Ramírez-Mondragón <edgarrm358@gmail.com>"]
-homepage='https://github.com/edgarrmondragon/limette'
-repository='https://github.com/edgarrmondragon/limette'
-readme = "README.rst"
+homepage='https://github.com/edgarrmondragon/citric'
+repository='https://github.com/edgarrmondragon/citric'
+readme = "README.md"
 documentation=""
 classifiers=[
     "License :: OSI Approved :: MIT License",
@@ -40,7 +40,7 @@ source = ["src", "*/site-packages"]
 
 [tool.coverage.run]
 branch = true
-source = ["limette"]
+source = ["citric"]
 
 [tool.coverage.report]
 show_missing = true

@@ -1,4 +1,4 @@
-* Limette version:
+* Citric version:
 * Python version:
 * Operating System:
 

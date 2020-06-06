@@ -3,7 +3,7 @@ from typing import Any, NamedTuple
 
 import requests
 
-from limette.exceptions import (
+from citric.exceptions import (
     LimeSurveyApiError,
     LimeSurveyError,
     LimeSurveyStatusError,
@@ -22,6 +22,28 @@ class RPCResponse(NamedTuple):
     error: Any
     id: Any
 
+    @classmethod
+    def parse_response(cls, response):
+        """Parse a requests response into an RPC response.
+
+        A exception is raised when LimeSurvey responds with an empty message,
+        an explicit error, or a bad status.
+        """
+
+        if response.text == "":
+            raise LimeSurveyError("RPC interface not enabled")
+
+        json_data = response.json()
+        rpc = cls(**json_data)
+
+        if isinstance(rpc.result, dict) and rpc.result.get("status") is not None:
+            raise LimeSurveyStatusError(rpc)
+
+        if rpc.error is not None:
+            raise LimeSurveyApiError(rpc)
+
+        return rpc
+
 
 class BaseRPC:
     """Base class for executing RPC in the LimeSurvey."""
@@ -29,27 +51,13 @@ class BaseRPC:
     def invoke(self):
         raise NotImplementedError
 
-    @staticmethod
-    def raise_for_response(response: RPCResponse):
-        """Raise a LimeSurvey exception.
-
-        A exception is raised when LimeSurvey responds with an explicit error
-        or a bad status.
-        """
-        if isinstance(response.result, dict):
-            status = response.result.get("status")
-            if status is not None:
-                raise LimeSurveyStatusError(response)
-        elif response.error is not None:
-            raise LimeSurveyApiError(response)
-
 
 class JSONRPC(BaseRPC):
     """Execute JSON-RPC in LimeSurvey."""
 
     _headers = {
         "content-type": "application/json",
-        "user-agent": "limette",
+        "user-agent": "citric-client",
     }
 
     def __init__(self):
@@ -66,12 +74,7 @@ class JSONRPC(BaseRPC):
 
         res = self.request_session.post(url, json=payload)
 
-        if res.text == "":
-            raise LimeSurveyError("RPC interface not enabled")
-
-        response = RPCResponse(**res.json())
-
-        self.raise_for_response(response)
+        response = RPCResponse.parse_response(res)
 
         return response
 
@@ -126,8 +129,7 @@ class Session(object):
             self.url, "get_session_key", admin_user, admin_pass, request_id=request_id,
         )
 
-        if response.error is None:
-            return response.result
+        return response.result
 
     def close(self):
         """Close RC API session."""
