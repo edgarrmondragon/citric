@@ -6,7 +6,7 @@ license = "MIT"
 authors = ["Edgar Ramírez-Mondragón <edgarrm358@gmail.com>"]
 homepage='https://github.com/edgarrmondragon/citric'
 repository='https://github.com/edgarrmondragon/citric'
-readme = "README.rst"
+readme = "README.md"
 documentation=""
 classifiers=[
     "License :: OSI Approved :: MIT License",
