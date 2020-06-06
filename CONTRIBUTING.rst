@@ -12,7 +12,7 @@ Types of Contributions
 Report Bugs
 ~~~~~~~~~~~
 
-Report bugs at https://github.com/edgarrmondragon/limette/issues.
+Report bugs at https://github.com/edgarrmondragon/citric/issues.
 
 If you are reporting a bug, please include:
 
@@ -37,15 +37,15 @@ it.
 Write Documentation
 ~~~~~~~~~~~~~~~~~~~
 
-Limette could always use more documentation, whether as part of the
-official Limette docs, in docstrings, or even on the web in blog posts,
+Citric could always use more documentation, whether as part of the
+official Citric docs, in docstrings, or even on the web in blog posts,
 articles, and such.
 
 Submit Feedback
 ~~~~~~~~~~~~~~~
 
 The best way to send feedback is to file an issue at
-https://github.com/edgarrmondragon/limette/issues.
+https://github.com/edgarrmondragon/citric/issues.
 
 If you are proposing a feature:
 
@@ -57,15 +57,15 @@ If you are proposing a feature:
 Get Started
 -----------
 
-Ready to contribute? Here's how to set up limette for local development.
+Ready to contribute? Here's how to set up citric for local development.
 
-1. Fork the limette repo on GitHub.
+1. Fork the citric repo on GitHub.
 
 2. Clone your fork locally:
 
    .. code:: bash
 
-      git clone git@github.com:your_name_here/limette.git
+      git clone git@github.com:your_name_here/citric.git
 
 3. Install your local copy into a virtualenv. Assuming you have
    virtualenvwrapper installed, this is how you set up your fork for
@@ -73,8 +73,8 @@ Ready to contribute? Here's how to set up limette for local development.
 
    .. code:: bash
 
-      mkvirtualenv limette
-      cd limette/
+      mkvirtualenv citric
+      cd citric/
       python setup.py develop
 
 4. Create a branch for local development:
@@ -90,7 +90,7 @@ Ready to contribute? Here's how to set up limette for local development.
 
    .. code:: bash
 
-      flake8 limette tests
+      flake8 citric tests
       python setup.py test or pytest
       tox
 
@@ -117,7 +117,7 @@ Before you submit a pull request, check that it meets these guidelines:
    the feature to the list in README.rst.
 3. The pull request should work for Python 3.5, 3.6, 3.7 and 3.8, and
    for PyPy. Check
-   https://travis-ci.com/edgarrmondragon/limette/pull_requests and make
+   https://travis-ci.com/edgarrmondragon/citric/pull_requests and make
    sure that the tests pass for all supported Python versions.
 
 Tips
@@ -127,7 +127,7 @@ To run a subset of tests:
 
 .. code:: bash
 
-   pytest tests.test_limette
+   pytest tests.test_citric
 
 Deploying
 ---------

@@ -1,7 +1,7 @@
-Limette
+Citric
 =======
 
-|PyPI| |Python versions| |Travis builds| |Documentation Status|
+|Documentation Status|
 |Updates| |Python 3| |codecov| |Tests|
 
 A client to the LimeSurvey Remote Control API 2, written in modern
@@ -17,7 +17,7 @@ For the full reference, see https://api.limesurvey.org/classes/remotecontrol_han
 
 .. code:: python
 
-   from limette.rpc import Session
+   from citric.rpc import Session
 
    LS_URL = 'http://my-ls-server.com/index.php/admin/remotecontrol'
 
@@ -71,7 +71,7 @@ Import an existing survey file and start testing with it:
 
    import base64
 
-   from limette.rpc import Session
+   from citric.rpc import Session
 
    LS_URL = "http://localhost:8001/index.php/admin/remotecontrol"
    SURVEY_FILE = "examples/limesurvey_survey_432535.lss"
@@ -131,21 +131,15 @@ Credits
 
 
 
-.. |PyPI| image:: https://img.shields.io/pypi/v/limette.svg
-   :target: https://pypi.python.org/pypi/limette
-.. |Python versions| image:: https://img.shields.io/pypi/pyversions/limette.svg?longCache=True
-   :target: https://pypi.python.org/pypi/limette
-.. |Travis builds| image:: https://api.travis-ci.com/edgarrmondragon/limette.svg?branch=master
-   :target: https://travis-ci.com/edgarrmondragon/limette
-.. |Documentation Status| image:: https://readthedocs.org/projects/limette/badge/?version=latest
-   :target: https://limette.readthedocs.io/en/latest/?badge=latest
-.. |Updates| image:: https://pyup.io/repos/github/edgarrmondragon/limette/shield.svg
-   :target: https://pyup.io/repos/github/edgarrmondragon/limette/
-.. |Python 3| image:: https://pyup.io/repos/github/edgarrmondragon/limette/python-3-shield.svg
-   :target: https://pyup.io/repos/github/edgarrmondragon/limette/
+.. |Documentation Status| image:: https://readthedocs.org/projects/citric/badge/?version=latest
+   :target: https://citric.readthedocs.io/en/latest/?badge=latest
+.. |Updates| image:: https://pyup.io/repos/github/edgarrmondragon/citric/shield.svg
+   :target: https://pyup.io/repos/github/edgarrmondragon/citric/
+.. |Python 3| image:: https://pyup.io/repos/github/edgarrmondragon/citric/python-3-shield.svg
+   :target: https://pyup.io/repos/github/edgarrmondragon/citric/
    :alt: Python 3
-.. |codecov| image:: https://codecov.io/gh/edgarrmondragon/limette/branch/master/graph/badge.svg
-   :target: https://codecov.io/gh/edgarrmondragon/limette
-.. |Tests| image:: https://github.com/edgarrmondragon/limette/workflows/Tests/badge.svg
-   :target: https://github.com/edgarrmondragon/limette/actions?workflow=Tests
+.. |codecov| image:: https://codecov.io/gh/edgarrmondragon/citric/branch/master/graph/badge.svg
+   :target: https://codecov.io/gh/edgarrmondragon/citric
+.. |Tests| image:: https://github.com/edgarrmondragon/citric/workflows/Tests/badge.svg
+   :target: https://github.com/edgarrmondragon/citric/actions?workflow=Tests
 .. _nox: https://nox.thea.codes/en/stable/

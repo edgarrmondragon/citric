@@ -3,7 +3,7 @@ from typing import Any, NamedTuple
 
 import requests
 
-from limette.exceptions import (
+from citric.exceptions import (
     LimeSurveyApiError,
     LimeSurveyError,
     LimeSurveyStatusError,
@@ -49,7 +49,7 @@ class JSONRPC(BaseRPC):
 
     _headers = {
         "content-type": "application/json",
-        "user-agent": "limette",
+        "user-agent": "citric-client",
     }
 
     def __init__(self):

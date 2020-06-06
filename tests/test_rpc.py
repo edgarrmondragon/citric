@@ -3,12 +3,12 @@ import uuid
 
 import pytest
 
-from limette.exceptions import (
+from citric.exceptions import (
     LimeSurveyApiError,
     LimeSurveyError,
     LimeSurveyStatusError,
 )
-from limette.rpc import JSONRPC, BaseRPC, RPCResponse, Session
+from citric.rpc import JSONRPC, BaseRPC, RPCResponse, Session
 
 MOCK_URL = "http://example.com"
 MOCK_USERNAME = "limeuser"

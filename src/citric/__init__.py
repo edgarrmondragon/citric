@@ -1,4 +1,4 @@
-"""Top-level package for Limette."""
+"""Top-level package for citric."""
 
 try:
     from importlib.metadata import version, PackageNotFoundError  # type: ignore
