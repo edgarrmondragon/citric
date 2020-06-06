@@ -44,8 +44,7 @@ def test_status_exception(message: Optional[str]):
     with pytest.raises(LimeSurveyError) as excinfo:
         raise LimeSurveyError(message)
 
-    exc: LimeSurveyError = excinfo.value
-    assert str(exc) == (message if message is not None else default)
+    assert str(excinfo.value) == (message if message is not None else default)
 
 
 def test_bad_spec():
@@ -68,8 +67,10 @@ def test_session_context(requests_mock: Mocker):
 def test_disabled_interface(session: Session, requests_mock: Mocker):
     requests_mock.post(session.url, text="")
 
-    with pytest.raises(LimeSurveyError):
+    with pytest.raises(LimeSurveyError) as excinfo:
         session.rpc("some_method")
+
+    assert str(excinfo.value) == "RPC interface not enabled"
 
 
 def test_api_error(session: Session, requests_mock: Mocker):
@@ -78,9 +79,7 @@ def test_api_error(session: Session, requests_mock: Mocker):
     with pytest.raises(LimeSurveyApiError) as excinfo:
         session.rpc("not_valid")
 
-    exc: LimeSurveyApiError = excinfo.value
-    assert exc.response.result is None
-    assert exc.response.error == "Some Error"
+    assert str(excinfo.value) == "Some Error"
 
 
 def test_status_error(session: Session, requests_mock: Mocker):
@@ -91,6 +90,4 @@ def test_status_error(session: Session, requests_mock: Mocker):
     with pytest.raises(LimeSurveyStatusError) as excinfo:
         session.rpc("not_valid")
 
-    exc: LimeSurveyStatusError = excinfo.value
-    assert exc.response.result == {"status": "Status Message"}
-    assert exc.response.error is None
+    assert str(excinfo.value) == "Status Message"

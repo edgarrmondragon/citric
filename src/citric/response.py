@@ -34,15 +34,15 @@ class RPCResponse(NamedTuple):
         """
 
         if response.text == "":
-            raise LimeSurveyError("RPC interface not enabled")
+            raise LimeSurveyError(msg="RPC interface not enabled")
 
         json_data = response.json()
         rpc = cls(**json_data)
 
         if isinstance(rpc.result, dict) and rpc.result.get("status") is not None:
-            raise LimeSurveyStatusError(rpc)
+            raise LimeSurveyStatusError(msg=rpc.result["status"])
 
         if rpc.error is not None:
-            raise LimeSurveyApiError(rpc)
+            raise LimeSurveyApiError(msg=rpc.error)
 
         return rpc

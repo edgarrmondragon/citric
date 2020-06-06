@@ -2,8 +2,6 @@
 
 from typing import Optional, TypeVar
 
-from citric.response import RPCResponse
-
 T = TypeVar("T", bound="LimeSurveyError")
 
 
@@ -21,14 +19,6 @@ class LimeSurveyError(Exception):
 class LimeSurveyStatusError(LimeSurveyError):
     """Exception raised when LimeSurvey responds with an error status."""
 
-    def __init__(self: T, response: RPCResponse, msg: Optional[str] = None) -> None:
-        super(LimeSurveyStatusError, self).__init__(msg=response.result["status"])
-        self.response = response
-
 
 class LimeSurveyApiError(LimeSurveyError):
     """Exception raised when LimeSurvey responds with a non-null error."""
-
-    def __init__(self: T, response: RPCResponse, msg: Optional[str] = None) -> None:
-        super(LimeSurveyApiError, self).__init__(msg=response.error)
-        self.response = response
