@@ -1,5 +1,5 @@
 """Low level wrapper for connecting to the LSRC2."""
-from typing import Any, NamedTuple
+from typing import Any, NamedTuple, Optional
 
 import requests
 
@@ -19,8 +19,8 @@ class RPCResponse(NamedTuple):
     """
 
     result: Any
-    error: Any
-    id: Any
+    error: Optional[str]
+    id: int
 
     @classmethod
     def parse_response(cls, response):
@@ -48,7 +48,7 @@ class RPCResponse(NamedTuple):
 class BaseRPC:
     """Base class for executing RPC in the LimeSurvey."""
 
-    def invoke(self):
+    def invoke(self, url: str, method: str, *args, request_id: int = 1) -> RPCResponse:
         raise NotImplementedError
 
 
@@ -60,11 +60,11 @@ class JSONRPC(BaseRPC):
         "user-agent": "citric-client",
     }
 
-    def __init__(self):
+    def __init__(self,):
         self.request_session = requests.Session()
         self.request_session.headers.update(self._headers)
 
-    def invoke(self, url, method, *args, request_id=1):
+    def invoke(self, url: str, method: str, *args, request_id: int = 1) -> RPCResponse:
 
         payload = {
             "method": method,
@@ -94,13 +94,15 @@ class Session(object):
 
     __attrs__ = ["url", "key"]
 
-    def __init__(self, url, admin_user, admin_pass, spec=JSONRPC()):
+    def __init__(
+        self, url: str, admin_user: str, admin_pass: str, spec: BaseRPC = JSONRPC(),
+    ):
         """Create LimeSurvey wrapper."""
         self.url = url
         self.spec = spec
-        self.key = self.get_session_key(admin_user, admin_pass)
+        self.key: str = self.get_session_key(admin_user, admin_pass)
 
-    def rpc(self, method, *args, request_id=1):
+    def rpc(self, method: str, *args, request_id: int = 1):
         r"""Authenticated execution of an RPC method on LimeSurvey.
 
         :param method: Name of the method to call.
@@ -114,7 +116,7 @@ class Session(object):
             self.url, method, self.key, *args, request_id=request_id,
         )
 
-    def get_session_key(self, admin_user, admin_pass, request_id=1):
+    def get_session_key(self, admin_user: str, admin_pass: str, request_id=1) -> Any:
         """Get RC API session key.
 
         :param admin_user: LimeSurvey admin username.
