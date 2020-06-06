@@ -1,54 +1,22 @@
 """Low level wrapper for connecting to the LSRC2."""
-from typing import Any, NamedTuple, Optional
+from types import TracebackType
+from typing import Any, Optional, Type, TypeVar
 
 import requests
 
-from citric.exceptions import (
-    LimeSurveyApiError,
-    LimeSurveyError,
-    LimeSurveyStatusError,
-)
+from citric.response import RPCResponse
 
-
-class RPCResponse(NamedTuple):
-    """LimeSurvey RPC response object.
-
-    :param result: RPC result.
-    :param error: Error message, if any.
-    :param id: RPC Request ID.
-    """
-
-    result: Any
-    error: Optional[str]
-    id: int
-
-    @classmethod
-    def parse_response(cls, response):
-        """Parse a requests response into an RPC response.
-
-        A exception is raised when LimeSurvey responds with an empty message,
-        an explicit error, or a bad status.
-        """
-
-        if response.text == "":
-            raise LimeSurveyError("RPC interface not enabled")
-
-        json_data = response.json()
-        rpc = cls(**json_data)
-
-        if isinstance(rpc.result, dict) and rpc.result.get("status") is not None:
-            raise LimeSurveyStatusError(rpc)
-
-        if rpc.error is not None:
-            raise LimeSurveyApiError(rpc)
-
-        return rpc
+B = TypeVar("B", bound="BaseRPC")
+J = TypeVar("J", bound="JSONRPC")
+S = TypeVar("S", bound="Session")
 
 
 class BaseRPC:
     """Base class for executing RPC in the LimeSurvey."""
 
-    def invoke(self, url: str, method: str, *args, request_id: int = 1) -> RPCResponse:
+    def invoke(
+        self: B, url: str, method: str, *args: Any, request_id: int = 1,
+    ) -> RPCResponse:
         raise NotImplementedError
 
 
@@ -60,11 +28,13 @@ class JSONRPC(BaseRPC):
         "user-agent": "citric-client",
     }
 
-    def __init__(self,):
+    def __init__(self: J) -> None:
         self.request_session = requests.Session()
         self.request_session.headers.update(self._headers)
 
-    def invoke(self, url: str, method: str, *args, request_id: int = 1) -> RPCResponse:
+    def invoke(
+        self: J, url: str, method: str, *args: Any, request_id: int = 1,
+    ) -> RPCResponse:
 
         payload = {
             "method": method,
@@ -95,14 +65,14 @@ class Session(object):
     __attrs__ = ["url", "key"]
 
     def __init__(
-        self, url: str, admin_user: str, admin_pass: str, spec: BaseRPC = JSONRPC(),
-    ):
+        self: S, url: str, admin_user: str, admin_pass: str, spec: BaseRPC = JSONRPC(),
+    ) -> None:
         """Create LimeSurvey wrapper."""
         self.url = url
         self.spec = spec
         self.key: str = self.get_session_key(admin_user, admin_pass)
 
-    def rpc(self, method: str, *args, request_id: int = 1):
+    def rpc(self: S, method: str, *args: Any, request_id: int = 1) -> RPCResponse:
         r"""Authenticated execution of an RPC method on LimeSurvey.
 
         :param method: Name of the method to call.
@@ -116,7 +86,9 @@ class Session(object):
             self.url, method, self.key, *args, request_id=request_id,
         )
 
-    def get_session_key(self, admin_user: str, admin_pass: str, request_id=1) -> Any:
+    def get_session_key(
+        self: S, admin_user: str, admin_pass: str, request_id: int = 1
+    ) -> Any:
         """Get RC API session key.
 
         :param admin_user: LimeSurvey admin username.
@@ -133,14 +105,19 @@ class Session(object):
 
         return response.result
 
-    def close(self):
+    def close(self: S) -> None:
         """Close RC API session."""
         self.rpc("release_session_key")
 
-    def __enter__(self):
+    def __enter__(self: S) -> S:
         """Context manager for API session."""
         return self
 
-    def __exit__(self, type, value, traceback):
+    def __exit__(
+        self: S,
+        type: Optional[Type[BaseException]],
+        value: Optional[BaseException],
+        traceback: Optional[TracebackType],
+    ) -> None:
         """Safely exit an API session."""
         self.close()
