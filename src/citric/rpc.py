@@ -14,7 +14,9 @@ S = TypeVar("S", bound="Session")
 class BaseRPC:
     """Base class for executing RPC in the LimeSurvey."""
 
-    def invoke(self: B) -> RPCResponse:
+    def invoke(
+        self: B, url: str, method: str, *args: Any, request_id: int = 1
+    ) -> RPCResponse:
         raise NotImplementedError
 
 
