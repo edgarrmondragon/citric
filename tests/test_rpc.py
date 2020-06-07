@@ -54,7 +54,7 @@ def test_bad_spec():
             pass
 
         bad_spec = BadRPC()
-        bad_spec.invoke()
+        bad_spec.invoke(URL, USERNAME, PASSWORD)
 
 
 def test_session_context(requests_mock: Mocker):
