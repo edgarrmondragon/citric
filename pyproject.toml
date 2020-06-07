@@ -35,6 +35,7 @@ flake8-isort = "^3.0.0"
 safety = "^1.9.0"
 codecov = "^2.1.4"
 flake8-annotations = "^2.1.0"
+mypy = "^0.780"
 
 [tool.coverage.paths]
 source = ["src", "*/site-packages"]

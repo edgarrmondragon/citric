@@ -57,6 +57,13 @@ def black(session):
     session.run("black", *args)
 
 
+@nox.session(python=["3.8", "3.7", "3.6"])
+def mypy(session):
+    args = session.posargs or locations
+    install_with_constraints(session, "mypy")
+    session.run("mypy", *args)
+
+
 @nox.session(python="3.8")
 def safety(session):
     with tempfile.NamedTemporaryFile() as requirements:
