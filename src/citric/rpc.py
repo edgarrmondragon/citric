@@ -6,16 +6,12 @@ import requests
 
 from citric.response import RPCResponse
 
-B = TypeVar("B", bound="BaseRPC")
-J = TypeVar("J", bound="JSONRPC")
-S = TypeVar("S", bound="Session")
-
 
 class BaseRPC:
     """Base class for executing RPC in the LimeSurvey."""
 
     def invoke(
-        self: B, url: str, method: str, *args: Any, request_id: int = 1
+        self, url: str, method: str, *args: Any, request_id: int = 1  # noqa: ANN101
     ) -> RPCResponse:
         raise NotImplementedError
 
@@ -28,12 +24,12 @@ class JSONRPC(BaseRPC):
         "user-agent": "citric-client",
     }
 
-    def __init__(self: J) -> None:
+    def __init__(self) -> None:  # noqa: ANN101
         self.request_session = requests.Session()
         self.request_session.headers.update(self._headers)
 
     def invoke(
-        self: J, url: str, method: str, *args: Any, request_id: int = 1,
+        self, url: str, method: str, *args: Any, request_id: int = 1,  # noqa: ANN101
     ) -> RPCResponse:
 
         payload = {
@@ -47,6 +43,9 @@ class JSONRPC(BaseRPC):
         response = RPCResponse.parse_response(res)
 
         return response
+
+
+T = TypeVar("T", bound="Session")
 
 
 class Session(object):
@@ -65,14 +64,20 @@ class Session(object):
     __attrs__ = ["url", "key"]
 
     def __init__(
-        self: S, url: str, admin_user: str, admin_pass: str, spec: BaseRPC = JSONRPC(),
+        self,  # noqa: ANN101
+        url: str,
+        admin_user: str,
+        admin_pass: str,
+        spec: BaseRPC = JSONRPC(),
     ) -> None:
         """Create LimeSurvey wrapper."""
         self.url = url
         self.spec = spec
         self.key: str = self.get_session_key(admin_user, admin_pass)
 
-    def rpc(self: S, method: str, *args: Any, request_id: int = 1) -> RPCResponse:
+    def rpc(
+        self, method: str, *args: Any, request_id: int = 1,  # noqa: ANN101
+    ) -> RPCResponse:
         r"""Authenticated execution of an RPC method on LimeSurvey.
 
         :param method: Name of the method to call.
@@ -87,7 +92,7 @@ class Session(object):
         )
 
     def get_session_key(
-        self: S, admin_user: str, admin_pass: str, request_id: int = 1
+        self, admin_user: str, admin_pass: str, request_id: int = 1  # noqa: ANN101
     ) -> Any:
         """Get RC API session key.
 
@@ -105,16 +110,16 @@ class Session(object):
 
         return response.result
 
-    def close(self: S) -> None:
+    def close(self) -> None:  # noqa: ANN101
         """Close RC API session."""
         self.rpc("release_session_key")
 
-    def __enter__(self: S) -> S:
+    def __enter__(self: T) -> T:
         """Context manager for API session."""
         return self
 
     def __exit__(
-        self: S,
+        self,  # noqa: ANN101
         type: Optional[Type[BaseException]],
         value: Optional[BaseException],
         traceback: Optional[TracebackType],

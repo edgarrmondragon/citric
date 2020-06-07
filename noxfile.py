@@ -64,6 +64,13 @@ def mypy(session):
     session.run("mypy", *args)
 
 
+@nox.session(python=["3.7", "3.6"])
+def pytype(session):
+    args = session.posargs or ["--disable=import-error", *locations]
+    install_with_constraints(session, "pytype")
+    session.run("pytype", *args)
+
+
 @nox.session(python="3.8")
 def safety(session):
     with tempfile.NamedTemporaryFile() as requirements:

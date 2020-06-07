@@ -10,7 +10,7 @@ class LimeSurveyError(Exception):
 
     default = "An error occured while requesting data from the LSRC2 API."
 
-    def __init__(self: T, msg: Optional[str] = None) -> None:
+    def __init__(self, msg: Optional[str] = None) -> None:  # noqa:: ANN101
         if msg is None:
             msg = self.default
         super(LimeSurveyError, self).__init__(msg)
