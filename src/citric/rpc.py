@@ -13,6 +13,7 @@ class BaseRPC:
     def invoke(
         self, url: str, method: str, *args: Any, request_id: int = 1  # noqa: ANN101
     ) -> RPCResponse:
+        """Execute a LimeSurvey RPC."""
         raise NotImplementedError
 
 
@@ -25,13 +26,14 @@ class JSONRPC(BaseRPC):
     }
 
     def __init__(self) -> None:  # noqa: ANN101
+        """Create a JSON RPC object."""
         self.request_session = requests.Session()
         self.request_session.headers.update(self._headers)
 
     def invoke(
         self, url: str, method: str, *args: Any, request_id: int = 1,  # noqa: ANN101
     ) -> RPCResponse:
-
+        """Execute a LimeSurvey RPC with a JSON payload."""
         payload = {
             "method": method,
             "params": [*args],
@@ -73,19 +75,22 @@ class Session(object):
         """Create LimeSurvey wrapper."""
         self.url = url
         self.spec = spec
-        self.key: str = self.get_session_key(admin_user, admin_pass)
+        self.key = self.get_session_key(admin_user, admin_pass)
 
     def rpc(
         self, method: str, *args: Any, request_id: int = 1,  # noqa: ANN101
     ) -> RPCResponse:
-        r"""Authenticated execution of an RPC method on LimeSurvey.
+        """Execute RPC method on LimeSurvey, with token authentication.
 
-        :param method: Name of the method to call.
-        :type method: ``str``
-        :param \*args: Postional arguments of the RPC method.
-        :type \*args: ``Any``
-        :param request_id: Request ID for response validation.
-        :type request_id: ``int``
+        Any method, except for `get_session_key`.
+
+        Args:
+            method: Name of the method to call.
+            args: Positional arguments of the RPC method.
+            request_id: Request ID for response validation.
+
+        Returns:
+            An RPC response with result, error and id attributes.
         """
         return self.spec.invoke(
             self.url, method, self.key, *args, request_id=request_id,
@@ -96,14 +101,16 @@ class Session(object):
     ) -> Any:
         """Get RC API session key.
 
-        :param admin_user: LimeSurvey admin username.
-        :type admin_user: ``str``
-        :param admin_pass: LimeSurvey admin password.
-        :type admin_pass: ``str``
-        :param request_id: LimeSurvey RPC request ID.
-        :type request_id: ``Any``
-        """
+        Authenticate against the RPC interface.
 
+        Args:
+            admin_user: Admin username.
+            admin_pass: Admin password.
+            request_id: Request ID for response validation.
+
+        Returns:
+            A session key. This is mandatory for all following LSRC2 function calls.
+        """
         response = self.spec.invoke(
             self.url, "get_session_key", admin_user, admin_pass, request_id=request_id,
         )

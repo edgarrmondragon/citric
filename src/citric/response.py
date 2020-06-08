@@ -32,7 +32,6 @@ class RPCResponse(NamedTuple):
         A exception is raised when LimeSurvey responds with an empty message,
         an explicit error, or a bad status.
         """
-
         if response.text == "":
             raise LimeSurveyError(msg="RPC interface not enabled")
 

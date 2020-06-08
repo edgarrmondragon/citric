@@ -1,9 +1,5 @@
 """Common exceptions."""
 
-from typing import Optional, TypeVar
-
-T = TypeVar("T", bound="LimeSurveyError")
-
 
 class LimeSurveyError(Exception):
     """Basic exception raised by LimeSurvey."""
@@ -11,6 +7,7 @@ class LimeSurveyError(Exception):
     default = "An error occured while requesting data from the LSRC2 API."
 
     def __init__(self, msg: Optional[str] = None) -> None:  # noqa:: ANN101
+        """Create a generic error for the LimeSurvey RPC API."""
         if msg is None:
             msg = self.default
         super(LimeSurveyError, self).__init__(msg)

@@ -1,3 +1,4 @@
+"""Nox configuration."""
 import tempfile
 
 import nox
@@ -7,6 +8,7 @@ locations = "src", "tests", "noxfile.py"
 
 
 def install_with_constraints(session, *args, **kwargs):
+    """Install individual packages with Poetry version constraints."""
     with tempfile.NamedTemporaryFile() as requirements:
         session.run(
             "poetry",
@@ -21,6 +23,7 @@ def install_with_constraints(session, *args, **kwargs):
 
 @nox.session(python=["3.8", "3.7", "3.6"])
 def tests(session):
+    """Execute pytest tests."""
     args = session.posargs or ["--cov"]
     session.run("poetry", "install", "--no-dev", external=True)
     install_with_constraints(
@@ -39,12 +42,14 @@ def coverage(session) -> None:
 
 @nox.session(python=["3.8"])
 def lint(session):
+    """Check code linting."""
     args = session.posargs or locations
     install_with_constraints(
         session,
         "flake8",
         "flake8-annotations",
         "flake8-black",
+        "flake8-docstrings",
         # "flake8-isort",
     )
     session.run("flake8", *args)
@@ -52,6 +57,7 @@ def lint(session):
 
 @nox.session(python="3.8")
 def black(session):
+    """Format code."""
     args = session.posargs or locations
     install_with_constraints(session, "black")
     session.run("black", *args)
@@ -59,6 +65,7 @@ def black(session):
 
 @nox.session(python=["3.8", "3.7", "3.6"])
 def mypy(session):
+    """Check types with mypy."""
     args = session.posargs or locations
     install_with_constraints(session, "mypy")
     session.run("mypy", *args)
@@ -66,6 +73,7 @@ def mypy(session):
 
 @nox.session(python=["3.7", "3.6"])
 def pytype(session):
+    """Infer and check types with pytype."""
     args = session.posargs or ["--disable=import-error", *locations]
     install_with_constraints(session, "pytype")
     session.run("pytype", *args)
@@ -73,6 +81,7 @@ def pytype(session):
 
 @nox.session(python="3.8")
 def safety(session):
+    """Check if packages are safe."""
     with tempfile.NamedTemporaryFile() as requirements:
         session.run(
             "poetry",
