@@ -71,7 +71,14 @@ T = TypeVar("T", bound="Session")
 
 
 class Session(object):
-    """LimeSurvey RemoteControl 2 API session."""
+    """LimeSurvey RemoteControl 2 API session.
+
+    Args:
+        url: LimeSurvey Remote Control endpoint.
+        admin_user: LimeSurvey user name.
+        admin_pass: LimeSurvey password.
+        spec: RPC specification. By default JSON-RPC is used.
+    """
 
     __attrs__ = ["url", "key"]
 
@@ -82,14 +89,7 @@ class Session(object):
         admin_pass: str,
         spec: BaseRPC = JSONRPC(),
     ) -> None:
-        """Create a LimeSurvey RPC session.
-
-        Args:
-            url: LimeSurvey Remote Control endpoint.
-            admin_user: LimeSurvey user name.
-            admin_pass: LimeSurvey password.
-            spec: RPC specification. By default JSON-RPC is used.
-        """
+        """Create a LimeSurvey RPC session."""
         self.url = url
         self.spec = spec
         self.key = self.get_session_key(admin_user, admin_pass)
@@ -135,7 +135,7 @@ class Session(object):
         return response.result
 
     def close(self) -> None:  # noqa: ANN101
-        """Close RC API session."""
+        """Close RPC API session."""
         self.rpc("release_session_key")
 
     def __enter__(self: T) -> T:
