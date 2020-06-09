@@ -13,7 +13,17 @@ class BaseRPC:
     def invoke(
         self, url: str, method: str, *args: Any, request_id: int = 1  # noqa: ANN101
     ) -> RPCResponse:
-        """Execute a LimeSurvey RPC."""
+        """Execute a LimeSurvey RPC.
+
+        Args:
+            url: URL of LimeSurvey RPC interface.
+            method: Name of the method to call.
+            args: Positional arguments of the RPC method.
+            request_id: Request ID for response validation.
+
+        Raises:
+            NotImplementedError: Subclass does not implement this method.
+        """
         raise NotImplementedError
 
 
@@ -33,7 +43,17 @@ class JSONRPC(BaseRPC):
     def invoke(
         self, url: str, method: str, *args: Any, request_id: int = 1,  # noqa: ANN101
     ) -> RPCResponse:
-        """Execute a LimeSurvey RPC with a JSON payload."""
+        """Execute a LimeSurvey RPC with a JSON payload.
+
+        Args:
+            url: URL of LimeSurvey RPC interface.
+            method: Name of the method to call.
+            args: Positional arguments of the RPC method.
+            request_id: Request ID for response validation.
+
+        Returns:
+            An RPC response with result, error and id attributes.
+        """
         payload = {
             "method": method,
             "params": [*args],
@@ -51,17 +71,7 @@ T = TypeVar("T", bound="Session")
 
 
 class Session(object):
-    """LimeSurvey RemoteControl 2 API session.
-
-    :param url: LimeSurvey Remote Control endpoint.
-    :type url: ``str``
-    :param admin_user: LimeSurvey user name.
-    :type admin_user: ``str``
-    :param admin_pass: LimeSurvey password.
-    :type admin_pass: ``str``
-    :param spec: RPC specification
-    :type spec: ``BaseRPC``
-    """
+    """LimeSurvey RemoteControl 2 API session."""
 
     __attrs__ = ["url", "key"]
 
@@ -72,7 +82,14 @@ class Session(object):
         admin_pass: str,
         spec: BaseRPC = JSONRPC(),
     ) -> None:
-        """Create LimeSurvey wrapper."""
+        """Create a LimeSurvey RPC session.
+
+        Args:
+            url: LimeSurvey Remote Control endpoint.
+            admin_user: LimeSurvey user name.
+            admin_pass: LimeSurvey password.
+            spec: RPC specification. By default JSON-RPC is used.
+        """
         self.url = url
         self.spec = spec
         self.key = self.get_session_key(admin_user, admin_pass)
@@ -122,7 +139,11 @@ class Session(object):
         self.rpc("release_session_key")
 
     def __enter__(self: T) -> T:
-        """Context manager for API session."""
+        """Context manager for API session.
+
+        Returns:
+            LimeSurvey RPC session.
+        """
         return self
 
     def __exit__(
@@ -131,5 +152,11 @@ class Session(object):
         value: Optional[BaseException],
         traceback: Optional[TracebackType],
     ) -> None:
-        """Safely exit an API session."""
+        """Safely exit an API session.
+
+        Args:
+            type: Exception class.
+            value: Exception instance.
+            traceback: Error traceback.
+        """
         self.close()

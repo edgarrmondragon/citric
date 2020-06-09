@@ -16,9 +16,10 @@ T = TypeVar("T", bound="RPCResponse")
 class RPCResponse(NamedTuple):
     """LimeSurvey RPC response object.
 
-    :param result: RPC result.
-    :param error: Error message, if any.
-    :param id: RPC Request ID.
+    Args:
+        result: RPC output.
+        error: Error message, if any.
+        id: RPC Request ID.
     """
 
     result: Any
@@ -31,6 +32,19 @@ class RPCResponse(NamedTuple):
 
         A exception is raised when LimeSurvey responds with an empty message,
         an explicit error, or a bad status.
+
+        Args:
+            response: A response from the LimeSurvey JSON-RPC API.
+
+        Returns:
+            An RPC response with result, error and id attributes.
+
+        Raises:
+            LimeSurveyError: The API returned an empty response, meaning the
+                RPC interface is not enabled.
+            LimeSurveyStatusError: The result key from the response payload has
+                a non-null status.
+            LimeSurveyApiError: The response payload has a non-null error key.
         """
         if response.text == "":
             raise LimeSurveyError(msg="RPC interface not enabled")

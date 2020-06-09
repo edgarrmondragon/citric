@@ -51,6 +51,7 @@ def lint(session):
         "flake8-black",
         "flake8-docstrings",
         # "flake8-isort",
+        "darglint",
     )
     session.run("flake8", *args)
 
