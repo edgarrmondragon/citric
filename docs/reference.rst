@@ -5,6 +5,17 @@ Reference
     :local:
     :backlinks: none
 
+citric.exceptions
+--------------------------
+
+.. automodule:: citric.exceptions
+   :members:
+
+citric.response
+--------------------------
+
+.. automodule:: citric.response
+   :members:
 
 citric.rpc
 --------------------------

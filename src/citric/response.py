@@ -23,8 +23,13 @@ class RPCResponse(NamedTuple):
     """
 
     result: Any
+    """RPC output."""
+
     error: Optional[str]
+    """Error message."""
+
     id: int
+    """RPC request ID."""
 
     @classmethod
     def parse_response(cls: Type[T], response: requests.Response) -> T:
