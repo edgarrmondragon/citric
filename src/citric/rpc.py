@@ -115,7 +115,7 @@ class Session(object):
 
     def get_session_key(
         self, admin_user: str, admin_pass: str, request_id: int = 1  # noqa: ANN101
-    ) -> Any:
+    ) -> str:
         """Get RC API session key.
 
         Authenticate against the RPC interface.
