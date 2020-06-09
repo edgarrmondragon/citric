@@ -2,12 +2,13 @@
 import tempfile
 
 import nox
+from nox.sessions import Session
 
 # Default sessions
 locations = "src", "tests", "noxfile.py"
 
 
-def install_with_constraints(session, *args, **kwargs):
+def install_with_constraints(session: Session, *args, **kwargs) -> None:
     """Install individual packages with Poetry version constraints."""
     with tempfile.NamedTemporaryFile() as requirements:
         session.run(
@@ -22,7 +23,7 @@ def install_with_constraints(session, *args, **kwargs):
 
 
 @nox.session(python=["3.8", "3.7", "3.6"])
-def tests(session):
+def tests(session: Session) -> None:
     """Execute pytest tests."""
     args = session.posargs or ["--cov"]
     session.run("poetry", "install", "--no-dev", external=True)
@@ -33,7 +34,7 @@ def tests(session):
 
 
 @nox.session(python="3.8")
-def coverage(session) -> None:
+def coverage(session: Session) -> None:
     """Upload coverage data."""
     install_with_constraints(session, "coverage[toml]", "codecov")
     session.run("coverage", "xml", "--fail-under=0")
@@ -41,7 +42,7 @@ def coverage(session) -> None:
 
 
 @nox.session(python=["3.8"])
-def lint(session):
+def lint(session: Session) -> None:
     """Check code linting."""
     args = session.posargs or locations
     install_with_constraints(
@@ -57,7 +58,7 @@ def lint(session):
 
 
 @nox.session(python="3.8")
-def black(session):
+def black(session: Session) -> None:
     """Format code."""
     args = session.posargs or locations
     install_with_constraints(session, "black")
@@ -65,7 +66,7 @@ def black(session):
 
 
 @nox.session(python=["3.8", "3.7", "3.6"])
-def mypy(session):
+def mypy(session: Session) -> None:
     """Check types with mypy."""
     args = session.posargs or locations
     install_with_constraints(session, "mypy")
@@ -73,7 +74,7 @@ def mypy(session):
 
 
 @nox.session(python=["3.7", "3.6"])
-def pytype(session):
+def pytype(session: Session) -> None:
     """Infer and check types with pytype."""
     args = session.posargs or ["--disable=import-error", *locations]
     install_with_constraints(session, "pytype")
@@ -81,7 +82,7 @@ def pytype(session):
 
 
 @nox.session(python="3.8")
-def safety(session):
+def safety(session: Session) -> None:
     """Check if packages are safe."""
     with tempfile.NamedTemporaryFile() as requirements:
         session.run(
