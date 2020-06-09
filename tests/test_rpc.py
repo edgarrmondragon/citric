@@ -18,6 +18,7 @@ PASSWORD = "limesecret"
 
 @pytest.fixture(scope="function")
 def session(requests_mock: Mocker):
+    """Create a LimeSurvey Session fixture."""
     requests_mock.post(URL, text='{"result":"123456","error":null,"id":1}')
     session = Session(URL, USERNAME, PASSWORD)
 
@@ -28,6 +29,7 @@ def session(requests_mock: Mocker):
 
 
 def test_json_rpc(session: Session, requests_mock: Mocker):
+    """Test JSON RPC response structure."""
     requests_mock.post(session.url, text='{"error":null,"result":"OK","id":1}')
 
     response = session.rpc("some_method")
@@ -39,6 +41,7 @@ def test_json_rpc(session: Session, requests_mock: Mocker):
 
 @pytest.mark.parametrize("message", [None, "Test message"])
 def test_status_exception(message: Optional[str]):
+    """Test LimeSurvey exception strings."""
     default = LimeSurveyError.default
 
     with pytest.raises(LimeSurveyError) as excinfo:
@@ -48,6 +51,7 @@ def test_status_exception(message: Optional[str]):
 
 
 def test_bad_spec():
+    """Test missing methods raises error."""
     with pytest.raises(NotImplementedError):
 
         class BadRPC(BaseRPC):
@@ -58,6 +62,7 @@ def test_bad_spec():
 
 
 def test_session_context(requests_mock: Mocker):
+    """Test context creates a session key."""
     requests_mock.post(URL, text='{"result":"123456","error":null,"id":1}')
 
     with Session(URL, USERNAME, PASSWORD) as session:
@@ -65,6 +70,7 @@ def test_session_context(requests_mock: Mocker):
 
 
 def test_disabled_interface(session: Session, requests_mock: Mocker):
+    """Test empty response."""
     requests_mock.post(session.url, text="")
 
     with pytest.raises(LimeSurveyError) as excinfo:
@@ -74,6 +80,7 @@ def test_disabled_interface(session: Session, requests_mock: Mocker):
 
 
 def test_api_error(session: Session, requests_mock: Mocker):
+    """Test non-null error raises LimeSurveyApiError."""
     requests_mock.post(session.url, text='{"result":null,"error":"Some Error","id":1}')
 
     with pytest.raises(LimeSurveyApiError) as excinfo:
@@ -83,6 +90,7 @@ def test_api_error(session: Session, requests_mock: Mocker):
 
 
 def test_status_error(session: Session, requests_mock: Mocker):
+    """Test result with status key raises LimeSurveyStatusError."""
     requests_mock.post(
         session.url, text='{"result":{"status":"Status Message"},"error":null,"id":1}'
     )
