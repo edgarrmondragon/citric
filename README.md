@@ -4,7 +4,6 @@
 [![Updates][updates-badge]][updates-link]
 [![codecov][codecov-badge]][codecov-link]
 [![Tests][tests-badge]][tests-link]
-[![Read the Docs][docs-badge]][docs-link]
 
 A client to the LimeSurvey Remote Control API 2, written in modern
 Python.
@@ -131,5 +130,3 @@ poetry publish
 [codecov-link]: https://codecov.io/gh/edgarrmondragon/citric
 [tests-badge]: https://github.com/edgarrmondragon/citric/workflows/Tests/badge.svg
 [tests-link]: https://github.com/edgarrmondragon/citric/actions?workflow=Tests
-[docs-badge]: https://readthedocs.org/projects/citric/badge/
-[docs-link]: https://citric.readthedocs.io/
