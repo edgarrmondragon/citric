@@ -7,7 +7,7 @@ authors = ["Edgar Ramírez-Mondragón <edgarrm358@gmail.com>"]
 homepage='https://github.com/edgarrmondragon/citric'
 repository='https://github.com/edgarrmondragon/citric'
 readme = "README.md"
-documentation=""
+documentation = "https://citric.readthedocs.io"
 classifiers=[
     "License :: OSI Approved :: MIT License",
     "Natural Language :: English",
@@ -23,7 +23,6 @@ requests = "^2.23.0"
 importlib_metadata = {version = "^1.6.0", python = "<3.8"}
 
 [tool.poetry.dev-dependencies]
-Sphinx = "^3.0.4"
 pytest = "^5.4.3"
 requests-mock = "^1.8.0"
 pytest-cov = "^2.9.0"
@@ -40,6 +39,8 @@ pytype = {version = "^2020.6.1", python = "^3.6,<3.8"}
 flake8-docstrings = "^1.5.0"
 darglint = "^1.4.0"
 xdoctest = "^0.12.0"
+sphinx = "^3.1.0"
+sphinx-autodoc-typehints = "^1.10.3"
 
 [tool.coverage.paths]
 source = ["src", "*/site-packages"]
