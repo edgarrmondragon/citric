@@ -115,8 +115,12 @@ poetry publish
 
 ## Credits
 
+- [Claudio Jolowicz][claudio] and [his amazing blog post][hypermodern].
+
 [rc2api]: https://api.limesurvey.org/classes/remotecontrol_handle.html
 [nox]: https://nox.thea.codes/en/stable/
+[claudio]: https://twitter.com/cjolowicz/
+[hypermodern]: https://cjolowicz.github.io/posts/hypermodern-python-01-setup/
 
 <!--Badges-->
 [docs-badge]: https://readthedocs.org/projects/citric/badge/?version=latest
