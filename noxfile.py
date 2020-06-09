@@ -6,6 +6,7 @@ from nox.sessions import Session
 
 # Default sessions
 locations = "src", "tests", "noxfile.py"
+package = "citric"
 
 
 def install_with_constraints(session: Session, *args, **kwargs) -> None:
@@ -79,6 +80,15 @@ def pytype(session: Session) -> None:
     args = session.posargs or ["--disable=import-error", *locations]
     install_with_constraints(session, "pytype")
     session.run("pytype", *args)
+
+
+@nox.session(python=["3.8", "3.7", "3.6"])
+def xdoctest(session: Session) -> None:
+    """Run examples with xdoctest."""
+    args = session.posargs or ["all"]
+    session.run("poetry", "install", "--no-dev", external=True)
+    install_with_constraints(session, "xdoctest")
+    session.run("python", "-m", "xdoctest", package, *args)
 
 
 @nox.session(python="3.8")
