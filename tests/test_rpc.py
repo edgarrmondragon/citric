@@ -9,7 +9,8 @@ from citric.exceptions import (
     LimeSurveyError,
     LimeSurveyStatusError,
 )
-from citric.rpc import BaseRPC, Session
+from citric.rpc.base import BaseRPC
+from citric.session import Session
 
 URL = "http://example.com"
 USERNAME = "limeuser"
