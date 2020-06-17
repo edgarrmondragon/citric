@@ -4,7 +4,7 @@ from typing import Any, Dict
 import requests
 
 from citric.exceptions import LimeSurveyError
-from citric.response import RPCResponse
+from citric.response import MethodResponse
 
 
 class BaseRPC:
@@ -32,7 +32,7 @@ class BaseRPC:
 
     def invoke(
         self, url: str, method: str, *args: Any, request_id: int = 1  # noqa: ANN101
-    ) -> RPCResponse:
+    ) -> MethodResponse:
         """Execute a LimeSurvey RPC.
 
         Args:

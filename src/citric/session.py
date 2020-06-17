@@ -2,7 +2,7 @@
 from types import TracebackType
 from typing import Any, Optional, Type, TypeVar
 
-from citric.response import RPCResponse
+from citric.response import MethodResponse
 from citric.rpc.base import BaseRPC
 from citric.rpc.json import JSONRPC
 
@@ -36,7 +36,7 @@ class Session(object):
 
     def rpc(
         self, method: str, *args: Any, request_id: int = 1,  # noqa: ANN101
-    ) -> RPCResponse:
+    ) -> MethodResponse:
         """Execute RPC method on LimeSurvey, with token authentication.
 
         Any method, except for `get_session_key`.

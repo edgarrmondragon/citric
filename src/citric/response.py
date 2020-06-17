@@ -8,7 +8,7 @@ from citric.exceptions import (
 )
 
 
-class RPCResponse(NamedTuple):
+class MethodResponse(NamedTuple):
     """LimeSurvey RPC response object.
 
     Args:

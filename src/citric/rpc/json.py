@@ -1,7 +1,7 @@
 """JSON-RPC implementation."""
 from typing import Any
 
-from citric.response import RPCResponse
+from citric.response import MethodResponse
 from citric.rpc.base import BaseRPC
 
 
@@ -19,7 +19,7 @@ class JSONRPC(BaseRPC):
 
     def invoke(
         self, url: str, method: str, *params: Any, request_id: int = 1,  # noqa: ANN101
-    ) -> RPCResponse:
+    ) -> MethodResponse:
         """Execute a LimeSurvey RPC with a JSON payload.
 
         Args:
@@ -40,6 +40,6 @@ class JSONRPC(BaseRPC):
         res = self.request_session.post(url, json=payload)
         self._check_non_empty_response(res.text)
 
-        response = RPCResponse(**res.json())
+        response = MethodResponse(**res.json())
 
         return response
