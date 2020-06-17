@@ -15,7 +15,7 @@ Python.
 For the full reference, see the [RemoteControl 2 API docs][rc2api].
 
 ```python
-from citric.rpc import Session
+from citric.session import Session
 
 LS_URL = 'http://my-ls-server.com/index.php/admin/remotecontrol'
 
@@ -57,14 +57,14 @@ You can setup a local instance of LimeSurvey with [Docker Compose](https://docs.
 docker-compose up -d
 ```
 
-Now you can access LimeSurvey at [port 8001](http://localhost:8001/index).php/admin.
+Now you can access LimeSurvey at [port 8001](http://localhost:8001/index.php/admin).
 
 Import an existing survey file and start testing with it:
 
 ```python
 import base64
 
-from citric.rpc import Session
+from citric.session import Session
 
 LS_URL = "http://localhost:8001/index.php/admin/remotecontrol"
 SURVEY_FILE = "examples/limesurvey_survey_432535.lss"
