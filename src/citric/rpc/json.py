@@ -2,7 +2,6 @@
 from typing import Any
 
 from citric.exceptions import LimeSurveyError
-from citric.method import MethodResponse
 from citric.rpc.base import BaseRPC
 
 
@@ -20,7 +19,7 @@ class JSONRPC(BaseRPC):
 
     def invoke(
         self, url: str, method: str, *params: Any, request_id: int = 1,  # noqa: ANN101
-    ) -> MethodResponse:
+    ) -> Any:
         """Execute a LimeSurvey RPC with a JSON payload.
 
         Args:
@@ -30,7 +29,7 @@ class JSONRPC(BaseRPC):
             request_id: Request ID for response validation.
 
         Returns:
-            An RPC response with result, error and id attributes.
+            An RPC result.
 
         Raises:
             LimeSurveyError: Request ID does not match the response ID.
@@ -49,6 +48,9 @@ class JSONRPC(BaseRPC):
             message = "ID %s in response does not match the one in the request %s"
             raise LimeSurveyError(message % (data["id"], request_id))
 
-        response = MethodResponse(result=data["result"], error=data["error"])
+        result = data["result"]
+        error = data["error"]
+        self._check_result(result)
+        self._check_error(error)
 
-        return response
+        return result

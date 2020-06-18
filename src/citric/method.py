@@ -1,51 +1,13 @@
-"""RPC Response."""
+"""RPC methods."""
 
-from typing import Any, Callable, Generic, NamedTuple, Optional, TypeVar
-
-from citric.exceptions import (
-    LimeSurveyApiError,
-    LimeSurveyStatusError,
-)
+from typing import Any, Callable
 
 
-class MethodResponse(NamedTuple):
-    """LimeSurvey RPC response object.
-
-    Args:
-        result: RPC output.
-        error: Error message, if any.
-        id: RPC Request ID.
-    """
-
-    result: Any
-    """RPC output."""
-
-    error: Optional[str]
-    """Error message."""
-
-    def validate(self) -> None:  # noqa: ANN101
-        """Validate RPC method response.
-
-        Raises:
-            LimeSurveyStatusError: The result key from the response payload has
-                a non-null status.
-            LimeSurveyApiError: The response payload has a non-null error key.
-        """
-        if isinstance(self.result, dict) and self.result.get("status") is not None:
-            raise LimeSurveyStatusError(msg=self.result["status"])
-
-        if self.error is not None:
-            raise LimeSurveyApiError(msg=self.error)
-
-
-T = TypeVar("T")
-
-
-class Method(Generic[T]):
+class Method:
     """RPC method."""
 
     def __init__(
-        self, caller: Callable[[str, Any], T], name: str  # noqa: ANN101
+        self, caller: Callable[[str, Any], Any], name: str  # noqa: ANN101
     ) -> None:
         """Instantiate an RPC method."""
         self.__caller = caller
@@ -55,13 +17,13 @@ class Method(Generic[T]):
         """Get nested method."""
         return Method(self.__caller, "%s.%s" % (self.__name, name))
 
-    def __call__(self, *params: Any) -> T:  # noqa: ANN101
+    def __call__(self, *params: Any) -> Any:  # noqa: ANN101
         """Call RPC method.
 
         Args:
             params: RPC method parameters.
 
         Returns:
-            A method response.
+            An RPC result.
         """
         return self.__caller(self.__name, *params)

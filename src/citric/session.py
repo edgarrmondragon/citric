@@ -2,7 +2,7 @@
 from types import TracebackType
 from typing import Any, Optional, Type, TypeVar
 
-from citric.method import Method, MethodResponse
+from citric.method import Method
 from citric.rpc.base import BaseRPC
 from citric.rpc.json import JSONRPC
 
@@ -32,13 +32,13 @@ class Session(object):
         """Create a LimeSurvey RPC session."""
         self.url = url
         self.spec = spec
-        self.key: str = self.get_session_key(admin_user, admin_pass).result
+        self.key: str = self.get_session_key(admin_user, admin_pass)
 
-    def __getattr__(self, name: str) -> Method[MethodResponse]:  # noqa: ANN101
+    def __getattr__(self, name: str) -> Method:  # noqa: ANN101
         """Magic method dispatcher."""
         return Method(self.rpc, name)
 
-    def rpc(self, method: str, *params: Any) -> MethodResponse:  # noqa: ANN101
+    def rpc(self, method: str, *params: Any) -> Any:  # noqa: ANN101
         """Execute RPC method on LimeSurvey, with optional token authentication.
 
         Any method, except for `get_session_key`.
@@ -48,16 +48,15 @@ class Session(object):
             params: Positional arguments of the RPC method.
 
         Returns:
-            An RPC response with result, error and id attributes.
+            An RPC result.
         """
         if method == "get_session_key" or method.startswith("system."):
-            response = self.spec.invoke(self.url, method, *params)
+            result = self.spec.invoke(self.url, method, *params)
         # Methods requiring authentication
         else:
-            response = self.spec.invoke(self.url, method, self.key, *params)
-        response.validate()
+            result = self.spec.invoke(self.url, method, self.key, *params)
 
-        return response
+        return result
 
     def close(self) -> None:  # noqa: ANN101
         """Close RPC API session."""

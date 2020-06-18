@@ -84,20 +84,18 @@ def test_json_rpc(session: Session, requests_mock: Mocker):
     """Test JSON RPC response structure."""
     requests_mock.post(session.url, text=JSON_RESPONSE, headers=JSON_HEADERS)
 
-    response = session.some_method()
+    result = session.some_method()
 
-    assert response.result == "OK"
-    assert response.error is None
+    assert result == "OK"
 
 
 def test_xml_rpc(xml_session: Session, requests_mock: Mocker):
     """Test XML RPC response structure."""
     requests_mock.post(xml_session.url, text=XML_RESPONSE, headers=XML_HEADERS)
 
-    response = xml_session.some_method()
+    result = xml_session.some_method()
 
-    assert response.result == "OK"
-    assert response.error is None
+    assert result == "OK"
 
 
 @pytest.mark.parametrize("message", [None, "Test message"])
