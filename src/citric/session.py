@@ -34,7 +34,7 @@ class Session(object):
         self.spec = spec
         self.key: str = self.get_session_key(admin_user, admin_pass).result
 
-    def __getattr__(self, name: str) -> MethodResponse:  # noqa: ANN101
+    def __getattr__(self, name: str) -> Method:  # noqa: ANN101
         """Magic method dispatcher."""
         return Method(self.rpc, name)
 
