@@ -84,7 +84,7 @@ def test_json_rpc(session: Session, requests_mock: Mocker):
     """Test JSON RPC response structure."""
     requests_mock.post(session.url, text=JSON_RESPONSE, headers=JSON_HEADERS)
 
-    response = session.rpc("some_method")
+    response = session.some_method()
 
     assert response.result == "OK"
     assert response.error is None
@@ -94,7 +94,7 @@ def test_xml_rpc(xml_session: Session, requests_mock: Mocker):
     """Test XML RPC response structure."""
     requests_mock.post(xml_session.url, text=XML_RESPONSE, headers=XML_HEADERS)
 
-    response = xml_session.rpc("some_method")
+    response = xml_session.some_method()
 
     assert response.result == "OK"
     assert response.error is None
@@ -135,7 +135,7 @@ def test_disabled_interface(session: Session, requests_mock: Mocker):
     requests_mock.post(session.url, text="", headers=JSON_HEADERS)
 
     with pytest.raises(LimeSurveyError) as excinfo:
-        session.rpc("some_method")
+        session.some_method()
 
     assert str(excinfo.value) == "RPC interface not enabled"
 
@@ -147,7 +147,7 @@ def test_api_error(session: Session, requests_mock: Mocker):
     )
 
     with pytest.raises(LimeSurveyApiError) as excinfo:
-        session.rpc("not_valid")
+        session.not_valid()
 
     assert str(excinfo.value) == "Some Error"
 
@@ -161,7 +161,7 @@ def test_status_error(session: Session, requests_mock: Mocker):
     )
 
     with pytest.raises(LimeSurveyStatusError) as excinfo:
-        session.rpc("not_valid")
+        session.not_valid()
 
     assert str(excinfo.value) == "Status Message"
 
@@ -173,7 +173,7 @@ def test_mismatching_request_id(session: Session, requests_mock: Mocker):
     )
 
     with pytest.raises(LimeSurveyError) as excinfo:
-        session.rpc("not_valid")
+        session.not_valid()
 
     assert (
         str(excinfo.value) == "ID 2 in response does not match the one in the request 1"

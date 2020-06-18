@@ -61,7 +61,7 @@ class Session(object):
 
     def close(self) -> None:  # noqa: ANN101
         """Close RPC API session."""
-        self.rpc("release_session_key")
+        self.release_session_key()
 
     def __enter__(self: T) -> T:
         """Context manager for API session.
