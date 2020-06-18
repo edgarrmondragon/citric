@@ -2,7 +2,7 @@
 from types import TracebackType
 from typing import Any, Optional, Type, TypeVar
 
-from citric.response import Method, MethodResponse
+from citric.method import Method, MethodResponse
 from citric.rpc.base import BaseRPC
 from citric.rpc.json import JSONRPC
 

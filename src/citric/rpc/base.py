@@ -4,7 +4,7 @@ from typing import Any, Dict
 import requests
 
 from citric.exceptions import LimeSurveyError
-from citric.response import MethodResponse
+from citric.method import MethodResponse
 
 
 class BaseRPC:

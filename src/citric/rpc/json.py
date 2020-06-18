@@ -2,7 +2,7 @@
 from typing import Any
 
 from citric.exceptions import LimeSurveyError
-from citric.response import MethodResponse
+from citric.method import MethodResponse
 from citric.rpc.base import BaseRPC
 
 

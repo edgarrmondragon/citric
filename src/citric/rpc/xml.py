@@ -2,7 +2,7 @@
 from typing import Any
 from xmlrpc.client import dumps, loads
 
-from citric.response import MethodResponse
+from citric.method import MethodResponse
 from citric.rpc.base import BaseRPC
 
 
