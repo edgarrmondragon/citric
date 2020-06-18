@@ -32,7 +32,7 @@ class Session(object):
         """Create a LimeSurvey RPC session."""
         self.url = url
         self.spec = spec
-        self.key = self.get_session_key(admin_user, admin_pass)
+        self.key: str = self.get_session_key(admin_user, admin_pass).result
 
     def __getattr__(self, name: str) -> MethodResponse:  # noqa: ANN101
         """Magic method dispatcher."""
@@ -50,29 +50,14 @@ class Session(object):
         Returns:
             An RPC response with result, error and id attributes.
         """
-        response = self.spec.invoke(self.url, method, self.key, *params)
+        if method == "get_session_key" or method.startswith("system."):
+            response = self.spec.invoke(self.url, method, *params)
+        # Methods requiring authentication
+        else:
+            response = self.spec.invoke(self.url, method, self.key, *params)
         response.validate()
 
         return response
-
-    def get_session_key(self, admin_user: str, admin_pass: str) -> str:  # noqa: ANN101
-        """Get RC API session key.
-
-        Authenticate against the RPC interface.
-
-        Args:
-            admin_user: Admin username.
-            admin_pass: Admin password.
-
-        Returns:
-            A session key. This is mandatory for all following LSRC2 function calls.
-        """
-        response = self.spec.invoke(
-            self.url, "get_session_key", admin_user, admin_pass,
-        )
-        response.validate()
-
-        return response.result
 
     def close(self) -> None:  # noqa: ANN101
         """Close RPC API session."""
