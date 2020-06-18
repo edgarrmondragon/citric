@@ -2,7 +2,7 @@
 from types import TracebackType
 from typing import Any, Optional, Type, TypeVar
 
-from citric.response import MethodResponse
+from citric.response import Method, MethodResponse
 from citric.rpc.base import BaseRPC
 from citric.rpc.json import JSONRPC
 
@@ -33,6 +33,10 @@ class Session(object):
         self.url = url
         self.spec = spec
         self.key = self.get_session_key(admin_user, admin_pass)
+
+    def __getattr__(self, name: str) -> MethodResponse:  # noqa: ANN101
+        """Magic method dispatcher."""
+        return Method(self.rpc, name)
 
     def rpc(self, method: str, *params: Any) -> MethodResponse:  # noqa: ANN101
         """Execute RPC method on LimeSurvey, with token authentication.
