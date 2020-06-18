@@ -1,6 +1,6 @@
 """RPC Response."""
 
-from typing import Any, Callable, NamedTuple, Optional
+from typing import Any, Callable, Generic, NamedTuple, Optional, TypeVar
 
 from citric.exceptions import (
     LimeSurveyApiError,
@@ -38,11 +38,14 @@ class MethodResponse(NamedTuple):
             raise LimeSurveyApiError(msg=self.error)
 
 
-class Method:
+T = TypeVar("T")
+
+
+class Method(Generic[T]):
     """RPC method."""
 
     def __init__(
-        self, caller: Callable[[str, Any], MethodResponse], name: str  # noqa: ANN101
+        self, caller: Callable[[str, Any], T], name: str  # noqa: ANN101
     ) -> None:
         """Instantiate an RPC method."""
         self.__caller = caller
@@ -52,7 +55,7 @@ class Method:
         """Get nested method."""
         return Method(self.__caller, "%s.%s" % (self.__name, name))
 
-    def __call__(self, *params: Any) -> MethodResponse:  # noqa: ANN101
+    def __call__(self, *params: Any) -> T:  # noqa: ANN101
         """Call RPC method.
 
         Args:
