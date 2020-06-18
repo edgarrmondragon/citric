@@ -11,6 +11,7 @@ from citric.exceptions import (
     LimeSurveyError,
     LimeSurveyStatusError,
 )
+from citric.method import Method
 from citric.rpc.base import BaseRPC
 from citric.rpc.xml import XMLRPC
 from citric.session import Session
@@ -67,6 +68,14 @@ def xml_session(requests_mock: Mocker):
 
     requests_mock.post(URL, text=XML_RESPONSE, headers=XML_HEADERS)
     session.close()
+
+
+def test_method():
+    """Test method magic."""
+    m1 = Method(lambda x: x, "hello")
+    m2 = m1.world
+
+    assert m2() == "hello.world"
 
 
 def test_json_rpc(session: Session, requests_mock: Mocker):
