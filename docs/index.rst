@@ -2,11 +2,15 @@ Citric
 ======
 
 .. toctree::
-   :hidden:
-   :maxdepth: 1
+   :maxdepth: 4
 
    license
-   reference
+
+.. toctree::
+   :maxdepth: 1
+   :caption: References
+
+   API <_api/index>
 
 Installation
 ------------
@@ -28,7 +32,7 @@ Usage
 
    with Session(LS_URL, 'iamadmin', 'secret') as session:
       # Get all surveys from user 'iamadmin'
-      r = session.rpc('list_surveys', 'iamadmin')
+      r = session.list_surveys('iamadmin')
 
       if r.error is None:
          surveys = r.result
@@ -36,7 +40,7 @@ Usage
             print(s["surveyls_title"])
 
             # Get all questions, regardless of group
-            r = session.rpc("list_questions", s["sid"])
+            r = session.list_questions(s["sid"])
             questions = r.result
             for q in questions:
                print(q["title"], q["question"])

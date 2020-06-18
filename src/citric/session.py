@@ -39,7 +39,7 @@ class Session(object):
         return Method(self.rpc, name)
 
     def rpc(self, method: str, *params: Any) -> MethodResponse:  # noqa: ANN101
-        """Execute RPC method on LimeSurvey, with token authentication.
+        """Execute RPC method on LimeSurvey, with optional token authentication.
 
         Any method, except for `get_session_key`.
 

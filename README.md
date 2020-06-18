@@ -21,7 +21,7 @@ LS_URL = 'http://my-ls-server.com/index.php/admin/remotecontrol'
 
 with Session(LS_URL, 'iamadmin', 'secret') as session:
    # Get all surveys from user 'iamadmin'
-   r = session.rpc('list_surveys', 'iamadmin')
+   r = session.list_surveys('iamadmin')
 
    if r.error is None:
       surveys = r.result
@@ -29,7 +29,7 @@ with Session(LS_URL, 'iamadmin', 'secret') as session:
          print(s["surveyls_title"])
 
          # Get all questions, regardless of group
-         r = session.rpc("list_questions", s["sid"])
+         r = session.list_questions(s["sid"])
          questions = r.result
          for q in questions:
             print(q["title"], q["question"])
@@ -74,7 +74,7 @@ with Session(LS_URL, "iamadmin", "secret") as session, open(SURVEY_FILE, "rb") a
     contents = file.read()
 
     string = base64.b64encode(contents).decode()
-    r = session.rpc("import_survey", string, "lss")
+    r = session.import_survey(string, "lss")
 
     if r.error is None:
       survey_id = r.result
