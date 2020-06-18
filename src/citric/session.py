@@ -34,31 +34,24 @@ class Session(object):
         self.spec = spec
         self.key = self.get_session_key(admin_user, admin_pass)
 
-    def rpc(
-        self, method: str, *args: Any, request_id: int = 1,  # noqa: ANN101
-    ) -> MethodResponse:
+    def rpc(self, method: str, *params: Any) -> MethodResponse:  # noqa: ANN101
         """Execute RPC method on LimeSurvey, with token authentication.
 
         Any method, except for `get_session_key`.
 
         Args:
             method: Name of the method to call.
-            args: Positional arguments of the RPC method.
-            request_id: Request ID for response validation.
+            params: Positional arguments of the RPC method.
 
         Returns:
             An RPC response with result, error and id attributes.
         """
-        response = self.spec.invoke(
-            self.url, method, self.key, *args, request_id=request_id,
-        )
+        response = self.spec.invoke(self.url, method, self.key, *params)
         response.validate()
 
         return response
 
-    def get_session_key(
-        self, admin_user: str, admin_pass: str, request_id: int = 1  # noqa: ANN101
-    ) -> str:
+    def get_session_key(self, admin_user: str, admin_pass: str) -> str:  # noqa: ANN101
         """Get RC API session key.
 
         Authenticate against the RPC interface.
@@ -66,13 +59,12 @@ class Session(object):
         Args:
             admin_user: Admin username.
             admin_pass: Admin password.
-            request_id: Request ID for response validation.
 
         Returns:
             A session key. This is mandatory for all following LSRC2 function calls.
         """
         response = self.spec.invoke(
-            self.url, "get_session_key", admin_user, admin_pass, request_id=request_id,
+            self.url, "get_session_key", admin_user, admin_pass,
         )
         response.validate()
 

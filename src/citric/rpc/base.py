@@ -31,7 +31,7 @@ class BaseRPC:
             raise LimeSurveyError(msg="RPC interface not enabled")
 
     def invoke(
-        self, url: str, method: str, *args: Any, request_id: int = 1  # noqa: ANN101
+        self, url: str, method: str, *args: Any,  # noqa: ANN101
     ) -> MethodResponse:
         """Execute a LimeSurvey RPC.
 
@@ -39,7 +39,6 @@ class BaseRPC:
             url: URL of LimeSurvey RPC interface.
             method: Name of the method to call.
             args: Positional arguments of the RPC method.
-            request_id: Request ID for response validation.
 
         Raises:
             NotImplementedError: Subclass does not implement this method.

@@ -1,6 +1,7 @@
 """JSON-RPC implementation."""
 from typing import Any
 
+from citric.exceptions import LimeSurveyError
 from citric.response import MethodResponse
 from citric.rpc.base import BaseRPC
 
@@ -30,6 +31,9 @@ class JSONRPC(BaseRPC):
 
         Returns:
             An RPC response with result, error and id attributes.
+
+        Raises:
+            LimeSurveyError: Request ID does not match the response ID.
         """
         payload = {
             "method": method,
@@ -40,6 +44,11 @@ class JSONRPC(BaseRPC):
         res = self.request_session.post(url, json=payload)
         self._check_non_empty_response(res.text)
 
-        response = MethodResponse(**res.json())
+        data = res.json()
+        if data["id"] != request_id:
+            message = "ID %s in response does not match the one in the request %s"
+            raise LimeSurveyError(message % (data["id"], request_id))
+
+        response = MethodResponse(result=data["result"], error=data["error"])
 
         return response

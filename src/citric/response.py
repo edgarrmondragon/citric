@@ -23,9 +23,6 @@ class MethodResponse(NamedTuple):
     error: Optional[str]
     """Error message."""
 
-    id: int
-    """RPC request ID."""
-
     def validate(self) -> None:  # noqa: ANN101
         """Validate RPC method response.
 
