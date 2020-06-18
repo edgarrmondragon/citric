@@ -37,7 +37,9 @@ def make_fake_response(
         if error is None:
             return dumps((result,), methodresponse=True)
         else:
-            return dumps(Fault(123, error), methodresponse=True)
+            return dumps(Fault("123", error), methodresponse=True)
+
+    return ""
 
 
 JSON_RESPONSE = make_fake_response("OK")
@@ -70,12 +72,12 @@ def xml_session(requests_mock: Mocker):
     session.close()
 
 
-def test_method():
+def test_method() -> None:
     """Test method magic."""
-    m1 = Method(lambda x: x, "hello")
+    m1 = Method(lambda x, *args: f"{x}({','.join(args)})", "hello")
     m2 = m1.world
 
-    assert m2() == "hello.world"
+    assert m2("a", "b", "c") == "hello.world(a,b,c)"
 
 
 def test_json_rpc(session: Session, requests_mock: Mocker):
