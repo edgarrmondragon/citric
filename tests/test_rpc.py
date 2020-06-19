@@ -189,6 +189,17 @@ def test_status_error(session: Session, requests_mock: Mocker):
     assert str(excinfo.value) == "Status Message"
 
 
+def test_status_ok(session: Session, requests_mock: Mocker):
+    """Test result with OK status does not raise errors."""
+    requests_mock.post(
+        session.url, text=make_fake_response({"status": "OK"}), headers=JSON_HEADERS,
+    )
+
+    result = session.not_valid()
+
+    assert result["status"] == "OK"
+
+
 def test_mismatching_request_id(session: Session, requests_mock: Mocker):
     """Test result with status key raises LimeSurveyStatusError."""
     requests_mock.post(
