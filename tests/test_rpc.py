@@ -3,6 +3,7 @@ from typing import Any, Optional
 
 import json
 import pytest
+from requests import HTTPError
 from requests_mock import Mocker
 from xmlrpc.client import dumps, Fault
 
@@ -98,6 +99,16 @@ def test_xml_rpc(xml_session: Session, requests_mock: Mocker):
     assert result == "OK"
 
 
+def test_http_error(session: Session, requests_mock: Mocker):
+    """Test HTTP errors."""
+    requests_mock.post(
+        URL, text=make_fake_response(""), headers=JSON_HEADERS, status_code=500,
+    )
+
+    with pytest.raises(HTTPError):
+        session.some_method()
+
+
 @pytest.mark.parametrize("message", [None, "Test message"])
 def test_status_exception(message: Optional[str]):
     """Test LimeSurvey exception strings."""
@@ -176,6 +187,17 @@ def test_status_error(session: Session, requests_mock: Mocker):
         session.not_valid()
 
     assert str(excinfo.value) == "Status Message"
+
+
+def test_status_ok(session: Session, requests_mock: Mocker):
+    """Test result with OK status does not raise errors."""
+    requests_mock.post(
+        session.url, text=make_fake_response({"status": "OK"}), headers=JSON_HEADERS,
+    )
+
+    result = session.not_valid()
+
+    assert result["status"] == "OK"
 
 
 def test_mismatching_request_id(session: Session, requests_mock: Mocker):

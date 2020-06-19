@@ -41,6 +41,7 @@ class JSONRPC(BaseRPC):
         }
 
         res = self.request_session.post(url, json=payload)
+        res.raise_for_status()
         self._check_non_empty_response(res.text)
 
         data = res.json()

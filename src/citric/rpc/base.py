@@ -43,7 +43,7 @@ class BaseRPC:
             LimeSurveyStatusError: The response key from the response payload has
                 a non-null status.
         """
-        if isinstance(result, dict) and result.get("status") is not None:
+        if isinstance(result, dict) and result.get("status") not in {"OK", None}:
             raise LimeSurveyStatusError(msg=result["status"])
 
     def _check_error(self, error: Any) -> None:  # noqa: ANN101
