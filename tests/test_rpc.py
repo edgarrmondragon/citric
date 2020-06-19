@@ -125,7 +125,21 @@ def test_session_context(requests_mock: Mocker):
     requests_mock.post(URL, text=make_fake_response("123456"), headers=JSON_HEADERS)
 
     with Session(URL, USERNAME, PASSWORD) as session:
+        assert not session.closed
         assert session.key == "123456"
+
+    assert session.closed
+    assert session.key is None
+
+    with pytest.raises(AttributeError) as excinfo:
+        session.key = "123456"
+
+    assert str(excinfo.value) == "can't set attribute"
+
+    with pytest.raises(AttributeError) as excinfo:
+        session.closed = False
+
+    assert str(excinfo.value) == "can't set attribute"
 
 
 def test_disabled_interface(session: Session, requests_mock: Mocker):

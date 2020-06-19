@@ -32,7 +32,18 @@ class Session(object):
         """Create a LimeSurvey RPC session."""
         self.url = url
         self.spec = spec
-        self.key: str = self.get_session_key(admin_user, admin_pass)
+        self.__key: Optional[str] = self.get_session_key(admin_user, admin_pass)
+        self.__closed = False
+
+    @property
+    def closed(self) -> bool:  # noqa: ANN101
+        """Whether the RPC session is closed."""
+        return self.__closed
+
+    @property
+    def key(self) -> Optional[str]:  # noqa: ANN101
+        """RPC session key."""
+        return self.__key
 
     def __getattr__(self, name: str) -> Method:  # noqa: ANN101
         """Magic method dispatcher."""
@@ -61,6 +72,8 @@ class Session(object):
     def close(self) -> None:  # noqa: ANN101
         """Close RPC API session."""
         self.release_session_key()
+        self.__key = None
+        self.__closed = True
 
     def __enter__(self: T) -> T:
         """Context manager for API session.
