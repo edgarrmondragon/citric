@@ -3,6 +3,7 @@ from typing import Any, Optional
 
 import json
 import pytest
+from requests import HTTPError
 from requests_mock import Mocker
 from xmlrpc.client import dumps, Fault
 
@@ -96,6 +97,16 @@ def test_xml_rpc(xml_session: Session, requests_mock: Mocker):
     result = xml_session.some_method()
 
     assert result == "OK"
+
+
+def test_http_error(session: Session, requests_mock: Mocker):
+    """Test HTTP errors."""
+    requests_mock.post(
+        URL, text=make_fake_response(""), headers=JSON_HEADERS, status_code=500,
+    )
+
+    with pytest.raises(HTTPError):
+        session.some_method()
 
 
 @pytest.mark.parametrize("message", [None, "Test message"])
