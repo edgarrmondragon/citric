@@ -2,11 +2,15 @@ Citric
 ======
 
 .. toctree::
-   :hidden:
-   :maxdepth: 1
+   :maxdepth: 4
 
    license
-   reference
+
+.. toctree::
+   :maxdepth: 1
+   :caption: References
+
+   API <_api/index>
 
 Installation
 ------------
@@ -22,21 +26,17 @@ Usage
 
 .. code-block:: python
 
-   from citric.rpc import Session
+   from citric.session import Session
 
    LS_URL = 'http://my-ls-server.com/index.php/admin/remotecontrol'
 
    with Session(LS_URL, 'iamadmin', 'secret') as session:
-      # Get all surveys from user 'iamadmin'
-      r = session.rpc('list_surveys', 'iamadmin')
+       # Get all surveys from user 'iamadmin'
+       surveys = session.list_surveys('iamadmin')
+       for s in surveys:
+           print(s["surveyls_title"])
 
-      if r.error is None:
-         surveys = r.result
-         for s in surveys:
-            print(s["surveyls_title"])
-
-            # Get all questions, regardless of group
-            r = session.rpc("list_questions", s["sid"])
-            questions = r.result
-            for q in questions:
+           # Get all questions, regardless of group
+           questions = session.list_questions(s["sid"])
+           for q in questions:
                print(q["title"], q["question"])
