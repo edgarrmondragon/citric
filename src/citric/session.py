@@ -11,7 +11,7 @@ T = TypeVar("T", bound="Session")
 
 
 class Session(object):
-    """LimeSurvey RemoteControl 2 API session.
+    """LimeSurvey RemoteControl 2 session.
 
     Args:
         url: LimeSurvey Remote Control endpoint.
@@ -70,13 +70,13 @@ class Session(object):
         return result
 
     def close(self) -> None:  # noqa: ANN101
-        """Close RPC API session."""
+        """Close RPC session."""
         self.release_session_key()
         self.__key = None
         self.__closed = True
 
     def __enter__(self: T) -> T:
-        """Context manager for API session.
+        """Context manager for RPC session.
 
         Returns:
             LimeSurvey RPC session.
@@ -89,7 +89,7 @@ class Session(object):
         value: Optional[BaseException],
         traceback: Optional[TracebackType],
     ) -> None:
-        """Safely exit an API session.
+        """Safely exit an RPC session.
 
         Args:
             type: Exception class.
