@@ -562,6 +562,14 @@ testing = ["fields", "hunter", "process-tests (2.0.2)", "six", "pytest-xdist", "
 
 [[package]]
 category = "dev"
+description = "Organizing pytests by integration or not"
+name = "pytest-integration"
+optional = false
+python-versions = ">=3.6"
+version = "0.2.2"
+
+[[package]]
+category = "dev"
 description = "Python type inferencer"
 marker = "python_version >= \"3.6\" and python_version < \"3.8\""
 name = "pytype"
@@ -911,7 +919,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["jaraco.itertools", "func-timeout"]
 
 [metadata]
-content-hash = "11a562803aff403b3246f69a340b4631934cb8660ae515fd7727cf1210823066"
+content-hash = "95486c4f322328fad539eae9efd512ec9c41ea4f740f6d7be83b1f3e63d136a7"
 python-versions = "^3.6.1"
 
 [metadata.files]
@@ -1201,6 +1209,10 @@ pytest = [
 pytest-cov = [
     {file = "pytest-cov-2.9.0.tar.gz", hash = "sha256:b6a814b8ed6247bd81ff47f038511b57fe1ce7f4cc25b9106f1a4b106f1d9322"},
     {file = "pytest_cov-2.9.0-py2.py3-none-any.whl", hash = "sha256:c87dfd8465d865655a8213859f1b4749b43448b5fae465cb981e16d52a811424"},
+]
+pytest-integration = [
+    {file = "pytest_integration-0.2.2-py3-none-any.whl", hash = "sha256:560b18c003cf6a3d6672878e826a823ea5f8d1d289dbe97546495040b2f0bd3d"},
+    {file = "pytest_integration-0.2.2.tar.gz", hash = "sha256:7630b2bb1a8d518168bae44d827c20c4f0c1bbc5a1d3e1014dc5624ccadcdbd1"},
 ]
 pytype = [
     {file = "pytype-2020.6.1.tar.gz", hash = "sha256:08ddb9940764492b701a8985c30437239eb2c34003448cca760769264f5ff2f8"},

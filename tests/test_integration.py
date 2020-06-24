@@ -42,6 +42,7 @@ def survey_id(api: API) -> int:
     api.delete_survey(survey_id)
 
 
+@pytest.mark.integration_test
 def test_activate_survey(api: API, survey_id: int):
     """Test whether the survey gets activated."""
     properties_before = api.get_survey_properties(survey_id, ["active"])
@@ -54,6 +55,7 @@ def test_activate_survey(api: API, survey_id: int):
     assert properties_after["active"] == "Y"
 
 
+@pytest.mark.integration_test
 def test_activate_tokens(api: API, survey_id: int):
     """Test whether the participants table gets activated."""
     api.activate_survey(survey_id)
@@ -67,6 +69,7 @@ def test_activate_tokens(api: API, survey_id: int):
         api.list_participants(survey_id)
 
 
+@pytest.mark.integration_test
 def test_participants(api: API, survey_id: int):
     """Test adding participants."""
     api.activate_survey(survey_id)
@@ -96,6 +99,7 @@ def test_participants(api: API, survey_id: int):
         assert properties["lastname"] == d["lastname"]
 
 
+@pytest.mark.integration_test
 def test_responses(api: API, survey_id: int):
     """Test adding and exporting responses."""
     api.activate_survey(survey_id)
