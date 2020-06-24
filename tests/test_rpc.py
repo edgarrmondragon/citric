@@ -34,24 +34,6 @@ def faker(
     return ""
 
 
-@pytest.fixture(scope="session")
-def url() -> str:
-    """Dummy LimeSurvey RemoteControl URL."""
-    return "http://example.com"
-
-
-@pytest.fixture(scope="session")
-def username() -> str:
-    """Dummy LimeSurvey username."""
-    return "limeuser"
-
-
-@pytest.fixture(scope="session")
-def password() -> str:
-    """Dummy LimeSurvey password."""
-    return "limesecret"
-
-
 @pytest.fixture(scope="function")
 def session(url: str, username: str, password: str, requests_mock: Mocker):
     """Create a LimeSurvey Session fixture."""
