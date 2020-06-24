@@ -131,7 +131,15 @@ class API:
         Returns:
             ID of the new response.
         """
-        return self.__session.add_response(survey_id, response_data)
+        # Transform question codes to the format LimeSurvey expects
+        qs = {q["title"]: q for q in self.list_questions(survey_id)}
+
+        data = {
+            ("{sid}X{gid}X{qid}".format(**qs[key]) if key in qs else key): value
+            for key, value in response_data.items()
+        }
+
+        return self.__session.add_response(survey_id, data)
 
     def add_responses(
         self, survey_id: int, responses: Iterable[Mapping[str, Any]],  # noqa: ANN101
