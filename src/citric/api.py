@@ -72,6 +72,11 @@ class API:
         """Create a LimeSurvey Python API."""
         self.__session = session
 
+    @property
+    def session(self) -> Session:  # noqa: ANN101
+        """RPC session."""
+        return self.__session
+
     def activate_survey(self, survey_id: int) -> Dict[str, Any]:  # noqa: ANN101
         """Activate a survey.
 

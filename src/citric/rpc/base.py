@@ -58,13 +58,8 @@ class BaseRPC:
         if error is not None:
             raise LimeSurveyApiError(msg=error)
 
-    def invoke(self, url: str, method: str, *args: Any) -> Any:  # noqa: ANN101
+    def invoke(self) -> Any:  # noqa: ANN101
         """Execute a LimeSurvey RPC.
-
-        Args:
-            url: URL of LimeSurvey RPC interface.
-            method: Name of the method to call.
-            args: Positional arguments of the RPC method.
 
         Raises:
             NotImplementedError: Subclass does not implement this method.
