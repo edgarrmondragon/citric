@@ -72,11 +72,6 @@ class API:
         """Create a LimeSurvey Python API."""
         self.__session = session
 
-    @property
-    def session(self) -> Session:  # noqa: ANN101
-        """RPC session."""
-        return self.__session
-
     def activate_survey(self, survey_id: int) -> Dict[str, Any]:  # noqa: ANN101
         """Activate a survey.
 
@@ -109,7 +104,7 @@ class API:
         survey_id: int,
         participant_data: Sequence[Mapping[str, Any]],
         create_tokens: bool = True,
-    ) -> Dict[str, str]:
+    ) -> List[Dict[str, Any]]:
         """Add participants to a survey.
 
         Args:
@@ -247,9 +242,10 @@ class API:
         """
         return file_object.write(
             base64.b64decode(
-                self.__session.export_responses(
+                self.__session.export_responses_by_token(
                     survey_id,
                     file_format,
+                    token,
                     language,
                     completion_status,
                     heading_type,
@@ -264,20 +260,21 @@ class API:
     def get_participant_properties(
         self,  # noqa: ANN101
         survey_id: int,
-        token: str,
+        query: Union[Dict[str, Any], int],
         properties: Optional[Sequence[str]] = None,
     ) -> List[Dict[str, Any]]:
         """Get properties a single survey participant.
 
         Args:
             survey_id: Survey to get participants properties.
-            token: Participants' tokens to retrieve.
+            query: Mapping of properties to query participants, or the token id
+                as an integer.
             properties: Which participant properties to retrieve.
 
         Returns:
             List of participants properties.
         """
-        return self.__session.get_participant_properties(survey_id, token, properties)
+        return self.__session.get_participant_properties(survey_id, query, properties)
 
     def get_survey_properties(
         self, survey_id: int, properties: Optional[List[str]] = None,  # noqa: ANN101
