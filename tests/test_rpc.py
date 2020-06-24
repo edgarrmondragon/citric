@@ -95,12 +95,10 @@ def test_http_error(session: Session, requests_mock: Mocker):
 @pytest.mark.parametrize("message", [None, "Test message"])
 def test_status_exception(message: Optional[str]):
     """Test LimeSurvey exception strings."""
-    default = LimeSurveyError.default
+    expected = message if message is not None else LimeSurveyError.default
 
-    with pytest.raises(LimeSurveyError) as excinfo:
+    with pytest.raises(LimeSurveyError, match=expected):
         raise LimeSurveyError(message)
-
-    assert str(excinfo.value) == (message if message is not None else default)
 
 
 def test_bad_spec():
@@ -125,45 +123,35 @@ def test_session_context(url: str, username: str, password: str, requests_mock: 
     assert session.closed
     assert session.key is None
 
-    with pytest.raises(AttributeError) as excinfo:
+    with pytest.raises(AttributeError, match="can't set attribute"):
         session.key = "123456"
 
-    assert str(excinfo.value) == "can't set attribute"
-
-    with pytest.raises(AttributeError) as excinfo:
+    with pytest.raises(AttributeError, match="can't set attribute"):
         session.closed = False
-
-    assert str(excinfo.value) == "can't set attribute"
 
 
 def test_disabled_interface(session: Session, requests_mock: Mocker):
     """Test empty response."""
     requests_mock.post(session.url, text="")
 
-    with pytest.raises(LimeSurveyError) as excinfo:
+    with pytest.raises(LimeSurveyError, match="RPC interface not enabled"):
         session.some_method()
-
-    assert str(excinfo.value) == "RPC interface not enabled"
 
 
 def test_api_error(session: Session, requests_mock: Mocker):
     """Test non-null error raises LimeSurveyApiError."""
     requests_mock.post(session.url, text=faker(None, "Some Error"))
 
-    with pytest.raises(LimeSurveyApiError) as excinfo:
+    with pytest.raises(LimeSurveyApiError, match="Some Error"):
         session.not_valid()
-
-    assert str(excinfo.value) == "Some Error"
 
 
 def test_status_error(session: Session, requests_mock: Mocker):
     """Test result with status key raises LimeSurveyStatusError."""
     requests_mock.post(session.url, text=faker({"status": "Status Message"}))
 
-    with pytest.raises(LimeSurveyStatusError) as excinfo:
+    with pytest.raises(LimeSurveyStatusError, match="Status Message"):
         session.not_valid()
-
-    assert str(excinfo.value) == "Status Message"
 
 
 def test_status_ok(session: Session, requests_mock: Mocker):
@@ -179,9 +167,7 @@ def test_mismatching_request_id(session: Session, requests_mock: Mocker):
     """Test result with status key raises LimeSurveyStatusError."""
     requests_mock.post(session.url, text=faker("OK", request_id=2))
 
-    with pytest.raises(LimeSurveyError) as excinfo:
+    with pytest.raises(
+        LimeSurveyError, match="response does not match the one in the request"
+    ):
         session.not_valid()
-
-    assert (
-        str(excinfo.value) == "ID 2 in response does not match the one in the request 1"
-    )
