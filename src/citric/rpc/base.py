@@ -31,7 +31,7 @@ class BaseRPC:
                 RPC interface is not enabled.
         """
         if response_text == "":
-            raise LimeSurveyError(msg="RPC interface not enabled")
+            raise LimeSurveyError("RPC interface not enabled")
 
     def _check_result(self, result: Any) -> None:  # noqa: ANN101
         """Check RPC result for status messages.
@@ -44,7 +44,7 @@ class BaseRPC:
                 a non-null status.
         """
         if isinstance(result, dict) and result.get("status") not in {"OK", None}:
-            raise LimeSurveyStatusError(msg=result["status"])
+            raise LimeSurveyStatusError(result["status"])
 
     def _check_error(self, error: Any) -> None:  # noqa: ANN101
         """Check RPC if error is null.
@@ -56,7 +56,7 @@ class BaseRPC:
             LimeSurveyApiError: The response payload has a non-null error key.
         """
         if error is not None:
-            raise LimeSurveyApiError(msg=error)
+            raise LimeSurveyApiError(error)
 
     def invoke(self) -> Any:  # noqa: ANN101
         """Execute a LimeSurvey RPC.

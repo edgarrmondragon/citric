@@ -1,10 +1,9 @@
 """Tests for RPC low-level calls."""
-from typing import Any, Optional
+from typing import Any, Callable, Optional
 
 import json
 import pytest
 from requests import HTTPError
-from requests_mock import Mocker
 from xmlrpc.client import dumps, Fault
 
 from citric.exceptions import (
@@ -16,6 +15,8 @@ from citric.method import Method
 from citric.rpc import XMLRPC
 from citric.rpc.base import BaseRPC
 from citric.session import Session
+
+PostCallable = Callable[[Any], None]
 
 
 def faker(
@@ -35,30 +36,21 @@ def faker(
 
 
 @pytest.fixture(scope="function")
-def session(url: str, username: str, password: str, requests_mock: Mocker):
-    """Create a LimeSurvey Session fixture."""
-    requests_mock.post(url, text=faker("123456"))
-    session = Session(url, username, password)
-
-    yield session
-
-    requests_mock.post(url, text=faker("OK"))
-    session.close()
-
-
-@pytest.fixture(scope="function")
-def xml_session(url: str, username: str, password: str, requests_mock: Mocker):
+def xml_session(
+    url: str, username: str, password: str, post_mock: Callable[[Any], None],
+):
     """Create a LimeSurvey Session fixture with XML-RPC."""
-    requests_mock.post(url, text=faker("123456", spec="xml"))
+    post_mock(
+        [{"text": faker("123456", spec="xml")}, {"text": faker("OK", spec="xml")}]
+    )
     session = Session(url, username, password, spec=XMLRPC())
 
     yield session
 
-    requests_mock.post(url, text=faker("OK", spec="xml"))
     session.close()
 
 
-def test_method() -> None:
+def test_method():
     """Test method magic."""
     m1 = Method(lambda x, *args: f"{x}({','.join(args)})", "hello")
     m2 = m1.world
@@ -66,39 +58,30 @@ def test_method() -> None:
     assert m2("a", "b", "c") == "hello.world(a,b,c)"
 
 
-def test_json_rpc(session: Session, requests_mock: Mocker):
+def test_json_rpc(session: Session, post_mock: Callable[[Any], None]):
     """Test JSON RPC response structure."""
-    requests_mock.post(session.url, text=faker("OK"))
+    post_mock(text=faker("OK"))
 
     result = session.some_method()
 
     assert result == "OK"
 
 
-def test_xml_rpc(xml_session: Session, requests_mock: Mocker):
+def test_xml_rpc(xml_session: Session, post_mock: Callable[[Any], None]):
     """Test XML RPC response structure."""
-    requests_mock.post(xml_session.url, text=faker("OK", spec="xml"))
+    post_mock(text=faker("OK", spec="xml"))
 
     result = xml_session.some_method()
 
     assert result == "OK"
 
 
-def test_http_error(session: Session, requests_mock: Mocker):
+def test_http_error(session: Session, post_mock: Callable[[Any], None]):
     """Test HTTP errors."""
-    requests_mock.post(session.url, text=faker("OK"), status_code=500)
+    post_mock(text=faker("OK"), status_code=500)
 
     with pytest.raises(HTTPError):
         session.some_method()
-
-
-@pytest.mark.parametrize("message", [None, "Test message"])
-def test_status_exception(message: Optional[str]):
-    """Test LimeSurvey exception strings."""
-    expected = message if message is not None else LimeSurveyError.default
-
-    with pytest.raises(LimeSurveyError, match=expected):
-        raise LimeSurveyError(message)
 
 
 def test_bad_spec():
@@ -112,9 +95,11 @@ def test_bad_spec():
         bad_spec.invoke()
 
 
-def test_session_context(url: str, username: str, password: str, requests_mock: Mocker):
+def test_session_context(
+    url: str, username: str, password: str, post_mock: Callable[[Any], None],
+):
     """Test context creates a session key."""
-    requests_mock.post(url, text=faker("123456"))
+    post_mock(text=faker("123456"))
 
     with Session(url, username, password) as session:
         assert not session.closed
@@ -130,42 +115,42 @@ def test_session_context(url: str, username: str, password: str, requests_mock: 
         session.closed = False
 
 
-def test_disabled_interface(session: Session, requests_mock: Mocker):
+def test_disabled_interface(session: Session, post_mock: Callable[[Any], None]):
     """Test empty response."""
-    requests_mock.post(session.url, text="")
+    post_mock(text="")
 
     with pytest.raises(LimeSurveyError, match="RPC interface not enabled"):
         session.some_method()
 
 
-def test_api_error(session: Session, requests_mock: Mocker):
+def test_api_error(session: Session, post_mock: Callable[[Any], None]):
     """Test non-null error raises LimeSurveyApiError."""
-    requests_mock.post(session.url, text=faker(None, "Some Error"))
+    post_mock(text=faker(None, "Some Error"))
 
     with pytest.raises(LimeSurveyApiError, match="Some Error"):
         session.not_valid()
 
 
-def test_status_error(session: Session, requests_mock: Mocker):
+def test_status_error(session: Session, post_mock: Callable[[Any], None]):
     """Test result with status key raises LimeSurveyStatusError."""
-    requests_mock.post(session.url, text=faker({"status": "Status Message"}))
+    post_mock(text=faker({"status": "Status Message"}))
 
     with pytest.raises(LimeSurveyStatusError, match="Status Message"):
         session.not_valid()
 
 
-def test_status_ok(session: Session, requests_mock: Mocker):
+def test_status_ok(session: Session, post_mock: Callable[[Any], None]):
     """Test result with OK status does not raise errors."""
-    requests_mock.post(session.url, text=faker({"status": "OK"}))
+    post_mock(text=faker({"status": "OK"}))
 
     result = session.not_valid()
 
     assert result["status"] == "OK"
 
 
-def test_mismatching_request_id(session: Session, requests_mock: Mocker):
+def test_mismatching_request_id(session: Session, post_mock: Callable[[Any], None]):
     """Test result with status key raises LimeSurveyStatusError."""
-    requests_mock.post(session.url, text=faker("OK", request_id=2))
+    post_mock(text=faker("OK", request_id=2))
 
     with pytest.raises(
         LimeSurveyError, match="response does not match the one in the request"

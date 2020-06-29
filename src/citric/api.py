@@ -26,7 +26,7 @@ class ImportSurveyType(str, enum.Enum):
     LSA = "lsa"
 
 
-class ResponsesExportTFormat(str, enum.Enum):
+class ResponsesExportFormat(str, enum.Enum):
     """Responses export type."""
 
     PDF = "pdf"
@@ -121,7 +121,7 @@ class API:
 
     def add_response(
         self, survey_id: int, response_data: Mapping[str, Any],  # noqa: ANN101
-    ) -> str:
+    ) -> int:
         """Add a single response to a survey.
 
         Args:
@@ -139,11 +139,11 @@ class API:
             for key, value in response_data.items()
         }
 
-        return self.__session.add_response(survey_id, data)
+        return int(self.__session.add_response(survey_id, data))
 
     def add_responses(
         self, survey_id: int, responses: Iterable[Mapping[str, Any]],  # noqa: ANN101
-    ) -> List[str]:
+    ) -> List[int]:
         """Add multiple responses to a survey.
 
         Args:
@@ -174,7 +174,7 @@ class API:
         self,  # noqa: ANN101
         file_object: BinaryIO,
         survey_id: int,
-        file_format: ResponsesExportTFormat,
+        file_format: ResponsesExportFormat,
         language: Optional[str] = None,
         completion_status: SurveyCompletionStatus = SurveyCompletionStatus.ALL,
         heading_type: HeadingType = HeadingType.CODE,
@@ -220,7 +220,7 @@ class API:
         self,  # noqa: ANN101
         file_object: BinaryIO,
         survey_id: int,
-        file_format: ResponsesExportTFormat,
+        file_format: ResponsesExportFormat,
         token: str,
         language: Optional[str] = None,
         completion_status: SurveyCompletionStatus = SurveyCompletionStatus.ALL,
