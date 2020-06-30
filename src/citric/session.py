@@ -32,13 +32,20 @@ class Session(object):
     __attrs__ = ["url", "key"]
 
     def __init__(
-        self, url: str, admin_user: str, admin_pass: str,  # noqa: ANN101
+        self,  # noqa: ANN101
+        url: str,
+        admin_user: str,
+        admin_pass: str,
+        requests_session: Optional[requests.Session] = None,
     ) -> None:
         """Create a LimeSurvey RPC session."""
         self.url = url
 
-        self.__requests_session = requests.Session()
-        self.__requests_session.headers.update(self._headers)
+        if requests_session is not None:
+            self._session = requests_session
+        else:
+            self._session = requests.Session()
+        self._session.headers.update(self._headers)
 
         self.__key: Optional[str] = self.get_session_key(admin_user, admin_pass)
         self.__closed = False
@@ -99,7 +106,7 @@ class Session(object):
             "id": 1,
         }
 
-        res = self.__requests_session.post(self.url, json=payload)
+        res = self._session.post(self.url, json=payload)
         res.raise_for_status()
 
         if res.text == "":
