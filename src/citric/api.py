@@ -329,8 +329,8 @@ class API:
         start: int = 0,
         limit: int = 10,
         unused: bool = False,
-        attributes: Optional[Sequence[str]] = None,
-        conditions: Optional[Mapping[str, Any]] = None,
+        attributes: Union[Sequence[str], bool] = False,
+        conditions: Optional[Mapping[str, Any]] = {},
     ) -> List[Dict[str, Any]]:
         """Get participants in a survey.
 
