@@ -1,5 +1,6 @@
 """pytest fixtures."""
-from typing import Callable
+import json
+from typing import Any, Callable, Optional
 
 import pytest
 from requests_mock import Mocker
@@ -29,9 +30,16 @@ def password() -> str:
 def post_mock(url: str, requests_mock: Mocker):
     """Mock an RPC post request."""
 
-    def internal(*args, **kwargs):
-        """Execute the mock."""
-        requests_mock.post(url, *args, **kwargs)
+    def internal(
+        result: Any,
+        error: Optional[Any] = None,
+        request_id: int = 1,
+        *args: Any,
+        **kwargs: Any,
+    ):
+        """Build a fake raw RPC response."""
+        payload = json.dumps({"error": error, "result": result, "id": request_id})
+        requests_mock.post(url, text=payload, *args, **kwargs)
 
     return internal
 
@@ -39,10 +47,10 @@ def post_mock(url: str, requests_mock: Mocker):
 @pytest.fixture(scope="function")
 def session(url: str, username: str, password: str, post_mock: Callable[..., None]):
     """Create a LimeSurvey Session fixture."""
-    post_mock(text='{"result":"123456","error":null,"id":1}')
+    post_mock("123456")
     session = Session(url, username, password)
 
     yield session
 
-    post_mock(text='{"result":"OK","error":null,"id":1}')
+    post_mock("OK")
     session.close()
