@@ -1,4 +1,4 @@
-"""Python API."""
+"""Python API Client."""
 
 import base64
 import enum
@@ -59,8 +59,8 @@ class ResponseType(str, enum.Enum):
     SHORT = "short"
 
 
-class API:
-    """Python API.
+class Client:
+    """Python API client.
 
     Offers explicit wrappers for RPC methods and simplifies common worflows.
 
@@ -69,7 +69,7 @@ class API:
     """
 
     def __init__(self, session: Session) -> None:  # noqa: ANN101
-        """Create a LimeSurvey Python API."""
+        """Create a LimeSurvey Python API client."""
         self.__session = session
 
     def activate_survey(self, survey_id: int) -> Dict[str, Any]:  # noqa: ANN101

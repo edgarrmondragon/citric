@@ -1,4 +1,4 @@
-"""Integration tests for Python API."""
+"""Integration tests for Python client."""
 from pathlib import Path
 from typing import Any, Dict, Generator, List
 
@@ -6,7 +6,7 @@ import csv
 import io
 import pytest
 
-from citric import API, Session
+from citric import Client, Session
 from citric.exceptions import LimeSurveyStatusError
 
 LS_URL = "http://localhost:8001/index.php/admin/remotecontrol"
@@ -17,16 +17,16 @@ STATUS_ERROR = "LimeSurveyStatusError: %s"
 
 
 @pytest.fixture(scope="session")
-def api() -> Generator[API, None, None]:
-    """RemoteControl2 API."""
+def client() -> Generator[Client, None, None]:
+    """RemoteControl2 API client."""
     session = Session(LS_URL, LS_USER, LS_PW)
-    api = API(session)
+    client = Client(session)
 
-    yield api
+    yield client
 
     try:
-        for survey in api.list_surveys():
-            api.delete_survey(survey["sid"])
+        for survey in client.list_surveys():
+            client.delete_survey(survey["sid"])
     except LimeSurveyStatusError:
         pass
 
@@ -34,77 +34,77 @@ def api() -> Generator[API, None, None]:
 
 
 @pytest.fixture(scope="function")
-def survey_id(api: API) -> Generator[int, None, None]:
+def survey_id(client: Client) -> Generator[int, None, None]:
     """Import a survey from a file and return its ID."""
-    survey_id = api.import_survey(Path("./examples/survey.lss"))
+    survey_id = client.import_survey(Path("./examples/survey.lss"))
 
     yield survey_id
 
-    api.delete_survey(survey_id)
+    client.delete_survey(survey_id)
 
 
 @pytest.mark.integration_test
-def test_activate_survey(api: API, survey_id: int):
+def test_activate_survey(client: Client, survey_id: int):
     """Test whether the survey gets activated."""
-    properties_before = api.get_survey_properties(survey_id, ["active"])
+    properties_before = client.get_survey_properties(survey_id, ["active"])
     assert properties_before["active"] == "N"
 
-    result = api.activate_survey(survey_id)
+    result = client.activate_survey(survey_id)
     assert result["status"] == "OK"
 
-    properties_after = api.get_survey_properties(survey_id, ["active"])
+    properties_after = client.get_survey_properties(survey_id, ["active"])
     assert properties_after["active"] == "Y"
 
 
 @pytest.mark.integration_test
-def test_activate_tokens(api: API, survey_id: int):
+def test_activate_tokens(client: Client, survey_id: int):
     """Test whether the participants table gets activated."""
-    api.activate_survey(survey_id)
+    client.activate_survey(survey_id)
 
     with pytest.raises(LimeSurveyStatusError, match="No survey participants table"):
-        api.list_participants(survey_id)
+        client.list_participants(survey_id)
 
-    api.activate_tokens(survey_id)
+    client.activate_tokens(survey_id)
 
     with pytest.raises(LimeSurveyStatusError, match="No survey participants found"):
-        api.list_participants(survey_id)
+        client.list_participants(survey_id)
 
 
 @pytest.mark.integration_test
-def test_participants(api: API, survey_id: int):
+def test_participants(client: Client, survey_id: int):
     """Test adding participants."""
-    api.activate_survey(survey_id)
-    api.activate_tokens(survey_id)
+    client.activate_survey(survey_id)
+    client.activate_tokens(survey_id)
 
     data = [
         {"email": "john@example.com", "firstname": "John", "lastname": "Doe"},
         {"email": "jane@example.com", "firstname": "Jane", "lastname": "Doe"},
     ]
 
-    added = api.add_participants(survey_id, data)
+    added = client.add_participants(survey_id, data)
     for p, d in zip(added, data):
         assert p["email"] == d["email"]
         assert p["firstname"] == d["firstname"]
         assert p["lastname"] == d["lastname"]
 
-    participants = api.list_participants(survey_id)
+    participants = client.list_participants(survey_id)
     for p, d in zip(participants, data):
         assert p["participant_info"]["email"] == d["email"]
         assert p["participant_info"]["firstname"] == d["firstname"]
         assert p["participant_info"]["lastname"] == d["lastname"]
 
     for p, d in zip(added, data):
-        properties = api.get_participant_properties(survey_id, p["tid"])
+        properties = client.get_participant_properties(survey_id, p["tid"])
         assert properties["email"] == d["email"]
         assert properties["firstname"] == d["firstname"]
         assert properties["lastname"] == d["lastname"]
 
 
 @pytest.mark.integration_test
-def test_responses(api: API, survey_id: int):
+def test_responses(client: Client, survey_id: int):
     """Test adding and exporting responses."""
-    api.activate_survey(survey_id)
-    api.activate_tokens(survey_id)
+    client.activate_survey(survey_id)
+    client.activate_tokens(survey_id)
 
     data: List[Dict[str, Any]]
     data = [
@@ -113,11 +113,11 @@ def test_responses(api: API, survey_id: int):
         {"G01Q01": "Long text 3", "G01Q02": None, "token": "T00002"},
     ]
 
-    result = api.add_responses(survey_id, data)
+    result = client.add_responses(survey_id, data)
     assert result == ["1", "2", "3"]
 
     with io.BytesIO() as file, io.TextIOWrapper(file, encoding="utf-8-sig") as textfile:
-        api.export_responses(file, survey_id, "csv")
+        client.export_responses(file, survey_id, "csv")
         file.seek(0)
         reader = csv.DictReader(textfile, delimiter=";")
         for i, row in enumerate(reader):
@@ -126,7 +126,7 @@ def test_responses(api: API, survey_id: int):
             assert row["token"] == (data[i]["token"] or "")
         file.seek(0)
 
-        api.export_responses_by_token(file, survey_id, "csv", "T00002")
+        client.export_responses_by_token(file, survey_id, "csv", "T00002")
         file.seek(0)
         reader = csv.DictReader(textfile, delimiter=";")
         row = next(reader)
