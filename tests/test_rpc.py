@@ -35,6 +35,14 @@ def faker(
     return ""
 
 
+def test_method():
+    """Test method magic."""
+    m1 = Method(lambda x, *args: f"{x}({','.join(args)})", "hello")
+    m2 = m1.world
+
+    assert m2("a", "b", "c") == "hello.world(a,b,c)"
+
+
 @pytest.fixture(scope="function")
 def xml_session(
     url: str, username: str, password: str, post_mock: Callable[[Any], None],
@@ -48,14 +56,6 @@ def xml_session(
     yield session
 
     session.close()
-
-
-def test_method():
-    """Test method magic."""
-    m1 = Method(lambda x, *args: f"{x}({','.join(args)})", "hello")
-    m2 = m1.world
-
-    assert m2("a", "b", "c") == "hello.world(a,b,c)"
 
 
 def test_json_rpc(session: Session, post_mock: Callable[[Any], None]):
