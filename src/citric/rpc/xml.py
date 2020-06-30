@@ -28,9 +28,9 @@ class XMLRPC(BaseRPC):
         Returns:
             An RPC result.
         """
-        payload = dumps(params, method)
+        payload = dumps(params, method, allow_none=True)
 
-        res = self.request_session.post(url, data=payload)
+        res = self.request_session.post(url, data=payload.encode())
         self._check_non_empty_response(res.text)
 
         (result,), error = loads(res.text)
