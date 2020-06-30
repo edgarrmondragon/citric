@@ -17,16 +17,13 @@ class JSONRPC(BaseRPC):
         """Create a JSON-RPC interface."""
         super().__init__()
 
-    def invoke(
-        self, url: str, method: str, *params: Any, request_id: int = 1,  # noqa: ANN101
-    ) -> Any:
+    def invoke(self, url: str, method: str, *params: Any) -> Any:  # noqa: ANN101
         """Execute a LimeSurvey RPC with a JSON payload.
 
         Args:
             url: URL of LimeSurvey RPC interface.
             method: Name of the method to call.
             params: Positional arguments of the RPC method.
-            request_id: Request ID for response validation.
 
         Returns:
             An RPC result.
@@ -37,7 +34,7 @@ class JSONRPC(BaseRPC):
         payload = {
             "method": method,
             "params": [*params],
-            "id": request_id,
+            "id": 1,
         }
 
         res = self.request_session.post(url, json=payload)
@@ -45,9 +42,9 @@ class JSONRPC(BaseRPC):
         self._check_non_empty_response(res.text)
 
         data = res.json()
-        if data["id"] != request_id:
+        if data["id"] != 1:
             message = "ID %s in response does not match the one in the request %s"
-            raise LimeSurveyError(message % (data["id"], request_id))
+            raise LimeSurveyError(message % (data["id"], 1))
 
         result = data["result"]
         error = data["error"]

@@ -18,7 +18,7 @@ class XMLRPC(BaseRPC):
         super().__init__()
 
     def invoke(self, url: str, method: str, *params: Any) -> Any:  # noqa: ANN101
-        """Execute a LimeSurvey RPC with a JSON payload.
+        """Execute a LimeSurvey RPC with an XML payload.
 
         Args:
             url: URL of LimeSurvey RPC interface.
