@@ -4,7 +4,6 @@ from typing import Any, Callable, Optional
 import json
 import pytest
 from requests import HTTPError
-from xmlrpc.client import dumps, Fault
 
 from citric.exceptions import (
     LimeSurveyApiError,
@@ -12,27 +11,14 @@ from citric.exceptions import (
     LimeSurveyStatusError,
 )
 from citric.method import Method
-from citric.rpc import XMLRPC
-from citric.rpc.base import BaseRPC
 from citric.session import Session
 
 PostCallable = Callable[..., None]
 
 
-def faker(
-    result: Any, error: Optional[Any] = None, spec: str = "json", request_id: int = 1,
-) -> str:
+def faker(result: Any, error: Optional[Any] = None, request_id: int = 1) -> str:
     """Build a fake raw RPC response."""
-    if spec == "json":
-        return json.dumps({"error": error, "result": result, "id": request_id})
-
-    elif spec == "xml":
-        if error is None:
-            return dumps((result,), methodresponse=True)
-        else:
-            return dumps(Fault("123", error), methodresponse=True)
-
-    return ""
+    return json.dumps({"error": error, "result": result, "id": request_id})
 
 
 def test_method():
@@ -41,21 +27,6 @@ def test_method():
     m2 = m1.world
 
     assert m2("a", "b", "c") == "hello.world(a,b,c)"
-
-
-@pytest.fixture(scope="function")
-def xml_session(
-    url: str, username: str, password: str, post_mock: Callable[..., None],
-):
-    """Create a LimeSurvey Session fixture with XML-RPC."""
-    post_mock(
-        [{"text": faker("123456", spec="xml")}, {"text": faker("OK", spec="xml")}]
-    )
-    session = Session(url, username, password, spec=XMLRPC())
-
-    yield session
-
-    session.close()
 
 
 def test_json_rpc(session: Session, post_mock: Callable[..., None]):
@@ -67,32 +38,12 @@ def test_json_rpc(session: Session, post_mock: Callable[..., None]):
     assert result == "OK"
 
 
-def test_xml_rpc(xml_session: Session, post_mock: Callable[..., None]):
-    """Test XML RPC response structure."""
-    post_mock(text=faker("OK", spec="xml"))
-
-    result = xml_session.some_method()
-
-    assert result == "OK"
-
-
 def test_http_error(session: Session, post_mock: Callable[..., None]):
     """Test HTTP errors."""
     post_mock(text=faker("OK"), status_code=500)
 
     with pytest.raises(HTTPError):
         session.some_method()
-
-
-def test_bad_spec():
-    """Test missing methods raises error."""
-    with pytest.raises(NotImplementedError):
-
-        class BadRPC(BaseRPC):
-            pass
-
-        bad_spec = BadRPC()
-        bad_spec.invoke("whatever", "some_method")
 
 
 def test_session_context(

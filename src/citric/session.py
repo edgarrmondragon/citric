@@ -2,9 +2,14 @@
 from types import TracebackType
 from typing import Any, Optional, Type, TypeVar
 
+import requests
+
+from citric.exceptions import (
+    LimeSurveyError,
+    LimeSurveyStatusError,
+    LimeSurveyApiError,
+)
 from citric.method import Method
-from citric.rpc.base import BaseRPC
-from citric.rpc.json import JSONRPC
 
 
 T = TypeVar("T", bound="Session")
@@ -17,21 +22,24 @@ class Session(object):
         url: LimeSurvey Remote Control endpoint.
         admin_user: LimeSurvey user name.
         admin_pass: LimeSurvey password.
-        spec: RPC specification. By default JSON-RPC is used.
     """
+
+    _headers = {
+        "content-type": "application/json",
+        "user-agent": "citric-client",
+    }
 
     __attrs__ = ["url", "key"]
 
     def __init__(
-        self,  # noqa: ANN101
-        url: str,
-        admin_user: str,
-        admin_pass: str,
-        spec: BaseRPC = JSONRPC(),
+        self, url: str, admin_user: str, admin_pass: str,  # noqa: ANN101
     ) -> None:
         """Create a LimeSurvey RPC session."""
         self.url = url
-        self.spec = spec
+
+        self.__requests_session = requests.Session()
+        self.__requests_session.headers.update(self._headers)
+
         self.__key: Optional[str] = self.get_session_key(admin_user, admin_pass)
         self.__closed = False
 
@@ -62,10 +70,56 @@ class Session(object):
             An RPC result.
         """
         if method == "get_session_key" or method.startswith("system."):
-            result = self.spec.invoke(self.url, method, *params)
+            result = self._invoke(method, *params)
         # Methods requiring authentication
         else:
-            result = self.spec.invoke(self.url, method, self.key, *params)
+            result = self._invoke(method, self.key, *params)
+
+        return result
+
+    def _invoke(self, method: str, *params: Any) -> Any:  # noqa: ANN101
+        """Execute a LimeSurvey RPC with a JSON payload.
+
+        Args:
+            method (str): Name of the method to call.
+            params (Any): Positional arguments of the RPC method.
+
+        Raises:
+            LimeSurveyStatusError: The response key from the response payload has
+                a non-null status.
+            LimeSurveyApiError: The response payload has a non-null error key.
+            LimeSurveyError: Request ID does not match the response ID.
+
+        Returns:
+            Any: An RPC result.
+        """
+        payload = {
+            "method": method,
+            "params": [*params],
+            "id": 1,
+        }
+
+        res = self.__requests_session.post(self.url, json=payload)
+        res.raise_for_status()
+
+        if res.text == "":
+            raise LimeSurveyError("RPC interface not enabled")
+
+        data = res.json()
+
+        result = data["result"]
+        error = data["error"]
+        response_id = data["id"]
+
+        if isinstance(result, dict) and result.get("status") not in {"OK", None}:
+            raise LimeSurveyStatusError(result["status"])
+
+        if error is not None:
+            raise LimeSurveyApiError(error)
+
+        if response_id != 1:
+            message = "ID %s in response does not match the one in the request %s"
+            raise LimeSurveyError(message % (response_id, 1))
 
         return result
 
