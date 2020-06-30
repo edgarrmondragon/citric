@@ -270,7 +270,7 @@ class API:
         survey_id: int,
         query: Union[Dict[str, Any], int],
         properties: Optional[Sequence[str]] = None,
-    ) -> List[Dict[str, Any]]:
+    ) -> Dict[str, Any]:
         """Get properties a single survey participant.
 
         Args:

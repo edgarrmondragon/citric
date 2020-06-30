@@ -1,5 +1,6 @@
 """Integration tests for Python API."""
 from pathlib import Path
+from typing import Any, Dict, Generator, List
 
 import csv
 import io
@@ -16,7 +17,7 @@ STATUS_ERROR = "LimeSurveyStatusError: %s"
 
 
 @pytest.fixture(scope="session")
-def api() -> API:
+def api() -> Generator[API, None, None]:
     """RemoteControl2 API."""
     session = Session(LS_URL, LS_USER, LS_PW)
     api = API(session)
@@ -33,7 +34,7 @@ def api() -> API:
 
 
 @pytest.fixture(scope="function")
-def survey_id(api: API) -> int:
+def survey_id(api: API) -> Generator[int, None, None]:
     """Import a survey from a file and return its ID."""
     survey_id = api.import_survey(Path("./examples/survey.lss"))
 
@@ -105,6 +106,7 @@ def test_responses(api: API, survey_id: int):
     api.activate_survey(survey_id)
     api.activate_tokens(survey_id)
 
+    data: List[Dict[str, Any]]
     data = [
         {"G01Q01": "Long text 1", "G01Q02": "1", "token": "T00000"},
         {"G01Q01": "Long text 2", "G01Q02": "5", "token": "T00001"},
