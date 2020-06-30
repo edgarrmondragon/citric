@@ -174,11 +174,11 @@ class API:
         self,  # noqa: ANN101
         file_object: BinaryIO,
         survey_id: int,
-        file_format: ResponsesExportFormat,
+        file_format: str,
         language: Optional[str] = None,
-        completion_status: SurveyCompletionStatus = SurveyCompletionStatus.ALL,
-        heading_type: HeadingType = HeadingType.CODE,
-        response_type: ResponseType = ResponseType.SHORT,
+        completion_status: str = "all",
+        heading_type: str = "code",
+        response_type: str = "short",
         from_response_id: Optional[int] = None,
         to_response_id: Optional[int] = None,
         fields: Optional[Sequence[str]] = None,
@@ -204,11 +204,11 @@ class API:
             base64.b64decode(
                 self.__session.export_responses(
                     survey_id,
-                    file_format,
+                    ResponsesExportFormat(file_format),
                     language,
-                    completion_status,
-                    heading_type,
-                    response_type,
+                    SurveyCompletionStatus(completion_status),
+                    HeadingType(heading_type),
+                    ResponseType(response_type),
                     from_response_id,
                     to_response_id,
                     fields,
@@ -220,12 +220,12 @@ class API:
         self,  # noqa: ANN101
         file_object: BinaryIO,
         survey_id: int,
-        file_format: ResponsesExportFormat,
+        file_format: str,
         token: str,
         language: Optional[str] = None,
-        completion_status: SurveyCompletionStatus = SurveyCompletionStatus.ALL,
-        heading_type: HeadingType = HeadingType.CODE,
-        response_type: ResponseType = ResponseType.SHORT,
+        completion_status: str = "all",
+        heading_type: str = "code",
+        response_type: str = "short",
         from_response_id: Optional[int] = None,
         to_response_id: Optional[int] = None,
         fields: Optional[Sequence[str]] = None,
@@ -252,12 +252,12 @@ class API:
             base64.b64decode(
                 self.__session.export_responses_by_token(
                     survey_id,
-                    file_format,
+                    ResponsesExportFormat(file_format),
                     token,
                     language,
-                    completion_status,
-                    heading_type,
-                    response_type,
+                    SurveyCompletionStatus(completion_status),
+                    HeadingType(heading_type),
+                    ResponseType(response_type),
                     from_response_id,
                     to_response_id,
                     fields,
@@ -301,7 +301,7 @@ class API:
     def import_survey(
         self,  # noqa: ANN101
         filepath: Union[Path, str],
-        file_type: ImportSurveyType = ImportSurveyType.LSS,
+        file_type: str = "lss",
         survey_name: Optional[str] = None,
         survey_id: Optional[int] = None,
     ) -> int:
@@ -321,7 +321,7 @@ class API:
         """
         with open(filepath, "rb") as file:
             contents = base64.b64encode(file.read()).decode()
-            return self.__session.import_survey(contents, file_type)
+            return self.__session.import_survey(contents, ImportSurveyType(file_type))
 
     def list_participants(
         self,  # noqa: ANN101
