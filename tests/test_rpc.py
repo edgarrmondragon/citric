@@ -92,7 +92,7 @@ def test_bad_spec():
             pass
 
         bad_spec = BadRPC()
-        bad_spec.invoke()
+        bad_spec.invoke("whatever", "some_method")
 
 
 def test_session_context(
