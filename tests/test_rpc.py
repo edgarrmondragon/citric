@@ -2,7 +2,7 @@
 from typing import Callable
 
 import pytest
-from requests import HTTPError
+import requests
 from requests_mock import Mocker
 
 from citric.exceptions import (
@@ -11,7 +11,7 @@ from citric.exceptions import (
     LimeSurveyStatusError,
 )
 from citric.method import Method
-from citric.session import Session
+from citric import Session
 
 PostCallable = Callable[..., None]
 
@@ -37,7 +37,7 @@ def test_http_error(session: Session, post_mock: Callable[..., None]):
     """Test HTTP errors."""
     post_mock("OK", status_code=500)
 
-    with pytest.raises(HTTPError):
+    with pytest.raises(requests.HTTPError):
         session.some_method()
 
 
