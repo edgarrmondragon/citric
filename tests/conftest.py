@@ -1,5 +1,5 @@
 """pytest fixtures."""
-from typing import Any, Callable
+from typing import Callable
 
 import pytest
 from requests_mock import Mocker
@@ -37,7 +37,7 @@ def post_mock(url: str, requests_mock: Mocker):
 
 
 @pytest.fixture(scope="function")
-def session(url: str, username: str, password: str, post_mock: Callable[[Any], None]):
+def session(url: str, username: str, password: str, post_mock: Callable[..., None]):
     """Create a LimeSurvey Session fixture."""
     post_mock(text='{"result":"123456","error":null,"id":1}')
     session = Session(url, username, password)
