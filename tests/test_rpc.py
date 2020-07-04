@@ -1,9 +1,7 @@
 """Tests for RPC low-level calls."""
-from typing import Callable
-
 import pytest
 import requests
-from requests_mock import Mocker
+from requests.adapters import BaseAdapter
 
 from citric.exceptions import (
     LimeSurveyApiError,
@@ -12,8 +10,6 @@ from citric.exceptions import (
 )
 from citric.method import Method
 from citric import Session
-
-PostCallable = Callable[..., None]
 
 
 def test_method():
@@ -24,32 +20,27 @@ def test_method():
     assert m2("a", "b", "c") == "hello.world(a,b,c)"
 
 
-def test_json_rpc(session: Session, post_mock: Callable[..., None]):
+def test_json_rpc(session: Session):
     """Test JSON RPC response structure."""
-    post_mock("OK")
-
-    result = session.some_method()
+    result = session.__ok()
 
     assert result == "OK"
 
 
-def test_http_error(session: Session, post_mock: Callable[..., None]):
+def test_http_error(session: Session):
     """Test HTTP errors."""
-    post_mock("OK", status_code=500)
-
     with pytest.raises(requests.HTTPError):
-        session.some_method()
+        session.__http_error()
 
 
-def test_session_context(
-    url: str, username: str, password: str, post_mock: Callable[..., None],
-):
+def test_session_context(url: str, username: str, password: str, adapter: BaseAdapter):
     """Test context creates a session key."""
-    post_mock("123456")
+    requests_session = requests.Session()
+    requests_session.mount(url, adapter)
 
-    with Session(url, username, password) as session:
+    with Session(url, username, password, requests_session) as session:
         assert not session.closed
-        assert session.key == "123456"
+        assert session.key == adapter.session_key
 
     assert session.closed
     assert session.key is None
@@ -61,44 +52,34 @@ def test_session_context(
         session.closed = False
 
 
-def test_disabled_interface(session: Session, requests_mock: Mocker):
+def test_disabled_interface(session: Session):
     """Test empty response."""
-    requests_mock.post(session.url, text="")
-
     with pytest.raises(LimeSurveyError, match="RPC interface not enabled"):
-        session.some_method()
+        session.__disabled()
 
 
-def test_api_error(session: Session, post_mock: Callable[..., None]):
+def test_api_error(session: Session):
     """Test non-null error raises LimeSurveyApiError."""
-    post_mock(None, "Some Error")
-
-    with pytest.raises(LimeSurveyApiError, match="Some Error"):
-        session.not_valid()
+    with pytest.raises(LimeSurveyApiError, match="API Error!"):
+        session.__api_error()
 
 
-def test_status_error(session: Session, post_mock: Callable[..., None]):
+def test_status_error(session: Session):
     """Test result with status key raises LimeSurveyStatusError."""
-    post_mock({"status": "Status Message"})
-
-    with pytest.raises(LimeSurveyStatusError, match="Status Message"):
-        session.not_valid()
+    with pytest.raises(LimeSurveyStatusError, match="Status Error!"):
+        session.__status_error()
 
 
-def test_status_ok(session: Session, post_mock: Callable[..., None]):
+def test_status_ok(session: Session):
     """Test result with OK status does not raise errors."""
-    post_mock({"status": "OK"})
-
-    result = session.not_valid()
+    result = session.__status_ok()
 
     assert result["status"] == "OK"
 
 
-def test_mismatching_request_id(session: Session, post_mock: Callable[..., None]):
+def test_mismatching_request_id(session: Session):
     """Test result with status key raises LimeSurveyStatusError."""
-    post_mock("OK", request_id=2)
-
     with pytest.raises(
         LimeSurveyError, match="response does not match the one in the request"
     ):
-        session.not_valid()
+        session.__bad_id()

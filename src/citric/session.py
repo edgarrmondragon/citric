@@ -133,6 +133,7 @@ class Session(object):
     def close(self) -> None:  # noqa: ANN101
         """Close RPC session."""
         self.release_session_key()
+        self._session.close()
         self.__key = None
         self.__closed = True
 
