@@ -5,7 +5,6 @@ from typing import Any, Mapping, Optional, Tuple, Type, Union
 import pytest
 import requests
 from requests.adapters import BaseAdapter
-from requests_mock import Mocker
 
 from citric import Session
 
@@ -85,24 +84,6 @@ def username() -> str:
 def password() -> str:
     """Dummy LimeSurvey password."""
     return "limesecret"
-
-
-@pytest.fixture(scope="session")
-def post_mock(url: str, requests_mock: Mocker):
-    """Mock an RPC post request."""
-
-    def internal(
-        result: Any,
-        error: Optional[Any] = None,
-        request_id: int = 1,
-        *args: Any,
-        **kwargs: Any,
-    ):
-        """Build a fake raw RPC response."""
-        payload = json.dumps({"error": error, "result": result, "id": request_id})
-        requests_mock.post(url, text=payload, *args, **kwargs)
-
-    return internal
 
 
 @pytest.fixture(scope="session")
