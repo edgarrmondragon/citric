@@ -52,10 +52,7 @@ class Session(_BaseSession):
         """Create a LimeSurvey RPC session."""
         self.url = url
 
-        if requests_session is not None:
-            self._session = requests_session
-        else:
-            self._session = requests.Session()
+        self._session = requests_session or requests.Session()
         self._session.headers.update(self._headers)
 
         self.__key: Optional[str] = self.get_session_key(admin_user, admin_pass)
