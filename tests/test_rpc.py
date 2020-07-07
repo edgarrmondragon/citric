@@ -1,7 +1,6 @@
 """Tests for RPC low-level calls."""
 import pytest
 import requests
-from requests.adapters import BaseAdapter
 
 from citric.exceptions import (
     LimeSurveyApiError,
@@ -10,6 +9,8 @@ from citric.exceptions import (
 )
 from citric.method import Method
 from citric import Session
+
+from .conftest import LimeSurveyMockAdapter
 
 
 def test_method():
@@ -33,7 +34,9 @@ def test_http_error(session: Session):
         session.__http_error()
 
 
-def test_session_context(url: str, username: str, password: str, adapter: BaseAdapter):
+def test_session_context(
+    url: str, username: str, password: str, adapter: LimeSurveyMockAdapter,
+):
     """Test context creates a session key."""
     requests_session = requests.Session()
     requests_session.mount(url, adapter)

@@ -1,6 +1,6 @@
 """pytest fixtures."""
 import json
-from typing import Any, Dict, Optional, Tuple, Type, Union
+from typing import Any, Mapping, Optional, Tuple, Type, Union
 
 import pytest
 import requests
@@ -26,21 +26,25 @@ class LimeSurveyMockAdapter(BaseAdapter):
         self,
         request: requests.PreparedRequest,
         stream: bool = False,
-        timeout: Union[float, Tuple[float, float], None] = None,
+        timeout: Union[None, float, Tuple[float, float], Tuple[float, None]] = None,
         verify: Union[bool, str] = True,
         cert: Optional[Any] = None,
-        proxies: Optional[Dict[str, str]] = None,
+        proxies: Optional[Mapping[str, str]] = None,
     ):
         """Sends a mocked request."""
-        request_data = json.loads(request.body)
+        request_data = json.loads(request.body or "{}")
 
         response = requests.Response()
+        response.__setattr__("_content", b"")
         response.status_code = 200
 
         method = request_data["method"]
         request_id = request_data.get("id", 1)
 
         output = {"result": None, "error": None, "id": request_id}
+
+        if method == "__disabled":
+            return response
 
         if method in self.api_error_methods:
             output["error"] = "API Error!"
@@ -57,10 +61,7 @@ class LimeSurveyMockAdapter(BaseAdapter):
         elif method == "get_session_key":
             output["result"] = self.session_key
 
-        response._content = json.dumps(output).encode()
-
-        if method == "__disabled":
-            response._content = b""
+        response.__setattr__("_content", json.dumps(output).encode())
 
         return response
 
