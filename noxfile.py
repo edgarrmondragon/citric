@@ -29,12 +29,7 @@ def tests(session: Session) -> None:
     args = session.posargs or ["--cov", "--without-integration"]
     session.run("poetry", "install", "--no-dev", external=True)
     install_with_constraints(
-        session,
-        "coverage[toml]",
-        "pytest",
-        "pytest-cov",
-        "requests-mock",
-        "pytest-integration",
+        session, "coverage[toml]", "pytest", "pytest-cov", "pytest-integration",
     )
     session.run("pytest", *args)
 
