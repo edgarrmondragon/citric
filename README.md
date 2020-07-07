@@ -15,19 +15,22 @@ Python.
 For the full reference, see the [RemoteControl 2 API docs][rc2api].
 
 ```python
-from citric.session import Session
+from citric import Client, Session
 
 LS_URL = 'http://my-ls-server.com/index.php/admin/remotecontrol'
 
 with Session(LS_URL, 'iamadmin', 'secret') as session:
+   # Create a client from an RPC session
+   client = Client(session)
+
    # Get all surveys from user 'iamadmin'
-   surveys = session.list_surveys('iamadmin')
+   surveys = client.list_surveys('iamadmin')
 
    for s in surveys:
       print(s["surveyls_title"])
 
       # Get all questions, regardless of group
-      questions = session.list_questions(s["sid"])
+      questions = client.list_questions(s["sid"])
       for q in questions:
          print(q["title"], q["question"])
 ```
@@ -61,16 +64,15 @@ Import an existing survey file and start testing with it:
 ```python
 import base64
 
-from citric.session import Session
+from citric import Client, Session
 
 LS_URL = "http://localhost:8001/index.php/admin/remotecontrol"
 SURVEY_FILE = "examples/limesurvey_survey_432535.lss"
 
-with Session(LS_URL, "iamadmin", "secret") as session, open(SURVEY_FILE, "rb") as file:
+with Session(LS_URL, "iamadmin", "secret") as session:
+    client = Client(session)
     # Import survey from file
-    contents = file.read()
-    string = base64.b64encode(contents).decode()
-    survey_id = session.import_survey(string, "lss")
+    survey_id = client.import_survey(SURVEY_FILE, "lss")
     print("New survey:", survey_id)
 ```
 

@@ -26,17 +26,21 @@ Usage
 
 .. code-block:: python
 
-   from citric.session import Session
+   from citric import Client, Session
 
    LS_URL = 'http://my-ls-server.com/index.php/admin/remotecontrol'
 
    with Session(LS_URL, 'iamadmin', 'secret') as session:
+       # Create a client from an RPC session
+       client = Client(session)
+
        # Get all surveys from user 'iamadmin'
-       surveys = session.list_surveys('iamadmin')
+       surveys = client.list_surveys('iamadmin')
+
        for s in surveys:
            print(s["surveyls_title"])
 
            # Get all questions, regardless of group
-           questions = session.list_questions(s["sid"])
+           questions = client.list_questions(s["sid"])
            for q in questions:
                print(q["title"], q["question"])
