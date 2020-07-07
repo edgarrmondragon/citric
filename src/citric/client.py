@@ -373,7 +373,7 @@ class Client:
         group_id: Optional[int] = None,
         language: Optional[str] = None,
     ) -> List[Dict[str, Any]]:
-        """Get question in a survey.
+        """Get questions in a survey, in a specific group or all.
 
         Args:
             survey_id: Survey.
