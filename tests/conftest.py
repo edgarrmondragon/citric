@@ -87,7 +87,7 @@ def password() -> str:
     return "limesecret"
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope="session")
 def post_mock(url: str, requests_mock: Mocker):
     """Mock an RPC post request."""
 
@@ -105,19 +105,19 @@ def post_mock(url: str, requests_mock: Mocker):
     return internal
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope="session")
 def adapter_class() -> Type[BaseAdapter]:
     """Session adapter for requests."""
     return LimeSurveyMockAdapter
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope="session")
 def adapter(adapter_class: Type[BaseAdapter]) -> BaseAdapter:
     """Session adapter for requests."""
     return adapter_class()
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope="session")
 def session(url: str, username: str, password: str, adapter: BaseAdapter):
     """Create a LimeSurvey Session fixture."""
     requests_session = requests.Session()

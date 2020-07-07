@@ -41,13 +41,13 @@ class MockSession(_BaseSession):
         return base64.b64encode(b"FILE CONTENTS")
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="session")
 def session() -> MockSession:
     """A mock RPC session fixture."""
     return MockSession()
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="session")
 def client(session: Session) -> Client:
     """RemoteControl2 API client."""
     return Client(session)
