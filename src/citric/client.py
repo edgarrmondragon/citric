@@ -14,7 +14,7 @@ from typing import (
     Sequence,
     Union,
 )
-from citric.session import Session
+from citric.session import _BaseSession
 
 
 class ImportSurveyType(str, enum.Enum):
@@ -68,9 +68,14 @@ class Client:
         session: A LSRPC2 API authenticated session.
     """
 
-    def __init__(self, session: Session) -> None:  # noqa: ANN101
+    def __init__(self, session: _BaseSession) -> None:  # noqa: ANN101
         """Create a LimeSurvey Python API client."""
         self.__session = session
+
+    @property
+    def session(self) -> _BaseSession:  # noqa: ANN101
+        """Low-level RPC session."""
+        return self.__session
 
     def activate_survey(self, survey_id: int) -> Dict[str, Any]:  # noqa: ANN101
         """Activate a survey.

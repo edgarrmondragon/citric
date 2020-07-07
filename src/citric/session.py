@@ -1,6 +1,6 @@
 """Low level wrapper for connecting to the LSRC2."""
 from types import TracebackType
-from typing import Any, Optional, Type, TypeVar
+from typing import Any, Dict, Optional, Type, TypeVar
 
 import requests
 
@@ -12,10 +12,21 @@ from citric.exceptions import (
 from citric.method import Method
 
 
+class _BaseSession:
+    """Abstract class for RPC sessions."""
+
+    def __getattr__(self, name: str) -> Method:  # noqa: ANN101
+        """Magic method dispatcher."""
+        return Method(self.rpc, name)
+
+    def rpc(self, method: str, *params: Any) -> Dict[str, Any]:  # noqa: ANN101
+        return {"method": method, "params": [*params]}
+
+
 T = TypeVar("T", bound="Session")
 
 
-class Session(object):
+class Session(_BaseSession):
     """LimeSurvey RemoteControl 2 session.
 
     Args:
@@ -59,10 +70,6 @@ class Session(object):
     def key(self) -> Optional[str]:  # noqa: ANN101
         """RPC session key."""
         return self.__key
-
-    def __getattr__(self, name: str) -> Method:  # noqa: ANN101
-        """Magic method dispatcher."""
-        return Method(self.rpc, name)
 
     def rpc(self, method: str, *params: Any) -> Any:  # noqa: ANN101
         """Execute RPC method on LimeSurvey, with optional token authentication.
