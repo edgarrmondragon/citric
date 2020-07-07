@@ -12,8 +12,6 @@ from citric.exceptions import LimeSurveyStatusError
 LS_URL = "http://localhost:8001/index.php/admin/remotecontrol"
 LS_USER = "iamadmin"
 LS_PW = "secret"
-STATUS_OK = {"status": "OK"}
-STATUS_ERROR = "LimeSurveyStatusError: %s"
 
 
 @pytest.fixture(scope="session")
@@ -114,7 +112,7 @@ def test_responses(client: Client, survey_id: int):
     ]
 
     result = client.add_responses(survey_id, data)
-    assert result == ["1", "2", "3"]
+    assert result == [1, 2, 3]
 
     with io.BytesIO() as file, io.TextIOWrapper(file, encoding="utf-8-sig") as textfile:
         client.export_responses(file, survey_id, "csv")
