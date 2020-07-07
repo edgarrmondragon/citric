@@ -32,11 +32,11 @@ class MockSession(_BaseSession):
         """Mock result from adding a response."""
         return "1"
 
-    def export_responses(self, *args: Any) -> str:  # noqa: ANN101
+    def export_responses(self, *args: Any) -> bytes:  # noqa: ANN101
         """Mock responses file content."""
         return base64.b64encode(b"FILE CONTENTS")
 
-    def export_responses_by_token(self, *args: Any) -> str:  # noqa: ANN101
+    def export_responses_by_token(self, *args: Any) -> bytes:  # noqa: ANN101
         """Mock responses file content."""
         return base64.b64encode(b"FILE CONTENTS")
 
@@ -146,6 +146,6 @@ def test_export_responses(client: Client):
         assert fileobj.read() == b"FILE CONTENTS"
 
     with io.BytesIO() as fileobj:
-        client.export_responses_by_token(fileobj, 1, "csv", 1)
+        client.export_responses_by_token(fileobj, 1, "csv", "123abc")
         fileobj.seek(0)
         assert fileobj.read() == b"FILE CONTENTS"
