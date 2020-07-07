@@ -124,6 +124,25 @@ class Client:
             survey_id, participant_data, create_tokens,
         )
 
+    def _map_response_keys(
+        self, survey_id: int, response_data: Mapping[str, Any]  # noqa: ANN101
+    ) -> Dict[str, Any]:
+        """Converts response keys to LimeSurvey's internal representation.
+
+        Args:
+            survey_id: The survey ID where the response belongs.
+            response_data: The response mapping.
+
+        Returns:
+            A new dictionary with the keys mapped to the <SID>X<GID>X<QID> format.
+        """
+        qs = {q["title"]: q for q in self.list_questions(survey_id)}
+
+        return {
+            ("{sid}X{gid}X{qid}".format(**qs[key]) if key in qs else key): value
+            for key, value in response_data.items()
+        }
+
     def add_response(
         self, survey_id: int, response_data: Mapping[str, Any],  # noqa: ANN101
     ) -> int:
@@ -137,13 +156,7 @@ class Client:
             ID of the new response.
         """
         # Transform question codes to the format LimeSurvey expects
-        qs = {q["title"]: q for q in self.list_questions(survey_id)}
-
-        data = {
-            ("{sid}X{gid}X{qid}".format(**qs[key]) if key in qs else key): value
-            for key, value in response_data.items()
-        }
-
+        data = self._map_response_keys(survey_id, response_data)
         return int(self.__session.add_response(survey_id, data))
 
     def add_responses(
