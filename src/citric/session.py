@@ -1,24 +1,44 @@
 """Low level wrapper for connecting to the LSRC2."""
 from types import TracebackType
-from typing import Any, Optional, Type, TypeVar
+from typing import Any, Dict, Optional, Type, TypeVar
 
+import requests
+
+from citric.exceptions import (
+    LimeSurveyError,
+    LimeSurveyStatusError,
+    LimeSurveyApiError,
+)
 from citric.method import Method
-from citric.rpc.base import BaseRPC
-from citric.rpc.json import JSONRPC
+
+
+class _BaseSession:
+    """Abstract class for RPC sessions."""
+
+    def __getattr__(self, name: str) -> Method:  # noqa: ANN101
+        """Magic method dispatcher."""
+        return Method(self.rpc, name)
+
+    def rpc(self, method: str, *params: Any) -> Dict[str, Any]:  # noqa: ANN101
+        return {"method": method, "params": [*params]}
 
 
 T = TypeVar("T", bound="Session")
 
 
-class Session(object):
-    """LimeSurvey RemoteControl 2 API session.
+class Session(_BaseSession):
+    """LimeSurvey RemoteControl 2 session.
 
     Args:
         url: LimeSurvey Remote Control endpoint.
         admin_user: LimeSurvey user name.
         admin_pass: LimeSurvey password.
-        spec: RPC specification. By default JSON-RPC is used.
     """
+
+    _headers = {
+        "content-type": "application/json",
+        "user-agent": "citric-client",
+    }
 
     __attrs__ = ["url", "key"]
 
@@ -27,11 +47,14 @@ class Session(object):
         url: str,
         admin_user: str,
         admin_pass: str,
-        spec: BaseRPC = JSONRPC(),
+        requests_session: Optional[requests.Session] = None,
     ) -> None:
         """Create a LimeSurvey RPC session."""
         self.url = url
-        self.spec = spec
+
+        self._session = requests_session or requests.Session()
+        self._session.headers.update(self._headers)
+
         self.__key: Optional[str] = self.get_session_key(admin_user, admin_pass)
         self.__closed = False
 
@@ -44,10 +67,6 @@ class Session(object):
     def key(self) -> Optional[str]:  # noqa: ANN101
         """RPC session key."""
         return self.__key
-
-    def __getattr__(self, name: str) -> Method:  # noqa: ANN101
-        """Magic method dispatcher."""
-        return Method(self.rpc, name)
 
     def rpc(self, method: str, *params: Any) -> Any:  # noqa: ANN101
         """Execute RPC method on LimeSurvey, with optional token authentication.
@@ -62,21 +81,68 @@ class Session(object):
             An RPC result.
         """
         if method == "get_session_key" or method.startswith("system."):
-            result = self.spec.invoke(self.url, method, *params)
+            result = self._invoke(method, *params)
         # Methods requiring authentication
         else:
-            result = self.spec.invoke(self.url, method, self.key, *params)
+            result = self._invoke(method, self.key, *params)
+
+        return result
+
+    def _invoke(self, method: str, *params: Any) -> Any:  # noqa: ANN101
+        """Execute a LimeSurvey RPC with a JSON payload.
+
+        Args:
+            method (str): Name of the method to call.
+            params (Any): Positional arguments of the RPC method.
+
+        Raises:
+            LimeSurveyStatusError: The response key from the response payload has
+                a non-null status.
+            LimeSurveyApiError: The response payload has a non-null error key.
+            LimeSurveyError: Request ID does not match the response ID.
+
+        Returns:
+            Any: An RPC result.
+        """
+        payload = {
+            "method": method,
+            "params": [*params],
+            "id": 1,
+        }
+
+        res = self._session.post(self.url, json=payload)
+        res.raise_for_status()
+
+        if res.text == "":
+            raise LimeSurveyError("RPC interface not enabled")
+
+        data = res.json()
+
+        result = data["result"]
+        error = data["error"]
+        response_id = data["id"]
+
+        if isinstance(result, dict) and result.get("status") not in {"OK", None}:
+            raise LimeSurveyStatusError(result["status"])
+
+        if error is not None:
+            raise LimeSurveyApiError(error)
+
+        if response_id != 1:
+            message = "ID %s in response does not match the one in the request %s"
+            raise LimeSurveyError(message % (response_id, 1))
 
         return result
 
     def close(self) -> None:  # noqa: ANN101
-        """Close RPC API session."""
+        """Close RPC session."""
         self.release_session_key()
+        self._session.close()
         self.__key = None
         self.__closed = True
 
     def __enter__(self: T) -> T:
-        """Context manager for API session.
+        """Context manager for RPC session.
 
         Returns:
             LimeSurvey RPC session.
@@ -89,7 +155,7 @@ class Session(object):
         value: Optional[BaseException],
         traceback: Optional[TracebackType],
     ) -> None:
-        """Safely exit an API session.
+        """Safely exit an RPC session.
 
         Args:
             type: Exception class.
