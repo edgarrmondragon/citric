@@ -6,7 +6,7 @@ import pytest
 import requests
 from requests.adapters import BaseAdapter
 
-from citric import Session
+from citric.session import Session
 
 
 class LimeSurveyMockAdapter(BaseAdapter):
