@@ -1,6 +1,5 @@
 """Top-level package for citric."""
 from citric.client import Client  # noqa: F401
-from citric.session import Session  # noqa: F401
 
 try:
     from importlib.metadata import version, PackageNotFoundError  # type: ignore

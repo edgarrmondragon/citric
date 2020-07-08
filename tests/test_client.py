@@ -2,18 +2,21 @@
 import base64
 import io
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, Generator, List
 
 import pytest
 from tempfile import TemporaryDirectory
 
-from citric import Client, Session
-from citric.client import ImportSurveyType
+from citric.client import _BaseClient, ImportSurveyType
 from citric.session import _BaseSession
 
 
 class MockSession(_BaseSession):
     """Mock RPC session with some hardcoded methods for testing."""
+
+    def rpc(self, method: str, *params: Any) -> Dict[str, Any]:  # noqa: ANN101
+        """A mock RPC call."""
+        return {"method": method, "params": [*params]}
 
     def import_survey(self, content: str, file_type: str = "lss") -> Dict[str, Any]:
         """Mock result from importing a survey file."""
@@ -41,51 +44,53 @@ class MockSession(_BaseSession):
         return base64.b64encode(b"FILE CONTENTS")
 
 
-@pytest.fixture(scope="session")
-def session() -> MockSession:
-    """A mock RPC session fixture."""
-    return MockSession()
+class MockClient(_BaseClient):
+    """A mock LimeSurvey client."""
+
+    class ClientSession(MockSession):
+        """Session implementation for this client."""
 
 
 @pytest.fixture(scope="session")
-def client(session: Session) -> Client:
+def client() -> Generator[_BaseClient, None, None]:
     """RemoteControl2 API client."""
-    return Client(session)
+    with MockClient("mock://lime.com", "user", "secret") as client:
+        yield client
 
 
-def test_activate_survey(client: Client):
+def test_activate_survey(client: MockClient):
     """Test activate_survey client method."""
     assert client.activate_survey(1) == client.session.activate_survey(1)
 
 
-def test_activate_tokens(client: Client):
+def test_activate_tokens(client: MockClient):
     """Test activate_tokens client method."""
     assert client.activate_tokens(1) == client.session.activate_tokens(1)
 
 
-def test_delete_survey(client: Client):
+def test_delete_survey(client: MockClient):
     """Test activate_tokens client method."""
     assert client.delete_survey(1) == client.session.delete_survey(1)
 
 
-def test_list_surveys(client: Client):
+def test_list_surveys(client: MockClient):
     """Test list_surveys client method."""
     assert client.list_surveys() == client.session.list_surveys(None)
 
 
-def test_get_survey_properties(client: Client):
+def test_get_survey_properties(client: MockClient):
     """Test get_survey_properties client method."""
     assert client.get_survey_properties(1) == client.session.get_survey_properties(
         1, None
     )
 
 
-def test_list_questions(client: Client):
+def test_list_questions(client: MockClient):
     """Test list_questions client method."""
     assert client.list_questions(1) == client.session.list_questions(1)
 
 
-def test_add_participants(client: Client):
+def test_add_participants(client: MockClient):
     """Test add_participants client method."""
     participants = [{"firstname": "Alice"}, {"firstname": "Bob"}]
     assert client.add_participants(1, participants) == client.session.add_participants(
@@ -93,21 +98,21 @@ def test_add_participants(client: Client):
     )
 
 
-def test_participant_properties(client: Client):
+def test_participant_properties(client: MockClient):
     """Test get_participant_properties client method."""
     assert client.get_participant_properties(
         1, 1
     ) == client.session.get_participant_properties(1, 1, None)
 
 
-def test_list_participants(client: Client):
+def test_list_participants(client: MockClient):
     """Test get_participant_properties client method."""
     assert client.list_participants(1) == client.session.list_participants(
         1, 0, 10, False, False, {}
     )
 
 
-def test_import_survey(client: Client):
+def test_import_survey(client: MockClient):
     """Test import_survey client method."""
     # TODO: generate this truly randomly
     random_bytes = b"1924m01'9280u '0', u'012"
@@ -124,7 +129,7 @@ def test_import_survey(client: Client):
         }
 
 
-def test_map_response_data(client: Client):
+def test_map_response_data(client: MockClient):
     """Test question keys get mapped to LimeSurvey's internal representation."""
     assert client._map_response_keys(1, {"Q1": "foo", "Q2": "bar", "BAZ": "qux"}) == {
         "1X1X1": "foo",
@@ -133,12 +138,12 @@ def test_map_response_data(client: Client):
     }
 
 
-def test_add_responses(client: Client):
+def test_add_responses(client: MockClient):
     """Test add_responses client method."""
     assert client.add_responses(1, [{"Q1": "foo"}, {"Q1": "bar"}]) == [1, 1]
 
 
-def test_export_responses(client: Client):
+def test_export_responses(client: MockClient):
     """Test export_responses and export_responses_by_token client methods."""
     with io.BytesIO() as fileobj:
         client.export_responses(fileobj, 1, "csv")

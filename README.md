@@ -15,24 +15,21 @@ Python.
 For the full reference, see the [RemoteControl 2 API docs][rc2api].
 
 ```python
-from citric import Client, Session
+from citric import Client
 
 LS_URL = 'http://my-ls-server.com/index.php/admin/remotecontrol'
 
-with Session(LS_URL, 'iamadmin', 'secret') as session:
-   # Create a client from an RPC session
-   client = Client(session)
+with Client(LS_URL, 'iamadmin', 'secret') as client:
+    # Get all surveys from user 'iamadmin'
+    surveys = client.list_surveys('iamadmin')
 
-   # Get all surveys from user 'iamadmin'
-   surveys = client.list_surveys('iamadmin')
+    for s in surveys:
+        print(s["surveyls_title"])
 
-   for s in surveys:
-      print(s["surveyls_title"])
-
-      # Get all questions, regardless of group
-      questions = client.list_questions(s["sid"])
-      for q in questions:
-         print(q["title"], q["question"])
+        # Get all questions, regardless of group
+        questions = client.list_questions(s["sid"])
+        for q in questions:
+            print(q["title"], q["question"])
 ```
 
 ## Development

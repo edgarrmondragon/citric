@@ -8,7 +8,7 @@ from citric.exceptions import (
     LimeSurveyStatusError,
 )
 from citric.method import Method
-from citric import Session
+from citric.session import _BaseSession, Session
 
 from .conftest import LimeSurveyMockAdapter
 
@@ -19,6 +19,18 @@ def test_method():
     m2 = m1.world
 
     assert m2("a", "b", "c") == "hello.world(a,b,c)"
+
+
+def test_base_session():
+    """Test session abstraction."""
+
+    class TestSession(_BaseSession):
+        pass
+
+    session = TestSession("mock://lime", "user", "secret")
+
+    with pytest.raises(NotImplementedError):
+        session.rpc("test", 1, 2, 3)
 
 
 def test_json_rpc(session: Session):
