@@ -3,6 +3,7 @@
 import base64
 import enum
 from pathlib import Path
+from types import TracebackType
 from typing import (
     Any,
     BinaryIO,
@@ -12,9 +13,11 @@ from typing import (
     Mapping,
     Optional,
     Sequence,
+    Type,
+    TypeVar,
     Union,
 )
-from citric.session import _BaseSession
+from citric.session import _BaseSession, Session
 
 
 class ImportSurveyType(str, enum.Enum):
@@ -59,7 +62,10 @@ class ResponseType(str, enum.Enum):
     SHORT = "short"
 
 
-class Client:
+T = TypeVar("T", bound="Client")
+
+
+class _BaseClient:
     """Python API client.
 
     Offers explicit wrappers for RPC methods and simplifies common worflows.
@@ -68,9 +74,26 @@ class Client:
         session: A LSRPC2 API authenticated session.
     """
 
-    def __init__(self, session: _BaseSession) -> None:  # noqa: ANN101
+    def __init__(self, url: str, username: str, password: str) -> None:  # noqa: ANN101
         """Create a LimeSurvey Python API client."""
-        self.__session = session
+        self.__session = self.ClientSession(url, username, password)
+
+    class ClientSession(_BaseSession):
+        pass
+
+    def close(self) -> None:  # noqa: ANN101
+        self.__session.close()
+
+    def __enter__(self: T) -> T:
+        return self
+
+    def __exit__(
+        self,  # noqa: ANN101
+        type: Optional[Type[BaseException]],
+        value: Optional[BaseException],
+        traceback: Optional[TracebackType],
+    ) -> None:
+        self.close()
 
     @property
     def session(self) -> _BaseSession:  # noqa: ANN101
@@ -397,3 +420,10 @@ class Client:
             List of surveys with basic information.
         """
         return self.__session.list_surveys(username)
+
+
+class Client(_BaseClient):
+    """Main client implementation."""
+
+    class ClientSession(Session):
+        """Main client session implementation."""
