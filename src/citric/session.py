@@ -15,12 +15,17 @@ from citric.method import Method
 class _BaseSession:
     """Abstract class for RPC sessions."""
 
+    def __init__(self, url: str, username: str, password: str) -> None:  # noqa: ANN101
+        """Create an RPC session."""
+        self.url = url
+
     def __getattr__(self, name: str) -> Method:  # noqa: ANN101
         """Magic method dispatcher."""
         return Method(self.rpc, name)
 
     def rpc(self, method: str, *params: Any) -> Dict[str, Any]:  # noqa: ANN101
-        return {"method": method, "params": [*params]}
+        """RPC call."""
+        raise NotImplementedError
 
 
 T = TypeVar("T", bound="Session")
@@ -45,17 +50,17 @@ class Session(_BaseSession):
     def __init__(
         self,  # noqa: ANN101
         url: str,
-        admin_user: str,
-        admin_pass: str,
+        username: str,
+        password: str,
         requests_session: Optional[requests.Session] = None,
     ) -> None:
         """Create a LimeSurvey RPC session."""
-        self.url = url
+        super().__init__(url, username, password)
 
         self._session = requests_session or requests.Session()
         self._session.headers.update(self._headers)
 
-        self.__key: Optional[str] = self.get_session_key(admin_user, admin_pass)
+        self.__key: Optional[str] = self.get_session_key(username, password)
         self.__closed = False
 
     @property
@@ -81,17 +86,23 @@ class Session(_BaseSession):
             An RPC result.
         """
         if method == "get_session_key" or method.startswith("system."):
-            result = self._invoke(method, *params)
+            result = self._invoke(self._session, self.url, method, *params)
         # Methods requiring authentication
         else:
-            result = self._invoke(method, self.key, *params)
+            result = self._invoke(self._session, self.url, method, self.key, *params)
 
         return result
 
-    def _invoke(self, method: str, *params: Any) -> Any:  # noqa: ANN101
+    @staticmethod
+    def _invoke(
+        session: requests.Session, url: str, method: str, *params: Any,
+    ) -> Any:  # noqa: ANN101
         """Execute a LimeSurvey RPC with a JSON payload.
 
         Args:
+            session (requests.Session): An HTTP session for communication with
+                the LSRC2 API.
+            url: URL of the LSRC2 API.
             method (str): Name of the method to call.
             params (Any): Positional arguments of the RPC method.
 
@@ -110,7 +121,7 @@ class Session(_BaseSession):
             "id": 1,
         }
 
-        res = self._session.post(self.url, json=payload)
+        res = session.post(url, json=payload)
         res.raise_for_status()
 
         if res.text == "":
