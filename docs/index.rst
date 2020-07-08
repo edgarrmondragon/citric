@@ -26,14 +26,11 @@ Usage
 
 .. code-block:: python
 
-   from citric import Client, Session
+   from citric import Client
 
    LS_URL = 'http://my-ls-server.com/index.php/admin/remotecontrol'
 
-   with Session(LS_URL, 'iamadmin', 'secret') as session:
-       # Create a client from an RPC session
-       client = Client(session)
-
+   with Client(LS_URL, 'iamadmin', 'secret') as client:
        # Get all surveys from user 'iamadmin'
        surveys = client.list_surveys('iamadmin')
 
