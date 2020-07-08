@@ -62,7 +62,7 @@ class ResponseType(str, enum.Enum):
     SHORT = "short"
 
 
-T = TypeVar("T", bound="Client")
+T = TypeVar("T", bound="_BaseClient")
 
 
 class _BaseClient:
