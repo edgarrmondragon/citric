@@ -7,9 +7,8 @@ from citric.exceptions import (
     LimeSurveyError,
     LimeSurveyStatusError,
 )
-from citric import Session
 from citric.method import Method
-from citric.session import _BaseSession
+from citric.session import _BaseSession, Session
 
 from .conftest import LimeSurveyMockAdapter
 
