@@ -6,7 +6,7 @@ import csv
 import io
 import pytest
 
-from citric import Client, Session
+from citric import Client
 from citric.exceptions import LimeSurveyStatusError
 
 LS_URL = "http://localhost:8001/index.php/admin/remotecontrol"
@@ -17,8 +17,7 @@ LS_PW = "secret"
 @pytest.fixture(scope="session")
 def client() -> Generator[Client, None, None]:
     """RemoteControl2 API client."""
-    session = Session(LS_URL, LS_USER, LS_PW)
-    client = Client(session)
+    client = Client(LS_URL, LS_USER, LS_PW)
 
     yield client
 
@@ -28,7 +27,7 @@ def client() -> Generator[Client, None, None]:
     except LimeSurveyStatusError:
         pass
 
-    session.close()
+    client.close()
 
 
 @pytest.fixture(scope="function")
