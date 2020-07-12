@@ -325,6 +325,68 @@ class _BaseClient:
         """
         return self.__session.get_participant_properties(survey_id, query, properties)
 
+    def get_response_ids(
+        self, survey_id: int, token: str,  # noqa: ANN101
+    ) -> List[int]:
+        """Find response IDs given a survey ID and a token.
+
+        Args:
+            survey_id: Survey to get responses from.
+            token: Participant for which to get response IDs.
+
+        Returns:
+            A list of response IDs.
+        """
+        return self.__session.get_response_ids(survey_id, token)
+
+    def _get_site_setting(self, setting_name: str) -> Any:  # noqa: ANN101
+        """Get a global setting.
+
+        Function to query site settings. Can only be used by super administrators.
+
+        Args:
+            setting_name: Name of the setting to get.
+
+        Returns:
+            The requested setting value.
+        """
+        return self.__session.get_site_settings(setting_name)
+
+    def get_default_theme(self) -> str:  # noqa: ANN101
+        """Get the global default theme.
+
+        Returns:
+            The name of the theme.
+        """
+        return self._get_site_setting("defaulttheme")
+
+    def get_site_name(self) -> str:  # noqa: ANN101
+        """Get the site name.
+
+        Returns:
+            The name of the site.
+        """
+        return self._get_site_setting("sitename")
+
+    def get_default_language(self) -> str:  # noqa: ANN101
+        """Get the default site language.
+
+        Returns:
+            A string representing the language.
+        """
+        return self._get_site_setting("defaultlang")
+
+    def get_available_languages(self) -> Optional[List[str]]:  # noqa: ANN101
+        """Get the list of available languages.
+
+        Returns:
+            Either a list of strings for the available languages or None if there are
+                no restrictions.
+        """
+        langs: str = self._get_site_setting("restrictToLanguages")
+
+        return langs.split(" ") if langs else None
+
     def get_survey_properties(
         self, survey_id: int, properties: Optional[List[str]] = None,  # noqa: ANN101
     ) -> Dict[str, Any]:

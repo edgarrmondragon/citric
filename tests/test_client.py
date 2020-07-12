@@ -13,6 +13,13 @@ from citric.session import _BaseSession
 class MockSession(_BaseSession):
     """Mock RPC session with some hardcoded methods for testing."""
 
+    settings = {
+        "defaulttheme": "mock-theme",
+        "sitename": "mock-site",
+        "defaultlang": "mock-lang",
+        "restrictToLanguages": "en fr es",
+    }
+
     def rpc(self, method: str, *params: Any) -> Dict[str, Any]:  # noqa: ANN101
         """A mock RPC call."""
         return {"method": method, "params": [*params]}
@@ -41,6 +48,10 @@ class MockSession(_BaseSession):
     def export_responses_by_token(self, *args: Any) -> bytes:  # noqa: ANN101
         """Mock responses file content."""
         return base64.b64encode(b"FILE CONTENTS")
+
+    def get_site_settings(self, setting_name: str) -> str:  # noqa: ANN101
+        """Return the setting value or an empty string."""
+        return self.settings.get(setting_name, "")
 
 
 class MockClient(_BaseClient):
@@ -77,6 +88,13 @@ def test_list_surveys(client: MockClient):
     assert client.list_surveys() == client.session.list_surveys(None)
 
 
+def test_get_response_ids(client: MockClient):
+    """Test get stored response IDs from a survey."""
+    assert client.get_response_ids(1, "TOKEN") == client.session.get_response_ids(
+        1, "TOKEN"
+    )
+
+
 def test_get_survey_properties(client: MockClient):
     """Test get_survey_properties client method."""
     assert client.get_survey_properties(1) == client.session.get_survey_properties(
@@ -109,6 +127,26 @@ def test_list_participants(client: MockClient):
     assert client.list_participants(1) == client.session.list_participants(
         1, 0, 10, False, False, {}
     )
+
+
+def test_get_default_theme(client: MockClient):
+    """Test get site default theme."""
+    assert client.get_default_theme() == "mock-theme"
+
+
+def test_get_site_name(client: MockClient):
+    """Test get site name."""
+    assert client.get_site_name() == "mock-site"
+
+
+def test_get_default_language(client: MockClient):
+    """Test get site default language."""
+    assert client.get_default_language() == "mock-lang"
+
+
+def test_get_available_languages(client: MockClient):
+    """Test get site available languages."""
+    assert client.get_available_languages() == ["en", "fr", "es"]
 
 
 def test_import_survey(client: MockClient, tmp_path: Path):
