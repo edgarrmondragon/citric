@@ -20,6 +20,7 @@ class LimeSurveyMockAdapter(BaseAdapter):
 
     session_key = "123456"
     status_ok = {"status": "OK"}
+    rpc_interface = "json"
 
     def send(
         self,
@@ -38,6 +39,7 @@ class LimeSurveyMockAdapter(BaseAdapter):
         response.status_code = 200
 
         method = request_data["method"]
+        params = request_data["params"]
         request_id = request_data.get("id", 1)
 
         output = {"result": None, "error": None, "id": request_id}
@@ -59,6 +61,8 @@ class LimeSurveyMockAdapter(BaseAdapter):
             output["id"] = 2
         elif method == "get_session_key":
             output["result"] = self.session_key
+        elif method == "get_site_settings" and params[1] == "RPCInterface":
+            output["result"] = self.rpc_interface
 
         response.__setattr__("_content", json.dumps(output).encode())
 

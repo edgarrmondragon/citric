@@ -13,6 +13,18 @@ from citric.session import _BaseSession, Session
 from .conftest import LimeSurveyMockAdapter
 
 
+class RPCOffAdapter(LimeSurveyMockAdapter):
+    """Mock adapter with RPC interface turned off."""
+
+    rpc_interface = "off"
+
+
+@pytest.fixture()
+def off_adapter() -> RPCOffAdapter:
+    """Adapter with RPC turned off."""
+    return RPCOffAdapter()
+
+
 def test_method():
     """Test method magic."""
     m1 = Method(lambda x, *args: f"{x}({','.join(args)})", "hello")
@@ -67,7 +79,18 @@ def test_session_context(
         session.closed = False
 
 
-def test_disabled_interface(session: Session):
+def test_interface_off(
+    url: str, username: str, password: str, off_adapter: RPCOffAdapter,
+):
+    """Test effect of JSON RPC not enabled."""
+    requests_session = requests.Session()
+    requests_session.mount(url, off_adapter)
+
+    with pytest.raises(LimeSurveyError, match="JSON RPC interface is not enabled"):
+        Session(url, username, password, requests_session)
+
+
+def test_empty_response(session: Session):
     """Test empty response."""
     with pytest.raises(LimeSurveyError, match="RPC interface not enabled"):
         session.__disabled()

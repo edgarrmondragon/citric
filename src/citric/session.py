@@ -61,6 +61,10 @@ class Session(_BaseSession):
         self._session.headers.update(self._headers)
 
         self.__key: Optional[str] = self.get_session_key(username, password)
+
+        if self.get_site_settings("RPCInterface") != "json":
+            raise LimeSurveyError("JSON RPC interface is not enabled.")
+
         self.__closed = False
 
     @property
