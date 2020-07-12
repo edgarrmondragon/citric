@@ -5,7 +5,6 @@ from pathlib import Path
 from typing import Any, Dict, Generator, List
 
 import pytest
-from tempfile import TemporaryDirectory
 
 from citric.client import _BaseClient, ImportSurveyType
 from citric.session import _BaseSession
@@ -112,21 +111,20 @@ def test_list_participants(client: MockClient):
     )
 
 
-def test_import_survey(client: MockClient):
+def test_import_survey(client: MockClient, tmp_path: Path):
     """Test import_survey client method."""
     # TODO: generate this truly randomly
     random_bytes = b"1924m01'9280u '0', u'012"
 
-    with TemporaryDirectory() as td:
-        filepath = Path(td) / "survey.lss"
+    filepath = Path(tmp_path) / "survey.lss"
 
-        with open(filepath, "wb") as f:
-            f.write(random_bytes)
+    with open(filepath, "wb") as f:
+        f.write(random_bytes)
 
-        assert client.import_survey(filepath) == {
-            "content": random_bytes,
-            "type": ImportSurveyType("lss"),
-        }
+    assert client.import_survey(filepath) == {
+        "content": random_bytes,
+        "type": ImportSurveyType("lss"),
+    }
 
 
 def test_map_response_data(client: MockClient):
