@@ -53,7 +53,7 @@ class MockSession(_BaseSession):
         """Return the setting value or an empty string."""
         return self.settings.get(setting_name, "")
 
-    def get_uploaded_files(self, *args: Any) -> List[Dict[str, Any]]:
+    def get_uploaded_files(self, *args: Any) -> Dict[str, Dict[str, Any]]:
         """Return uploaded files fake metadata."""
         return {
             "1234": {
