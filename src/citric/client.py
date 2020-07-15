@@ -7,6 +7,7 @@ from types import TracebackType
 from typing import (
     Any,
     BinaryIO,
+    Callable,
     Dict,
     Iterable,
     List,
@@ -74,11 +75,16 @@ class _BaseClient:
         session: A LSRPC2 API authenticated session.
     """
 
-    open_function = open
-
-    def __init__(self, url: str, username: str, password: str) -> None:  # noqa: ANN101
+    def __init__(
+        self,  # noqa: ANN101
+        url: str,
+        username: str,
+        password: str,
+        open_function: Callable = open,
+    ) -> None:
         """Create a LimeSurvey Python API client."""
         self.__session = self.ClientSession(url, username, password)
+        self.__open = open_function
 
     class ClientSession(_BaseSession):
         pass
@@ -427,7 +433,7 @@ class _BaseClient:
                 **files_data[file]["meta"], token=token,
             )
             filepaths.append(filepath)
-            with self.open_function(filepath, "wb") as f:
+            with self.__open(filepath, mode="wb") as f:
                 f.write(base64.b64decode(files_data[file]["content"]))
 
         return filepaths
@@ -453,7 +459,7 @@ class _BaseClient:
         Returns:
             The ID of the new survey.
         """
-        with self.open_function(filepath, "rb") as file:
+        with self.__open(filepath, mode="rb") as file:
             contents = base64.b64encode(file.read()).decode()
             return self.__session.import_survey(contents, ImportSurveyType(file_type))
 
