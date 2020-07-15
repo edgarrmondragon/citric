@@ -74,6 +74,8 @@ class _BaseClient:
         session: A LSRPC2 API authenticated session.
     """
 
+    open_function = open
+
     def __init__(self, url: str, username: str, password: str) -> None:  # noqa: ANN101
         """Create a LimeSurvey Python API client."""
         self.__session = self.ClientSession(url, username, password)
@@ -425,7 +427,7 @@ class _BaseClient:
                 **files_data[file]["meta"], token=token,
             )
             filepaths.append(filepath)
-            with open(filepath, "wb") as f:
+            with self.open_function(filepath, "wb") as f:
                 f.write(base64.b64decode(files_data[file]["content"]))
 
         return filepaths
@@ -451,7 +453,7 @@ class _BaseClient:
         Returns:
             The ID of the new survey.
         """
-        with open(filepath, "rb") as file:
+        with self.open_function(filepath, "rb") as file:
             contents = base64.b64encode(file.read()).decode()
             return self.__session.import_survey(contents, ImportSurveyType(file_type))
 
