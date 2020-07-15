@@ -7,6 +7,7 @@ from types import TracebackType
 from typing import (
     Any,
     BinaryIO,
+    Callable,
     Dict,
     Iterable,
     List,
@@ -74,9 +75,16 @@ class _BaseClient:
         session: A LSRPC2 API authenticated session.
     """
 
-    def __init__(self, url: str, username: str, password: str) -> None:  # noqa: ANN101
+    def __init__(
+        self,  # noqa: ANN101
+        url: str,
+        username: str,
+        password: str,
+        open_function: Callable = open,
+    ) -> None:
         """Create a LimeSurvey Python API client."""
         self.__session = self.ClientSession(url, username, password)
+        self.__open = open_function
 
     class ClientSession(_BaseSession):
         pass
@@ -325,6 +333,68 @@ class _BaseClient:
         """
         return self.__session.get_participant_properties(survey_id, query, properties)
 
+    def get_response_ids(
+        self, survey_id: int, token: str,  # noqa: ANN101
+    ) -> List[int]:
+        """Find response IDs given a survey ID and a token.
+
+        Args:
+            survey_id: Survey to get responses from.
+            token: Participant for which to get response IDs.
+
+        Returns:
+            A list of response IDs.
+        """
+        return self.__session.get_response_ids(survey_id, token)
+
+    def _get_site_setting(self, setting_name: str) -> Any:  # noqa: ANN101
+        """Get a global setting.
+
+        Function to query site settings. Can only be used by super administrators.
+
+        Args:
+            setting_name: Name of the setting to get.
+
+        Returns:
+            The requested setting value.
+        """
+        return self.__session.get_site_settings(setting_name)
+
+    def get_default_theme(self) -> str:  # noqa: ANN101
+        """Get the global default theme.
+
+        Returns:
+            The name of the theme.
+        """
+        return self._get_site_setting("defaulttheme")
+
+    def get_site_name(self) -> str:  # noqa: ANN101
+        """Get the site name.
+
+        Returns:
+            The name of the site.
+        """
+        return self._get_site_setting("sitename")
+
+    def get_default_language(self) -> str:  # noqa: ANN101
+        """Get the default site language.
+
+        Returns:
+            A string representing the language.
+        """
+        return self._get_site_setting("defaultlang")
+
+    def get_available_languages(self) -> Optional[List[str]]:  # noqa: ANN101
+        """Get the list of available languages.
+
+        Returns:
+            Either a list of strings for the available languages or None if there are
+                no restrictions.
+        """
+        langs: str = self._get_site_setting("restrictToLanguages")
+
+        return langs.split(" ") if langs else None
+
     def get_survey_properties(
         self, survey_id: int, properties: Optional[List[str]] = None,  # noqa: ANN101
     ) -> Dict[str, Any]:
@@ -338,6 +408,35 @@ class _BaseClient:
             Dictionary of survey properties.
         """
         return self.__session.get_survey_properties(survey_id, properties)
+
+    def download_files(
+        self, directory: Union[str, Path], survey_id: int, token: str,  # noqa: ANN101
+    ) -> List[Path]:
+        """Download files uploaded in survey response.
+
+        Args:
+            directory: Where to store the files.
+            survey_id: Survey for which to download files.
+            token: Optional participant token to filter uploaded files.
+
+        Returns:
+            List with the paths of downloaded files.
+        """
+        dirpath = Path(directory)
+
+        filepaths = []
+        name_template = "{token}_{index}_{filename}.{ext}"
+        files_data = self.__session.get_uploaded_files(survey_id, token)
+
+        for file in files_data:
+            filepath = dirpath / name_template.format(
+                **files_data[file]["meta"], token=token,
+            )
+            filepaths.append(filepath)
+            with self.__open(filepath, mode="wb") as f:
+                f.write(base64.b64decode(files_data[file]["content"]))
+
+        return filepaths
 
     def import_survey(
         self,  # noqa: ANN101
@@ -360,7 +459,7 @@ class _BaseClient:
         Returns:
             The ID of the new survey.
         """
-        with open(filepath, "rb") as file:
+        with self.__open(filepath, mode="rb") as file:
             contents = base64.b64encode(file.read()).decode()
             return self.__session.import_survey(contents, ImportSurveyType(file_type))
 
