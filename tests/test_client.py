@@ -53,6 +53,37 @@ class MockSession(_BaseSession):
         """Return the setting value or an empty string."""
         return self.settings.get(setting_name, "")
 
+    def get_uploaded_files(self, *args: Any) -> List[Dict[str, Any]]:
+        """Return uploaded files fake metadata."""
+        return {
+            "1234": {
+                "meta": {
+                    "title": "one",
+                    "comment": "File One",
+                    "name": "file1.txt",
+                    "filename": "1234",
+                    "size": 48.046,
+                    "ext": "txt",
+                    "question": {"title": "G01Q01", "qid": 1},
+                    "index": 0,
+                },
+                "content": base64.b64encode(b"content-1").decode(),
+            },
+            "5678": {
+                "meta": {
+                    "title": "two",
+                    "comment": "File Two",
+                    "size": "581.044921875",
+                    "name": "file2.txt",
+                    "filename": "5678",
+                    "ext": "txt",
+                    "question": {"title": "G01Q01", "qid": 1},
+                    "index": 1,
+                },
+                "content": base64.b64encode(b"content-2").decode(),
+            },
+        }
+
 
 class MockClient(_BaseClient):
     """A mock LimeSurvey client."""
@@ -190,3 +221,13 @@ def test_export_responses(client: MockClient):
         client.export_responses_by_token(fileobj, 1, "csv", "123abc")
         fileobj.seek(0)
         assert fileobj.read() == b"FILE CONTENTS"
+
+
+def test_download_files(client: MockClient, tmp_path: Path):
+    """Test files are downloaded correctly."""
+    expected = {tmp_path / "TOKEN_0_1234.txt", tmp_path / "TOKEN_1_5678.txt"}
+    paths = client.download_files(tmp_path, 1, "TOKEN")
+
+    assert set(paths) == expected
+    assert paths[0].read_text() == "content-1"
+    assert paths[1].read_text() == "content-2"

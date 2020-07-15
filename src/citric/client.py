@@ -401,6 +401,35 @@ class _BaseClient:
         """
         return self.__session.get_survey_properties(survey_id, properties)
 
+    def download_files(
+        self, directory: Union[str, Path], survey_id: int, token: str,  # noqa: ANN101
+    ) -> List[Path]:
+        """Download files uploaded in survey response.
+
+        Args:
+            directory: Where to store the files.
+            survey_id: Survey for which to download files.
+            token: Optional participant token to filter uploaded files.
+
+        Returns:
+            List with the paths of downloaded files.
+        """
+        dirpath = Path(directory)
+
+        filepaths = []
+        name_template = "{token}_{index}_{filename}.{ext}"
+        files_data = self.__session.get_uploaded_files(survey_id, token)
+
+        for file in files_data:
+            filepath = dirpath / name_template.format(
+                **files_data[file]["meta"], token=token,
+            )
+            filepaths.append(filepath)
+            with open(filepath, "wb") as f:
+                f.write(base64.b64decode(files_data[file]["content"]))
+
+        return filepaths
+
     def import_survey(
         self,  # noqa: ANN101
         filepath: Union[Path, str],
