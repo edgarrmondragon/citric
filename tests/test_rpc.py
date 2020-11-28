@@ -22,10 +22,10 @@ class RPCOffAdapter(LimeSurveyMockAdapter):
 
 
 @pytest.fixture(scope="session")
-def off_session_factory(url: str) -> requests.Session:
+def off_session_factory(url: str) -> Callable[[], requests.Session]:
     """Session with interface turned off."""
 
-    def factory():
+    def factory() -> requests.Session:
         """Session factory."""
         requests_session = requests.Session()
         requests_session.mount(url, RPCOffAdapter())

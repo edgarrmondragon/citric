@@ -79,10 +79,10 @@ def url() -> str:
 
 
 @pytest.fixture(scope="session")
-def mock_session_factory(url: str) -> requests.Session:
+def mock_session_factory(url: str) -> Callable[[], requests.Session]:
     """Factory for building mock sessions."""
 
-    def factory():
+    def factory() -> requests.Session:
         """Session factory."""
         requests_session = requests.Session()
         requests_session.mount(url, LimeSurveyMockAdapter())
