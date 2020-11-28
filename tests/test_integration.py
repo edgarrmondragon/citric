@@ -1,20 +1,41 @@
 """Integration tests for Python client."""
+import os
 from pathlib import Path
 from typing import Any, Dict, Generator, List
 
 import csv
 import io
+import psycopg2
 import pytest
 
 from citric import Client
 from citric.exceptions import LimeSurveyStatusError
 
-LS_URL = "http://localhost:8001/index.php/admin/remotecontrol"
+LS_URL = os.getenv("LIMESURVEY_URL")
 LS_USER = "iamadmin"
 LS_PW = "secret"
 
+DB_URI = os.getenv("DB_URI")
 
-@pytest.fixture(scope="session")
+
+@pytest.fixture(scope="module", autouse=True)
+def enable_json_rpc():
+    """Enable JSON RPC interface for integration tests."""
+    sql = """INSERT INTO lime_settings_global (
+        stg_name,
+        stg_value
+    )
+    VALUES ('RPCInterface', 'json')
+    ON CONFLICT(stg_name) DO UPDATE
+    SET stg_value=EXCLUDED.stg_value;
+    """
+
+    with psycopg2.connect(DB_URI) as conn, conn.cursor() as curs:
+        curs.execute(sql)
+        conn.commit()
+
+
+@pytest.fixture(scope="module")
 def client() -> Generator[Client, None, None]:
     """RemoteControl2 API client."""
     client = Client(LS_URL, LS_USER, LS_PW)
