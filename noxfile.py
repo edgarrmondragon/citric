@@ -18,12 +18,14 @@ def install_with_constraints(session: Session, *args, **kwargs) -> None:
             "--dev",
             "--format=requirements.txt",
             f"--output={requirements.name}",
+            # TODO: remove this
+            "--without-hashes",
             external=True,
         )
         session.install(f"--constraint={requirements.name}", *args, **kwargs)
 
 
-@nox.session(python=["3.8", "3.7", "3.6"])
+@nox.session(python=["3.9", "3.8", "3.7", "3.6"])
 def tests(session: Session) -> None:
     """Execute pytest tests."""
     args = session.posargs or ["--cov", "--without-integration"]
@@ -34,7 +36,7 @@ def tests(session: Session) -> None:
     session.run("pytest", *args)
 
 
-@nox.session(python="3.8")
+@nox.session(python=["3.9", "3.8"])
 def coverage(session: Session) -> None:
     """Upload coverage data."""
     install_with_constraints(session, "coverage[toml]", "codecov")
@@ -42,7 +44,7 @@ def coverage(session: Session) -> None:
     session.run("codecov", *session.posargs)
 
 
-@nox.session(python=["3.8"])
+@nox.session(python=["3.9", "3.8"])
 def lint(session: Session) -> None:
     """Check code linting."""
     args = session.posargs or locations
@@ -58,7 +60,7 @@ def lint(session: Session) -> None:
     session.run("flake8", *args)
 
 
-@nox.session(python="3.8")
+@nox.session(python=["3.9", "3.8"])
 def black(session: Session) -> None:
     """Format code."""
     args = session.posargs or locations
@@ -66,7 +68,7 @@ def black(session: Session) -> None:
     session.run("black", *args)
 
 
-@nox.session(python=["3.8", "3.7", "3.6"])
+@nox.session(python=["3.9", "3.8", "3.7", "3.6"])
 def mypy(session: Session) -> None:
     """Check types with mypy."""
     args = session.posargs or locations
@@ -82,7 +84,7 @@ def pytype(session: Session) -> None:
     session.run("pytype", *args)
 
 
-@nox.session(python=["3.8", "3.7", "3.6"])
+@nox.session(python=["3.9", "3.8", "3.7", "3.6"])
 def xdoctest(session: Session) -> None:
     """Run examples with xdoctest."""
     args = session.posargs or ["all"]
@@ -91,7 +93,7 @@ def xdoctest(session: Session) -> None:
     session.run("python", "-m", "xdoctest", package, *args)
 
 
-@nox.session(python="3.8")
+@nox.session(python=["3.9", "3.8"])
 def docs(session: Session) -> None:
     """Build the documentation."""
     session.run("poetry", "install", "--no-dev", external=True)
@@ -101,7 +103,7 @@ def docs(session: Session) -> None:
     session.run("sphinx-build", "docs", "docs/_build")
 
 
-@nox.session(python="3.8")
+@nox.session(python=["3.9", "3.8"])
 def safety(session: Session) -> None:
     """Check if packages are safe."""
     with tempfile.NamedTemporaryFile() as requirements:
