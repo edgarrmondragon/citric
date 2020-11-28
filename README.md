@@ -17,7 +17,7 @@ For the full reference, see the [RemoteControl 2 API docs][rc2api].
 ```python
 from citric import Client
 
-LS_URL = 'http://my-ls-server.com/index.php/admin/remotecontrol'
+LS_URL = "http://localhost:8001/index.php/admin/remotecontrol"
 
 with Client(LS_URL, 'iamadmin', 'secret') as client:
     # Get all surveys from user 'iamadmin'
@@ -59,16 +59,13 @@ Now you can access LimeSurvey at [port 8001](http://localhost:8001/index.php/adm
 Import an existing survey file and start testing with it:
 
 ```python
-import base64
-
-from citric import Client, Session
+from citric import Client
 
 LS_URL = "http://localhost:8001/index.php/admin/remotecontrol"
 SURVEY_FILE = "examples/limesurvey_survey_432535.lss"
 
-with Session(LS_URL, "iamadmin", "secret") as session:
-    client = Client(session)
-    # Import survey from file
+with Client(LS_URL, "iamadmin", "secret") as client:
+    # Import survey from a file
     survey_id = client.import_survey(SURVEY_FILE, "lss")
     print("New survey:", survey_id)
 ```
