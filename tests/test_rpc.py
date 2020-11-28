@@ -1,4 +1,6 @@
 """Tests for RPC low-level calls."""
+from typing import Callable
+
 import pytest
 import requests
 
@@ -8,7 +10,7 @@ from citric.exceptions import (
     LimeSurveyStatusError,
 )
 from citric.method import Method
-from citric.session import _BaseSession, Session
+from citric.session import Session
 
 from .conftest import LimeSurveyMockAdapter
 
@@ -19,10 +21,17 @@ class RPCOffAdapter(LimeSurveyMockAdapter):
     rpc_interface = "off"
 
 
-@pytest.fixture()
-def off_adapter() -> RPCOffAdapter:
-    """Adapter with RPC turned off."""
-    return RPCOffAdapter()
+@pytest.fixture(scope="session")
+def off_session_factory(url: str) -> requests.Session:
+    """Session with interface turned off."""
+
+    def factory():
+        """Session factory."""
+        requests_session = requests.Session()
+        requests_session.mount(url, RPCOffAdapter())
+        return requests_session
+
+    return factory
 
 
 def test_method():
@@ -31,18 +40,6 @@ def test_method():
     m2 = m1.world
 
     assert m2("a", "b", "c") == "hello.world(a,b,c)"
-
-
-def test_base_session():
-    """Test session abstraction."""
-
-    class TestSession(_BaseSession):
-        pass
-
-    session = TestSession("mock://lime", "user", "secret")
-
-    with pytest.raises(NotImplementedError):
-        session.rpc("test", 1, 2, 3)
 
 
 def test_json_rpc(session: Session):
@@ -59,15 +56,15 @@ def test_http_error(session: Session):
 
 
 def test_session_context(
-    url: str, username: str, password: str, adapter: LimeSurveyMockAdapter,
+    url: str,
+    username: str,
+    password: str,
+    mock_session_factory: Callable[[], requests.Session],
 ):
     """Test context creates a session key."""
-    requests_session = requests.Session()
-    requests_session.mount(url, adapter)
-
-    with Session(url, username, password, requests_session) as session:
+    with Session(url, username, password, mock_session_factory) as session:
         assert not session.closed
-        assert session.key == adapter.session_key
+        assert session.key == LimeSurveyMockAdapter.session_key
 
     assert session.closed
     assert session.key is None
@@ -80,14 +77,14 @@ def test_session_context(
 
 
 def test_interface_off(
-    url: str, username: str, password: str, off_adapter: RPCOffAdapter,
+    url: str,
+    username: str,
+    password: str,
+    off_session_factory: Callable[[], requests.Session],
 ):
     """Test effect of JSON RPC not enabled."""
-    requests_session = requests.Session()
-    requests_session.mount(url, off_adapter)
-
     with pytest.raises(LimeSurveyError, match="JSON RPC interface is not enabled"):
-        Session(url, username, password, requests_session)
+        Session(url, username, password, off_session_factory)
 
 
 def test_empty_response(session: Session):

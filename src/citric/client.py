@@ -1,7 +1,6 @@
 """Python API Client."""
 
 import base64
-import enum
 from pathlib import Path
 from types import TracebackType
 from typing import (
@@ -18,97 +17,62 @@ from typing import (
     TypeVar,
     Union,
 )
-from citric.session import _BaseSession, Session
+
+import requests
+
+from citric import enums
+from citric.session import Session
+
+T = TypeVar("T", bound="Client")
 
 
-class ImportSurveyType(str, enum.Enum):
-    """Survey file type."""
-
-    LSS = "lss"
-    CSV = "csv"
-    TXT = "txt"
-    LSA = "lsa"
-
-
-class ResponsesExportFormat(str, enum.Enum):
-    """Responses export type."""
-
-    PDF = "pdf"
-    CSV = "csv"
-    XLS = "xls"
-    DOC = "doc"
-    JSON = "json"
-
-
-class SurveyCompletionStatus(str, enum.Enum):
-    """Survey completion status values."""
-
-    COMPLETE = "complete"
-    INCOMPLETE = "incomplete"
-    ALL = "all"
-
-
-class HeadingType(str, enum.Enum):
-    """Types of heading in responses export."""
-
-    CODE = "code"
-    FULL = "full"
-    ABBREVIATED = "abbreviated"
-
-
-class ResponseType(str, enum.Enum):
-    """Types of responses in export."""
-
-    LONG = "long"
-    SHORT = "short"
-
-
-T = TypeVar("T", bound="_BaseClient")
-
-
-class _BaseClient:
+class Client:
     """Python API client.
 
-    Offers explicit wrappers for RPC methods and simplifies common worflows.
+    Offers explicit wrappers for RPC methods and simplifies common workflows.
 
     Args:
         session: A LSRPC2 API authenticated session.
     """
 
+    session_class = Session
+    open_function = open
+
     def __init__(
-        self,  # noqa: ANN101
+        self,
         url: str,
         username: str,
         password: str,
-        open_function: Callable = open,
+        requests_session_factory: Callable[[], requests.Session] = requests.session,
     ) -> None:
         """Create a LimeSurvey Python API client."""
-        self.__session = self.ClientSession(url, username, password)
-        self.__open = open_function
+        self.__session = self.session_class(
+            url, username, password, requests_session_factory,
+        )
 
-    class ClientSession(_BaseSession):
-        pass
-
-    def close(self) -> None:  # noqa: ANN101
+    def close(self) -> None:
+        """Close client session."""
         self.__session.close()
 
     def __enter__(self: T) -> T:
+        """Create client context."""
         return self
 
     def __exit__(
-        self,  # noqa: ANN101
+        self,
         type: Optional[Type[BaseException]],
         value: Optional[BaseException],
         traceback: Optional[TracebackType],
     ) -> None:
+        """Safely exit the client context."""
         self.close()
 
     @property
-    def session(self) -> _BaseSession:  # noqa: ANN101
+    def session(self) -> Session:
         """Low-level RPC session."""
         return self.__session
 
-    def activate_survey(self, survey_id: int) -> Dict[str, Any]:  # noqa: ANN101
+    def activate_survey(self, survey_id: int) -> Dict[str, Any]:
         """Activate a survey.
 
         Args:
@@ -120,7 +84,7 @@ class _BaseClient:
         return self.__session.activate_survey(survey_id)
 
     def activate_tokens(
-        self, survey_id: int, attributes: Optional[List[str]] = None,  # noqa: ANN101
+        self, survey_id: int, attributes: Optional[List[str]] = None,
     ) -> Dict[str, str]:
         """Initialise the survey participant table.
 
@@ -136,7 +100,7 @@ class _BaseClient:
         return self.__session.activate_tokens(survey_id)
 
     def add_participants(
-        self,  # noqa: ANN101
+        self,
         survey_id: int,
         participant_data: Sequence[Mapping[str, Any]],
         create_tokens: bool = True,
@@ -156,7 +120,7 @@ class _BaseClient:
         )
 
     def _map_response_keys(
-        self, survey_id: int, response_data: Mapping[str, Any]  # noqa: ANN101
+        self, survey_id: int, response_data: Mapping[str, Any]
     ) -> Dict[str, Any]:
         """Converts response keys to LimeSurvey's internal representation.
 
@@ -174,9 +138,7 @@ class _BaseClient:
             for key, value in response_data.items()
         }
 
-    def add_response(
-        self, survey_id: int, response_data: Mapping[str, Any],  # noqa: ANN101
-    ) -> int:
+    def add_response(self, survey_id: int, response_data: Mapping[str, Any]) -> int:
         """Add a single response to a survey.
 
         Args:
@@ -191,7 +153,7 @@ class _BaseClient:
         return int(self.__session.add_response(survey_id, data))
 
     def add_responses(
-        self, survey_id: int, responses: Iterable[Mapping[str, Any]],  # noqa: ANN101
+        self, survey_id: int, responses: Iterable[Mapping[str, Any]],
     ) -> List[int]:
         """Add multiple responses to a survey.
 
@@ -208,7 +170,7 @@ class _BaseClient:
             ids.append(response_id)
         return ids
 
-    def delete_survey(self, survey_id: int) -> Dict[str, str]:  # noqa: ANN101
+    def delete_survey(self, survey_id: int) -> Dict[str, str]:
         """Delete a survey.
 
         Args:
@@ -220,7 +182,7 @@ class _BaseClient:
         return self.__session.delete_survey(survey_id)
 
     def export_responses(
-        self,  # noqa: ANN101
+        self,
         file_object: BinaryIO,
         survey_id: int,
         file_format: str,
@@ -253,11 +215,11 @@ class _BaseClient:
             base64.b64decode(
                 self.__session.export_responses(
                     survey_id,
-                    ResponsesExportFormat(file_format),
+                    enums.ResponsesExportFormat(file_format),
                     language,
-                    SurveyCompletionStatus(completion_status),
-                    HeadingType(heading_type),
-                    ResponseType(response_type),
+                    enums.SurveyCompletionStatus(completion_status),
+                    enums.HeadingType(heading_type),
+                    enums.ResponseType(response_type),
                     from_response_id,
                     to_response_id,
                     fields,
@@ -266,7 +228,7 @@ class _BaseClient:
         )
 
     def export_responses_by_token(
-        self,  # noqa: ANN101
+        self,
         file_object: BinaryIO,
         survey_id: int,
         file_format: str,
@@ -301,12 +263,12 @@ class _BaseClient:
             base64.b64decode(
                 self.__session.export_responses_by_token(
                     survey_id,
-                    ResponsesExportFormat(file_format),
+                    enums.ResponsesExportFormat(file_format),
                     token,
                     language,
-                    SurveyCompletionStatus(completion_status),
-                    HeadingType(heading_type),
-                    ResponseType(response_type),
+                    enums.SurveyCompletionStatus(completion_status),
+                    enums.HeadingType(heading_type),
+                    enums.ResponseType(response_type),
                     from_response_id,
                     to_response_id,
                     fields,
@@ -315,7 +277,7 @@ class _BaseClient:
         )
 
     def get_participant_properties(
-        self,  # noqa: ANN101
+        self,
         survey_id: int,
         query: Union[Dict[str, Any], int],
         properties: Optional[Sequence[str]] = None,
@@ -333,9 +295,7 @@ class _BaseClient:
         """
         return self.__session.get_participant_properties(survey_id, query, properties)
 
-    def get_response_ids(
-        self, survey_id: int, token: str,  # noqa: ANN101
-    ) -> List[int]:
+    def get_response_ids(self, survey_id: int, token: str,) -> List[int]:
         """Find response IDs given a survey ID and a token.
 
         Args:
@@ -347,7 +307,7 @@ class _BaseClient:
         """
         return self.__session.get_response_ids(survey_id, token)
 
-    def _get_site_setting(self, setting_name: str) -> Any:  # noqa: ANN101
+    def _get_site_setting(self, setting_name: str) -> Any:
         """Get a global setting.
 
         Function to query site settings. Can only be used by super administrators.
@@ -360,7 +320,7 @@ class _BaseClient:
         """
         return self.__session.get_site_settings(setting_name)
 
-    def get_default_theme(self) -> str:  # noqa: ANN101
+    def get_default_theme(self) -> str:
         """Get the global default theme.
 
         Returns:
@@ -368,7 +328,7 @@ class _BaseClient:
         """
         return self._get_site_setting("defaulttheme")
 
-    def get_site_name(self) -> str:  # noqa: ANN101
+    def get_site_name(self) -> str:
         """Get the site name.
 
         Returns:
@@ -376,7 +336,7 @@ class _BaseClient:
         """
         return self._get_site_setting("sitename")
 
-    def get_default_language(self) -> str:  # noqa: ANN101
+    def get_default_language(self) -> str:
         """Get the default site language.
 
         Returns:
@@ -384,7 +344,7 @@ class _BaseClient:
         """
         return self._get_site_setting("defaultlang")
 
-    def get_available_languages(self) -> Optional[List[str]]:  # noqa: ANN101
+    def get_available_languages(self) -> Optional[List[str]]:
         """Get the list of available languages.
 
         Returns:
@@ -396,7 +356,7 @@ class _BaseClient:
         return langs.split(" ") if langs else None
 
     def get_survey_properties(
-        self, survey_id: int, properties: Optional[List[str]] = None,  # noqa: ANN101
+        self, survey_id: int, properties: Optional[List[str]] = None,
     ) -> Dict[str, Any]:
         """Get properties of a survey.
 
@@ -410,7 +370,7 @@ class _BaseClient:
         return self.__session.get_survey_properties(survey_id, properties)
 
     def download_files(
-        self, directory: Union[str, Path], survey_id: int, token: str,  # noqa: ANN101
+        self, directory: Union[str, Path], survey_id: int, token: str,
     ) -> List[Path]:
         """Download files uploaded in survey response.
 
@@ -433,13 +393,13 @@ class _BaseClient:
                 **files_data[file]["meta"], token=token,
             )
             filepaths.append(filepath)
-            with self.__open(filepath, mode="wb") as f:
+            with self.open_function(filepath, mode="wb") as f:
                 f.write(base64.b64decode(files_data[file]["content"]))
 
         return filepaths
 
     def import_survey(
-        self,  # noqa: ANN101
+        self,
         filepath: Union[Path, str],
         file_type: str = "lss",
         survey_name: Optional[str] = None,
@@ -459,12 +419,14 @@ class _BaseClient:
         Returns:
             The ID of the new survey.
         """
-        with self.__open(filepath, mode="rb") as file:
+        with self.open_function(filepath, mode="rb") as file:
             contents = base64.b64encode(file.read()).decode()
-            return self.__session.import_survey(contents, ImportSurveyType(file_type))
+            return self.__session.import_survey(
+                contents, enums.ImportSurveyType(file_type),
+            )
 
     def list_participants(
-        self,  # noqa: ANN101
+        self,
         survey_id: int,
         start: int = 0,
         limit: int = 10,
@@ -490,7 +452,7 @@ class _BaseClient:
         )
 
     def list_questions(
-        self,  # noqa: ANN101
+        self,
         survey_id: int,
         group_id: Optional[int] = None,
         language: Optional[str] = None,
@@ -507,9 +469,7 @@ class _BaseClient:
         """
         return self.__session.list_questions(survey_id, group_id, language)
 
-    def list_surveys(
-        self, username: Optional[str] = None,  # noqa: ANN101
-    ) -> List[Dict[str, Any]]:
+    def list_surveys(self, username: Optional[str] = None) -> List[Dict[str, Any]]:
         """Get all surveys or only those owned by a user.
 
         Args:
@@ -519,10 +479,3 @@ class _BaseClient:
             List of surveys with basic information.
         """
         return self.__session.list_surveys(username)
-
-
-class Client(_BaseClient):
-    """Main client implementation."""
-
-    class ClientSession(Session):
-        """Main client session implementation."""

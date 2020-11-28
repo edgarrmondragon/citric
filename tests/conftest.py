@@ -1,6 +1,6 @@
 """pytest fixtures."""
 import json
-from typing import Any, Mapping, Optional, Tuple, Type, Union
+from typing import Any, Callable, Mapping, Optional, Tuple, Union
 
 import pytest
 import requests
@@ -79,6 +79,19 @@ def url() -> str:
 
 
 @pytest.fixture(scope="session")
+def mock_session_factory(url: str) -> requests.Session:
+    """Factory for building mock sessions."""
+
+    def factory():
+        """Session factory."""
+        requests_session = requests.Session()
+        requests_session.mount(url, LimeSurveyMockAdapter())
+        return requests_session
+
+    return factory
+
+
+@pytest.fixture(scope="session")
 def username() -> str:
     """Dummy LimeSurvey username."""
     return "limeuser"
@@ -91,24 +104,14 @@ def password() -> str:
 
 
 @pytest.fixture(scope="session")
-def adapter_class() -> Type[BaseAdapter]:
-    """Session adapter for requests."""
-    return LimeSurveyMockAdapter
-
-
-@pytest.fixture(scope="session")
-def adapter(adapter_class: Type[BaseAdapter]) -> BaseAdapter:
-    """Session adapter for requests."""
-    return adapter_class()
-
-
-@pytest.fixture(scope="session")
-def session(url: str, username: str, password: str, adapter: BaseAdapter):
+def session(
+    url: str,
+    username: str,
+    password: str,
+    mock_session_factory: Callable[[], requests.Session],
+):
     """Create a LimeSurvey Session fixture."""
-    requests_session = requests.Session()
-    requests_session.mount(url, adapter)
-
-    session = Session(url, username, password, requests_session)
+    session = Session(url, username, password, mock_session_factory)
 
     yield session
 

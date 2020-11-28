@@ -1,6 +1,6 @@
 """Low level wrapper for connecting to the LSRC2."""
 from types import TracebackType
-from typing import Any, Dict, Optional, Type, TypeVar
+from typing import Any, Callable, Optional, Type, TypeVar
 
 import requests
 
@@ -11,33 +11,17 @@ from citric.exceptions import (
 )
 from citric.method import Method
 
-
-class _BaseSession:
-    """Abstract class for RPC sessions."""
-
-    def __init__(self, url: str, username: str, password: str) -> None:  # noqa: ANN101
-        """Create an RPC session."""
-        self.url = url
-
-    def __getattr__(self, name: str) -> Method:  # noqa: ANN101
-        """Magic method dispatcher."""
-        return Method(self.rpc, name)
-
-    def rpc(self, method: str, *params: Any) -> Dict[str, Any]:  # noqa: ANN101
-        """RPC call."""
-        raise NotImplementedError
-
-
 T = TypeVar("T", bound="Session")
 
 
-class Session(_BaseSession):
+class Session:
     """LimeSurvey RemoteControl 2 session.
 
     Args:
         url: LimeSurvey Remote Control endpoint.
-        admin_user: LimeSurvey user name.
-        admin_pass: LimeSurvey password.
+        username: LimeSurvey user name.
+        password: LimeSurvey password.
+        requests_session_factory: callable to create the requests Session
     """
 
     _headers = {
@@ -48,16 +32,15 @@ class Session(_BaseSession):
     __attrs__ = ["url", "key"]
 
     def __init__(
-        self,  # noqa: ANN101
+        self,
         url: str,
         username: str,
         password: str,
-        requests_session: Optional[requests.Session] = None,
+        requests_session_factory: Callable[[], requests.Session] = requests.session,
     ) -> None:
         """Create a LimeSurvey RPC session."""
-        super().__init__(url, username, password)
-
-        self._session = requests_session or requests.Session()
+        self.url = url
+        self._session = requests_session_factory()
         self._session.headers.update(self._headers)
 
         self.__key: Optional[str] = self.get_session_key(username, password)
@@ -68,16 +51,20 @@ class Session(_BaseSession):
         self.__closed = False
 
     @property
-    def closed(self) -> bool:  # noqa: ANN101
+    def closed(self) -> bool:
         """Whether the RPC session is closed."""
         return self.__closed
 
     @property
-    def key(self) -> Optional[str]:  # noqa: ANN101
+    def key(self) -> Optional[str]:
         """RPC session key."""
         return self.__key
 
-    def rpc(self, method: str, *params: Any) -> Any:  # noqa: ANN101
+    def __getattr__(self, name: str) -> Method:
+        """Magic method dispatcher."""
+        return Method(self.rpc, name)
+
+    def rpc(self, method: str, *params: Any) -> Any:
         """Execute RPC method on LimeSurvey, with optional token authentication.
 
         Any method, except for `get_session_key`.
@@ -98,9 +85,7 @@ class Session(_BaseSession):
         return result
 
     @staticmethod
-    def _invoke(
-        session: requests.Session, url: str, method: str, *params: Any,
-    ) -> Any:  # noqa: ANN101
+    def _invoke(session: requests.Session, url: str, method: str, *params: Any) -> Any:
         """Execute a LimeSurvey RPC with a JSON payload.
 
         Args:
@@ -149,7 +134,7 @@ class Session(_BaseSession):
 
         return result
 
-    def close(self) -> None:  # noqa: ANN101
+    def close(self) -> None:
         """Close RPC session."""
         self.release_session_key()
         self._session.close()
@@ -165,7 +150,7 @@ class Session(_BaseSession):
         return self
 
     def __exit__(
-        self,  # noqa: ANN101
+        self,
         type: Optional[Type[BaseException]],
         value: Optional[BaseException],
         traceback: Optional[TracebackType],
