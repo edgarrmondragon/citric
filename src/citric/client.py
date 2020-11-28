@@ -68,7 +68,7 @@ class Client:
         self.close()
 
     @staticmethod
-    def read_file(filename: Union[Path, str]) -> closing[BinaryIO]:
+    def read_file(filename: Union[Path, str]) -> BinaryIO:
         """Read a file.
 
         Overwrite this method to read from a different filesystem (e.g. S3).
@@ -79,10 +79,10 @@ class Client:
         Returns:
             Closing IO wrapper.
         """
-        return closing(open(filename, "rb"))
+        return open(filename, "rb")
 
     @staticmethod
-    def write_file(filename: Union[Path, str]) -> closing[BinaryIO]:
+    def write_file(filename: Union[Path, str]) -> BinaryIO:
         """Write a file.
 
         Overwrite this method to write from a different filesystem (e.g. S3).
@@ -93,7 +93,7 @@ class Client:
         Returns:
             Closing IO wrapper.
         """
-        return closing(open(filename, "wb"))
+        return open(filename, "wb")
 
     @property
     def session(self) -> Session:
@@ -421,7 +421,7 @@ class Client:
                 **files_data[file]["meta"], token=token,
             )
             filepaths.append(filepath)
-            with self.write_file(filepath) as f:
+            with closing(self.write_file(filepath)) as f:
                 f.write(base64.b64decode(files_data[file]["content"]))
 
         return filepaths
@@ -447,7 +447,7 @@ class Client:
         Returns:
             The ID of the new survey.
         """
-        with self.read_file(filepath) as file:
+        with closing(self.read_file(filepath)) as file:
             contents = base64.b64encode(file.read()).decode()
             return self.__session.import_survey(
                 contents, enums.ImportSurveyType(file_type),
