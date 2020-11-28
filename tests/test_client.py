@@ -6,11 +6,12 @@ from typing import Any, Dict, Generator, List
 
 import pytest
 
-from citric.client import _BaseClient, ImportSurveyType
-from citric.session import _BaseSession
+from citric.client import Client
+from citric.enums import ImportSurveyType
+from citric.session import Session
 
 
-class MockSession(_BaseSession):
+class MockSession(Session):
     """Mock RPC session with some hardcoded methods for testing."""
 
     settings = {
@@ -20,7 +21,11 @@ class MockSession(_BaseSession):
         "restrictToLanguages": "en fr es",
     }
 
-    def rpc(self, method: str, *params: Any) -> Dict[str, Any]:  # noqa: ANN101
+    def __init__(self, *args, **kwargs) -> None:
+        """Create a mock session."""
+        pass
+
+    def rpc(self, method: str, *params: Any) -> Dict[str, Any]:
         """A mock RPC call."""
         return {"method": method, "params": [*params]}
 
@@ -41,15 +46,15 @@ class MockSession(_BaseSession):
         """Mock result from adding a response."""
         return "1"
 
-    def export_responses(self, *args: Any) -> bytes:  # noqa: ANN101
+    def export_responses(self, *args: Any) -> bytes:
         """Mock responses file content."""
         return base64.b64encode(b"FILE CONTENTS")
 
-    def export_responses_by_token(self, *args: Any) -> bytes:  # noqa: ANN101
+    def export_responses_by_token(self, *args: Any) -> bytes:
         """Mock responses file content."""
         return base64.b64encode(b"FILE CONTENTS")
 
-    def get_site_settings(self, setting_name: str) -> str:  # noqa: ANN101
+    def get_site_settings(self, setting_name: str) -> str:
         """Return the setting value or an empty string."""
         return self.settings.get(setting_name, "")
 
@@ -85,15 +90,14 @@ class MockSession(_BaseSession):
         }
 
 
-class MockClient(_BaseClient):
+class MockClient(Client):
     """A mock LimeSurvey client."""
 
-    class ClientSession(MockSession):
-        """Session implementation for this client."""
+    session_class = MockSession
 
 
 @pytest.fixture(scope="session")
-def client() -> Generator[_BaseClient, None, None]:
+def client() -> Generator[Client, None, None]:
     """RemoteControl2 API client."""
     with MockClient("mock://lime.com", "user", "secret") as client:
         yield client

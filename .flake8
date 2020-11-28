@@ -1,7 +1,7 @@
 [flake8]
 select = ANN,BLK,C,D,DAR,E,F,W
 docstring-convention = google
-ignore = E203,W503
+ignore = ANN101,E203,W503
 max-line-length = 88
 max-complexity = 10
 per-file-ignores =
