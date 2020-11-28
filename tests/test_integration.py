@@ -5,13 +5,13 @@ from typing import Any, Dict, Generator, List
 
 import csv
 import io
-import psycopg2
+import psycopg2  # type: ignore
 import pytest
 
 from citric import Client
 from citric.exceptions import LimeSurveyStatusError
 
-LS_URL = os.getenv("LIMESURVEY_URL")
+LS_URL = os.getenv("LIMESURVEY_URL", "http://limesurvey/index.php/admin/remotecontrol")
 LS_USER = "iamadmin"
 LS_PW = "secret"
 
