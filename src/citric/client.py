@@ -1,6 +1,7 @@
 """Python API Client."""
 
 import base64
+from contextlib import closing
 from pathlib import Path
 from types import TracebackType
 from typing import (
@@ -36,7 +37,6 @@ class Client:
     """
 
     session_class = Session
-    open_function = open
 
     def __init__(
         self,
@@ -66,6 +66,34 @@ class Client:
     ) -> None:
         """Safely exit the client context."""
         self.close()
+
+    @staticmethod
+    def read_file(filename: Union[Path, str]) -> closing[BinaryIO]:
+        """Read a file.
+
+        Overwrite this method to read from a different filesystem (e.g. S3).
+
+        Args:
+            filename: Path to file.
+
+        Returns:
+            Closing IO wrapper.
+        """
+        return closing(open(filename, "rb"))
+
+    @staticmethod
+    def write_file(filename: Union[Path, str]) -> closing[BinaryIO]:
+        """Write a file.
+
+        Overwrite this method to write from a different filesystem (e.g. S3).
+
+        Args:
+            filename: Path to file.
+
+        Returns:
+            Closing IO wrapper.
+        """
+        return closing(open(filename, "wb"))
 
     @property
     def session(self) -> Session:
@@ -393,7 +421,7 @@ class Client:
                 **files_data[file]["meta"], token=token,
             )
             filepaths.append(filepath)
-            with self.open_function(filepath, mode="wb") as f:
+            with self.write_file(filepath) as f:
                 f.write(base64.b64decode(files_data[file]["content"]))
 
         return filepaths
@@ -419,7 +447,7 @@ class Client:
         Returns:
             The ID of the new survey.
         """
-        with self.open_function(filepath, mode="rb") as file:
+        with self.read_file(filepath) as file:
             contents = base64.b64encode(file.read()).decode()
             return self.__session.import_survey(
                 contents, enums.ImportSurveyType(file_type),
