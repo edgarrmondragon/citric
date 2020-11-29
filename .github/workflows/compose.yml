@@ -1,0 +1,13 @@
+name: Integration
+
+on:
+  pull_request:
+    tags:
+      - integration
+
+jobs:
+  compose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: docker-compose run python
