@@ -1,0 +1,9 @@
+name: Integration
+on: [pull_request]
+jobs:
+  compose:
+    runs-on: ubuntu-latest
+    if: contains(github.event.pull_request.labels.*.name, 'integration')
+    steps:
+      - uses: actions/checkout@v2
+      - run: docker-compose run python
