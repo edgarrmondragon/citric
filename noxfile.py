@@ -35,7 +35,7 @@ def tests(session: Session) -> None:
         "coverage[toml]",
         "pytest",
         "pytest-cov",
-        "psycopg2",
+        "psycopg2-binary",
     )
     session.run("pytest", *args)
 
