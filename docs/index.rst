@@ -19,7 +19,7 @@ Using ``pip``:
 
 .. code-block:: console
 
-   $ pip install git+https://github.com/edgarrmondragon/citric
+   $ pip install citric
 
 Usage
 -----
