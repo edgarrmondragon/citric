@@ -502,6 +502,8 @@ class Client:
             return self.__session.import_survey(
                 contents,
                 enums.ImportSurveyType(file_type),
+                survey_name,
+                survey_id,
             )
 
     def list_participants(
