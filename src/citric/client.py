@@ -226,6 +226,18 @@ class Client:
             ids.append(response_id)
         return ids
 
+    def delete_response(self, survey_id: int, response_id: int) -> Dict[str, str]:
+        """Delete a response in a survey.
+
+        Args:
+            survey_id: ID of the survey the response belongs to.
+            response_id: ID of the response to delete.
+
+        Returns:
+            Status message.
+        """
+        return self.__session.delete_response(survey_id, response_id)
+
     def delete_survey(self, survey_id: int) -> Dict[str, str]:
         """Delete a survey.
 

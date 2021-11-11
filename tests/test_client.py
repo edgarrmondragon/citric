@@ -113,6 +113,11 @@ def test_activate_tokens(client: MockClient):
     assert client.activate_tokens(1) == client.session.activate_tokens(1)
 
 
+def test_delete_response(client: MockClient):
+    """Test activate_tokens client method."""
+    assert client.delete_response(1, 1) == client.session.delete_response(1, 1)
+
+
 def test_delete_survey(client: MockClient):
     """Test activate_tokens client method."""
     assert client.delete_survey(1) == client.session.delete_survey(1)
