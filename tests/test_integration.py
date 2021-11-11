@@ -8,7 +8,7 @@ import io
 import psycopg2  # type: ignore
 import pytest
 
-from citric import Client
+import citric
 from citric.exceptions import LimeSurveyStatusError
 
 LS_URL = os.getenv("LIMESURVEY_URL", "http://limesurvey/index.php/admin/remotecontrol")
@@ -36,9 +36,9 @@ def enable_json_rpc():
 
 
 @pytest.fixture(scope="module")
-def client() -> Generator[Client, None, None]:
+def client() -> Generator[citric.Client, None, None]:
     """RemoteControl2 API client."""
-    client = Client(LS_URL, LS_USER, LS_PW)
+    client = citric.Client(LS_URL, LS_USER, LS_PW)
 
     yield client
 
@@ -52,7 +52,7 @@ def client() -> Generator[Client, None, None]:
 
 
 @pytest.fixture(scope="function")
-def survey_id(client: Client) -> Generator[int, None, None]:
+def survey_id(client: citric.Client) -> Generator[int, None, None]:
     """Import a survey from a file and return its ID."""
     survey_id = client.import_survey(Path("./examples/survey.lss"))
 
@@ -62,7 +62,7 @@ def survey_id(client: Client) -> Generator[int, None, None]:
 
 
 @pytest.mark.integration_test
-def test_activate_survey(client: Client, survey_id: int):
+def test_activate_survey(client: citric.Client, survey_id: int):
     """Test whether the survey gets activated."""
     properties_before = client.get_survey_properties(survey_id, ["active"])
     assert properties_before["active"] == "N"
@@ -75,7 +75,7 @@ def test_activate_survey(client: Client, survey_id: int):
 
 
 @pytest.mark.integration_test
-def test_activate_tokens(client: Client, survey_id: int):
+def test_activate_tokens(client: citric.Client, survey_id: int):
     """Test whether the participants table gets activated."""
     client.activate_survey(survey_id)
 
@@ -89,7 +89,7 @@ def test_activate_tokens(client: Client, survey_id: int):
 
 
 @pytest.mark.integration_test
-def test_participants(client: Client, survey_id: int):
+def test_participants(client: citric.Client, survey_id: int):
     """Test adding participants."""
     client.activate_survey(survey_id)
     client.activate_tokens(survey_id)
@@ -119,7 +119,7 @@ def test_participants(client: Client, survey_id: int):
 
 
 @pytest.mark.integration_test
-def test_responses(client: Client, survey_id: int):
+def test_responses(client: citric.Client, survey_id: int):
     """Test adding and exporting responses."""
     client.activate_survey(survey_id)
     client.activate_tokens(survey_id)

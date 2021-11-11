@@ -47,7 +47,10 @@ class Client:
     ) -> None:
         """Create a LimeSurvey Python API client."""
         self.__session = self.session_class(
-            url, username, password, requests_session_factory,
+            url,
+            username,
+            password,
+            requests_session_factory,
         )
 
     def close(self) -> None:
@@ -112,7 +115,9 @@ class Client:
         return self.__session.activate_survey(survey_id)
 
     def activate_tokens(
-        self, survey_id: int, attributes: Optional[List[str]] = None,
+        self,
+        survey_id: int,
+        attributes: Optional[List[str]] = None,
     ) -> Dict[str, str]:
         """Initialise the survey participant table.
 
@@ -144,7 +149,9 @@ class Client:
             Information of newly created participants.
         """
         return self.__session.add_participants(
-            survey_id, participant_data, create_tokens,
+            survey_id,
+            participant_data,
+            create_tokens,
         )
 
     def _map_response_keys(
@@ -181,7 +188,9 @@ class Client:
         return int(self.__session.add_response(survey_id, data))
 
     def add_responses(
-        self, survey_id: int, responses: Iterable[Mapping[str, Any]],
+        self,
+        survey_id: int,
+        responses: Iterable[Mapping[str, Any]],
     ) -> List[int]:
         """Add multiple responses to a survey.
 
@@ -323,7 +332,11 @@ class Client:
         """
         return self.__session.get_participant_properties(survey_id, query, properties)
 
-    def get_response_ids(self, survey_id: int, token: str,) -> List[int]:
+    def get_response_ids(
+        self,
+        survey_id: int,
+        token: str,
+    ) -> List[int]:
         """Find response IDs given a survey ID and a token.
 
         Args:
@@ -384,7 +397,9 @@ class Client:
         return langs.split(" ") if langs else None
 
     def get_survey_properties(
-        self, survey_id: int, properties: Optional[List[str]] = None,
+        self,
+        survey_id: int,
+        properties: Optional[List[str]] = None,
     ) -> Dict[str, Any]:
         """Get properties of a survey.
 
@@ -398,7 +413,10 @@ class Client:
         return self.__session.get_survey_properties(survey_id, properties)
 
     def download_files(
-        self, directory: Union[str, Path], survey_id: int, token: str,
+        self,
+        directory: Union[str, Path],
+        survey_id: int,
+        token: str,
     ) -> List[Path]:
         """Download files uploaded in survey response.
 
@@ -418,7 +436,8 @@ class Client:
 
         for file in files_data:
             filepath = dirpath / name_template.format(
-                **files_data[file]["meta"], token=token,
+                **files_data[file]["meta"],
+                token=token,
             )
             filepaths.append(filepath)
             with closing(self.write_file(filepath)) as f:
@@ -450,7 +469,8 @@ class Client:
         with closing(self.read_file(filepath)) as file:
             contents = base64.b64encode(file.read()).decode()
             return self.__session.import_survey(
-                contents, enums.ImportSurveyType(file_type),
+                contents,
+                enums.ImportSurveyType(file_type),
             )
 
     def list_participants(
@@ -476,7 +496,12 @@ class Client:
             List of participants with basic information.
         """
         return self.__session.list_participants(
-            survey_id, start, limit, unused, attributes, conditions,
+            survey_id,
+            start,
+            limit,
+            unused,
+            attributes,
+            conditions,
         )
 
     def list_questions(

@@ -31,7 +31,11 @@ def tests(session: Session) -> None:
     args = session.posargs or ["--cov", "-m", "not integration_test"]
     session.run("poetry", "install", "--no-dev", external=True)
     install_with_constraints(
-        session, "coverage[toml]", "pytest", "pytest-cov", "psycopg2",
+        session,
+        "coverage[toml]",
+        "pytest",
+        "pytest-cov",
+        "psycopg2-binary",
     )
     session.run("pytest", *args)
 
@@ -54,7 +58,7 @@ def lint(session: Session) -> None:
         "flake8-annotations",
         "flake8-black",
         "flake8-docstrings",
-        # "flake8-isort",
+        "flake8-isort",
         "darglint",
     )
     session.run("flake8", *args)
@@ -98,7 +102,10 @@ def docs(session: Session) -> None:
     """Build the documentation."""
     session.run("poetry", "install", "--no-dev", external=True)
     install_with_constraints(
-        session, "sphinx", "sphinx-autodoc-typehints", "sphinx-autoapi",
+        session,
+        "sphinx",
+        "sphinx-autodoc-typehints",
+        "sphinx-autoapi",
     )
     session.run("sphinx-build", "docs", "docs/_build")
 
