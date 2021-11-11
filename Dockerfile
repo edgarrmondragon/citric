@@ -1,7 +1,7 @@
 FROM python:3.9-slim-buster
 
-ARG POETRY_VERSION=1.1.4
-ARG NOX_VERSION=2020.8.22
+ARG POETRY_VERSION=1.1.11
+ARG NOX_VERSION=2021.10.1
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
