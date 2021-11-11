@@ -153,23 +153,24 @@ class Client:
             participant_data,
             create_tokens,
         )
- 
+
     def delete_participants(
         self,
         survey_id: int,
-        participant_id: Sequence[int],
+        participant_ids: Sequence[int],
     ) -> List[Dict[str, Any]]:
         """Add participants to a survey.
 
         Args:
             survey_id: Survey to delete participants to.
-            participant_id: Participant IDs to be deleted.
+            participant_ids: Participant IDs to be deleted.
 
         Returns:
             Information of removed participants.
         """
         return self.__session.delete_participants(
-            survey_id, participant_id,
+            survey_id,
+            participant_ids,
         )
 
     def _map_response_keys(

@@ -150,6 +150,17 @@ def test_add_participants(client: MockClient):
     )
 
 
+def test_delete_participants(client: MockClient):
+    """Test delete_participants client method."""
+    participants = [1, 2, 3]
+    assert client.delete_participants(
+        1, participants
+    ) == client.session.delete_participants(
+        1,
+        participants,
+    )
+
+
 def test_participant_properties(client: MockClient):
     """Test get_participant_properties client method."""
     assert client.get_participant_properties(
