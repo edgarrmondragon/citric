@@ -51,13 +51,9 @@ Or more interestingly, export responses to a ``pandas`` dataframe:
        import pandas as pd
 
        survey_id = 123456
-       fileobj = io.BytesIO()
-
-       client.export_responses(fileobj, survey_id, file_format="csv")
-       fileobj.seek(0)
 
        df = pd.read_csv(
-           fileobj,
+           io.BytesIO(client.export_responses(survey_id, file_format="csv")),
            delimiter=";",
            parse_dates=["datestamp", "startdate", "submitdate"],
            index_col="id",
