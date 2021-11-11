@@ -14,4 +14,4 @@ updates:
     reviewers:
       - "edgarrmondragon"
     labels:
-      - "pip dependencies"
+      - "dependencies"
