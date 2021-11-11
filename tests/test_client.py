@@ -40,7 +40,10 @@ class MockSession(Session):
         return {"content": base64.b64decode(content.encode()), "type": file_type}
 
     def list_questions(
-        self, survey_id: int, group_id: Optional[int] = None, *args: Any
+        self,
+        survey_id: int,
+        group_id: Optional[int] = None,
+        *args: Any,
     ) -> List[Dict[str, Any]]:
         """Mock questions."""
         return [
@@ -102,6 +105,17 @@ class MockClient(Client):
     session_class = MockSession
 
 
+def assert_client_session_call(client: Client, method: str, *args: Any):
+    """Assert client makes RPC call with the right arguments.
+
+    Args:
+        client: LSRPC2 API client.
+        method: RPC method name.
+        args: RPC method arguments.
+    """
+    assert getattr(client, method)(*args) == getattr(client.session, method)(*args)
+
+
 @pytest.fixture(scope="session")
 def client() -> Generator[Client, None, None]:
     """RemoteControl2 API client."""
@@ -111,84 +125,74 @@ def client() -> Generator[Client, None, None]:
 
 def test_activate_survey(client: MockClient):
     """Test activate_survey client method."""
-    assert client.activate_survey(1) == client.session.activate_survey(1)
+    assert_client_session_call(client, "activate_survey", 1)
 
 
 def test_activate_tokens(client: MockClient):
     """Test activate_tokens client method."""
-    assert client.activate_tokens(1) == client.session.activate_tokens(1)
+    assert_client_session_call(client, "activate_tokens", 1)
 
 
 def test_delete_response(client: MockClient):
     """Test activate_tokens client method."""
-    assert client.delete_response(1, 1) == client.session.delete_response(1, 1)
+    assert_client_session_call(client, "delete_response", 1, 1)
 
 
 def test_delete_survey(client: MockClient):
     """Test activate_tokens client method."""
-    assert client.delete_survey(1) == client.session.delete_survey(1)
+    assert_client_session_call(client, "delete_survey", 1)
 
 
 def test_list_surveys(client: MockClient):
     """Test list_surveys client method."""
-    assert client.list_surveys() == client.session.list_surveys(None)
+    assert_client_session_call(client, "list_surveys", None)
 
 
 def test_list_survey_groups(client: MockClient):
     """Test list_survey_groups client method."""
-    assert client.list_survey_groups() == client.session.list_survey_groups(None)
+    assert_client_session_call(client, "list_survey_groups", None)
 
 
 def test_get_response_ids(client: MockClient):
     """Test get stored response IDs from a survey."""
-    assert client.get_response_ids(1, "TOKEN") == client.session.get_response_ids(
-        1, "TOKEN"
-    )
+    assert_client_session_call(client, "get_response_ids", 1, "TOKEN")
 
 
 def test_get_survey_properties(client: MockClient):
     """Test get_survey_properties client method."""
-    assert client.get_survey_properties(1) == client.session.get_survey_properties(
-        1, None
-    )
+    assert_client_session_call(client, "get_survey_properties", 1, None)
+
+
+def test_list_users(client: MockClient):
+    """Test list_users client method."""
+    assert_client_session_call(client, "list_users")
 
 
 def test_list_questions(client: MockClient):
     """Test list_questions client method."""
-    assert client.list_questions(1) == client.session.list_questions(1)
+    assert_client_session_call(client, "list_questions", 1)
 
 
 def test_add_participants(client: MockClient):
     """Test add_participants client method."""
     participants = [{"firstname": "Alice"}, {"firstname": "Bob"}]
-    assert client.add_participants(1, participants) == client.session.add_participants(
-        1, participants, True
-    )
+    assert_client_session_call(client, "add_participants", 1, participants, True)
 
 
 def test_delete_participants(client: MockClient):
     """Test delete_participants client method."""
     participants = [1, 2, 3]
-    assert client.delete_participants(
-        1, participants
-    ) == client.session.delete_participants(
-        1,
-        participants,
-    )
+    assert_client_session_call(client, "delete_participants", 1, participants)
 
 
 def test_participant_properties(client: MockClient):
     """Test get_participant_properties client method."""
-    assert client.get_participant_properties(
-        1, 1
-    ) == client.session.get_participant_properties(1, 1, None)
+    assert_client_session_call(client, "get_participant_properties", 1, 1, None)
 
 
 def test_list_participants(client: MockClient):
     """Test get_participant_properties client method."""
-    assert client.list_participants(1) == client.session.list_participants(
-        1, 0, 10, False, False, {}
-    )
+    assert_client_session_call(client, "list_participants", 1, 0, 10, False, False, {})
 
 
 def test_get_default_theme(client: MockClient):
