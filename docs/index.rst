@@ -1,13 +1,6 @@
 Citric
 ======
 
-.. image:: https://readthedocs.org/projects/citric/badge/?version=latest
-.. image:: https://pyup.io/repos/github/edgarrmondragon/citric/shield.svg
-.. image:: https://codecov.io/gh/edgarrmondragon/citric/branch/master/graph/badge.svg
-.. image:: https://github.com/edgarrmondragon/citric/workflows/Tests/badge.svg
-.. image:: https://img.shields.io/pypi/v/citric.svg
-.. image:: https://img.shields.io/pypi/pyversions/citric.svg
-
 A client to the LimeSurvey Remote Control API 2, written in modern
 Python.
 
