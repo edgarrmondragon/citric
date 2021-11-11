@@ -244,19 +244,19 @@ def test_add_responses(client: MockClient):
 def test_export_responses(client: MockClient):
     """Test export_responses and export_responses_by_token client methods."""
     with io.BytesIO() as fileobj:
-        client.export_responses(fileobj, 1, "csv")
+        fileobj.write(client.export_responses(1, file_format="csv"))
         fileobj.seek(0)
         assert fileobj.read() == b"FILE CONTENTS"
 
     with io.BytesIO() as fileobj:
-        client.export_responses_by_token(fileobj, 1, "csv", "123abc")
+        fileobj.write(client.export_responses(1, token="123abc", file_format="csv"))
         fileobj.seek(0)
         assert fileobj.read() == b"FILE CONTENTS"
 
 
 def test_download_files(client: MockClient, tmp_path: Path):
     """Test files are downloaded correctly."""
-    expected = {tmp_path / "TOKEN_0_1234.txt", tmp_path / "TOKEN_1_5678.txt"}
+    expected = {tmp_path / "1234", tmp_path / "5678"}
     paths = client.download_files(tmp_path, 1, "TOKEN")
 
     assert set(paths) == expected

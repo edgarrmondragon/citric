@@ -251,9 +251,10 @@ class Client:
 
     def export_responses(
         self,
-        file_object: BinaryIO,
         survey_id: int,
-        file_format: str,
+        *,
+        token: Optional[str] = None,
+        file_format: str = "json",
         language: Optional[str] = None,
         completion_status: str = "all",
         heading_type: str = "code",
@@ -261,12 +262,12 @@ class Client:
         from_response_id: Optional[int] = None,
         to_response_id: Optional[int] = None,
         fields: Optional[Sequence[str]] = None,
-    ) -> int:
+    ) -> bytes:
         """Export responses to a file-like object.
 
         Args:
-            file_object: File-like object to store the results.
             survey_id: Survey to add the response to.
+            token: Optional participant token to get responses for.
             file_format: Type of export. One of PDF, CSV, XLS, DOC or JSON.
             language: Export responses made to this language version of the survey.
             completion_status: Incomplete, complete or all.
@@ -277,10 +278,10 @@ class Client:
             fields: Which response fields to export. If none, exports all fields.
 
         Returns:
-            Number of bytes written to file.
+            Content bytes of exported to file.
         """
-        return file_object.write(
-            base64.b64decode(
+        if token is None:
+            return base64.b64decode(
                 self.__session.export_responses(
                     survey_id,
                     enums.ResponsesExportFormat(file_format),
@@ -293,42 +294,8 @@ class Client:
                     fields,
                 )
             )
-        )
-
-    def export_responses_by_token(
-        self,
-        file_object: BinaryIO,
-        survey_id: int,
-        file_format: str,
-        token: str,
-        language: Optional[str] = None,
-        completion_status: str = "all",
-        heading_type: str = "code",
-        response_type: str = "short",
-        from_response_id: Optional[int] = None,
-        to_response_id: Optional[int] = None,
-        fields: Optional[Sequence[str]] = None,
-    ) -> int:
-        """Export responses to a file-like object.
-
-        Args:
-            file_object: File-like object to store the results.
-            survey_id: Survey to add the response to.
-            file_format: Type of export. One of PDF, CSV, XLS, DOC or JSON.
-            token: The token for which responses needed.
-            language: Export responses made to this language version of the survey.
-            completion_status: Incomplete, complete or all.
-            heading_type: Use response codes, long or abbreviated titles.
-            response_type: Export long or short text responses.
-            from_response_id: First response to export.
-            to_response_id: Last response to export.
-            fields: Which response fields to export. If none, exports all fields.
-
-        Returns:
-            Number of bytes written to file.
-        """
-        return file_object.write(
-            base64.b64decode(
+        else:
+            return base64.b64decode(
                 self.__session.export_responses_by_token(
                     survey_id,
                     enums.ResponsesExportFormat(file_format),
@@ -342,7 +309,6 @@ class Client:
                     fields,
                 )
             )
-        )
 
     def get_participant_properties(
         self,
@@ -447,7 +413,7 @@ class Client:
         self,
         directory: Union[str, Path],
         survey_id: int,
-        token: str,
+        token: Optional[str] = None,
     ) -> List[Path]:
         """Download files uploaded in survey response.
 
@@ -462,12 +428,13 @@ class Client:
         dirpath = Path(directory)
 
         filepaths = []
-        name_template = "{token}_{index}_{filename}.{ext}"
+        name_template = "{filename}"
         files_data = self.__session.get_uploaded_files(survey_id, token)
 
         for file in files_data:
+            metadata = files_data[file]["meta"]
             filepath = dirpath / name_template.format(
-                **files_data[file]["meta"],
+                filename=metadata["filename"],
                 token=token,
             )
             filepaths.append(filepath)

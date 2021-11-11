@@ -135,7 +135,7 @@ def test_responses(client: citric.Client, survey_id: int):
     assert result == [1, 2, 3]
 
     with io.BytesIO() as file, io.TextIOWrapper(file, encoding="utf-8-sig") as textfile:
-        client.export_responses(file, survey_id, "csv")
+        file.write(client.export_responses(survey_id, file_format="csv"))
         file.seek(0)
         reader = csv.DictReader(textfile, delimiter=";")
         for i, row in enumerate(reader):
@@ -144,7 +144,9 @@ def test_responses(client: citric.Client, survey_id: int):
             assert row["token"] == (data[i]["token"] or "")
         file.seek(0)
 
-        client.export_responses_by_token(file, survey_id, "csv", "T00002")
+        file.write(
+            client.export_responses(survey_id, token="T00002", file_format="csv")
+        )
         file.seek(0)
         reader = csv.DictReader(textfile, delimiter=";")
         row = next(reader)
