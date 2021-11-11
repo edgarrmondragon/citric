@@ -128,6 +128,11 @@ def test_list_surveys(client: MockClient):
     assert client.list_surveys() == client.session.list_surveys(None)
 
 
+def test_list_survey_groups(client: MockClient):
+    """Test list_survey_groups client method."""
+    assert client.list_survey_groups() == client.session.list_survey_groups(None)
+
+
 def test_get_response_ids(client: MockClient):
     """Test get stored response IDs from a survey."""
     assert client.get_response_ids(1, "TOKEN") == client.session.get_response_ids(

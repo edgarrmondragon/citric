@@ -563,3 +563,16 @@ class Client:
             List of surveys with basic information.
         """
         return self.__session.list_surveys(username)
+
+    def list_survey_groups(
+        self, username: Optional[str] = None
+    ) -> List[Dict[str, Any]]:
+        """Get all survey groups or only those owned by a user.
+
+        Args:
+            username: Owner of the survey groups to retrieve.
+
+        Returns:
+            List of survey groups with basic information.
+        """
+        return self.__session.list_survey_groups(username)
