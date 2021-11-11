@@ -29,7 +29,13 @@ class MockSession(Session):
         """A mock RPC call."""
         return {"method": method, "params": [*params]}
 
-    def import_survey(self, content: str, file_type: str = "lss") -> Dict[str, Any]:
+    def import_survey(
+        self,
+        content: str,
+        file_type: str = "lss",
+        survey_name: Optional[str] = None,
+        survey_id: Optional[int] = None,
+    ) -> Dict[str, Any]:
         """Mock result from importing a survey file."""
         return {"content": base64.b64decode(content.encode()), "type": file_type}
 
