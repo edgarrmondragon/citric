@@ -25,10 +25,11 @@ from citric import enums
 from citric.session import Session
 
 T = TypeVar("T", bound="Client")
+"""Client type"""
 
 
 class Client:
-    """Python API client.
+    """LimeSurvey Remote Control client.
 
     Offers explicit wrappers for RPC methods and simplifies common workflows.
 
@@ -174,7 +175,9 @@ class Client:
         )
 
     def _map_response_keys(
-        self, survey_id: int, response_data: Mapping[str, Any]
+        self,
+        survey_id: int,
+        response_data: Mapping[str, Any],
     ) -> Dict[str, Any]:
         """Converts response keys to LimeSurvey's internal representation.
 
@@ -292,7 +295,7 @@ class Client:
                     from_response_id,
                     to_response_id,
                     fields,
-                )
+                ),
             )
         else:
             return base64.b64decode(
@@ -307,7 +310,7 @@ class Client:
                     from_response_id,
                     to_response_id,
                     fields,
-                )
+                ),
             )
 
     def get_participant_properties(
@@ -534,7 +537,8 @@ class Client:
         return self.__session.list_surveys(username)
 
     def list_survey_groups(
-        self, username: Optional[str] = None
+        self,
+        username: Optional[str] = None,
     ) -> List[Dict[str, Any]]:
         """Get all survey groups or only those owned by a user.
 

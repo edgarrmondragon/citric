@@ -12,6 +12,7 @@ from citric.exceptions import (
 from citric.method import Method
 
 T = TypeVar("T", bound="Session")
+"""Session type"""
 
 
 class Session:
@@ -129,8 +130,9 @@ class Session:
             raise LimeSurveyApiError(error)
 
         if response_id != 1:
-            message = "ID %s in response does not match the one in the request %s"
-            raise LimeSurveyError(message % (response_id, 1))
+            raise LimeSurveyError(
+                f"ID {response_id} in response does not match the one in the request 1",
+            )
 
         return result
 
