@@ -2,7 +2,7 @@
 import base64
 import io
 from pathlib import Path
-from typing import Any, Dict, Generator, List
+from typing import Any, Dict, Generator, List, Optional
 
 import pytest
 
@@ -34,7 +34,7 @@ class MockSession(Session):
         return {"content": base64.b64decode(content.encode()), "type": file_type}
 
     def list_questions(
-        self, survey_id: int, group_id: int = None, *args: Any
+        self, survey_id: int, group_id: Optional[int] = None, *args: Any
     ) -> List[Dict[str, Any]]:
         """Mock questions."""
         return [
