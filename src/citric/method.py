@@ -6,9 +6,7 @@ from typing import Any, Callable
 class Method:
     """RPC method."""
 
-    def __init__(
-        self, caller: Callable[[str, Any], Any], name: str  # noqa: ANN101
-    ) -> None:
+    def __init__(self, caller: Callable, name: str) -> None:
         """Instantiate an RPC method."""
         self.__caller = caller
         self.__name = name
