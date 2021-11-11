@@ -24,7 +24,7 @@ requests = "^2.23.0"
 importlib_metadata = {version = "^1.6.0", python = "<3.8"}
 
 [tool.poetry.dev-dependencies]
-pytest = "^5.4.3"
+pytest = "^6.0.0"
 pytest-cov = "^2.9.0"
 coverage = {extras = ["toml"], version = "^5.1"}
 black = "^21.10b0"
@@ -62,6 +62,11 @@ line-length = 88
 profile = "black"
 multi_line_output = 3 # Vertical Hanging Indent
 src_paths = "citric"
+
+[tool.pytest.ini_options]
+markers = [
+    "integration_test: Integration and end-to-end tests",
+]
 
 [build-system]
 requires = ["poetry>=0.12"]
