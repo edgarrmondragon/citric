@@ -507,6 +507,14 @@ class Client:
             conditions,
         )
 
+    def list_users(self) -> List[Dict[str, Any]]:
+        """Get LimeSurvey users.
+
+        Returns:
+            List of users.
+        """
+        return self.__session.list_users()
+
     def list_questions(
         self,
         survey_id: int,
