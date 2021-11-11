@@ -38,7 +38,7 @@ services:
     environment:
       LIMESURVEY_URL: http://limesurvey/index.php/admin/remotecontrol
       DB_URI: postgresql://limesurvey:secret@db/limesurvey
-    command: nox -rs tests-3.9 -- -m integration_test
+    command: nox -rs tests-3.10 -- -m integration_test
 
 volumes:
   limedb:
