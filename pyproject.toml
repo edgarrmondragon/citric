@@ -74,6 +74,7 @@ src_paths = "citric"
 markers = [
     "integration_test: Integration and end-to-end tests",
 ]
+addopts = '--cov -vvv -m "not integration_test"'
 
 [build-system]
 requires = ["poetry>=0.12"]
