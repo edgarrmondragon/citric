@@ -6,6 +6,7 @@
 [![PyPI version][pypi-badge]][pypi-link]
 [![Python versions][versions-badge]][pypi-link]
 [![Tests][tests-badge]][tests-link]
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fedgarrmondragon%2Fcitric.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fedgarrmondragon%2Fcitric?ref=badge_shield)
 
 A client to the LimeSurvey Remote Control API 2, written in modern
 Python.
@@ -124,3 +125,7 @@ poetry publish
 [pypi-badge]: https://img.shields.io/pypi/v/citric.svg
 [versions-badge]: https://img.shields.io/pypi/pyversions/citric.svg
 [pypi-link]: https://pypi.org/project/citric
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fedgarrmondragon%2Fcitric.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fedgarrmondragon%2Fcitric?ref=badge_large)
