@@ -11,7 +11,7 @@ from citric.exceptions import (
 )
 from citric.method import Method
 
-T = TypeVar("T", bound="Session")
+_T = TypeVar("T", bound="Session")
 """Session type"""
 
 
@@ -143,7 +143,7 @@ class Session:
         self.__key = None
         self.__closed = True
 
-    def __enter__(self: T) -> T:
+    def __enter__(self: _T) -> _T:
         """Context manager for RPC session.
 
         Returns:

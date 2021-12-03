@@ -24,8 +24,7 @@ import requests
 from citric import enums
 from citric.session import Session
 
-T = TypeVar("T", bound="Client")
-"""Client type"""
+_T = TypeVar("T", bound="Client")
 
 
 class Client:
@@ -58,7 +57,7 @@ class Client:
         """Close client session."""
         self.__session.close()
 
-    def __enter__(self: T) -> T:
+    def __enter__(self: _T) -> _T:
         """Create client context."""
         return self
 
