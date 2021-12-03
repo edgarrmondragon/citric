@@ -16,3 +16,11 @@ autoapi_root = "_api"
 autoapi_dirs = [
     os.path.abspath("../src"),
 ]
+autoapi_options = [
+    "members",
+    "undoc-members",
+    "show-inheritance",
+    "show-module-summary",
+    "special-members",
+    "imported-members",
+]

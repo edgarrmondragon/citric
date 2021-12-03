@@ -30,11 +30,11 @@ Usage
 
    from citric import Client
 
-   LS_URL = 'http://my-ls-server.com/index.php/admin/remotecontrol'
+   LS_URL = "http://my-ls-server.com/index.php/admin/remotecontrol"
 
-   with Client(LS_URL, 'iamadmin', 'secret') as client:
-       # Get all surveys from user 'iamadmin'
-       surveys = client.list_surveys('iamadmin')
+   with Client(LS_URL, "iamadmin", "secret") as client:
+       # Get all surveys from user "iamadmin"
+       surveys = client.list_surveys("iamadmin")
 
        for s in surveys:
            print(s["surveyls_title"])
