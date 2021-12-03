@@ -24,7 +24,7 @@ import requests
 from citric import enums
 from citric.session import Session
 
-_T = TypeVar("T", bound="Client")
+_T = TypeVar("_T", bound="Client")
 
 
 class Client:

@@ -11,8 +11,7 @@ from citric.exceptions import (
 )
 from citric.method import Method
 
-_T = TypeVar("T", bound="Session")
-"""Session type"""
+_T = TypeVar("_T", bound="Session")
 
 
 class Session:
