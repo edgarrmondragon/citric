@@ -10,7 +10,7 @@ class LimeSurveyError(Exception):
         Args:
             message: Exception message. By default none, and a generic message is used.
         """
-        super(LimeSurveyError, self).__init__(message)
+        super().__init__(message)
 
 
 class LimeSurveyStatusError(LimeSurveyError):

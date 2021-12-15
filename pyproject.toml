@@ -50,6 +50,7 @@ sphinx-autoapi = "^1.4.0"
 psycopg2-binary = "^2.9.2"
 types-requests = "^2.26.1"
 colorama = "^0.4.4"
+pyupgrade = "^2.29.1"
 
 [tool.coverage.paths]
 source = ["src", "*/site-packages"]
