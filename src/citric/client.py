@@ -33,7 +33,10 @@ class Client:
     Offers explicit wrappers for RPC methods and simplifies common workflows.
 
     Args:
-        session: A LSRPC2 API authenticated session.
+        url: LimeSurvey Remote Control endpoint.
+        username: LimeSurvey user name.
+        password: LimeSurvey password.
+        requests_session_factory: callable to create the requests Session
     """
 
     session_class = Session
