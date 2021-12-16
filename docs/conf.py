@@ -9,6 +9,7 @@ extensions = [
     "sphinx.ext.napoleon",
     "sphinx_autodoc_typehints",
     "autoapi.extension",
+    "myst_parser",
 ]
 
 autoapi_type = "python"
