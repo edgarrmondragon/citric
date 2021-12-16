@@ -12,6 +12,9 @@ extensions = [
     "myst_parser",
 ]
 
+autodoc_typehints = "description"
+autodoc_typehints_description_target = "documented"
+
 autoapi_type = "python"
 autoapi_root = "_api"
 autoapi_dirs = [
@@ -25,3 +28,5 @@ autoapi_options = [
     "special-members",
     "imported-members",
 ]
+
+html_theme = "furo"

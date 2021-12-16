@@ -76,7 +76,8 @@ def black(session: Session) -> None:
 def mypy(session: Session) -> None:
     """Check types with mypy."""
     args = session.posargs or locations
-    install_with_constraints(session, "mypy", "types-requests")
+    session.install(".")
+    session.install("mypy", "types-requests")
     session.run("mypy", *args)
 
 

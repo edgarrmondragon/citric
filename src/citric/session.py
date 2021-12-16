@@ -3,6 +3,7 @@ from types import TracebackType
 from typing import Any, Callable, Optional, Type, TypeVar
 
 import requests
+import structlog
 
 from citric.exceptions import (
     LimeSurveyError,
@@ -12,6 +13,7 @@ from citric.exceptions import (
 from citric.method import Method
 
 _T = TypeVar("_T", bound="Session")
+logger = structlog.stdlib.get_logger(__name__)
 
 
 class Session:
@@ -104,6 +106,8 @@ class Session:
         Returns:
             Any: An RPC result.
         """
+        logger.debug("RPC method invocation", method=method)
+
         payload = {
             "method": method,
             "params": [*params],
@@ -123,9 +127,11 @@ class Session:
         response_id = data["id"]
 
         if isinstance(result, dict) and result.get("status") not in {"OK", None}:
+            logger.error("Status error", status=result["status"])
             raise LimeSurveyStatusError(result["status"])
 
         if error is not None:
+            logger.error("RPC error", error=error)
             raise LimeSurveyApiError(error)
 
         if response_id != 1:
