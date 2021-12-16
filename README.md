@@ -5,17 +5,20 @@
 [![codecov][codecov-badge]][codecov-link]
 [![PyPI version][pypi-badge]][pypi-link]
 [![Python versions][versions-badge]][pypi-link]
+[![PyPI - Downloads][downloads-badge]][pypi-link]
 [![Tests][tests-badge]][tests-link]
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fedgarrmondragon%2Fcitric.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fedgarrmondragon%2Fcitric?ref=badge_shield)
 
 A client to the LimeSurvey Remote Control API 2, written in modern
 Python.
 
-## Features
+## Installation
 
-### Low-level JSON-RPC API
+```console
+$ pip install citric
+```
 
-For the full reference, see the [RemoteControl 2 API docs][rc2api].
+## Usage
 
 ```python
 from citric import Client
@@ -34,6 +37,52 @@ with Client(LS_URL, "iamadmin", "secret") as client:
         for q in questions:
             print(q["title"], q["question"])
 ```
+
+Or more interestingly, export responses to a ``pandas`` dataframe:
+
+```python
+import io
+import pandas as pd
+
+survey_id = 123456
+
+df = pd.read_csv(
+    io.BytesIO(client.export_responses(survey_id, file_format="csv")),
+    delimiter=";",
+    parse_dates=["datestamp", "startdate", "submitdate"],
+    index_col="id",
+)
+```
+
+It's possible to use a different session factory to make requests. For example, to cache the requests
+and reduce the load on your server in read-intensive applications, you can use
+[`request_cache`](https://requests-cache.readthedocs.io):
+
+```python
+import requests_cache
+
+def cached_session_factory():
+    return requests_cache.CachedSession(
+        expire_after=3600,
+        allowable_methods=["POST"],
+    )
+
+with Client(
+    LS_URL,
+    "iamadmin",
+    "secret",
+    requests_session_factory=cached_session_factory,
+) as client:
+
+    # Get all surveys from user "iamadmin"
+    surveys = client.list_surveys("iamadmin")
+
+    # This should hit the cache. Running the method in a new client context will
+    # not hit the cache because the RPC session key would be different.
+    surveys = client.list_surveys("iamadmin")
+```
+
+For the full JSON-RPC reference, see the [RemoteControl 2 API docs][rc2api].
 
 ## Development
 
@@ -124,6 +173,7 @@ poetry publish
 [tests-link]: https://github.com/edgarrmondragon/citric/actions?workflow=Tests
 [pypi-badge]: https://img.shields.io/pypi/v/citric.svg
 [versions-badge]: https://img.shields.io/pypi/pyversions/citric.svg
+[downloads-badge]: https://img.shields.io/pypi/dm/citric?color=blue
 [pypi-link]: https://pypi.org/project/citric
 
 
