@@ -2,3 +2,4 @@ sphinx==4.3.1
 sphinx-autodoc-typehints==1.12.0
 sphinx-autoapi==1.8.4
 myst-parser==0.16.0
+furo==2021.11.23
