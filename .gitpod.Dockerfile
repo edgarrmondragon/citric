@@ -1,10 +1,11 @@
-FROM gitpod/workspace-full
+ARG PYTHON=3.10
+FROM python:${PYTHON}-slim
 
 ENV POETRY_VERSION 1.1.11
 ENV POETRY_HOME /etc/poetry
-ENV PATH "${HOME}/.poetry/bin:${PATH}"
 
-RUN sudo apt-get -y update \
+RUN apt-get -y update \
+    && apt-get install -y curl \
     && curl -sSL https://install.python-poetry.org | python3 - \
-    && $HOME/.poetry/bin/poetry config virtualenvs.create "true" \
-    && $HOME/.poetry/bin/poetry config virtualenvs.in-project "true"
+    && ${POETRY_HOME}/bin/poetry config virtualenvs.create "true" \
+    && ${POETRY_HOME}/bin/poetry config virtualenvs.in-project "true"
