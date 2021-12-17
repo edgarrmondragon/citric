@@ -1,4 +1,5 @@
 """Tests for RPC low-level calls."""
+import random
 from typing import Callable
 
 import pytest
@@ -112,9 +113,15 @@ def test_status_ok(session: Session):
     assert result["status"] == "OK"
 
 
-def test_mismatching_request_id(session: Session):
+def test_mismatching_request_id(session: Session, monkeypatch: pytest.MonkeyPatch):
     """Test result with status key raises LimeSurveyStatusError."""
+
+    def randint(a, b):
+        return 123
+
+    monkeypatch.setattr(random, "randint", randint)
+
     with pytest.raises(
-        LimeSurveyError, match="response does not match the one in the request"
+        LimeSurveyError, match="Response ID 2 does not match request ID 123"
     ):
         session.__bad_id()

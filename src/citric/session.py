@@ -1,9 +1,10 @@
 """Low level wrapper for connecting to the LSRC2."""
+import logging
+import random
 from types import TracebackType
 from typing import Any, Callable, Optional, Type, TypeVar
 
 import requests
-import structlog
 
 from citric.exceptions import (
     LimeSurveyError,
@@ -13,7 +14,7 @@ from citric.exceptions import (
 from citric.method import Method
 
 _T = TypeVar("_T", bound="Session")
-logger = structlog.stdlib.get_logger(__name__)
+logger = logging.getLogger(__name__)
 
 
 class Session:
@@ -106,12 +107,12 @@ class Session:
         Returns:
             Any: An RPC result.
         """
-        logger.debug("RPC method invocation", method=method)
+        request_id = random.randint(1, 999_999)
 
         payload = {
             "method": method,
             "params": [*params],
-            "id": 1,
+            "id": request_id,
         }
 
         res = session.post(url, json=payload)
@@ -125,18 +126,17 @@ class Session:
         result = data["result"]
         error = data["error"]
         response_id = data["id"]
+        logger.info("Invoked RPC method %s with ID %d", method, request_id)
 
         if isinstance(result, dict) and result.get("status") not in {"OK", None}:
-            logger.error("Status error", status=result["status"])
             raise LimeSurveyStatusError(result["status"])
 
         if error is not None:
-            logger.error("RPC error", error=error)
             raise LimeSurveyApiError(error)
 
-        if response_id != 1:
+        if response_id != request_id:
             raise LimeSurveyError(
-                f"ID {response_id} in response does not match the one in the request 1",
+                f"Response ID {response_id} does not match request ID {request_id}",
             )
 
         return result
