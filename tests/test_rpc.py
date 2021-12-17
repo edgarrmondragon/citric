@@ -1,6 +1,5 @@
 """Tests for RPC low-level calls."""
 import random
-from typing import Callable
 
 import pytest
 import requests
@@ -23,16 +22,11 @@ class RPCOffAdapter(LimeSurveyMockAdapter):
 
 
 @pytest.fixture(scope="session")
-def off_session_factory(url: str) -> Callable[[], requests.Session]:
+def off_session(url: str) -> requests.Session:
     """Session with interface turned off."""
-
-    def factory() -> requests.Session:
-        """Session factory."""
-        requests_session = requests.Session()
-        requests_session.mount(url, RPCOffAdapter())
-        return requests_session
-
-    return factory
+    requests_session = requests.Session()
+    requests_session.mount(url, RPCOffAdapter())
+    return requests_session
 
 
 def test_method():
@@ -60,10 +54,10 @@ def test_session_context(
     url: str,
     username: str,
     password: str,
-    mock_session_factory: Callable[[], requests.Session],
+    mock_session: requests.Session,
 ):
     """Test context creates a session key."""
-    with Session(url, username, password, mock_session_factory) as session:
+    with Session(url, username, password, mock_session) as session:
         assert not session.closed
         assert session.key == LimeSurveyMockAdapter.session_key
 
@@ -81,11 +75,11 @@ def test_interface_off(
     url: str,
     username: str,
     password: str,
-    off_session_factory: Callable[[], requests.Session],
+    off_session: requests.Session,
 ):
     """Test effect of JSON RPC not enabled."""
     with pytest.raises(LimeSurveyError, match="JSON RPC interface is not enabled"):
-        Session(url, username, password, off_session_factory)
+        Session(url, username, password, off_session)
 
 
 def test_empty_response(session: Session):
