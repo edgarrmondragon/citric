@@ -3,6 +3,7 @@ FROM python:${PYTHON}-slim
 
 ENV POETRY_VERSION 1.1.11
 ENV POETRY_HOME /etc/poetry
+ENV PATH "${POETRY_HOME}/bin:${PATH}"
 
 RUN apt-get -y update \
     && apt-get install -y curl \
