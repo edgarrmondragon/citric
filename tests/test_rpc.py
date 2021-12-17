@@ -115,6 +115,6 @@ def test_status_ok(session: Session):
 def test_mismatching_request_id(session: Session):
     """Test result with status key raises LimeSurveyStatusError."""
     with pytest.raises(
-        LimeSurveyError, match="response does not match the one in the request"
+        LimeSurveyError, match=r"Response ID \d+ does not match request ID \d+"
     ):
         session.__bad_id()
