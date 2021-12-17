@@ -7,7 +7,6 @@ from types import TracebackType
 from typing import (
     Any,
     BinaryIO,
-    Callable,
     Dict,
     Iterable,
     List,
@@ -36,7 +35,10 @@ class Client:
         url: LimeSurvey Remote Control endpoint.
         username: LimeSurvey user name.
         password: LimeSurvey password.
-        requests_session_factory: callable to create the requests Session
+        requests_session: A `requests.Session`_ object.
+
+    .. _requests.Session:
+        https://docs.python-requests.org/en/latest/api/#requests.Session
     """
 
     session_class = Session
@@ -46,14 +48,14 @@ class Client:
         url: str,
         username: str,
         password: str,
-        requests_session_factory: Callable[[], requests.Session] = requests.session,
+        requests_session: requests.Session = requests.session(),
     ) -> None:
         """Create a LimeSurvey Python API client."""
         self.__session = self.session_class(
             url,
             username,
             password,
-            requests_session_factory,
+            requests_session,
         )
 
     def close(self) -> None:

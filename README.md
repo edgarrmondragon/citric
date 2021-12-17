@@ -61,17 +61,16 @@ and reduce the load on your server in read-intensive applications, you can use
 ```python
 import requests_cache
 
-def cached_session_factory():
-    return requests_cache.CachedSession(
-        expire_after=3600,
-        allowable_methods=["POST"],
-    )
+cached_session = requests_cache.CachedSession(
+    expire_after=3600,
+    allowable_methods=["POST"],
+)
 
 with Client(
     LS_URL,
     "iamadmin",
     "secret",
-    requests_session_factory=cached_session_factory,
+    requests_session=cached_session,
 ) as client:
 
     # Get all surveys from user "iamadmin"

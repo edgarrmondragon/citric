@@ -2,7 +2,7 @@
 import logging
 import random
 from types import TracebackType
-from typing import Any, Callable, Optional, Type, TypeVar
+from typing import Any, Optional, Type, TypeVar
 
 import requests
 
@@ -24,7 +24,10 @@ class Session:
         url: LimeSurvey Remote Control endpoint.
         username: LimeSurvey user name.
         password: LimeSurvey password.
-        requests_session_factory: callable to create the requests Session
+        requests_session: A `requests.Session`_ object.
+
+    .. _requests.Session:
+        https://docs.python-requests.org/en/latest/api/#requests.Session
     """
 
     _headers = {
@@ -39,11 +42,11 @@ class Session:
         url: str,
         username: str,
         password: str,
-        requests_session_factory: Callable[[], requests.Session] = requests.session,
+        requests_session: requests.Session = requests.session(),
     ) -> None:
         """Create a LimeSurvey RPC session."""
         self.url = url
-        self._session = requests_session_factory()
+        self._session = requests_session
         self._session.headers.update(self._headers)
 
         self.__key: Optional[str] = self.get_session_key(username, password)
