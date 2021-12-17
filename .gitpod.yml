@@ -3,8 +3,8 @@ image:
 
 tasks:
   - name: Install dependencies
-    init: |
-      poetry env use python
+    init: >
+      poetry env use python &&
       poetry install
 
 vscode:
