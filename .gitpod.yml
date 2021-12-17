@@ -1,0 +1,7 @@
+tasks:
+  - name: Install dependencies
+    init: pip install poetry==1.1.11
+    command: poetry install
+vscode:
+  extensions:
+    - ms-python.python
