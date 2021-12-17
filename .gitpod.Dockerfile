@@ -1,6 +1,7 @@
 FROM gitpod/workspace-full
 
 ENV POETRY_VERSION 1.1.11
+ENV POETRY_HOME /etc/poetry
 ENV PATH "${HOME}/.poetry/bin:${PATH}"
 
 RUN sudo apt-get -y update \
