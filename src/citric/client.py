@@ -416,6 +416,22 @@ class Client:
         """
         return self.__session.get_survey_properties(survey_id, properties)
 
+    def get_uploaded_files(
+        self,
+        survey_id: int,
+        token: Optional[str] = None,
+    ) -> Dict[str, Dict[str, Any]]:
+        """Get a dictionary of files uploaded in a survey response.
+
+        Args:
+            survey_id: Survey for which to download files.
+            token: Optional participant token to filter uploaded files.
+
+        Returns:
+            Dictionary with uploaded files metadata.
+        """
+        return self.__session.get_uploaded_files(survey_id, token)
+
     def download_files(
         self,
         directory: Union[str, Path],
@@ -435,15 +451,11 @@ class Client:
         dirpath = Path(directory)
 
         filepaths = []
-        name_template = "{filename}"
-        files_data = self.__session.get_uploaded_files(survey_id, token)
+        files_data = self.get_uploaded_files(survey_id, token=token)
 
         for file in files_data:
             metadata = files_data[file]["meta"]
-            filepath = dirpath / name_template.format(
-                filename=metadata["filename"],
-                token=token,
-            )
+            filepath = dirpath / metadata["filename"]
             filepaths.append(filepath)
             with closing(self.write_file(filepath)) as f:
                 f.write(base64.b64decode(files_data[file]["content"]))
