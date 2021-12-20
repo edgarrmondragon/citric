@@ -145,11 +145,11 @@ Import an existing survey file and start testing with it:
 from citric import Client
 
 LS_URL = "http://localhost:8001/index.php/admin/remotecontrol"
-SURVEY_FILE = "examples/limesurvey_survey_432535.lss"
 
 with Client(LS_URL, "iamadmin", "secret") as client:
     # Import survey from a file
-    survey_id = client.import_survey(SURVEY_FILE, "lss")
+    with open("examples/limesurvey_survey_432535.lss", "rb") as f:
+        survey_id = client.import_survey(f, "lss")
     print("New survey:", survey_id)
 ```
 
