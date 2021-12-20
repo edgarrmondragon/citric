@@ -20,6 +20,10 @@ $ pip install citric
 
 ## Usage
 
+For the full JSON-RPC reference, see the [RemoteControl 2 API docs][rc2api].
+
+### Get surveys and questions
+
 ```python
 from citric import Client
 
@@ -38,7 +42,7 @@ with Client(LS_URL, "iamadmin", "secret") as client:
             print(q["title"], q["question"])
 ```
 
-Or more interestingly, export responses to a ``pandas`` dataframe:
+### Export responses to a `pandas` dataframe
 
 ```python
 import io
@@ -54,7 +58,9 @@ df = pd.read_csv(
 )
 ```
 
-It's possible to use a different session factory to make requests. For example, to cache the requests
+### Custom `requests` session
+
+It's possible to use a custom session object to make requests. For example, to cache the requests
 and reduce the load on your server in read-intensive applications, you can use
 [`request_cache`](https://requests-cache.readthedocs.io):
 
@@ -81,7 +87,33 @@ with Client(
     surveys = client.list_surveys("iamadmin")
 ```
 
-For the full JSON-RPC reference, see the [RemoteControl 2 API docs][rc2api].
+### Get uploaded files and move them to S3
+
+```python
+import base64
+import io
+
+import boto3
+from citric import Client
+
+s3 = boto3.client("s3")
+
+with Client(
+    "https://mylimeserver.com/index.php/admin/remotecontrol",
+    "iamadmin",
+    "secret",
+) as client:
+    survey_id = 12345
+    files = client.get_uploaded_files(survey_id)
+    for file in files:
+        content = base64.b64decode(files[file]["content"])  # Decode content
+        question_id = files[file]["meta"]["question"]["qid"]
+        s3.upload_fileobj(
+            io.BytesIO(content),
+            "my-s3-bucket",
+            f"uploads/{survey_id}/{question_id}/{file}",
+        )
+```
 
 ## Development
 

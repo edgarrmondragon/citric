@@ -1,6 +1,5 @@
 """Integration tests for Python client."""
 import os
-from pathlib import Path
 from typing import Any, Dict, Generator, List
 
 import csv
@@ -54,7 +53,8 @@ def client() -> Generator[citric.Client, None, None]:
 @pytest.fixture(scope="function")
 def survey_id(client: citric.Client) -> Generator[int, None, None]:
     """Import a survey from a file and return its ID."""
-    survey_id = client.import_survey(Path("./examples/survey.lss"))
+    with open("./examples/survey.lss", "rb") as f:
+        survey_id = client.import_survey(f)
 
     yield survey_id
 
