@@ -1,7 +1,6 @@
 """Python API Client."""
 
 import base64
-from contextlib import closing
 from pathlib import Path
 from types import TracebackType
 from typing import (
@@ -74,34 +73,6 @@ class Client:
     ) -> None:
         """Safely exit the client context."""
         self.close()
-
-    @staticmethod
-    def read_file(filename: Union[Path, str]) -> BinaryIO:
-        """Read a file.
-
-        Overwrite this method to read from a different filesystem (e.g. S3).
-
-        Args:
-            filename: Path to file.
-
-        Returns:
-            Closing IO wrapper.
-        """
-        return open(filename, "rb")
-
-    @staticmethod
-    def write_file(filename: Union[Path, str]) -> BinaryIO:
-        """Write a file.
-
-        Overwrite this method to write from a different filesystem (e.g. S3).
-
-        Args:
-            filename: Path to file.
-
-        Returns:
-            Closing IO wrapper.
-        """
-        return open(filename, "wb")
 
     @property
     def session(self) -> Session:
@@ -457,14 +428,14 @@ class Client:
             metadata = files_data[file]["meta"]
             filepath = dirpath / metadata["filename"]
             filepaths.append(filepath)
-            with closing(self.write_file(filepath)) as f:
+            with open(filepath, "rb") as f:
                 f.write(base64.b64decode(files_data[file]["content"]))
 
         return filepaths
 
     def import_survey(
         self,
-        filepath: Union[Path, str],
+        file: BinaryIO,
         file_type: str = "lss",
         survey_name: Optional[str] = None,
         survey_id: Optional[int] = None,
@@ -474,7 +445,7 @@ class Client:
         Create a new survey from an exported LSS, CSV, TXT or LSA file.
 
         Args:
-            filepath: Path to the file.
+            file: File object.
             file_type: Type of file. One of LSS, CSV, TXT and LSA.
             survey_name: Override the new survey name.
             survey_id: Desired ID of the new survey. A different ID will be used if
@@ -483,14 +454,13 @@ class Client:
         Returns:
             The ID of the new survey.
         """
-        with closing(self.read_file(filepath)) as file:
-            contents = base64.b64encode(file.read()).decode()
-            return self.__session.import_survey(
-                contents,
-                enums.ImportSurveyType(file_type),
-                survey_name,
-                survey_id,
-            )
+        contents = base64.b64encode(file.read()).decode()
+        return self.__session.import_survey(
+            contents,
+            enums.ImportSurveyType(file_type),
+            survey_name,
+            survey_id,
+        )
 
     def list_participants(
         self,
