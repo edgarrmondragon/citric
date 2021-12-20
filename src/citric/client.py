@@ -400,6 +400,23 @@ class Client:
 
         Returns:
             Dictionary with uploaded files metadata.
+
+        >>> client.get_uploaded_files(12345)
+        {
+            '1234': {
+                'meta': {
+                    'title': 'one',
+                    'comment': 'File One',
+                    'name': 'file1.txt',
+                    'filename': '1234',
+                    'size': 48.046,
+                    'ext': 'txt',
+                    'question': {'title': 'G01Q01', 'qid': 1},
+                    'index': 0
+                },
+                'content': <BASE64 content>
+            }
+        }
         """
         return self.__session.get_uploaded_files(survey_id, token)
 
@@ -428,7 +445,7 @@ class Client:
             metadata = files_data[file]["meta"]
             filepath = dirpath / metadata["filename"]
             filepaths.append(filepath)
-            with open(filepath, "rb") as f:
+            with open(filepath, "wb") as f:
                 f.write(base64.b64decode(files_data[file]["content"]))
 
         return filepaths

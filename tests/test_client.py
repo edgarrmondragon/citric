@@ -225,10 +225,11 @@ def test_import_survey(client: MockClient, tmp_path: Path):
     with open(filepath, "wb") as f:
         f.write(random_bytes)
 
-    assert client.import_survey(filepath) == {
-        "content": random_bytes,
-        "type": ImportSurveyType("lss"),
-    }
+    with open(filepath, "rb") as f:
+        assert client.import_survey(f) == {
+            "content": random_bytes,
+            "type": ImportSurveyType.LSS,
+        }
 
 
 def test_map_response_data(client: MockClient):
