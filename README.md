@@ -129,6 +129,15 @@ Install project dependencies
 poetry install
 ```
 
+### Docs
+
+To generate the documentation site, use the following commands:
+
+```shell
+poetry install -E docs
+poetry run sphinx-build docs build
+```
+
 ### Docker
 
 You can setup a local instance of LimeSurvey with [Docker Compose](https://docs.docker.com/compose/):
