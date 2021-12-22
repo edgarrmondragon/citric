@@ -28,6 +28,13 @@ python = "^3.6.2,<3.11"
 requests = "^2.23.0"
 importlib_metadata = {version = ">=1.6,<5.0", python = "<3.8"}
 
+# Docs
+sphinx = { version = "4.3.2", optional = true }
+sphinx-autodoc-typehints = { version = "1.12.0", optional = true }
+sphinx-autoapi = { version = "^1.4.0", optional = true }
+myst-parser = { version = "^0.16.1", optional = true }
+furo= { version = "==2021.11.23", optional = true }
+
 [tool.poetry.dev-dependencies]
 pytest = "^6.0.0"
 pytest-cov = "^3.0.0"
@@ -44,15 +51,19 @@ pytype = {version = "^2021.11.2", python = "^3.6,<3.8"}
 flake8-docstrings = "^1.5.0"
 darglint = "^1.4.0"
 xdoctest = "^0.15.10"
-sphinx = "4.3.2"
-sphinx-autodoc-typehints = "1.12.0"
-sphinx-autoapi = "^1.4.0"
-furo= "==2021.11.23"
 psycopg2-binary = "^2.9.2"
 types-requests = "^2.26.2"
 colorama = "^0.4.4"
 pyupgrade = "^2.29.1"
-myst-parser = "^0.16.1"
+
+[tool.poetry.extras]
+docs = [
+    "sphinx",
+    "sphinx-autodoc-typehints",
+    "sphinx-autoapi",
+    "myst-parser",
+    "furo",
+]
 
 [tool.coverage.paths]
 source = ["src", "*/site-packages"]
