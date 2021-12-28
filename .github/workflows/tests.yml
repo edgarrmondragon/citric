@@ -3,6 +3,8 @@ on: push
 jobs:
   tests:
     runs-on: ubuntu-latest
+    env:
+      SETUPTOOLS_USE_DISTUTILS: stdlib
     strategy:
       fail-fast: true
       matrix:
