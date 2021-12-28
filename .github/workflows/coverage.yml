@@ -3,6 +3,8 @@ on: push
 jobs:
   coverage:
     runs-on: ubuntu-latest
+    env:
+      SETUPTOOLS_USE_DISTUTILS: stdlib
     steps:
     - uses: actions/checkout@v2
     - uses: actions/setup-python@v1
