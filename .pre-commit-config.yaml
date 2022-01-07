@@ -1,10 +1,13 @@
 repos:
 -   repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.0.1
+    rev: v4.1.0
     hooks:
+    -   id: check-json
+    -   id: check-toml
     -   id: check-yaml
     -   id: end-of-file-fixer
     -   id: trailing-whitespace
+
 -   repo: local
     hooks:
     -   id: black
