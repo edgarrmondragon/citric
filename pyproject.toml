@@ -35,6 +35,8 @@ myst-parser = { version = "0.16.1", optional = true }
 furo = { version = "2022.1.2", optional = true }
 sphinx-autobuild = {version = "^2021.3.14", optional = true}
 
+jupyterlab = { version = "^3.2.5", optional = true }
+
 [tool.poetry.dev-dependencies]
 pytest = "^6.0.0"
 coverage = {extras = ["toml"], version = "^6.2"}
@@ -64,6 +66,9 @@ docs = [
     "myst-parser",
     "furo",
     "sphinx-autobuild",
+]
+jupyter = [
+    "jupyterlab",
 ]
 
 [tool.coverage.paths]

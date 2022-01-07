@@ -47,7 +47,9 @@ services:
     environment:
       LIMESURVEY_URL: http://limesurvey:8080/index.php/admin/remotecontrol
       DB_URI: postgresql://limesurvey:secret@db/limesurvey
-    command: nox -rs tests-3.10 -- -m integration_test
+    ports:
+      - "8888:8888"
+    command: jupyter lab
 
 volumes:
   limedb:
