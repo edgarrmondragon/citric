@@ -30,3 +30,4 @@ autoapi_options = [
 ]
 
 html_theme = "furo"
+html_title = "Citric"
