@@ -35,7 +35,9 @@ myst-parser = { version = "0.16.1", optional = true }
 furo = { version = "2022.1.2", optional = true }
 sphinx-autobuild = {version = "^2021.3.14", optional = true}
 
+# Jupyter
 jupyterlab = { version = "^3.2.5", optional = true }
+ipykernel = {version = "^6.6.1", optional = true}
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.0.0"
@@ -69,6 +71,7 @@ docs = [
 ]
 jupyter = [
     "jupyterlab",
+    "ipykernel",
 ]
 
 [tool.coverage.paths]

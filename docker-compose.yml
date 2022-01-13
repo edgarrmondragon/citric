@@ -47,9 +47,11 @@ services:
     environment:
       LIMESURVEY_URL: http://limesurvey:8080/index.php/admin/remotecontrol
       DB_URI: postgresql://limesurvey:secret@db/limesurvey
+    volumes:
+      - "./:/app/"
     ports:
       - "8888:8888"
-    command: jupyter lab
+    command: poetry run jupyter lab --allow-root --ip 0.0.0.0
 
 volumes:
   limedb:
