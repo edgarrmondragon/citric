@@ -18,7 +18,25 @@ logger = logging.getLogger(__name__)
 
 
 class Session:
-    """LimeSurvey RemoteControl 2 session."""
+    """LimeSurvey RemoteControl 2 session.
+
+    Args:
+        url: LimeSurvey Remote Control endpoint.
+        username: LimeSurvey user name.
+        password: LimeSurvey password.
+        requests_session: A `requests.Session`_ object.
+        auth_plugin: Name of the `plugin` to use for authentication.
+            For example, `AuthLDAP`_. Defaults to using the internal database
+            (``"Authdb"``).
+
+    Raises:
+        LimeSurveyError: If the JSON RPC interface is not enabled.
+
+    .. _requests.Session:
+        https://docs.python-requests.org/en/latest/api/#requests.Session
+    .. _plugin: https://manual.limesurvey.org/Authentication_plugins
+    .. _AuthLDAP: https://manual.limesurvey.org/Authentication_plugins#LDAP
+    """
 
     _headers = {
         "content-type": "application/json",
@@ -36,25 +54,7 @@ class Session:
         requests_session: requests.Session = requests.session(),
         auth_plugin: str = "Authdb",
     ) -> None:
-        """Create a LimeSurvey RPC session.
-
-        Args:
-            url: LimeSurvey Remote Control endpoint.
-            username: LimeSurvey user name.
-            password: LimeSurvey password.
-            requests_session: A `requests.Session`_ object.
-            auth_plugin: Name of the `plugin` to use for authentication.
-                For example, `AuthLDAP`_. Defaults to using the internal database
-                (``"Authdb"``).
-
-        Raises:
-            LimeSurveyError: If the JSON RPC interface is not enabled.
-
-        .. _requests.Session:
-            https://docs.python-requests.org/en/latest/api/#requests.Session
-        .. _plugin: https://manual.limesurvey.org/Authentication_plugins
-        .. _AuthLDAP: https://manual.limesurvey.org/Authentication_plugins#LDAP
-        """
+        """Create a LimeSurvey RPC session."""
         self.url = url
         self._session = requests_session
         self._session.headers.update(self._headers)
