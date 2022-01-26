@@ -62,7 +62,7 @@ df = pd.read_csv(
 
 It's possible to use a custom session object to make requests. For example, to cache the requests
 and reduce the load on your server in read-intensive applications, you can use
-[`request_cache`](https://requests-cache.readthedocs.io):
+[`requests-cache`](https://requests-cache.readthedocs.io):
 
 ```python
 import requests_cache
