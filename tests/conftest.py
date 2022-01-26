@@ -62,7 +62,9 @@ class LimeSurveyMockAdapter(BaseAdapter):
         elif method == "__bad_id":
             output["id"] = 2
         elif method == "get_session_key":
-            output["result"] = self.session_key
+            output["result"] = (
+                self.ldap_session_key if params[2] == "AuthLDAP" else self.session_key
+            )
         elif method == "get_site_settings" and params[1] == "RPCInterface":
             output["result"] = self.rpc_interface
 
