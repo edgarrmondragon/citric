@@ -22,6 +22,8 @@ class LimeSurveyMockAdapter(BaseAdapter):
     status_ok = {"status": "OK"}
     rpc_interface = "json"
 
+    ldap_session_key = "ldap-key"
+
     def send(
         self,
         request: requests.PreparedRequest,
@@ -106,7 +108,7 @@ def session(
     mock_session: requests.Session,
 ):
     """Create a LimeSurvey Session fixture."""
-    session = Session(url, username, password, mock_session)
+    session = Session(url, username, password, requests_session=mock_session)
 
     yield session
 

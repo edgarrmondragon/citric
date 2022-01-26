@@ -123,6 +123,11 @@ def client() -> Generator[Client, None, None]:
         yield client
 
 
+# def test_get_session_key(client: MockClient):
+#     """Test get_session_key client method."""
+#     assert_client_session_call(client, "activate_survey", 1)
+
+
 def test_activate_survey(client: MockClient):
     """Test activate_survey client method."""
     assert_client_session_call(client, "activate_survey", 1)

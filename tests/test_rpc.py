@@ -57,9 +57,19 @@ def test_session_context(
     mock_session: requests.Session,
 ):
     """Test context creates a session key."""
-    with Session(url, username, password, mock_session) as session:
+    with Session(url, username, password, requests_session=mock_session) as session:
         assert not session.closed
         assert session.key == LimeSurveyMockAdapter.session_key
+
+    with Session(
+        url,
+        username,
+        password,
+        requests_session=mock_session,
+        auth_plugin="AuthLDAP",
+    ) as session:
+        assert not session.closed
+        assert session.key == LimeSurveyMockAdapter.ldap_session_key
 
     assert session.closed
     assert session.key is None
@@ -79,7 +89,7 @@ def test_interface_off(
 ):
     """Test effect of JSON RPC not enabled."""
     with pytest.raises(LimeSurveyError, match="JSON RPC interface is not enabled"):
-        Session(url, username, password, off_session)
+        Session(url, username, password, requests_session=off_session)
 
 
 def test_empty_response(session: Session):
