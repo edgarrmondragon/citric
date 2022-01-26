@@ -93,6 +93,7 @@ addopts = '--cov -vvv -m "not integration_test"'
 [[tool.mypy.overrides]]
 module = [
     "nox.*",
+    "pytest.*",
 ]
 ignore_missing_imports = true
 
