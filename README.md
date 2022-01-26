@@ -62,7 +62,7 @@ df = pd.read_csv(
 
 It's possible to use a custom session object to make requests. For example, to cache the requests
 and reduce the load on your server in read-intensive applications, you can use
-[`request_cache`](https://requests-cache.readthedocs.io):
+[`requests-cache`](https://requests-cache.readthedocs.io):
 
 ```python
 import requests_cache
@@ -86,6 +86,24 @@ with Client(
     # not hit the cache because the RPC session key would be different.
     surveys = client.list_surveys("iamadmin")
 ```
+
+### Use a different authentication plugin
+
+By default, this client uses the internal database for authentication but
+[arbitrary plugins](https://manual.limesurvey.org/Authentication_plugins) are supported by the
+`auth_plugin` argument.
+
+```python
+with Client(
+    LS_URL,
+    "iamadmin",
+    "secret",
+    auth_plugin="AuthLDAP",
+) as client:
+    ...
+```
+
+Common plugins are `Authdb` (default), `AuthLDAP` and `Authwebserver`.
 
 ### Get uploaded files and move them to S3
 

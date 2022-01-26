@@ -35,6 +35,15 @@ class Client:
         username: LimeSurvey user name.
         password: LimeSurvey password.
         requests_session: A `requests.Session`_ object.
+        auth_plugin: Name of the `plugin` to use for authentication.
+            For example, `AuthLDAP`_. Defaults to using the internal database
+            (`Authdb`_).
+
+    .. _requests.Session:
+        https://docs.python-requests.org/en/latest/api/#requests.Session
+    .. _plugin: https://manual.limesurvey.org/Authentication_plugins
+    .. _Authdb: https://manual.limesurvey.org/Authentication_plugins#Internal_database
+    .. _AuthLDAP: https://manual.limesurvey.org/Authentication_plugins#LDAP
 
     .. _requests.Session:
         https://docs.python-requests.org/en/latest/api/#requests.Session
@@ -47,14 +56,17 @@ class Client:
         url: str,
         username: str,
         password: str,
+        *,
         requests_session: requests.Session = requests.session(),
+        auth_plugin: str = "Authdb",
     ) -> None:
         """Create a LimeSurvey Python API client."""
         self.__session = self.session_class(
             url,
             username,
             password,
-            requests_session,
+            requests_session=requests_session,
+            auth_plugin=auth_plugin,
         )
 
     def close(self) -> None:
