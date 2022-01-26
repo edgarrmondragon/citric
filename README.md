@@ -87,6 +87,24 @@ with Client(
     surveys = client.list_surveys("iamadmin")
 ```
 
+### Use a different authentication plugin
+
+By default, this client uses the internal database for authentication but
+[arbitrary plugins](https://manual.limesurvey.org/Authentication_plugins) are supported by the
+`auth_plugin` argument.
+
+```python
+with Client(
+    LS_URL,
+    "iamadmin",
+    "secret",
+    auth_plugin="AuthLDAP",
+) as client:
+    ...
+```
+
+Common plugins are `Authdb` (default), `AuthLDAP` and `Authwebserver`.
+
 ### Get uploaded files and move them to S3
 
 ```python
