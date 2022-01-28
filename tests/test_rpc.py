@@ -8,6 +8,7 @@ from citric.exceptions import (
     LimeSurveyApiError,
     LimeSurveyError,
     LimeSurveyStatusError,
+    ResponseMismatchError,
 )
 from citric.method import Method
 from citric.session import Session
@@ -115,6 +116,6 @@ def test_mismatching_request_id(session: Session, monkeypatch: pytest.MonkeyPatc
     monkeypatch.setattr(random, "randint", randint)
 
     with pytest.raises(
-        LimeSurveyError, match="Response ID 2 does not match request ID 123"
+        ResponseMismatchError, match="Response ID 2 does not match request ID 123"
     ):
         session.__bad_id()

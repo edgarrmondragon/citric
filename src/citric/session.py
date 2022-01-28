@@ -10,6 +10,7 @@ from citric.exceptions import (
     LimeSurveyError,
     LimeSurveyStatusError,
     LimeSurveyApiError,
+    ResponseMismatchError,
 )
 from citric.method import Method
 
@@ -28,9 +29,6 @@ class Session:
         auth_plugin: Name of the `plugin` to use for authentication.
             For example, `AuthLDAP`_. Defaults to using the internal database
             (``"Authdb"``).
-
-    Raises:
-        LimeSurveyError: If the JSON RPC interface is not enabled.
 
     .. _requests.Session:
         https://docs.python-requests.org/en/latest/api/#requests.Session
@@ -116,7 +114,8 @@ class Session:
             LimeSurveyStatusError: The response key from the response payload has
                 a non-null status.
             LimeSurveyApiError: The response payload has a non-null error key.
-            LimeSurveyError: Request ID does not match the response ID.
+            LimeSurveyError: If the JSON RPC interface is not enabled (empty response).
+            ResponseMismatchError: Request ID does not match the response ID.
 
         Returns:
             Any: An RPC result.
@@ -149,7 +148,7 @@ class Session:
             raise LimeSurveyApiError(error)
 
         if response_id != request_id:
-            raise LimeSurveyError(
+            raise ResponseMismatchError(
                 f"Response ID {response_id} does not match request ID {request_id}",
             )
 
