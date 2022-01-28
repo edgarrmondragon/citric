@@ -81,17 +81,6 @@ def test_session_context(
         session.closed = False
 
 
-def test_interface_off(
-    url: str,
-    username: str,
-    password: str,
-    off_session: requests.Session,
-):
-    """Test effect of JSON RPC not enabled."""
-    with pytest.raises(LimeSurveyError, match="JSON RPC interface is not enabled"):
-        Session(url, username, password, requests_session=off_session)
-
-
 def test_empty_response(session: Session):
     """Test empty response."""
     with pytest.raises(LimeSurveyError, match="RPC interface not enabled"):

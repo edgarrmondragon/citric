@@ -65,9 +65,6 @@ class Session:
             auth_plugin,
         )
 
-        if self.get_site_settings("RPCInterface") != "json":
-            raise LimeSurveyError("JSON RPC interface is not enabled.")
-
         self.__closed = False
 
     @property
