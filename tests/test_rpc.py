@@ -8,6 +8,7 @@ from citric.exceptions import (
     LimeSurveyApiError,
     LimeSurveyError,
     LimeSurveyStatusError,
+    ResponseMismatchError,
 )
 from citric.method import Method
 from citric.session import Session
@@ -81,17 +82,6 @@ def test_session_context(
         session.closed = False
 
 
-def test_interface_off(
-    url: str,
-    username: str,
-    password: str,
-    off_session: requests.Session,
-):
-    """Test effect of JSON RPC not enabled."""
-    with pytest.raises(LimeSurveyError, match="JSON RPC interface is not enabled"):
-        Session(url, username, password, requests_session=off_session)
-
-
 def test_empty_response(session: Session):
     """Test empty response."""
     with pytest.raises(LimeSurveyError, match="RPC interface not enabled"):
@@ -126,6 +116,6 @@ def test_mismatching_request_id(session: Session, monkeypatch: pytest.MonkeyPatc
     monkeypatch.setattr(random, "randint", randint)
 
     with pytest.raises(
-        LimeSurveyError, match="Response ID 2 does not match request ID 123"
+        ResponseMismatchError, match="Response ID 2 does not match request ID 123"
     ):
         session.__bad_id()
