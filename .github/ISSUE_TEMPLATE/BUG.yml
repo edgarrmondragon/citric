@@ -64,7 +64,7 @@ body:
       render: python
     validations:
       required: false
-  - type: input
+  - type: textarea
     id: permissions
     attributes:
       label: Permissions Matrix
