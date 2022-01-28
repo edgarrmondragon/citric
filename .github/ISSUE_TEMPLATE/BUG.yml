@@ -1,0 +1,73 @@
+name: Bug Report
+description: File a bug report
+title: "[Bug]: <title>"
+labels: ["bug"]
+assignees:
+  - edgarrmondragon
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+  - type: input
+    id: citric_version
+    attributes:
+      label: Citric Version
+      description: Version of the package you are using
+      placeholder: "0.0.6"
+    validations:
+      required: true
+  - type: dropdown
+    id: python_version
+    attributes:
+      label: Python Version
+      description: Version of Python you are using
+      options:
+        - "3.6"
+        - "3.7"
+        - "3.8"
+        - "3.9"
+        - "3.10"
+    validations:
+      required: true
+  - type: input
+    id: ls_version
+    attributes:
+      label: LimeSurvey Version
+      description: Version of LimeSurvey you are using
+      placeholder: "4.6.3"
+    validations:
+      required: true
+  - type: input
+    id: os
+    attributes:
+      label: Operating System
+      description: What Operating System you are using
+      placeholder: "Windows"
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: Description
+      description: Describe what you were trying to get done.
+      placeholder: Tell us what happened, what went wrong, and what you expected to happen.
+    validations:
+      required: true
+  - type: textarea
+    id: failing-code
+    attributes:
+      label: Code
+      description: Paste the failing code and traceback.
+      placeholder: Tell us what happened, what went wrong, and what you expected to happen.
+      render: python
+    validations:
+      required: false
+  - type: input
+    id: permissions
+    attributes:
+      label: Permissions Matrix
+      description: Upload a screenshot of the permissions matrix for the user trying to access the RC API.
+    validations:
+      required: false
