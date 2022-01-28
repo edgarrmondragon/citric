@@ -5,8 +5,8 @@
 
 ### Description
 
-Describe what you were trying to get done.
-Tell us what happened, what went wrong, and what you expected to happen.
+_ Describe what you were trying to get done._
+_Tell us what happened, what went wrong, and what you expected to happen._
 
 ### What I Did
 
@@ -17,6 +17,4 @@ If there was a crash, please include the traceback here.
 
 ### User permissions (optional)
 
-<!-- [Example](../blob/master/examples/permissions.png) -->
-
-Share a screenshot of the permissions matrix for the user trying to access the RC API.
+_Share a screenshot of the permissions matrix for the user trying to access the RC API._
