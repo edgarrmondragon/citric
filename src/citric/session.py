@@ -7,9 +7,9 @@ from typing import Any, Optional, Type, TypeVar
 import requests
 
 from citric.exceptions import (
+    LimeSurveyApiError,
     LimeSurveyError,
     LimeSurveyStatusError,
-    LimeSurveyApiError,
     ResponseMismatchError,
 )
 from citric.method import Method

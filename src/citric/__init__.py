@@ -2,9 +2,9 @@
 from citric.client import Client  # noqa: F401
 
 try:
-    from importlib.metadata import version, PackageNotFoundError  # type: ignore
+    from importlib.metadata import PackageNotFoundError, version  # type: ignore
 except ImportError:  # pragma: no cover
-    from importlib_metadata import version, PackageNotFoundError  # type: ignore
+    from importlib_metadata import PackageNotFoundError, version  # type: ignore
 
 
 try:
