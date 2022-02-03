@@ -31,6 +31,8 @@ services:
 
   storage:
     image: quay.io/minio/minio:latest
+    volumes:
+      - "object_storage:/data/"
     ports:
       - "9000:9000"
       - "9001:9001"
@@ -46,6 +48,8 @@ services:
       LIMESURVEY_URL: http://limesurvey:8080/index.php/admin/remotecontrol
       LIMESURVEY_USERNAME: iamadmin
       LIMESURVEY_PASSWORD: secret
+      AWS_ACCESS_KEY_ID: minioadmin
+      AWS_SECRET_ACCESS_KEY: minioadmin
       DB_URI: postgresql://limesurvey:secret@db/limesurvey
     volumes:
       - "./:/app/"
@@ -56,3 +60,4 @@ services:
 volumes:
   limedb:
   surveys:
+  object_storage:
