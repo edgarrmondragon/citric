@@ -133,6 +133,16 @@ with Client(
         )
 ```
 
+### Fall back to `citric.Session` for low-level interaction
+
+This library doesn't (yet) implement all RPC methods, so if you're in dire need to use a method not currently supported, you can use the `session` attribute to invoke the underlying RPC interface without having to pass a session key explicitly:
+
+```python
+# Call the copy_survey method, not available in Client
+with Client(LS_URL, "iamadmin", "secret") as client:
+    new_survey_id = client.session.copy_survey(35239, "copied_survey")
+```
+
 ## Development
 
 Use pyenv to setup default Python versions for this repo:
