@@ -42,10 +42,10 @@ services:
     depends_on:
       - db
       - limesurvey
-    volumes:
-      - "./:/app/"
     environment:
       LIMESURVEY_URL: http://limesurvey:8080/index.php/admin/remotecontrol
+      LIMESURVEY_USERNAME: iamadmin
+      LIMESURVEY_PASSWORD: secret
       DB_URI: postgresql://limesurvey:secret@db/limesurvey
     volumes:
       - "./:/app/"
