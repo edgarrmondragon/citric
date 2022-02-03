@@ -1,0 +1,35 @@
+name: Feature Request
+description: Request a new feature
+title: "Feature: <title>"
+labels: ["enhancement"]
+assignees:
+  - edgarrmondragon
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to request a new feature!
+
+        Contributions are always welcome, so if you feel comfortable enough with Python do submit a pull request 😄
+  - type: dropdown
+    id: feature_type
+    attributes:
+      label: Feature Type
+      description: What type of change or addition you would like to see
+      options:
+        - "New RPC client method"
+        - "Other"
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: >
+        Describe what you would like `citric` to do. Paste here any links
+        to the LimeSurvey RPC documentation, or other references that are
+        relevant for this feature.
+      placeholder: As a user, I would like if citric...
+    validations:
+      required: true
