@@ -8,7 +8,7 @@ services:
     depends_on:
       - db
     ports:
-     - "8001:80"
+     - "8001:8080"
     environment:
       DB_TYPE: pgsql
       DB_HOST: db
@@ -42,8 +42,10 @@ services:
     depends_on:
       - db
       - limesurvey
+    volumes:
+      - "./:/app/"
     environment:
-      LIMESURVEY_URL: http://limesurvey/index.php/admin/remotecontrol
+      LIMESURVEY_URL: http://limesurvey:8080/index.php/admin/remotecontrol
       DB_URI: postgresql://limesurvey:secret@db/limesurvey
     command: nox -rs tests-3.10 -- -m integration_test
 
