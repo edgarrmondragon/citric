@@ -39,6 +39,20 @@ class MockSession(Session):
         """Mock result from importing a survey file."""
         return {"content": base64.b64decode(content.encode()), "type": file_type}
 
+    def import_question(
+        self,
+        survey_id: int,
+        group_id: int,
+        content: str,
+        file_type: str = "lsq",
+        mandatory: str = "N",
+        new_title: Optional[str] = None,
+        new_text: Optional[str] = None,
+        new_help: Optional[str] = None,
+    ) -> bytes:
+        """Mock result from importing a question file."""
+        return base64.b64decode(content.encode())
+
     def list_questions(
         self,
         survey_id: int,
@@ -241,6 +255,20 @@ def test_import_survey(client: MockClient, tmp_path: Path):
             "content": random_bytes,
             "type": ImportSurveyType.LSS,
         }
+
+
+def test_import_question(client: MockClient, tmp_path: Path):
+    """Test import_question client method."""
+    # TODO: generate this truly randomly
+    random_bytes = b"1924m01'9280u '0', u'012"
+
+    filepath = Path(tmp_path) / "question.lsq"
+
+    with open(filepath, "wb") as f:
+        f.write(random_bytes)
+
+    with open(filepath, "rb") as f:
+        assert client.import_question(f, 100, 1) == random_bytes
 
 
 def test_map_response_data(client: MockClient):

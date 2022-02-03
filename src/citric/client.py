@@ -504,6 +504,34 @@ class Client:
             survey_id,
         )
 
+    def import_question(
+        self,
+        file: BinaryIO,
+        survey_id: int,
+        group_id: int,
+    ) -> int:
+        """Import survey from a file.
+
+        Create a new quesstion from an exported LSQ file.
+
+        TODO: Check support for additional fields like custom title, text, etc.
+
+        Args:
+            file: File object.
+            survey_id: The ID of the Survey that the question will belong to.
+            group_id: The ID of the Group that the question will belong to.
+
+        Returns:
+            The ID of the new question.
+        """
+        contents = base64.b64encode(file.read()).decode()
+        return self.__session.import_question(
+            survey_id,
+            group_id,
+            contents,
+            "lsq",
+        )
+
     def list_participants(
         self,
         survey_id: int,

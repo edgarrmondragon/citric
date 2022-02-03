@@ -62,6 +62,20 @@ def survey_id(client: citric.Client) -> Generator[int, None, None]:
 
 
 @pytest.mark.integration_test
+def test_import_question(client: citric.Client, survey_id: int):
+    """Test importing a question from an lsq file."""
+    group_id = client.add_group(survey_id, "Test Group")
+
+    with open("./examples/free_text.lsq", "rb") as f:
+        question_id = client.import_question(f, survey_id, group_id)
+
+    questions = client.list_questions(survey_id, group_id)
+
+    assert questions[0]["qid"] == question_id
+    assert questions[0]["title"] == "FREETEXTEXAMPLE"
+
+
+@pytest.mark.integration_test
 def test_activate_survey(client: citric.Client, survey_id: int):
     """Test whether the survey gets activated."""
     properties_before = client.get_survey_properties(survey_id, ["active"])
