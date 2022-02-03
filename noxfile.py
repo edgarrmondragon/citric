@@ -19,7 +19,7 @@ except ImportError:
     raise SystemExit(dedent(message)) from None
 
 package = "citric"
-python_versions = ["3.11", "3.10", "3.9", "3.8", "3.7", "3.6"]
+python_versions = ["3.11", "3.10", "3.9", "3.8", "3.7"]
 locations = "src", "tests", "noxfile.py", "docs/conf.py"
 nox.options.sessions = (
     "lint",
@@ -77,7 +77,7 @@ def tests(session: Session) -> None:
             session.notify("coverage", posargs=[])
 
 
-@session(python=python_versions[-2:])
+@session(python=python_versions[-1:])
 def pytype(session: Session) -> None:
     """Infer and check types with pytype."""
     args = session.posargs or ["--disable=import-error", *locations]

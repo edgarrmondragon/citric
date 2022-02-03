@@ -148,7 +148,7 @@ with Client(LS_URL, "iamadmin", "secret") as client:
 Use pyenv to setup default Python versions for this repo:
 
 ```shell
-pyenv local 3.10.0 3.9.7 3.8.11 3.7.11 3.6.14
+pyenv local 3.10.0 3.9.7 3.8.11 3.7.11
 ```
 
 Install project dependencies

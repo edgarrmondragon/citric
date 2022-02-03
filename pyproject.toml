@@ -12,7 +12,6 @@ documentation = "https://citric.readthedocs.io"
 classifiers=[
     "License :: OSI Approved :: MIT License",
     "Natural Language :: English",
-    "Programming Language :: Python :: 3.6",
     "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
@@ -24,7 +23,7 @@ keywords = ["limesurvey", "json-rpc"]
 "Issue Tracker" = "https://github.com/edgarrmondragon/citric/issues"
 
 [tool.poetry.dependencies]
-python = "^3.6.2"
+python = "^3.7.0"
 requests = "^2.23.0"
 importlib_metadata = {version = ">=1.6,<5.0", python = "<3.8"}
 
@@ -47,7 +46,7 @@ safety = "^1.9.0"
 codecov = "^2.1.4"
 flake8-annotations = "^2.1.0"
 mypy = "^0.931"
-pytype = {version = "^2022.1.5", python = "^3.6,<3.8"}
+pytype = {version = "^2022.1.5", python = "<3.8"}
 flake8-docstrings = "^1.5.0"
 darglint = "^1.4.0"
 xdoctest = "^0.15.10"

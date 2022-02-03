@@ -78,7 +78,6 @@ python-versions = ">=3.6.2"
 
 [package.dependencies]
 click = ">=8.0.0"
-dataclasses = {version = ">=0.6", markers = "python_version < \"3.7\""}
 mypy-extensions = ">=0.4.3"
 pathspec = ">=0.9.0"
 platformdirs = ">=2"
@@ -164,14 +163,6 @@ description = "A utility for ensuring Google-style docstrings stay up to date wi
 category = "dev"
 optional = false
 python-versions = ">=3.6,<4.0"
-
-[[package]]
-name = "dataclasses"
-version = "0.8"
-description = "A backport of the dataclasses module for Python 3.6"
-category = "dev"
-optional = false
-python-versions = ">=3.6, <3.7"
 
 [[package]]
 name = "decorator"
@@ -386,7 +377,6 @@ optional = false
 python-versions = ">=3.6"
 
 [package.dependencies]
-dataclasses = {version = ">=0.6.0", markers = "python_version < \"3.7\""}
 pyyaml = ">=5.2"
 typing-extensions = ">=3.7.4.2"
 typing-inspect = ">=0.4.0"
@@ -694,7 +684,6 @@ python-versions = "<3.10,>=3.6"
 
 [package.dependencies]
 attrs = ">=21.2.0"
-dataclasses = {version = "*", markers = "python_version < \"3.7\""}
 importlab = ">=0.6.1"
 libcst = "*"
 ninja = ">=1.10.0.post2"
@@ -1106,8 +1095,8 @@ docs = ["sphinx", "sphinx-autodoc-typehints", "sphinx-autoapi", "myst-parser", "
 
 [metadata]
 lock-version = "1.1"
-python-versions = "^3.6.2"
-content-hash = "c0519139bf836b122e9926e39fef40ad305570becd483191687cb4d63ead2aa5"
+python-versions = "^3.7.0"
+content-hash = "0c1be5adab94637d81941fd37660a419ebed8cc99452e1faf307e8da5232f721"
 
 [metadata.files]
 alabaster = [
@@ -1232,10 +1221,6 @@ coverage = [
 darglint = [
     {file = "darglint-1.8.1-py3-none-any.whl", hash = "sha256:5ae11c259c17b0701618a20c3da343a3eb98b3bc4b5a83d31cdd94f5ebdced8d"},
     {file = "darglint-1.8.1.tar.gz", hash = "sha256:080d5106df149b199822e7ee7deb9c012b49891538f14a11be681044f0bb20da"},
-]
-dataclasses = [
-    {file = "dataclasses-0.8-py3-none-any.whl", hash = "sha256:0201d89fa866f68c8ebd9d08ee6ff50c0b255f8ec63a71c16fda7af82bb887bf"},
-    {file = "dataclasses-0.8.tar.gz", hash = "sha256:8479067f342acf957dc82ec415d355ab5edb7e7646b90dc6e2fd1d96ad084c97"},
 ]
 decorator = [
     {file = "decorator-4.4.2-py2.py3-none-any.whl", hash = "sha256:41fa54c2a0cc4ba648be4fd43cff00aedf5b9465c9bf18d64325bc225f08f760"},
