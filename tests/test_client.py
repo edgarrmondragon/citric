@@ -133,6 +133,17 @@ def test_activate_tokens(client: MockClient):
     assert_client_session_call(client, "activate_tokens", 1)
 
 
+def test_add_group(client: MockClient):
+    """Test add_group client method."""
+    assert_client_session_call(
+        client,
+        "add_group",
+        1,
+        "My Group",
+        "A very simple question group",
+    )
+
+
 def test_delete_response(client: MockClient):
     """Test activate_tokens client method."""
     assert_client_session_call(client, "delete_response", 1, 1)

@@ -182,6 +182,19 @@ class Client:
             for key, value in response_data.items()
         }
 
+    def add_group(self, survey_id: int, title: str, description: str = "") -> int:
+        """Add a new empty question group to a survey.
+
+        Args:
+            survey_id: ID of the Survey to add the group.
+            title: Name of the group.
+            description: Optional description of the group.
+
+        Returns:
+            The id of the new group.
+        """
+        return self.__session.add_group(survey_id, title, description)
+
     def add_response(self, survey_id: int, response_data: Mapping[str, Any]) -> int:
         """Add a single response to a survey.
 
@@ -544,7 +557,7 @@ class Client:
             language: Retrieve question text, description, etc. in this language.
 
         Returns:
-            List of participants with basic information.
+            List of questions with basic information.
         """
         return self.__session.list_questions(survey_id, group_id, language)
 
