@@ -1,9 +1,9 @@
 """Integration tests for Python client."""
+import csv
+import io
 import os
 from typing import Any, Dict, Generator, List
 
-import csv
-import io
 import psycopg2  # type: ignore
 import pytest
 
