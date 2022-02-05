@@ -6,7 +6,7 @@ on:
 jobs:
   tests:
     name: ${{ matrix.session }} ${{ matrix.python-version }} / ${{ matrix.os }}
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     continue-on-error: ${{ matrix.experimental }}
     env:
       NOXSESSION: ${{ matrix.session }}
