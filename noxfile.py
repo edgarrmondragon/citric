@@ -108,7 +108,7 @@ def xdoctest(session: Session) -> None:
     session.run("python", "-m", "xdoctest", *args)
 
 
-@session(python=python_versions)
+@session(python=python_versions[1])
 def coverage(session: Session) -> None:
     """Upload coverage data."""
     args = session.posargs or ["report"]
