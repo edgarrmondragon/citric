@@ -5,13 +5,32 @@
 
 version: 2
 updates:
-  - package-ecosystem: "pip" # See documentation for possible values
-    directory: "/" # Location of package manifests
+  - package-ecosystem: "pip"
+    directory: "/"
     schedule:
-      interval: "daily"
+      interval: daily
       time: "14:38"
       timezone: "America/Mexico_City"
     reviewers:
       - "edgarrmondragon"
     labels:
       - "dependencies"
+    versioning-strategy: lockfile-only
+    allow:
+      - dependency-type: "all"
+  - package-ecosystem: pip
+    directory: "/.github/workflows"
+    schedule:
+      interval: daily
+      time: "14:38"
+      timezone: "America/Mexico_City"
+    reviewers:
+      - "edgarrmondragon"
+    labels:
+      - "dependencies"
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+    reviewers:
+      - "edgarrmondragon"
