@@ -10,6 +10,7 @@ extensions = [
     "sphinx_autodoc_typehints",
     "autoapi.extension",
     "myst_parser",
+    "nbsphinx",
 ]
 
 autodoc_typehints = "description"
@@ -30,4 +31,7 @@ autoapi_options = [
 ]
 
 html_theme = "furo"
+html_theme_options = {
+    "navigation_with_keys": True,
+}
 html_title = "Citric"
