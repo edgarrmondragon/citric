@@ -1,7 +1,8 @@
 name: Tests
 on:
-- push
-- pull_request
+  pull_request: {}
+  push:
+    branches: [master]
 jobs:
   tests:
     name: ${{ matrix.session }} ${{ matrix.python-version }} / ${{ matrix.os }}
