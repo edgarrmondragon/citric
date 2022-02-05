@@ -155,13 +155,13 @@ def black_check(session: Session) -> None:
 @session(name="docs-build", python=python_versions[1])
 def docs_build(session: Session) -> None:
     """Build the documentation."""
-    args = session.posargs or ["docs", "docs/_build"]
+    args = session.posargs or ["docs", "build"]
     if not session.posargs and "FORCE_COLOR" in os.environ:
         args.insert(0, "--color")
 
     session.install(".[docs]")
 
-    build_dir = Path("docs", "_build")
+    build_dir = Path("build")
     if build_dir.exists():
         shutil.rmtree(build_dir)
 
@@ -171,11 +171,10 @@ def docs_build(session: Session) -> None:
 @session(name="docs-serve", python=python_versions[1])
 def docs_serve(session: Session) -> None:
     """Build the documentation."""
-    args = session.posargs or ["--open-browser", "docs", "docs/_build"]
+    args = session.posargs or ["--open-browser", "docs", "build"]
     session.install(".[docs]")
-    session.install("sphinx", "sphinx-autobuild", "furo")
 
-    build_dir = Path("docs", "_build")
+    build_dir = Path("build")
     if build_dir.exists():
         shutil.rmtree(build_dir)
 
