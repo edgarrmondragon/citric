@@ -2,7 +2,7 @@ name: Tests
 on: push
 jobs:
   tests:
-    name: Python ${{ matrix.python-version }}
+    name: ${{ matrix.session }} ${{ matrix.python-version }} / ${{ matrix.os }}
     runs-on: ubuntu-latest
     continue-on-error: ${{ matrix.experimental }}
     env:
