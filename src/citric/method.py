@@ -11,7 +11,7 @@ class Method:
         self.__caller = caller
         self.__name = name
 
-    def __getattr__(self, name: str) -> "Method":  # noqa: ANN101
+    def __getattr__(self, name: str) -> "Method":
         """Get nested method.
 
         Args:
@@ -26,7 +26,7 @@ class Method:
         """
         return Method(self.__caller, f"{self.__name}.{name}")
 
-    def __call__(self, *params: Any) -> Any:  # noqa: ANN101
+    def __call__(self, *params: Any) -> Any:
         """Call RPC method.
 
         Args:

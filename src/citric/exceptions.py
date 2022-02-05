@@ -8,7 +8,7 @@ class ResponseMismatchError(Exception):
 class LimeSurveyError(Exception):
     """Basic exception raised by LimeSurvey."""
 
-    def __init__(self, message: str) -> None:  # noqa:: ANN101
+    def __init__(self, message: str) -> None:
         """Create a generic error for the LimeSurvey RPC API.
 
         Args:
