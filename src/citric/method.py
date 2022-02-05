@@ -12,7 +12,18 @@ class Method:
         self.__name = name
 
     def __getattr__(self, name: str) -> "Method":  # noqa: ANN101
-        """Get nested method."""
+        """Get nested method.
+
+        Args:
+            name: Method name.
+
+        Returns:
+            A new instance of Method for the nested call.
+
+        >>> method = Method(print, "some_method")
+        >>> method.nested("x", "y")
+        some_method.nested x y
+        """
         return Method(self.__caller, f"{self.__name}.{name}")
 
     def __call__(self, *params: Any) -> Any:  # noqa: ANN101
@@ -23,5 +34,9 @@ class Method:
 
         Returns:
             An RPC result.
+
+        >>> method = Method(print, "some_method")
+        >>> method(1, "a")
+        some_method 1 a
         """
         return self.__caller(self.__name, *params)
