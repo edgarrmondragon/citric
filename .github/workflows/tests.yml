@@ -20,7 +20,7 @@ jobs:
         - { python-version: "3.8", os: "ubuntu-latest", session: "mypy", experimental: false }
         - { python-version: "3.7", os: "ubuntu-latest", session: "mypy", experimental: false }
         - { python-version: "3.6", os: "ubuntu-latest", session: "mypy", experimental: false }
-        - { python-version: "3.11", os: "ubuntu-latest", session: "test", experimental: true }
+        - { python-version: "3.11", os: "ubuntu-latest", session: "tests", experimental: true, pre-release: "3.11.0-alpha" }
         - { python-version: "3.10", os: "ubuntu-latest", session: "tests", experimental: false }
         - { python-version: "3.9", os: "ubuntu-latest", session: "tests", experimental: false }
         - { python-version: "3.8", os: "ubuntu-latest", session: "tests", experimental: false }
@@ -37,7 +37,7 @@ jobs:
     - name: Setup Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2.3.1
       with:
-        python-version: ${{ matrix.python-version }}
+        python-version: ${{ matrix.pre-release || matrix.python-version }}
         architecture: x64
 
     - name: Upgrade pip
