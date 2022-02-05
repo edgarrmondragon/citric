@@ -20,6 +20,7 @@ jobs:
         - { python: "3.8", os: "ubuntu-latest", session: "mypy", experimental: false }
         - { python: "3.7", os: "ubuntu-latest", session: "mypy", experimental: false }
         - { python: "3.6", os: "ubuntu-latest", session: "mypy", experimental: false }
+        - { python: "3.11.0-alpha - 3.11.0", os: "ubuntu-latest", session: "test", experimental: true }
         - { python: "3.10", os: "ubuntu-latest", session: "tests", experimental: false }
         - { python: "3.9", os: "ubuntu-latest", session: "tests", experimental: false }
         - { python: "3.8", os: "ubuntu-latest", session: "tests", experimental: false }
@@ -28,7 +29,6 @@ jobs:
         - { python: "3.10", os: "windows-latest", session: "tests", experimental: false }
         - { python: "3.10", os: "macos-latest", session: "tests", experimental: false }
         - { python: "3.10", os: "ubuntu-latest", session: "xdoctest", experimental: false }
-        - { python: "3.11.0-alpha - 3.11.0", os: "ubuntu-latest", session: "docs-build", experimental: true }
 
     steps:
     - name: Check out the repository
