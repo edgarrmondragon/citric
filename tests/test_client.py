@@ -177,13 +177,18 @@ def test_copy_survey(client: MockClient):
     assert_client_session_call(client, "copy_survey", 1, "New Survey")
 
 
+def test_delete_group(client: MockClient):
+    """Test delete_group client method."""
+    assert_client_session_call(client, "delete_group", 1, 10)
+
+
 def test_delete_response(client: MockClient):
-    """Test activate_tokens client method."""
+    """Test delete_response client method."""
     assert_client_session_call(client, "delete_response", 1, 1)
 
 
 def test_delete_survey(client: MockClient):
-    """Test activate_tokens client method."""
+    """Test delete_survey client method."""
     assert_client_session_call(client, "delete_survey", 1)
 
 
