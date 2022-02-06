@@ -583,6 +583,22 @@ class Client:
         """
         return self.__session.list_users()
 
+    def list_groups(
+        self,
+        survey_id: int,
+        language: str | None = None,
+    ) -> list[dict[str, Any]]:
+        """Get the IDs and all attributes of all question groups in a Survey.
+
+        Args:
+            survey_id: ID of the Survey containing the groups.
+            language: Optional parameter language for multilingual groups.
+
+        Returns:
+            List of question groups.
+        """
+        return self.__session.list_groups(survey_id, language)
+
     def list_questions(
         self,
         survey_id: int,
