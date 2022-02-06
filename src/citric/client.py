@@ -231,6 +231,18 @@ class Client:
         """
         return self.__session.copy_survey(survey_id, name)
 
+    def delete_group(self, survey_id: int, group_id: int) -> int:
+        """Delete a group.
+
+        Args:
+            survey_id: ID of the Survey that the group belongs to.
+            group_id: ID of the group to delete.
+
+        Returns:
+            ID of the deleted group.
+        """
+        return self.__session.delete_group(survey_id, group_id)
+
     def delete_response(self, survey_id: int, response_id: int) -> dict[str, str]:
         """Delete a response in a survey.
 
