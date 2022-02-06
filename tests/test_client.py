@@ -10,7 +10,7 @@ from typing import Any, Generator
 import pytest
 
 from citric.client import Client
-from citric.enums import ImportSurveyType
+from citric.enums import ImportGroupType, ImportSurveyType
 from citric.session import Session
 
 
@@ -32,15 +32,16 @@ class MockSession(Session):
         """A mock RPC call."""
         return {"method": method, "params": [*params]}
 
-    def import_survey(
+    def import_group(
         self,
+        survey_id: int,
         content: str,
-        file_type: str = "lss",
-        survey_name: str | None = None,
-        survey_id: int | None = None,
-    ) -> dict[str, Any]:
-        """Mock result from importing a survey file."""
-        return {"content": base64.b64decode(content.encode()), "type": file_type}
+        file_type: str = "lsq",
+        new_name: str | None = None,
+        new_description: str | None = None,
+    ) -> bytes:
+        """Mock result from importing a group file."""
+        return base64.b64decode(content.encode())
 
     def import_question(
         self,
@@ -55,6 +56,16 @@ class MockSession(Session):
     ) -> bytes:
         """Mock result from importing a question file."""
         return base64.b64decode(content.encode())
+
+    def import_survey(
+        self,
+        content: str,
+        file_type: str = "lss",
+        survey_name: str | None = None,
+        survey_id: int | None = None,
+    ) -> dict[str, Any]:
+        """Mock result from importing a survey file."""
+        return {"content": base64.b64decode(content.encode()), "type": file_type}
 
     def list_questions(
         self,
@@ -243,6 +254,34 @@ def test_get_available_languages(client: MockClient):
     assert client.get_available_languages() == ["en", "fr", "es"]
 
 
+def test_import_group(client: MockClient, tmp_path: Path):
+    """Test import_group client method."""
+    # TODO: generate this truly randomly
+    random_bytes = b"1924m01'9280u '0', u'012"
+
+    filepath = Path(tmp_path) / "group.lsq"
+
+    with open(filepath, "wb") as f:
+        f.write(random_bytes)
+
+    with open(filepath, "rb") as f:
+        assert client.import_group(f, 100, ImportGroupType.LSG) == random_bytes
+
+
+def test_import_question(client: MockClient, tmp_path: Path):
+    """Test import_question client method."""
+    # TODO: generate this truly randomly
+    random_bytes = b"1924m01'9280u '0', u'012"
+
+    filepath = Path(tmp_path) / "question.lsq"
+
+    with open(filepath, "wb") as f:
+        f.write(random_bytes)
+
+    with open(filepath, "rb") as f:
+        assert client.import_question(f, 100, 1) == random_bytes
+
+
 def test_import_survey(client: MockClient, tmp_path: Path):
     """Test import_survey client method."""
     # TODO: generate this truly randomly
@@ -258,20 +297,6 @@ def test_import_survey(client: MockClient, tmp_path: Path):
             "content": random_bytes,
             "type": ImportSurveyType.LSS,
         }
-
-
-def test_import_question(client: MockClient, tmp_path: Path):
-    """Test import_question client method."""
-    # TODO: generate this truly randomly
-    random_bytes = b"1924m01'9280u '0', u'012"
-
-    filepath = Path(tmp_path) / "question.lsq"
-
-    with open(filepath, "wb") as f:
-        f.write(random_bytes)
-
-    with open(filepath, "rb") as f:
-        assert client.import_question(f, 100, 1) == random_bytes
 
 
 def test_map_response_data(client: MockClient):

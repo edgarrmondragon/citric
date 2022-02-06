@@ -5,6 +5,13 @@ from __future__ import annotations
 import enum
 
 
+class ImportGroupType(str, enum.Enum):
+    """Group file type."""
+
+    LSG = "lsg"
+    CSV = "csv"
+
+
 class ImportSurveyType(str, enum.Enum):
     """Survey file type."""
 
