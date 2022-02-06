@@ -1,4 +1,7 @@
 """Top-level package for citric."""
+
+from __future__ import annotations
+
 from citric.client import Client  # noqa: F401
 
 try:

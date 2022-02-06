@@ -1,6 +1,9 @@
 """pytest fixtures."""
+
+from __future__ import annotations
+
 import json
-from typing import Any, Mapping, Optional, Tuple, Union
+from typing import Any, Mapping
 
 import pytest
 import requests
@@ -28,10 +31,10 @@ class LimeSurveyMockAdapter(BaseAdapter):
         self,
         request: requests.PreparedRequest,
         stream: bool = False,
-        timeout: Union[None, float, Tuple[float, float], Tuple[float, None]] = None,
-        verify: Union[bool, str] = True,
-        cert: Optional[Any] = None,
-        proxies: Optional[Mapping[str, str]] = None,
+        timeout: float | tuple[float, float] | tuple[float, None] | None = None,
+        verify: bool | str = True,
+        cert: Any | None = None,
+        proxies: Mapping[str, str] | None = None,
     ):
         """Sends a mocked request."""
         request_data = json.loads(request.body or "{}")

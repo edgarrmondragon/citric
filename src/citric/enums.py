@@ -1,5 +1,7 @@
 """Useful enums."""
 
+from __future__ import annotations
+
 import enum
 
 

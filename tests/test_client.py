@@ -1,8 +1,11 @@
 """Unit tests for the Python Client."""
+
+from __future__ import annotations
+
 import base64
 import io
 from pathlib import Path
-from typing import Any, Dict, Generator, List, Optional
+from typing import Any, Generator
 
 import pytest
 
@@ -25,7 +28,7 @@ class MockSession(Session):
         """Create a mock session."""
         pass
 
-    def rpc(self, method: str, *params: Any) -> Dict[str, Any]:
+    def rpc(self, method: str, *params: Any) -> dict[str, Any]:
         """A mock RPC call."""
         return {"method": method, "params": [*params]}
 
@@ -33,9 +36,9 @@ class MockSession(Session):
         self,
         content: str,
         file_type: str = "lss",
-        survey_name: Optional[str] = None,
-        survey_id: Optional[int] = None,
-    ) -> Dict[str, Any]:
+        survey_name: str | None = None,
+        survey_id: int | None = None,
+    ) -> dict[str, Any]:
         """Mock result from importing a survey file."""
         return {"content": base64.b64decode(content.encode()), "type": file_type}
 
@@ -46,9 +49,9 @@ class MockSession(Session):
         content: str,
         file_type: str = "lsq",
         mandatory: str = "N",
-        new_title: Optional[str] = None,
-        new_text: Optional[str] = None,
-        new_help: Optional[str] = None,
+        new_title: str | None = None,
+        new_text: str | None = None,
+        new_help: str | None = None,
     ) -> bytes:
         """Mock result from importing a question file."""
         return base64.b64decode(content.encode())
@@ -56,9 +59,9 @@ class MockSession(Session):
     def list_questions(
         self,
         survey_id: int,
-        group_id: Optional[int] = None,
+        group_id: int | None = None,
         *args: Any,
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """Mock questions."""
         return [
             {"title": "Q1", "qid": 1, "gid": group_id or 1, "sid": survey_id},
@@ -81,7 +84,7 @@ class MockSession(Session):
         """Return the setting value or an empty string."""
         return self.settings.get(setting_name, "")
 
-    def get_uploaded_files(self, *args: Any) -> Dict[str, Dict[str, Any]]:
+    def get_uploaded_files(self, *args: Any) -> dict[str, dict[str, Any]]:
         """Return uploaded files fake metadata."""
         return {
             "1234": {

@@ -1,5 +1,7 @@
 """Common exceptions."""
 
+from __future__ import annotations
+
 
 class ResponseMismatchError(Exception):
     """Exception raised when request and response ID don't match."""
