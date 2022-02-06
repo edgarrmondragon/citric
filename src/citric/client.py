@@ -219,6 +219,18 @@ class Client:
             ids.append(response_id)
         return ids
 
+    def copy_survey(self, survey_id: int, name: str) -> int:
+        """Copy a survey.
+
+        Args:
+            survey_id: ID of the source survey.
+            name: Name of the new survey.
+
+        Returns:
+            ID of the new survey.
+        """
+        return self.__session.copy_survey(survey_id, name)
+
     def delete_response(self, survey_id: int, response_id: int) -> dict[str, str]:
         """Delete a response in a survey.
 
