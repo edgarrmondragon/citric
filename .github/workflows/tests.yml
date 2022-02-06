@@ -5,7 +5,7 @@ on:
     branches: [master]
 jobs:
   tests:
-    name: ${{ matrix.session }} ${{ matrix.python-version }}${{ matrix.integration && " (integration)" || "" }} / ${{ matrix.os }}
+    name: ${{ matrix.session }} ${{ matrix.python-version }}${{ matrix.integration && ' (integration)' || '' }} / ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     continue-on-error: ${{ matrix.experimental }}
     env:
@@ -80,7 +80,7 @@ jobs:
         LIMESURVEY_URL: "http://localhost:8001/index.php/admin/remotecontrol"
         DB_URI: "postgresql://limesurvey:secret@localhost:5432/limesurvey"
       run: |
-        nox --python=${{ matrix.python-version }} -- ${{ matrix.integration && "-m integration_test" || "" }}
+        nox --python=${{ matrix.python-version }} -- ${{ matrix.integration && '-m integration_test' || '' }}
 
     - name: Upload coverage data
       if: always() && matrix.session == 'tests'
