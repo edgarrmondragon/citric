@@ -453,8 +453,6 @@ class Client:
         file: BinaryIO,
         survey_id: int,
         file_type: str = "lsg",
-        name: str | None = None,
-        description: str | None = None,
     ) -> int:
         """Import group from a file.
 
@@ -466,8 +464,6 @@ class Client:
             file: File object.
             survey_id: The ID of the Survey that the question will belong to.
             file_type: Type of file. One of LSS, CSV, TXT and LSA.
-            name: Optional new name for the group.
-            description: Optional new description for the group.
 
         Returns:
             The ID of the new group.
@@ -477,8 +473,6 @@ class Client:
             survey_id,
             contents,
             enums.ImportGroupType(file_type),
-            name,
-            description,
         )
 
     def import_question(
