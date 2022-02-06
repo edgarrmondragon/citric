@@ -1,5 +1,7 @@
 """RPC methods."""
 
+from __future__ import annotations
+
 from typing import Any, Callable
 
 
@@ -11,7 +13,7 @@ class Method:
         self.__caller = caller
         self.__name = name
 
-    def __getattr__(self, name: str) -> "Method":
+    def __getattr__(self, name: str) -> Method:
         """Get nested method.
 
         Args:

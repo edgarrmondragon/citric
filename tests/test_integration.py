@@ -1,10 +1,13 @@
 """Integration tests for Python client."""
+
+from __future__ import annotations
+
 import csv
 import io
 import os
-from typing import Any, Dict, Generator, List
+from typing import Any, Generator
 
-import psycopg2  # type: ignore
+import psycopg2
 import pytest
 
 import citric
@@ -138,7 +141,7 @@ def test_responses(client: citric.Client, survey_id: int):
     client.activate_survey(survey_id)
     client.activate_tokens(survey_id)
 
-    data: List[Dict[str, Any]]
+    data: list[dict[str, Any]]
     data = [
         {"G01Q01": "Long text 1", "G01Q02": "1", "token": "T00000"},
         {"G01Q01": "Long text 2", "G01Q02": "5", "token": "T00001"},

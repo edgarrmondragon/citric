@@ -1,5 +1,7 @@
 """Nox configuration."""
 
+from __future__ import annotations
+
 import os
 import shutil
 import sys
@@ -59,7 +61,12 @@ def mypy(session: Session) -> None:
     """Check types with mypy."""
     args = session.posargs or ["src", "tests", "docs/conf.py"]
     session.install(".")
-    session.install("mypy", "pytest", "types-requests")
+    session.install(
+        "mypy",
+        "pytest",
+        "types-requests",
+        "types-psycopg2",
+    )
     session.run("mypy", *args)
     if not session.posargs:
         session.run("mypy", f"--python-executable={sys.executable}", "noxfile.py")

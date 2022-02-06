@@ -61,6 +61,7 @@ types-requests = "^2.27.8"
 colorama = "^0.4.4"
 pyupgrade = "^2.31.0"
 isort = "^5.10.1"
+types-psycopg2 = "^2.9.6"
 
 [tool.poetry.extras]
 docs = [
@@ -100,6 +101,9 @@ src_paths = "citric"
 use_parentheses = true
 known_first_party = "citric"
 include_trailing_comma = true
+add_imports = [
+    "from __future__ import annotations",
+]
 
 [tool.pytest.ini_options]
 markers = [

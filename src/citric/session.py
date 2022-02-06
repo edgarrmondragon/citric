@@ -1,8 +1,11 @@
 """Low level wrapper for connecting to the LSRC2."""
+
+from __future__ import annotations
+
 import logging
 import random
 from types import TracebackType
-from typing import Any, Optional, Type, TypeVar
+from typing import Any, TypeVar
 
 import requests
 
@@ -57,7 +60,7 @@ class Session:
         self._session = requests_session
         self._session.headers.update(self._headers)
 
-        self.__key: Optional[str] = self.get_session_key(
+        self.__key: str | None = self.get_session_key(
             username,
             password,
             auth_plugin,
@@ -71,7 +74,7 @@ class Session:
         return self.__closed
 
     @property
-    def key(self) -> Optional[str]:
+    def key(self) -> str | None:
         """RPC session key."""
         return self.__key
 
@@ -171,9 +174,9 @@ class Session:
 
     def __exit__(
         self,
-        type: Optional[Type[BaseException]],
-        value: Optional[BaseException],
-        traceback: Optional[TracebackType],
+        type: type[BaseException] | None,
+        value: BaseException | None,
+        traceback: TracebackType | None,
     ) -> None:
         """Safely exit an RPC session.
 

@@ -1,21 +1,11 @@
 """Python API Client."""
 
+from __future__ import annotations
+
 import base64
 from pathlib import Path
 from types import TracebackType
-from typing import (
-    Any,
-    BinaryIO,
-    Dict,
-    Iterable,
-    List,
-    Mapping,
-    Optional,
-    Sequence,
-    Type,
-    TypeVar,
-    Union,
-)
+from typing import Any, BinaryIO, Iterable, Mapping, Sequence, TypeVar
 
 import requests
 
@@ -79,9 +69,9 @@ class Client:
 
     def __exit__(
         self,
-        type: Optional[Type[BaseException]],
-        value: Optional[BaseException],
-        traceback: Optional[TracebackType],
+        type: type[BaseException] | None,
+        value: BaseException | None,
+        traceback: TracebackType | None,
     ) -> None:
         """Safely exit the client context."""
         self.close()
@@ -91,7 +81,7 @@ class Client:
         """Low-level RPC session."""
         return self.__session
 
-    def activate_survey(self, survey_id: int) -> Dict[str, Any]:
+    def activate_survey(self, survey_id: int) -> dict[str, Any]:
         """Activate a survey.
 
         Args:
@@ -105,8 +95,8 @@ class Client:
     def activate_tokens(
         self,
         survey_id: int,
-        attributes: Optional[List[str]] = None,
-    ) -> Dict[str, str]:
+        attributes: list[str] | None = None,
+    ) -> dict[str, str]:
         """Initialise the survey participant table.
 
         New participant tokens may be later added.
@@ -125,7 +115,7 @@ class Client:
         survey_id: int,
         participant_data: Sequence[Mapping[str, Any]],
         create_tokens: bool = True,
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """Add participants to a survey.
 
         Args:
@@ -146,7 +136,7 @@ class Client:
         self,
         survey_id: int,
         participant_ids: Sequence[int],
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """Add participants to a survey.
 
         Args:
@@ -165,7 +155,7 @@ class Client:
         self,
         survey_id: int,
         response_data: Mapping[str, Any],
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Converts response keys to LimeSurvey's internal representation.
 
         Args:
@@ -213,7 +203,7 @@ class Client:
         self,
         survey_id: int,
         responses: Iterable[Mapping[str, Any]],
-    ) -> List[int]:
+    ) -> list[int]:
         """Add multiple responses to a survey.
 
         Args:
@@ -229,7 +219,7 @@ class Client:
             ids.append(response_id)
         return ids
 
-    def delete_response(self, survey_id: int, response_id: int) -> Dict[str, str]:
+    def delete_response(self, survey_id: int, response_id: int) -> dict[str, str]:
         """Delete a response in a survey.
 
         Args:
@@ -241,7 +231,7 @@ class Client:
         """
         return self.__session.delete_response(survey_id, response_id)
 
-    def delete_survey(self, survey_id: int) -> Dict[str, str]:
+    def delete_survey(self, survey_id: int) -> dict[str, str]:
         """Delete a survey.
 
         Args:
@@ -256,15 +246,15 @@ class Client:
         self,
         survey_id: int,
         *,
-        token: Optional[str] = None,
+        token: str | None = None,
         file_format: str = "json",
-        language: Optional[str] = None,
+        language: str | None = None,
         completion_status: str = "all",
         heading_type: str = "code",
         response_type: str = "short",
-        from_response_id: Optional[int] = None,
-        to_response_id: Optional[int] = None,
-        fields: Optional[Sequence[str]] = None,
+        from_response_id: int | None = None,
+        to_response_id: int | None = None,
+        fields: Sequence[str] | None = None,
     ) -> bytes:
         """Export responses to a file-like object.
 
@@ -316,9 +306,9 @@ class Client:
     def get_participant_properties(
         self,
         survey_id: int,
-        query: Union[Dict[str, Any], int],
-        properties: Optional[Sequence[str]] = None,
-    ) -> Dict[str, Any]:
+        query: dict[str, Any] | int,
+        properties: Sequence[str] | None = None,
+    ) -> dict[str, Any]:
         """Get properties a single survey participant.
 
         Args:
@@ -336,7 +326,7 @@ class Client:
         self,
         survey_id: int,
         token: str,
-    ) -> List[int]:
+    ) -> list[int]:
         """Find response IDs given a survey ID and a token.
 
         Args:
@@ -385,7 +375,7 @@ class Client:
         """
         return self._get_site_setting("defaultlang")
 
-    def get_available_languages(self) -> Optional[List[str]]:
+    def get_available_languages(self) -> list[str] | None:
         """Get the list of available languages.
 
         Returns:
@@ -399,8 +389,8 @@ class Client:
     def get_survey_properties(
         self,
         survey_id: int,
-        properties: Optional[List[str]] = None,
-    ) -> Dict[str, Any]:
+        properties: list[str] | None = None,
+    ) -> dict[str, Any]:
         """Get properties of a survey.
 
         Args:
@@ -415,8 +405,8 @@ class Client:
     def get_uploaded_files(
         self,
         survey_id: int,
-        token: Optional[str] = None,
-    ) -> Dict[str, Dict[str, Any]]:
+        token: str | None = None,
+    ) -> dict[str, dict[str, Any]]:
         """Get a dictionary of files uploaded in a survey response.
 
         Args:
@@ -430,10 +420,10 @@ class Client:
 
     def download_files(
         self,
-        directory: Union[str, Path],
+        directory: str | Path,
         survey_id: int,
-        token: Optional[str] = None,
-    ) -> List[Path]:
+        token: str | None = None,
+    ) -> list[Path]:
         """Download files uploaded in survey response.
 
         Args:
@@ -462,8 +452,8 @@ class Client:
         self,
         file: BinaryIO,
         file_type: str = "lss",
-        survey_name: Optional[str] = None,
-        survey_id: Optional[int] = None,
+        survey_name: str | None = None,
+        survey_id: int | None = None,
     ) -> int:
         """Import survey from a file.
 
@@ -521,9 +511,9 @@ class Client:
         start: int = 0,
         limit: int = 10,
         unused: bool = False,
-        attributes: Union[Sequence[str], bool] = False,
-        conditions: Optional[Mapping[str, Any]] = {},
-    ) -> List[Dict[str, Any]]:
+        attributes: Sequence[str] | bool = False,
+        conditions: Mapping[str, Any] | None = {},
+    ) -> list[dict[str, Any]]:
         """Get participants in a survey.
 
         Args:
@@ -546,7 +536,7 @@ class Client:
             conditions,
         )
 
-    def list_users(self) -> List[Dict[str, Any]]:
+    def list_users(self) -> list[dict[str, Any]]:
         """Get LimeSurvey users.
 
         Returns:
@@ -557,9 +547,9 @@ class Client:
     def list_questions(
         self,
         survey_id: int,
-        group_id: Optional[int] = None,
-        language: Optional[str] = None,
-    ) -> List[Dict[str, Any]]:
+        group_id: int | None = None,
+        language: str | None = None,
+    ) -> list[dict[str, Any]]:
         """Get questions in a survey, in a specific group or all.
 
         Args:
@@ -572,7 +562,7 @@ class Client:
         """
         return self.__session.list_questions(survey_id, group_id, language)
 
-    def list_surveys(self, username: Optional[str] = None) -> List[Dict[str, Any]]:
+    def list_surveys(self, username: str | None = None) -> list[dict[str, Any]]:
         """Get all surveys or only those owned by a user.
 
         Args:
@@ -585,8 +575,8 @@ class Client:
 
     def list_survey_groups(
         self,
-        username: Optional[str] = None,
-    ) -> List[Dict[str, Any]]:
+        username: str | None = None,
+    ) -> list[dict[str, Any]]:
         """Get all survey groups or only those owned by a user.
 
         Args:
