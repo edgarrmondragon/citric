@@ -187,6 +187,11 @@ def test_delete_survey(client: MockClient):
     assert_client_session_call(client, "delete_survey", 1)
 
 
+def test_list_groups(client: MockClient):
+    """Test list_groups client method."""
+    assert_client_session_call(client, "list_groups", 1, "en")
+
+
 def test_list_surveys(client: MockClient):
     """Test list_surveys client method."""
     assert_client_session_call(client, "list_surveys", None)

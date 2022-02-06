@@ -70,13 +70,16 @@ def test_import_group(client: citric.Client, survey_id: int):
     with open("./examples/group.lsg", "rb") as f:
         group_id = client.import_group(f, survey_id)
 
-    groups = client.session.list_groups(survey_id)
+    groups = client.list_groups(survey_id)
 
     assert groups[-1]["gid"] == group_id
     assert groups[-1]["group_name"] == "First Group"
     assert groups[-1]["description"] == "<p>A new group</p>"
 
-    questions = client.list_questions(survey_id, group_id)
+    questions = sorted(
+        client.list_questions(survey_id, group_id),
+        key=lambda q: q["qid"],
+    )
 
     assert questions[0]["question"] == "<p><strong>First question</p>"
     assert questions[1]["question"] == "<p><strong>Second question</p>"
