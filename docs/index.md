@@ -13,6 +13,11 @@ license
 ```
 
 ```{toctree}
+
+./api_coverage.md
+```
+
+```{toctree}
 :maxdepth: 4
 
 API <_api/index>
