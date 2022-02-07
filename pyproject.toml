@@ -38,8 +38,6 @@ sphinx-autobuild = {version = "^2021.3.14", optional = true}
 # Jupyter
 jupyterlab = { version = "^3.2.5", optional = true }
 ipykernel = {version = "^6.8.0", optional = true}
-nbsphinx = {version = "^0.8.8", optional = true}
-pandoc = {version = "^2.0.1", optional = true}
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.0.0"
@@ -71,9 +69,6 @@ docs = [
     "myst-parser",
     "furo",
     "sphinx-autobuild",
-    "nbsphinx",
-    "ipykernel",
-    "pandoc",
 ]
 jupyter = [
     "jupyterlab",

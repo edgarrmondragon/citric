@@ -143,6 +143,11 @@ with Client(LS_URL, "iamadmin", "secret") as client:
     new_survey_id = client.session.copy_survey(35239, "copied_survey")
 ```
 
+### Notebook samples
+
+- [Import a survey file from S3](https://github.com/edgarrmondragon/citric/blob/master/docs/notebooks/import_s3.ipynb)
+- [Download responses and save them to a SQLite database](https://github.com/edgarrmondragon/citric/blob/master/docs/notebooks/pandas_sqlite.ipynb)
+
 ## Development
 
 Use pyenv to setup default Python versions for this repo:

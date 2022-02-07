@@ -13,7 +13,6 @@ extensions = [
     "sphinx_autodoc_typehints",
     "autoapi.extension",
     "myst_parser",
-    "nbsphinx",
 ]
 
 autodoc_typehints = "description"

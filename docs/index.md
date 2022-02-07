@@ -13,12 +13,6 @@ license
 ```
 
 ```{toctree}
-:maxdepth: 1
-
-notebooks/import_s3
-```
-
-```{toctree}
 :maxdepth: 4
 
 API <_api/index>
