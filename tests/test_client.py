@@ -13,6 +13,8 @@ from citric.client import Client
 from citric.enums import ImportGroupType, ImportSurveyType, NewSurveyType
 from citric.session import Session
 
+NEW_SURVEY_NAME = "New Survey"
+
 
 class MockSession(Session):
     """Mock RPC session with some hardcoded methods for testing."""
@@ -183,7 +185,7 @@ def test_add_survey(client: MockClient):
         client,
         "add_survey",
         1,
-        "New Survey",
+        NEW_SURVEY_NAME,
         "en",
         NewSurveyType.ALL_ON_ONE_PAGE,
     )
@@ -193,7 +195,7 @@ def test_add_survey(client: MockClient):
             client,
             "add_survey",
             1,
-            "New Survey",
+            NEW_SURVEY_NAME,
             "en",
             "NOT VALID",
         )
@@ -201,7 +203,7 @@ def test_add_survey(client: MockClient):
 
 def test_copy_survey(client: MockClient):
     """Test copy_survey client method."""
-    assert_client_session_call(client, "copy_survey", 1, "New Survey")
+    assert_client_session_call(client, "copy_survey", 1, NEW_SURVEY_NAME)
 
 
 def test_delete_group(client: MockClient):
