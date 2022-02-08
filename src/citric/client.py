@@ -150,7 +150,7 @@ class Client:
         survey_id: int,
         title: str,
         language: str,
-        survey_format: enums.NewSurveyType.GROUP_BY_GROUP,
+        survey_format: str = "G",
     ) -> int:
         """Add a new empty survey.
 
