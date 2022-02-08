@@ -110,6 +110,19 @@ class Client:
         """
         return self.__session.activate_tokens(survey_id)
 
+    def add_language(self, survey_id: int, language: str) -> dict[str, Any]:
+        """Add a survey language.
+
+        Args:
+            survey_id: ID of the Survey for which a language will be added.
+            language: A valid language shortcut to add to the current Survey. If the
+                language already exists no error will be given.
+
+        Returns:
+            Status message.
+        """
+        return self.__session.add_language(survey_id, language)
+
     def add_participants(
         self,
         survey_id: int,
