@@ -57,11 +57,21 @@ def client() -> Generator[citric.Client, None, None]:
 def survey_id(client: citric.Client) -> Generator[int, None, None]:
     """Import a survey from a file and return its ID."""
     with open("./examples/survey.lss", "rb") as f:
-        survey_id = client.import_survey(f)
+        survey_id = client.import_survey(f, survey_id=98765)
 
     yield survey_id
 
     client.delete_survey(survey_id)
+
+
+@pytest.mark.integration_test
+def test_add_language(client: citric.Client, survey_id: int):
+    """Test adding a new language to a survey."""
+    client.add_language(survey_id, "es")
+    client.add_language(survey_id, "ru")
+
+    survey_props = client.get_survey_properties(survey_id)
+    assert survey_props["additional_languages"] == "es ru"
 
 
 @pytest.mark.integration_test

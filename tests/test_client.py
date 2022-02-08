@@ -172,6 +172,11 @@ def test_add_group(client: MockClient):
     )
 
 
+def test_add_language(client: MockClient):
+    """Test add_language client method."""
+    assert_client_session_call(client, "add_language", 1, "ru")
+
+
 def test_copy_survey(client: MockClient):
     """Test copy_survey client method."""
     assert_client_session_call(client, "copy_survey", 1, "New Survey")

@@ -5,7 +5,7 @@
 | `activate_survey`              | Yes         | Activate survey (RPC function)                                                    |
 | `activate_tokens`              | Yes         | Activate survey participants (RPC function)                                       |
 | `add_group`                    | Yes         | Add empty group with minimum details (RPC function)                               |
-| `add_language`                 | No          | Add a survey language (RPC function)                                              |
+| `add_language`                 | Yes         | Add a survey language (RPC function)                                              |
 | `add_participants`             | Yes         | Add participants to the survey.                                                   |
 | `add_response`                 | Yes         | Add a response to the survey responses collection.                                |
 | `add_survey`                   | No          | Add an empty survey with minimum details                                          |
