@@ -8,7 +8,7 @@
 | `add_language`                 | Yes         | Add a survey language (RPC function)                                              |
 | `add_participants`             | Yes         | Add participants to the survey.                                                   |
 | `add_response`                 | Yes         | Add a response to the survey responses collection.                                |
-| `add_survey`                   | No          | Add an empty survey with minimum details                                          |
+| `add_survey`                   | Yes         | Add an empty survey with minimum details                                          |
 | `copy_survey`                  | Yes         | Copy survey (RPC function)                                                        |
 | `cpd_importParticipants`       | No          | Import a participant into the LimeSurvey CPDB                                     |
 | `delete_group`                 | Yes         | Delete a group from a chosen survey (RPC function)                                |

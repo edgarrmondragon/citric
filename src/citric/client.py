@@ -145,6 +145,32 @@ class Client:
             create_tokens,
         )
 
+    def add_survey(
+        self,
+        survey_id: int,
+        title: str,
+        language: str,
+        survey_format: enums.NewSurveyType.GROUP_BY_GROUP,
+    ) -> int:
+        """Add a new empty survey.
+
+        Args:
+            survey_id: The desired ID of the Survey to add.
+            title: Title of the new Survey.
+            language: Default language of the Survey.
+            survey_format: Question appearance format (A, G or S) for "All on one page",
+                "Group by Group", "Single questions", default to group by group (G).
+
+        Returns:
+            The new survey ID.
+        """
+        return self.__session.add_survey(
+            survey_id,
+            title,
+            language,
+            enums.NewSurveyType(survey_format),
+        )
+
     def delete_participants(
         self,
         survey_id: int,

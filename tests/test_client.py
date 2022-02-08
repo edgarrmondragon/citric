@@ -10,7 +10,7 @@ from typing import Any, Generator
 import pytest
 
 from citric.client import Client
-from citric.enums import ImportGroupType, ImportSurveyType
+from citric.enums import ImportGroupType, ImportSurveyType, NewSurveyType
 from citric.session import Session
 
 
@@ -175,6 +175,28 @@ def test_add_group(client: MockClient):
 def test_add_language(client: MockClient):
     """Test add_language client method."""
     assert_client_session_call(client, "add_language", 1, "ru")
+
+
+def test_add_survey(client: MockClient):
+    """Test add_survey client method."""
+    assert_client_session_call(
+        client,
+        "add_survey",
+        1,
+        "New Survey",
+        "en",
+        NewSurveyType.ALL_ON_ONE_PAGE,
+    )
+
+    with pytest.raises(ValueError, match="'NOT VALID' is not a valid NewSurveyType"):
+        assert_client_session_call(
+            client,
+            "add_survey",
+            1,
+            "New Survey",
+            "en",
+            "NOT VALID",
+        )
 
 
 def test_copy_survey(client: MockClient):
