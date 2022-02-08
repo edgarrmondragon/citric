@@ -11,6 +11,7 @@ import psycopg2
 import pytest
 
 import citric
+from citric import enums
 from citric.exceptions import LimeSurveyStatusError
 
 LS_URL = os.getenv("LIMESURVEY_URL", "http://limesurvey/index.php/admin/remotecontrol")
@@ -72,6 +73,24 @@ def test_add_language(client: citric.Client, survey_id: int):
 
     survey_props = client.get_survey_properties(survey_id)
     assert survey_props["additional_languages"] == "es ru"
+
+
+@pytest.mark.integration_test
+def test_add_survey(client: citric.Client):
+    """Test adding a new survey to a survey."""
+    survey_id = client.add_survey(
+        5555,
+        "New Survey",
+        "es",
+        enums.NewSurveyType.GROUP_BY_GROUP,
+    )
+
+    survey_props = client.get_survey_properties(survey_id)
+    assert survey_props["language"] == "es"
+    assert survey_props["format"] == enums.NewSurveyType.GROUP_BY_GROUP
+
+    matched = next(s for s in client.list_surveys() if s["sid"] == survey_id)
+    assert matched["surveyls_title"] == "New Survey"
 
 
 @pytest.mark.integration_test

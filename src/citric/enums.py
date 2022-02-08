@@ -21,6 +21,14 @@ class ImportSurveyType(str, enum.Enum):
     LSA = "lsa"
 
 
+class NewSurveyType(str, enum.Enum):
+    """New survey type."""
+
+    ALL_ON_ONE_PAGE = "A"
+    GROUP_BY_GROUP = "G"
+    SINGLE_QUESTIONS = "S"
+
+
 class ResponsesExportFormat(str, enum.Enum):
     """Responses export type."""
 
