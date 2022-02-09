@@ -241,6 +241,11 @@ def test_delete_language(client: MockClient):
     assert_client_session_call(client, "delete_language", 1, "ru")
 
 
+def test_delete_question(client: MockClient):
+    """Test delete_question client method."""
+    assert_client_session_call(client, "delete_question", 400)
+
+
 def test_delete_response(client: MockClient):
     """Test delete_response client method."""
     assert_client_session_call(client, "delete_response", 1, 1)

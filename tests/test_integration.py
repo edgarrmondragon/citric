@@ -204,6 +204,12 @@ def test_question(client: citric.Client, survey_id: int):
     new_props = client.get_question_properties(question_id, settings=["mandatory"])
     assert new_props["mandatory"] == "Y"
 
+    # Delete question
+    client.delete_question(question_id)
+
+    with pytest.raises(LimeSurveyStatusError, match="No questions found"):
+        client.list_questions(survey_id, group_id)
+
 
 @pytest.mark.integration_test
 def test_activate_survey(client: citric.Client, survey_id: int):

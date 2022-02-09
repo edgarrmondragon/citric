@@ -374,6 +374,17 @@ class Client:
         """
         return self.__session.delete_response(survey_id, response_id)
 
+    def delete_question(self, question_id: int) -> int:
+        """Delete a survey.
+
+        Args:
+            question_id: ID of Question to delete.
+
+        Returns:
+            ID of the deleted question.
+        """
+        return self.__session.delete_question(question_id)
+
     def delete_survey(self, survey_id: int) -> dict[str, str]:
         """Delete a survey.
 

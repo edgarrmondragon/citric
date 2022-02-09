@@ -14,7 +14,7 @@
 | `delete_group`                 | Yes         | Delete a group from a chosen survey (RPC function)                                |
 | `delete_language`              | Yes         | Delete a language from a survey (RPC function)                                    |
 | `delete_participants`          | Yes         | Delete multiple participants from the survey participants table (RPC function)    |
-| `delete_question`              | No          | Delete question from a survey (RPC function)                                      |
+| `delete_question`              | Yes         | Delete question from a survey (RPC function)                                      |
 | `delete_response`              | Yes         | Delete a response in a given survey using its Id                                  |
 | `delete_survey`                | Yes         | Delete a survey.                                                                  |
 | `export_responses`             | Yes         | Export responses in base64 encoded string                                         |
