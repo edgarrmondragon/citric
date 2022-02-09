@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import base64
 import io
+import random
 from pathlib import Path
 from typing import Any, Generator
 
@@ -300,8 +301,7 @@ def test_get_available_languages(client: MockClient):
 
 def test_import_group(client: MockClient, tmp_path: Path):
     """Test import_group client method."""
-    # TODO: generate this truly randomly
-    random_bytes = b"1924m01'9280u '0', u'012"
+    random_bytes = random.randbytes(100)
 
     filepath = Path(tmp_path) / "group.lsq"
 
@@ -314,8 +314,7 @@ def test_import_group(client: MockClient, tmp_path: Path):
 
 def test_import_question(client: MockClient, tmp_path: Path):
     """Test import_question client method."""
-    # TODO: generate this truly randomly
-    random_bytes = b"1924m01'9280u '0', u'012"
+    random_bytes = random.randbytes(100)
 
     filepath = Path(tmp_path) / "question.lsq"
 
@@ -328,8 +327,7 @@ def test_import_question(client: MockClient, tmp_path: Path):
 
 def test_import_survey(client: MockClient, tmp_path: Path):
     """Test import_survey client method."""
-    # TODO: generate this truly randomly
-    random_bytes = b"1924m01'9280u '0', u'012"
+    random_bytes = random.randbytes(100)
 
     filepath = Path(tmp_path) / "survey.lss"
 
