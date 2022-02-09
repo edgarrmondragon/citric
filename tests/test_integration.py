@@ -14,7 +14,7 @@ import citric
 from citric import enums
 from citric.exceptions import LimeSurveyStatusError
 
-LS_URL = os.getenv("LIMESURVEY_URL", "http://limesurvey/index.php/admin/remotecontrol")
+LS_URL = os.environ["LIMESURVEY_URL"]
 LS_USER = "iamadmin"
 LS_PW = "secret"
 
