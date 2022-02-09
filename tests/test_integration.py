@@ -14,7 +14,6 @@ import citric
 from citric import enums
 from citric.exceptions import LimeSurveyStatusError
 
-LS_URL = os.getenv("LIMESURVEY_URL", "http://limesurvey/index.php/admin/remotecontrol")
 LS_USER = "iamadmin"
 LS_PW = "secret"
 
@@ -38,10 +37,16 @@ def enable_json_rpc():
         conn.commit()
 
 
+@pytest.fixture(scope="session")
+def url() -> str:
+    """Get LimeSurvey RC URL."""
+    return os.environ["LIMESURVEY_URL"]
+
+
 @pytest.fixture(scope="module")
-def client() -> Generator[citric.Client, None, None]:
+def client(url: str) -> Generator[citric.Client, None, None]:
     """RemoteControl2 API client."""
-    client = citric.Client(LS_URL, LS_USER, LS_PW)
+    client = citric.Client(url, LS_USER, LS_PW)
 
     yield client
 

@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import base64
 import io
+import random
+import sys
 from pathlib import Path
 from typing import Any, Generator
 
@@ -14,6 +16,16 @@ from citric.enums import ImportGroupType, ImportSurveyType, NewSurveyType
 from citric.session import Session
 
 NEW_SURVEY_NAME = "New Survey"
+
+
+def _get_random_bytes(n: int):
+    return random.getrandbits(n * 8).to_bytes(n, "little")
+
+
+if sys.version_info >= (3, 9):
+    randbytes = random.randbytes
+else:
+    randbytes = _get_random_bytes
 
 
 class MockSession(Session):
@@ -300,8 +312,7 @@ def test_get_available_languages(client: MockClient):
 
 def test_import_group(client: MockClient, tmp_path: Path):
     """Test import_group client method."""
-    # TODO: generate this truly randomly
-    random_bytes = b"1924m01'9280u '0', u'012"
+    random_bytes = randbytes(100)
 
     filepath = Path(tmp_path) / "group.lsq"
 
@@ -314,8 +325,7 @@ def test_import_group(client: MockClient, tmp_path: Path):
 
 def test_import_question(client: MockClient, tmp_path: Path):
     """Test import_question client method."""
-    # TODO: generate this truly randomly
-    random_bytes = b"1924m01'9280u '0', u'012"
+    random_bytes = randbytes(100)
 
     filepath = Path(tmp_path) / "question.lsq"
 
@@ -328,8 +338,7 @@ def test_import_question(client: MockClient, tmp_path: Path):
 
 def test_import_survey(client: MockClient, tmp_path: Path):
     """Test import_survey client method."""
-    # TODO: generate this truly randomly
-    random_bytes = b"1924m01'9280u '0', u'012"
+    random_bytes = randbytes(100)
 
     filepath = Path(tmp_path) / "survey.lss"
 
