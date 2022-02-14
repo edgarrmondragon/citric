@@ -176,7 +176,7 @@ poetry run sphinx-build docs build
 You can setup a local instance of LimeSurvey with [Docker Compose](https://docs.docker.com/compose/):
 
 ```shell
-docker-compose up -d
+docker compose -f docker-compose.yml -f docker-compose.test.yml up -d
 ```
 
 Now you can access LimeSurvey at [port 8001](http://localhost:8001/index.php/admin).
