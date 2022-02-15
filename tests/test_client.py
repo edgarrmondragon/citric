@@ -147,15 +147,19 @@ class MockClient(Client):
     session_class = MockSession
 
 
-def assert_client_session_call(client: Client, method: str, *args: Any):
+def assert_client_session_call(client: Client, method: str, *args: Any, **kwargs: Any):
     """Assert client makes RPC call with the right arguments.
 
     Args:
         client: LSRPC2 API client.
         method: RPC method name.
         args: RPC method arguments.
+        kwargs: Client keyword arguments.
     """
-    assert getattr(client, method)(*args) == getattr(client.session, method)(*args)
+    assert getattr(client, method)(*args, **kwargs) == getattr(client.session, method)(
+        *args,
+        *kwargs.values(),
+    )
 
 
 @pytest.fixture(scope="session")
@@ -246,6 +250,39 @@ def test_list_surveys(client: MockClient):
 def test_list_survey_groups(client: MockClient):
     """Test list_survey_groups client method."""
     assert_client_session_call(client, "list_survey_groups", None)
+
+
+def test_get_group_properties(client: MockClient):
+    """Test get_group_properties client method."""
+    assert_client_session_call(
+        client,
+        "get_group_properties",
+        123,
+        settings=["gid"],
+        language="es",
+    )
+
+
+def test_get_language_properties(client: MockClient):
+    """Test get_language_properties client method."""
+    assert_client_session_call(
+        client,
+        "get_language_properties",
+        123,
+        settings=["surveyls_email_register_subj"],
+        language="es",
+    )
+
+
+def test_get_question_properties(client: MockClient):
+    """Test get_question_properties client method."""
+    assert_client_session_call(
+        client,
+        "get_question_properties",
+        123,
+        settings=["type"],
+        language="es",
+    )
 
 
 def test_get_response_ids(client: MockClient):
