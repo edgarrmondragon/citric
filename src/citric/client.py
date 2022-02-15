@@ -366,6 +366,44 @@ class Client:
                 ),
             )
 
+    def get_group_properties(
+        self,
+        group_id: int,
+        *,
+        settings: list[str] | None = None,
+        language: str | None = None,
+    ) -> dict[str, Any]:
+        """Get the properties of a group of a survey.
+
+        Args:
+            group_id: ID of the group to get properties of.
+            settings: Properties to get, default to all.
+            language: Parameter language for multilingual groups.
+
+        Returns:
+            Dictionary of group properties.
+        """
+        return self.__session.get_group_properties(group_id, settings, language)
+
+    def get_language_properties(
+        self,
+        survey_id: int,
+        *,
+        settings: list[str] | None = None,
+        language: str | None = None,
+    ) -> dict[str, Any]:
+        """Get survey language properties.
+
+        Args:
+            survey_id: ID of the survey.
+            settings: Properties to get, default to all.
+            language: Parameter language for multilingual questions.
+
+        Returns:
+            Dictionary of survey language properties.
+        """
+        return self.__session.get_language_properties(survey_id, settings, language)
+
     def get_participant_properties(
         self,
         survey_id: int,
@@ -384,6 +422,25 @@ class Client:
             List of participants properties.
         """
         return self.__session.get_participant_properties(survey_id, query, properties)
+
+    def get_question_properties(
+        self,
+        question_id: int,
+        *,
+        settings: list[str] | None = None,
+        language: str | None = None,
+    ) -> dict[str, Any]:
+        """Get properties of a question in a survey.
+
+        Args:
+            question_id: ID of the question to get properties.
+            settings: Properties to get, default to all.
+            language: Parameter language for multilingual questions.
+
+        Returns:
+            Dictionary of question properties.
+        """
+        return self.__session.get_question_properties(question_id, settings, language)
 
     def get_response_ids(
         self,

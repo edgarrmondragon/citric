@@ -21,10 +21,10 @@
 | `export_responses_by_token`    | Yes         | Export token response in a survey.                                                |
 | `export_statistics`            | No          | Export survey statistics (RPC function)                                           |
 | `export_timeline`              | No          | Export submission timeline (RPC function)                                         |
-| `get_group_properties`         | No          | Get the properties of a group of a survey .                                       |
-| `get_language_properties`      | No          | Get survey language properties (RPC function)                                     |
+| `get_group_properties`         | Yes         | Get the properties of a group of a survey .                                       |
+| `get_language_properties`      | Yes         | Get survey language properties (RPC function)                                     |
 | `get_participant_properties`   | Yes         | Get settings of a survey participant (RPC function)                               |
-| `get_question_properties`      | No          | Get properties of a question in a survey.                                         |
+| `get_question_properties`      | Yes         | Get properties of a question in a survey.                                         |
 | `get_response_ids`             | Yes         | Find response IDs given a survey ID and a token (RPC function)                    |
 | `get_session_key`              | Yes         | Create and return a session key.                                                  |
 | `get_site_settings`            | Yes         | Get a global setting                                                              |

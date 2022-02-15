@@ -79,6 +79,10 @@ def test_add_language(client: citric.Client, survey_id: int):
     survey_props = client.get_survey_properties(survey_id)
     assert survey_props["additional_languages"] == "es ru"
 
+    language_props = client.get_language_properties(survey_id, language="es")
+    assert language_props["surveyls_email_register_subj"] is not None
+    assert language_props["surveyls_email_invite"] is not None
+
 
 @pytest.mark.integration_test
 def test_add_survey(client: citric.Client):
@@ -104,11 +108,10 @@ def test_import_group(client: citric.Client, survey_id: int):
     with open("./examples/group.lsg", "rb") as f:
         group_id = client.import_group(f, survey_id)
 
-    groups = client.list_groups(survey_id)
-
-    assert groups[-1]["gid"] == group_id
-    assert groups[-1]["group_name"] == "First Group"
-    assert groups[-1]["description"] == "<p>A new group</p>"
+    group_props = client.get_group_properties(group_id)
+    assert group_props["gid"] == group_id
+    assert group_props["group_name"] == "First Group"
+    assert group_props["description"] == "<p>A new group</p>"
 
     questions = sorted(
         client.list_questions(survey_id, group_id),
@@ -127,10 +130,11 @@ def test_import_question(client: citric.Client, survey_id: int):
     with open("./examples/free_text.lsq", "rb") as f:
         question_id = client.import_question(f, survey_id, group_id)
 
-    questions = client.list_questions(survey_id, group_id)
-
-    assert questions[0]["qid"] == question_id
-    assert questions[0]["title"] == "FREETEXTEXAMPLE"
+    props = client.get_question_properties(question_id)
+    assert props["gid"] == group_id
+    assert props["qid"] == question_id
+    assert props["sid"] == survey_id
+    assert props["title"] == "FREETEXTEXAMPLE"
 
 
 @pytest.mark.integration_test
