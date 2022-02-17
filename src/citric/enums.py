@@ -29,6 +29,14 @@ class NewSurveyType(str, enum.Enum):
     SINGLE_QUESTIONS = "S"
 
 
+class StatisticsExportFormat(str, enum.Enum):
+    """Statistics export type."""
+
+    PDF = "pdf"
+    XLS = "xls"
+    HTML = "html"
+
+
 class ResponsesExportFormat(str, enum.Enum):
     """Responses export type."""
 
