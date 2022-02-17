@@ -68,3 +68,10 @@ class ResponseType(str, enum.Enum):
 
     LONG = "long"
     SHORT = "short"
+
+
+class TimelineAggregationPeriod(str, enum.Enum):
+    """Timeline aggregation level."""
+
+    HOUR = "hour"
+    DAY = "day"
