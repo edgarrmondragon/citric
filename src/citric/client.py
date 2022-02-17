@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import base64
 import datetime
+import sys
 from os import PathLike
 from pathlib import Path
 from types import TracebackType
@@ -13,6 +14,12 @@ import requests
 
 from citric import enums
 from citric.session import Session
+
+if sys.version_info >= (3, 8):
+    from typing import Literal
+else:
+    from typing_extensions import Literal
+
 
 _T = TypeVar("_T", bound="Client")
 
@@ -489,7 +496,7 @@ class Client:
     def export_timeline(
         self,
         survey_id: int,
-        period: enums.TimelineAggregationPeriod,
+        period: Literal["day", "hour"],
         start: datetime.datetime,
         end: datetime.datetime | None = None,
     ) -> dict[str, int]:
