@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import base64
+import datetime
 import random
 import sys
 from pathlib import Path
@@ -108,6 +109,10 @@ class MockSession(Session):
     def export_statistics(self, *args: Any) -> bytes:
         """Mock statistics file content."""
         return base64.b64encode(b"FILE CONTENTS")
+
+    def export_timeline(self, *args: Any) -> dict[str, int]:
+        """Mock submission timeline."""
+        return {"2022-01-01": 4, "2022-01-02": 2}
 
     def get_site_settings(self, setting_name: str) -> str:
         """Return the setting value or an empty string."""
@@ -319,6 +324,14 @@ def test_delete_participants(client: MockClient):
     """Test delete_participants client method."""
     participants = [1, 2, 3]
     assert_client_session_call(client, "delete_participants", 1, participants)
+
+
+def test_export_timeline(client: MockClient):
+    """Test export_timeline client method."""
+    assert client.export_timeline(1, "hour", datetime.datetime(2020, 1, 1)) == {
+        "2022-01-01": 4,
+        "2022-01-02": 2,
+    }
 
 
 def test_participant_properties(client: MockClient):

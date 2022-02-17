@@ -3,10 +3,11 @@
 from __future__ import annotations
 
 import base64
+import datetime
 from os import PathLike
 from pathlib import Path
 from types import TracebackType
-from typing import Any, BinaryIO, Iterable, Mapping, Sequence, TypeVar
+from typing import Any, BinaryIO, Iterable, Literal, Mapping, Sequence, TypeVar
 
 import requests
 
@@ -484,6 +485,31 @@ class Client:
                     group_ids=group_ids,
                 )
             )
+
+    def export_timeline(
+        self,
+        survey_id: int,
+        period: Literal["day", "hour"],
+        start: datetime.datetime,
+        end: datetime.datetime | None = None,
+    ) -> dict[str, int]:
+        """Export survey submission timeline.
+
+        Args:
+            survey_id: ID of the Survey.
+            period: Granularity level for aggregation submission counts.
+            start: Start datetime.
+            end: End datetime.
+
+        Returns:
+            Mapping of days/hours to submission counts.
+        """
+        return self.session.export_timeline(
+            survey_id,
+            period,
+            start.isoformat(),
+            end.isoformat() if end else datetime.datetime.utcnow().isoformat(),
+        )
 
     def get_group_properties(
         self,
