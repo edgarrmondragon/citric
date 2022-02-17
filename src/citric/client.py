@@ -7,7 +7,7 @@ import datetime
 from os import PathLike
 from pathlib import Path
 from types import TracebackType
-from typing import Any, BinaryIO, Iterable, Literal, Mapping, Sequence, TypeVar
+from typing import Any, BinaryIO, Iterable, Mapping, Sequence, TypeVar
 
 import requests
 
@@ -489,7 +489,7 @@ class Client:
     def export_timeline(
         self,
         survey_id: int,
-        period: Literal["day", "hour"],
+        period: enums.TimelineAggregationPeriod,
         start: datetime.datetime,
         end: datetime.datetime | None = None,
     ) -> dict[str, int]:
@@ -506,7 +506,7 @@ class Client:
         """
         return self.session.export_timeline(
             survey_id,
-            period,
+            enums.TimelineAggregationPeriod(period),
             start.isoformat(),
             end.isoformat() if end else datetime.datetime.utcnow().isoformat(),
         )
