@@ -625,6 +625,17 @@ class Client:
 
         return langs.split(" ") if langs else None
 
+    def get_summary(self, survey_id: int) -> dict[str, int]:
+        """Get survey summary.
+
+        Args:
+            survey_id: ID of the survey to get summary of.
+
+        Returns:
+            Mapping of survey statistics.
+        """
+        return self.session.get_summary(survey_id)
+
     def get_survey_properties(
         self,
         survey_id: int,

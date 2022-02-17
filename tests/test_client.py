@@ -294,6 +294,11 @@ def test_get_response_ids(client: MockClient):
     assert_client_session_call(client, "get_response_ids", 1, "TOKEN")
 
 
+def test_get_summary(client: MockClient):
+    """Test get_summary client method."""
+    assert_client_session_call(client, "get_summary", 1)
+
+
 def test_get_survey_properties(client: MockClient):
     """Test get_survey_properties client method."""
     assert_client_session_call(client, "get_survey_properties", 1, None)
