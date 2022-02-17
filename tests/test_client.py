@@ -411,18 +411,18 @@ def test_save_responses(client: MockClient, tmpdir: path.local):
     """Test export_responses and export_responses_by_token client methods."""
     filename = tmpdir / "responses.csv"
     client.save_responses(filename, 1, file_format="csv")
-    filename.read_binary() == b"FILE CONTENTS"
+    assert filename.read_binary() == b"FILE CONTENTS"
 
     filename_token = tmpdir / "responses_token.csv"
     client.save_responses(filename_token, 1, token="123abc", file_format="csv")
-    filename_token.read_binary() == b"FILE CONTENTS"
+    assert filename_token.read_binary() == b"FILE CONTENTS"
 
 
 def test_save_statistics(client: MockClient, tmpdir: path.local):
     """Test save_statistics and export_responses_by_token client methods."""
     filename = tmpdir / "example.html"
     client.save_statistics(filename, 1, file_format="html")
-    filename.read_binary() == b"FILE CONTENTS"
+    assert filename.read_binary() == b"FILE CONTENTS"
 
 
 def test_download_files(client: MockClient, tmp_path: Path):
