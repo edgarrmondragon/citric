@@ -3,13 +3,13 @@
 from __future__ import annotations
 
 import base64
-import io
 import random
 import sys
 from pathlib import Path
 from typing import Any, Generator
 
 import pytest
+from py import path
 
 from citric.client import Client
 from citric.enums import ImportGroupType, ImportSurveyType, NewSurveyType
@@ -103,6 +103,10 @@ class MockSession(Session):
 
     def export_responses_by_token(self, *args: Any) -> bytes:
         """Mock responses file content."""
+        return base64.b64encode(b"FILE CONTENTS")
+
+    def export_statistics(self, *args: Any) -> bytes:
+        """Mock statistics file content."""
         return base64.b64encode(b"FILE CONTENTS")
 
     def get_site_settings(self, setting_name: str) -> str:
@@ -403,17 +407,22 @@ def test_add_responses(client: MockClient):
     assert client.add_responses(1, [{"Q1": "foo"}, {"Q1": "bar"}]) == [1, 1]
 
 
-def test_export_responses(client: MockClient):
+def test_save_responses(client: MockClient, tmpdir: path.local):
     """Test export_responses and export_responses_by_token client methods."""
-    with io.BytesIO() as fileobj:
-        fileobj.write(client.export_responses(1, file_format="csv"))
-        fileobj.seek(0)
-        assert fileobj.read() == b"FILE CONTENTS"
+    filename = tmpdir / "responses.csv"
+    client.save_responses(filename, 1, file_format="csv")
+    assert filename.read_binary() == b"FILE CONTENTS"
 
-    with io.BytesIO() as fileobj:
-        fileobj.write(client.export_responses(1, token="123abc", file_format="csv"))
-        fileobj.seek(0)
-        assert fileobj.read() == b"FILE CONTENTS"
+    filename_token = tmpdir / "responses_token.csv"
+    client.save_responses(filename_token, 1, token="123abc", file_format="csv")
+    assert filename_token.read_binary() == b"FILE CONTENTS"
+
+
+def test_save_statistics(client: MockClient, tmpdir: path.local):
+    """Test save_statistics and export_responses_by_token client methods."""
+    filename = tmpdir / "example.html"
+    client.save_statistics(filename, 1, file_format="html")
+    assert filename.read_binary() == b"FILE CONTENTS"
 
 
 def test_download_files(client: MockClient, tmp_path: Path):

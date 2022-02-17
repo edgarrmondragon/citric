@@ -19,7 +19,7 @@
 | `delete_survey`                | Yes         | Delete a survey.                                                                  |
 | `export_responses`             | Yes         | Export responses in base64 encoded string                                         |
 | `export_responses_by_token`    | Yes         | Export token response in a survey.                                                |
-| `export_statistics`            | No          | Export survey statistics (RPC function)                                           |
+| `export_statistics`            | Yes         | Export survey statistics (RPC function)                                           |
 | `export_timeline`              | No          | Export submission timeline (RPC function)                                         |
 | `get_group_properties`         | Yes         | Get the properties of a group of a survey .                                       |
 | `get_language_properties`      | Yes         | Get survey language properties (RPC function)                                     |

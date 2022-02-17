@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import base64
+from os import PathLike
 from pathlib import Path
 from types import TracebackType
 from typing import Any, BinaryIO, Iterable, Mapping, Sequence, TypeVar
@@ -364,6 +365,124 @@ class Client:
                     to_response_id,
                     fields,
                 ),
+            )
+
+    def save_responses(
+        self,
+        filename: PathLike,
+        survey_id: int,
+        *,
+        token: str | None = None,
+        file_format: str = "json",
+        language: str | None = None,
+        completion_status: str = "all",
+        heading_type: str = "code",
+        response_type: str = "short",
+        from_response_id: int | None = None,
+        to_response_id: int | None = None,
+        fields: Sequence[str] | None = None,
+    ) -> int:
+        """Save responses to a file.
+
+        Args:
+            filename: Target file path.
+            survey_id: Survey to add the response to.
+            token: Optional participant token to get responses for.
+            file_format: Type of export. One of PDF, CSV, XLS, DOC or JSON.
+            language: Export responses made to this language version of the survey.
+            completion_status: Incomplete, complete or all.
+            heading_type: Use response codes, long or abbreviated titles.
+            response_type: Export long or short text responses.
+            from_response_id: First response to export.
+            to_response_id: Last response to export.
+            fields: Which response fields to export. If none, exports all fields.
+
+        Returns:
+            Bytes length written to file.
+        """
+        with open(filename, "wb") as f:
+            return f.write(
+                self.export_responses(
+                    survey_id,
+                    token=token,
+                    file_format=file_format,
+                    language=language,
+                    completion_status=completion_status,
+                    heading_type=heading_type,
+                    response_type=response_type,
+                    from_response_id=from_response_id,
+                    to_response_id=to_response_id,
+                    fields=fields,
+                )
+            )
+
+    def export_statistics(
+        self,
+        survey_id: int,
+        *,
+        file_format: str = "pdf",
+        language: str | None = None,
+        graph: bool = False,
+        group_ids: list[int] | None = None,
+    ) -> bytes:
+        """Export survey statistics.
+
+        Args:
+            survey_id: ID of the Survey.
+            file_format: Type of documents the exported statistics should be.
+                Defaults to "pdf".
+            language: Language of the survey to use (default from Survey).
+                Defaults to None.
+            graph: Export graphs. Defaults to False.
+            group_ids: Question groups to generate statistics from. Defaults to None.
+
+        Returns:
+            File contents.
+        """
+        return base64.b64decode(
+            self.session.export_statistics(
+                survey_id,
+                enums.StatisticsExportFormat(file_format),
+                language,
+                "yes" if graph else "no",
+                group_ids,
+            )
+        )
+
+    def save_statistics(
+        self,
+        filename: PathLike,
+        survey_id: int,
+        *,
+        file_format: str = "pdf",
+        language: str | None = None,
+        graph: bool = False,
+        group_ids: list[int] | None = None,
+    ) -> int:
+        """Save survey statistics to a file.
+
+        Args:
+            filename: Target file path.
+            survey_id: ID of the Survey.
+            file_format: Type of documents the exported statistics should be.
+                Defaults to "pdf".
+            language: Language of the survey to use (default from Survey).
+                Defaults to None.
+            graph: Export graphs. Defaults to False.
+            group_ids: Question groups to generate statistics from. Defaults to None.
+
+        Returns:
+            Bytes length written to file.
+        """
+        with open(filename, "wb") as f:
+            return f.write(
+                self.export_statistics(
+                    survey_id,
+                    file_format=file_format,
+                    language=language,
+                    graph=graph,
+                    group_ids=group_ids,
+                )
             )
 
     def get_group_properties(
