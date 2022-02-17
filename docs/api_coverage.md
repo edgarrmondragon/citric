@@ -28,7 +28,7 @@
 | `get_response_ids`             | Yes         | Find response IDs given a survey ID and a token (RPC function)                    |
 | `get_session_key`              | Yes         | Create and return a session key.                                                  |
 | `get_site_settings`            | Yes         | Get a global setting                                                              |
-| `get_summary`                  | No          | Get survey summary, regarding token usage and survey participation (RPC function) |
+| `get_summary`                  | Yes         | Get survey summary, regarding token usage and survey participation (RPC function) |
 | `get_survey_properties`        | Yes         | Get survey properties (RPC function)                                              |
 | `get_uploaded_files`           | Yes         | Obtain all uploaded files for all responses                                       |
 | `import_group`                 | Yes         | Import a group and add to a survey (RPC function)                                 |
