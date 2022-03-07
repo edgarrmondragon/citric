@@ -912,3 +912,63 @@ class Client:
             List of survey groups with basic information.
         """
         return self.__session.list_survey_groups(username)
+
+    def set_group_properties(self, group_id: int, **properties: Any) -> bool:
+        """Set properties of a group.
+
+        Args:
+            group_id: ID of the group.
+            properties: Properties to set.
+
+        Returns:
+            True if the properties were set.
+        """
+        return self.session.set_group_properties(group_id, properties)
+
+    def set_language_properties(
+        self,
+        survey_id: int,
+        language: str | None = None,
+        **properties: Any,
+    ) -> bool:
+        """Set properties of a survey language.
+
+        Args:
+            survey_id: ID of the survey for which to set the language properties.
+            language: Language code.
+            properties: Properties to set.
+
+        Returns:
+            True if the properties were set.
+        """
+        return self.session.set_language_properties(survey_id, properties, language)
+
+    def set_question_properties(
+        self,
+        question_id: int,
+        language: str | None = None,
+        **properties: Any,
+    ) -> bool:
+        """Set properties of a question.
+
+        Args:
+            question_id: ID of the question to set the properties of.
+            language: Language code.
+            properties: Properties to set.
+
+        Returns:
+            True if the properties were set.
+        """
+        return self.session.set_question_properties(question_id, properties, language)
+
+    def set_survey_properties(self, survey_id: int, **properties: Any) -> bool:
+        """Set properties of a survey.
+
+        Args:
+            survey_id: ID of the survey to set the properties of.
+            properties: Properties to set.
+
+        Returns:
+            True if the properties were set.
+        """
+        return self.session.set_survey_properties(survey_id, properties)
