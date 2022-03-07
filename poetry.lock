@@ -895,7 +895,7 @@ test = ["pytest", "pytest-tornasync", "pytest-console-scripts"]
 
 [[package]]
 name = "nbclient"
-version = "0.5.11"
+version = "0.5.12"
 description = "A client library for executing notebooks. Formerly nbconvert's ExecutePreprocessor."
 category = "main"
 optional = true
@@ -905,7 +905,7 @@ python-versions = ">=3.7.0"
 jupyter-client = ">=6.1.5"
 nbformat = ">=5.0"
 nest-asyncio = "*"
-traitlets = ">=4.2"
+traitlets = ">=5.0.0"
 
 [package.extras]
 sphinx = ["Sphinx (>=1.7)", "sphinx-book-theme", "mock", "moto", "myst-parser"]
@@ -1157,7 +1157,7 @@ name = "ptyprocess"
 version = "0.7.0"
 description = "Run a subprocess in a pseudo terminal"
 category = "main"
-optional = false
+optional = true
 python-versions = "*"
 
 [[package]]
@@ -1315,7 +1315,7 @@ name = "pywinpty"
 version = "1.1.6"
 description = "Pseudo terminal support for Windows from Python."
 category = "main"
-optional = false
+optional = true
 python-versions = ">=3.6"
 
 [[package]]
@@ -1585,7 +1585,7 @@ name = "terminado"
 version = "0.13.3"
 description = "Tornado websocket backend for the Xterm.js Javascript terminal emulator library."
 category = "main"
-optional = false
+optional = true
 python-versions = ">=3.7"
 
 [package.dependencies]
@@ -2348,8 +2348,8 @@ nbclassic = [
     {file = "nbclassic-0.3.6.tar.gz", hash = "sha256:7dbac0a6cb71bbe3afa1fe89369e6e3174d89f42aa08216a327046de45aa9a4f"},
 ]
 nbclient = [
-    {file = "nbclient-0.5.11-py3-none-any.whl", hash = "sha256:03e857bea3012377289daa1e1c1651f4fc0295bcd109ccd36a337efcdbebaed7"},
-    {file = "nbclient-0.5.11.tar.gz", hash = "sha256:751516992f34b58172bad54eef1e4bf7e4f4460d58e255ca1a4e5c9649476007"},
+    {file = "nbclient-0.5.12-py3-none-any.whl", hash = "sha256:ff2d908024aaabb8864e5392c3517c76e17994b1f9330dda9b5284da9275c499"},
+    {file = "nbclient-0.5.12.tar.gz", hash = "sha256:0dd7ee6db59753563035f606421c3b558bd8c28b116d7e3ab8a0b4026cb44e38"},
 ]
 nbconvert = [
     {file = "nbconvert-6.4.2-py3-none-any.whl", hash = "sha256:7b006ae9979af56200e7fa3db39d9d12c99e811e8843b05dbe518e5b754bcb2e"},
