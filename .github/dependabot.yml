@@ -34,3 +34,9 @@ updates:
       interval: weekly
     reviewers:
       - "edgarrmondragon"
+  - package-ecosystem: docker
+    directory: "/"
+    schedule:
+      interval: "daily"
+    reviewers:
+      - "edgarrmondragon"
