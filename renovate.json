@@ -6,6 +6,9 @@
   "labels": [
     "dependencies"
   ],
+  "assignees": [
+    "edgarrmondragon"
+  ],
   "poetry": {
     "fileMatch": [
       "(^|/)pyproject\\.toml$"
@@ -15,5 +18,7 @@
   "prHourlyLimit": 10,
   "schedule": [
     "at any time"
-  ]
+  ],
+  "stabilityDays": 0,
+  "autoMerge": true
 }
