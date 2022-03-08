@@ -21,7 +21,7 @@ services:
       ADMIN_PASSWORD: secret
 
   db:
-    image: postgres:11
+    image: postgres:14
     environment:
       POSTGRES_USER: limesurvey
       POSTGRES_DB: limesurvey
