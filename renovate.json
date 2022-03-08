@@ -28,5 +28,6 @@
   "schedule": [
     "at any time"
   ],
-  "stabilityDays": 0
+  "stabilityDays": 0,
+  "automergeStrategy": "squash"
 }
