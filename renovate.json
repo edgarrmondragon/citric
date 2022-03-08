@@ -12,5 +12,8 @@
     ],
     "rangeStrategy": "update-lockfile"
   },
-  "prHourlyLimit": 10
+  "prHourlyLimit": 10,
+  "schedule": [
+    "at any time"
+  ]
 }
