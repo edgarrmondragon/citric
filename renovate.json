@@ -11,5 +11,6 @@
       "(^|/)pyproject\\.toml$"
     ],
     "rangeStrategy": "update-lockfile"
-  }
+  },
+  "prHourlyLimit": 10
 }
