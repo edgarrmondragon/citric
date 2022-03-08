@@ -9,6 +9,9 @@
   "assignees": [
     "edgarrmondragon"
   ],
+  "reviewers": [
+    "edgarrmondragon"
+  ],
   "poetry": {
     "fileMatch": [
       "(^|/)pyproject\\.toml$"
