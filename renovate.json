@@ -1,0 +1,19 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:base"
+  ],
+  "labels": [
+    "dependencies"
+  ],
+  "poetry": {
+    "fileMatch": [
+      "(^|/)pyproject\\.toml$"
+    ],
+    "rangeStrategy": "update-lockfile"
+  },
+  "prHourlyLimit": 10,
+  "schedule": [
+    "at any time"
+  ]
+}
