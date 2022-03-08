@@ -10,4 +10,4 @@ RUN apt-get -y update \
     && ${POETRY_HOME}/bin/poetry config virtualenvs.in-project "true"
 
 COPY .github/workflows/constraints.txt .
-RUN pip install --constraint=.github/workflows/constraints.txt pip
+RUN pip install --constraint=constraints.txt pip

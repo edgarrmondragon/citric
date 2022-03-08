@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 WORKDIR /app/
 
 COPY .github/workflows/constraints.txt .
-RUN pip install --constraint=.github/workflows/constraints.txt poetry nox
+RUN pip install --constraint=constraints.txt poetry nox
 
 COPY pyproject.toml poetry.lock /app/
 RUN poetry install --no-root --no-dev
