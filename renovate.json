@@ -12,6 +12,12 @@
   "reviewers": [
     "edgarrmondragon"
   ],
+  "packageRules": [
+    {
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "automerge": true
+    }
+  ],
   "poetry": {
     "fileMatch": [
       "(^|/)pyproject\\.toml$"
@@ -22,6 +28,5 @@
   "schedule": [
     "at any time"
   ],
-  "stabilityDays": 0,
-  "automerge": true
+  "stabilityDays": 0
 }
