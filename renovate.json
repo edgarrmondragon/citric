@@ -16,6 +16,10 @@
     {
       "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
       "automerge": true
+    },
+    {
+      "matchDepTypes": ["optionalDependencies"],
+      "semanticCommitType": "deps-optional"
     }
   ],
   "poetry": {
