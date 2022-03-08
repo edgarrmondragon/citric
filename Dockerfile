@@ -1,7 +1,4 @@
-FROM python:3.9-slim-buster
-
-ARG POETRY_VERSION=1.1.11
-ARG NOX_VERSION=2021.10.1
+FROM python:3.10-slim-buster
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
@@ -10,7 +7,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 WORKDIR /app/
 
-RUN pip install poetry==${POETRY_VERSION} nox==${NOX_VERSION}
+COPY .github/workflows/constraints.txt .
+RUN pip install --constraint=constraints.txt poetry nox
 
 COPY pyproject.toml poetry.lock /app/
 RUN poetry install --no-root --no-dev

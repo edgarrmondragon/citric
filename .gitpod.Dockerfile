@@ -1,7 +1,5 @@
-ARG PYTHON=3.10
-FROM python:${PYTHON}-slim
+FROM python:3.10-slim-buster
 
-ENV POETRY_VERSION 1.1.11
 ENV POETRY_HOME /etc/poetry
 ENV PATH "${POETRY_HOME}/bin:${PATH}"
 
@@ -10,3 +8,6 @@ RUN apt-get -y update \
     && curl -sSL https://install.python-poetry.org | python3 - \
     && ${POETRY_HOME}/bin/poetry config virtualenvs.create "true" \
     && ${POETRY_HOME}/bin/poetry config virtualenvs.in-project "true"
+
+COPY .github/workflows/constraints.txt .
+RUN pip install --constraint=constraints.txt pip
