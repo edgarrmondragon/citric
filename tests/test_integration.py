@@ -133,15 +133,18 @@ def test_survey(client: citric.Client):
 
 
 @pytest.mark.integration_test
-def test_import_group(client: citric.Client, survey_id: int):
-    """Test importing a group from an lsg file."""
+def test_group(client: citric.Client, survey_id: int):
+    """Test group methods."""
+    # Import a group
     with open("./examples/group.lsg", "rb") as f:
         group_id = client.import_group(f, survey_id)
 
+    # Get group properties
     group_props = client.get_group_properties(group_id)
     assert group_props["gid"] == group_id
     assert group_props["group_name"] == "First Group"
     assert group_props["description"] == "<p>A new group</p>"
+    assert group_props["group_order"] == 3
 
     questions = sorted(
         client.list_questions(survey_id, group_id),
@@ -150,6 +153,13 @@ def test_import_group(client: citric.Client, survey_id: int):
 
     assert questions[0]["question"] == "<p><strong>First question</p>"
     assert questions[1]["question"] == "<p><strong>Second question</p>"
+
+    # Update group properties
+    response = client.set_group_properties(group_id, group_order=1)
+    assert response == {"group_order": True}
+
+    new_props = client.get_group_properties(group_id, settings=["group_order"])
+    assert new_props["group_order"] == 1
 
 
 @pytest.mark.integration_test

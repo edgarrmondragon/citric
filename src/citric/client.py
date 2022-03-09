@@ -913,7 +913,7 @@ class Client:
         """
         return self.__session.list_survey_groups(username)
 
-    def set_group_properties(self, group_id: int, **properties: Any) -> bool:
+    def set_group_properties(self, group_id: int, **properties: Any) -> dict[str, bool]:
         """Set properties of a group.
 
         Args:
@@ -921,7 +921,7 @@ class Client:
             properties: Properties to set.
 
         Returns:
-            True if the properties were set.
+            Mapping of property names to whether they were set successfully.
         """
         return self.session.set_group_properties(group_id, properties)
 
@@ -980,7 +980,7 @@ class Client:
             properties: Properties to set.
 
         Returns:
-            Mapping with updated properties.
+            Mapping of property names to whether they were set successfully.
         """
         return self.session.set_question_properties(question_id, properties, language)
 
@@ -1008,6 +1008,6 @@ class Client:
             properties: Properties to set.
 
         Returns:
-            Mapping with updated properties.
+            Mapping of property names to whether they were set successfully.
         """
         return self.session.set_survey_properties(survey_id, properties)
