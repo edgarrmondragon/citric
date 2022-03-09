@@ -72,7 +72,7 @@ def survey_id(client: citric.Client) -> Generator[int, None, None]:
 
 @pytest.mark.integration_test
 def test_language(client: citric.Client, survey_id: int):
-    """Test adding a new language to a survey."""
+    """Test language methods."""
     # Add a new language
     client.add_language(survey_id, "es")
     client.add_language(survey_id, "ru")
@@ -104,7 +104,7 @@ def test_language(client: citric.Client, survey_id: int):
 
 @pytest.mark.integration_test
 def test_survey(client: citric.Client):
-    """Test adding a new survey to a survey."""
+    """Test survey methods."""
     # Add a new survey
     survey_id = client.add_survey(
         5555,
@@ -153,18 +153,27 @@ def test_import_group(client: citric.Client, survey_id: int):
 
 
 @pytest.mark.integration_test
-def test_import_question(client: citric.Client, survey_id: int):
-    """Test importing a question from an lsq file."""
+def test_question(client: citric.Client, survey_id: int):
+    """Test question methods."""
     group_id = client.add_group(survey_id, "Test Group")
 
+    # Import a question from a lsq file
     with open("./examples/free_text.lsq", "rb") as f:
         question_id = client.import_question(f, survey_id, group_id)
 
+    # Get question properties
     props = client.get_question_properties(question_id)
     assert props["gid"] == group_id
     assert props["qid"] == question_id
     assert props["sid"] == survey_id
     assert props["title"] == "FREETEXTEXAMPLE"
+
+    # Update question properties
+    response = client.set_question_properties(question_id, mandatory="Y")
+    assert response == {"mandatory": True}
+
+    new_props = client.get_question_properties(question_id, settings=["mandatory"])
+    assert new_props["mandatory"] == "Y"
 
 
 @pytest.mark.integration_test

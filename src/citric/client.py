@@ -971,7 +971,7 @@ class Client:
         question_id: int,
         language: str | None = None,
         **properties: Any,
-    ) -> bool:
+    ) -> dict[str, bool]:
         """Set properties of a question.
 
         Args:
@@ -980,7 +980,7 @@ class Client:
             properties: Properties to set.
 
         Returns:
-            True if the properties were set.
+            Mapping with updated properties.
         """
         return self.session.set_question_properties(question_id, properties, language)
 
