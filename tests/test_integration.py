@@ -102,7 +102,8 @@ def test_language(client: citric.Client, survey_id: int):
     assert new_props["surveyls_email_confirm"] == new_confirmation
 
     # Delete language
-    client.delete_language(survey_id, "ru")
+    response = client.delete_language(survey_id, "ru")
+    assert response["status"] == "OK"
     assert survey_props["additional_languages"] == "es"
 
 
