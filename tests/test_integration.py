@@ -103,8 +103,9 @@ def test_language(client: citric.Client, survey_id: int):
 
 
 @pytest.mark.integration_test
-def test_add_survey(client: citric.Client):
+def test_survey(client: citric.Client):
     """Test adding a new survey to a survey."""
+    # Add a new survey
     survey_id = client.add_survey(
         5555,
         "New Survey",
@@ -112,12 +113,23 @@ def test_add_survey(client: citric.Client):
         enums.NewSurveyType.GROUP_BY_GROUP,
     )
 
+    # Get survey properties
     survey_props = client.get_survey_properties(survey_id)
     assert survey_props["language"] == "es"
     assert survey_props["format"] == enums.NewSurveyType.GROUP_BY_GROUP
 
     matched = next(s for s in client.list_surveys() if s["sid"] == survey_id)
     assert matched["surveyls_title"] == "New Survey"
+
+    # Update survey properties
+    response = client.set_survey_properties(
+        survey_id,
+        format=enums.NewSurveyType.ALL_ON_ONE_PAGE,
+    )
+    assert response == {"format": True}
+
+    new_props = client.get_survey_properties(survey_id, properties=["format"])
+    assert new_props["format"] == enums.NewSurveyType.ALL_ON_ONE_PAGE
 
 
 @pytest.mark.integration_test

@@ -996,7 +996,11 @@ class Client:
         """
         return self.session.set_quota_properties(quota_id, properties)
 
-    def set_survey_properties(self, survey_id: int, **properties: Any) -> bool:
+    def set_survey_properties(
+        self,
+        survey_id: int,
+        **properties: Any,
+    ) -> dict[str, bool]:
         """Set properties of a survey.
 
         Args:
@@ -1004,6 +1008,6 @@ class Client:
             properties: Properties to set.
 
         Returns:
-            True if the properties were set.
+            Mapping with updated properties.
         """
         return self.session.set_survey_properties(survey_id, properties)
