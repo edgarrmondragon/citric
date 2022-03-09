@@ -451,3 +451,45 @@ def test_download_files(client: MockClient, tmp_path: Path):
     assert set(paths) == expected
     assert paths[0].read_text() == "content-1"
     assert paths[1].read_text() == "content-2"
+
+
+def test_set_group_properties(client: MockClient):
+    """Test set_group_properties client method."""
+    props = {"name": "foo"}
+    assert client.set_group_properties(
+        1, **props
+    ) == client.session.set_group_properties(1, props)
+
+
+def test_set_language_properties(client: MockClient):
+    """Test set_language_properties client method."""
+    props = {"name": "foo"}
+    assert client.set_language_properties(
+        1,
+        language="en",
+        **props,
+    ) == client.session.set_language_properties(1, props, "en")
+
+
+def test_set_question_properties(client: MockClient):
+    """Test set_question_properties client method."""
+    props = {"title": "foo", "question": "bar", "type": "text"}
+    assert client.set_question_properties(
+        1, language="en", **props
+    ) == client.session.set_question_properties(1, props, "en")
+
+
+def test_set_quota_properties(client: MockClient):
+    """Test set_quota_properties client method."""
+    props = {"name": "foo", "quota": "bar", "action": "baz"}
+    assert client.set_quota_properties(
+        1, **props
+    ) == client.session.set_quota_properties(1, props)
+
+
+def test_set_survey_properties(client: MockClient):
+    """Test set_survey_properties client method."""
+    props = {"title": "foo", "welcome": "bar", "end": "baz"}
+    assert client.set_survey_properties(
+        1, **props
+    ) == client.session.set_survey_properties(1, props)
