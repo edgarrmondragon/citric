@@ -215,7 +215,7 @@ def test_activate_tokens(client: citric.Client, survey_id: int):
 
 @pytest.mark.integration_test
 def test_participants(client: citric.Client, survey_id: int):
-    """Test adding participants."""
+    """Test participants methods."""
     client.activate_survey(survey_id)
     client.activate_tokens(survey_id)
 
@@ -224,6 +224,7 @@ def test_participants(client: citric.Client, survey_id: int):
         {"email": "jane@example.com", "firstname": "Jane", "lastname": "Doe"},
     ]
 
+    # Add participants
     added = client.add_participants(survey_id, data)
     for p, d in zip(added, data):
         assert p["email"] == d["email"]
@@ -236,11 +237,21 @@ def test_participants(client: citric.Client, survey_id: int):
         assert p["participant_info"]["firstname"] == d["firstname"]
         assert p["participant_info"]["lastname"] == d["lastname"]
 
+    # Get participant properties
     for p, d in zip(added, data):
         properties = client.get_participant_properties(survey_id, p["tid"])
         assert properties["email"] == d["email"]
         assert properties["firstname"] == d["firstname"]
         assert properties["lastname"] == d["lastname"]
+
+    # Update participant properties
+    response = client.set_participant_properties(
+        survey_id,
+        added[0]["tid"],
+        firstname="Johny",
+    )
+    assert response["firstname"] == "Johny"
+    assert response["lastname"] == "Doe"
 
 
 @pytest.mark.integration_test

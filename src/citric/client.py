@@ -948,7 +948,7 @@ class Client:
         survey_id: int,
         token_query_properties: Mapping[str, Any] | int,
         **token_data: Any,
-    ) -> bool:
+    ) -> dict[str, Any]:
         """Set properties of a participant. Only one particpant can be updated.
 
         Args:
@@ -958,7 +958,7 @@ class Client:
             token_data: Properties to set.
 
         Returns:
-            True if the properties were set.
+            New participant properties.
         """
         return self.session.set_participant_properties(
             survey_id,
