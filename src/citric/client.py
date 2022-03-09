@@ -943,6 +943,29 @@ class Client:
         """
         return self.session.set_language_properties(survey_id, properties, language)
 
+    def set_participant_properties(
+        self,
+        survey_id: int,
+        token_query_properties: Mapping[str, Any] | int,
+        **token_data: Any,
+    ) -> bool:
+        """Set properties of a participant. Only one particpant can be updated.
+
+        Args:
+            survey_id: ID of the survey to which the participant belongs.
+            token_query_properties: Dictionary of properties to match the participant
+                or token ID.
+            token_data: Properties to set.
+
+        Returns:
+            True if the properties were set.
+        """
+        return self.session.set_participant_properties(
+            survey_id,
+            token_query_properties,
+            token_data,
+        )
+
     def set_question_properties(
         self,
         question_id: int,

@@ -471,6 +471,16 @@ def test_set_language_properties(client: MockClient):
     ) == client.session.set_language_properties(1, props, "en")
 
 
+def test_set_participant_properties(client: MockClient):
+    """Test set_participant_properties client method."""
+    token_data = {"name": "Bob"}
+    assert client.set_participant_properties(
+        1,
+        123,
+        **token_data,
+    ) == client.session.set_participant_properties(1, 123, token_data)
+
+
 def test_set_question_properties(client: MockClient):
     """Test set_question_properties client method."""
     props = {"title": "foo", "question": "bar", "type": "text"}
