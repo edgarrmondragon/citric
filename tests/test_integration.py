@@ -71,17 +71,35 @@ def survey_id(client: citric.Client) -> Generator[int, None, None]:
 
 
 @pytest.mark.integration_test
-def test_add_language(client: citric.Client, survey_id: int):
+def test_language(client: citric.Client, survey_id: int):
     """Test adding a new language to a survey."""
+    # Add a new language
     client.add_language(survey_id, "es")
     client.add_language(survey_id, "ru")
 
     survey_props = client.get_survey_properties(survey_id)
     assert survey_props["additional_languages"] == "es ru"
 
+    # Get language properties
     language_props = client.get_language_properties(survey_id, language="es")
     assert language_props["surveyls_email_register_subj"] is not None
     assert language_props["surveyls_email_invite"] is not None
+
+    # Update language properties
+    new_confirmation = "Thank you for participating!"
+    response = client.set_language_properties(
+        survey_id,
+        language="es",
+        surveyls_email_confirm=new_confirmation,
+    )
+    assert response == {"status": "OK", "surveyls_email_confirm": True}
+
+    new_props = client.get_language_properties(
+        survey_id,
+        language="es",
+        settings=["surveyls_email_confirm"],
+    )
+    assert new_props["surveyls_email_confirm"] == new_confirmation
 
 
 @pytest.mark.integration_test

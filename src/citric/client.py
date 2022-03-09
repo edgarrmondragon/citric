@@ -930,7 +930,7 @@ class Client:
         survey_id: int,
         language: str | None = None,
         **properties: Any,
-    ) -> bool:
+    ) -> dict[str, Any]:
         """Set properties of a survey language.
 
         Args:
@@ -939,7 +939,7 @@ class Client:
             properties: Properties to set.
 
         Returns:
-            True if the properties were set.
+            Mapping with status and updated properties.
         """
         return self.session.set_language_properties(survey_id, properties, language)
 
