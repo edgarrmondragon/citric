@@ -12,6 +12,16 @@
   "reviewers": [
     "edgarrmondragon"
   ],
+  "docker": {
+    "versioning": "docker",
+    "enabled": true
+  },
+  "docker-compose": {
+    "fileMatch": [
+      "(^|/)docker-compose[^/]*\\.ya?ml$"
+    ],
+    "enabled": true
+  },
   "packageRules": [
     {
       "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
