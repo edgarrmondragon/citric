@@ -71,22 +71,41 @@ def survey_id(client: citric.Client) -> Generator[int, None, None]:
 
 
 @pytest.mark.integration_test
-def test_add_language(client: citric.Client, survey_id: int):
-    """Test adding a new language to a survey."""
+def test_language(client: citric.Client, survey_id: int):
+    """Test language methods."""
+    # Add a new language
     client.add_language(survey_id, "es")
     client.add_language(survey_id, "ru")
 
     survey_props = client.get_survey_properties(survey_id)
     assert survey_props["additional_languages"] == "es ru"
 
+    # Get language properties
     language_props = client.get_language_properties(survey_id, language="es")
     assert language_props["surveyls_email_register_subj"] is not None
     assert language_props["surveyls_email_invite"] is not None
 
+    # Update language properties
+    new_confirmation = "Thank you for participating!"
+    response = client.set_language_properties(
+        survey_id,
+        language="es",
+        surveyls_email_confirm=new_confirmation,
+    )
+    assert response == {"status": "OK", "surveyls_email_confirm": True}
+
+    new_props = client.get_language_properties(
+        survey_id,
+        language="es",
+        settings=["surveyls_email_confirm"],
+    )
+    assert new_props["surveyls_email_confirm"] == new_confirmation
+
 
 @pytest.mark.integration_test
-def test_add_survey(client: citric.Client):
-    """Test adding a new survey to a survey."""
+def test_survey(client: citric.Client):
+    """Test survey methods."""
+    # Add a new survey
     survey_id = client.add_survey(
         5555,
         "New Survey",
@@ -94,6 +113,7 @@ def test_add_survey(client: citric.Client):
         enums.NewSurveyType.GROUP_BY_GROUP,
     )
 
+    # Get survey properties
     survey_props = client.get_survey_properties(survey_id)
     assert survey_props["language"] == "es"
     assert survey_props["format"] == enums.NewSurveyType.GROUP_BY_GROUP
@@ -101,17 +121,30 @@ def test_add_survey(client: citric.Client):
     matched = next(s for s in client.list_surveys() if s["sid"] == survey_id)
     assert matched["surveyls_title"] == "New Survey"
 
+    # Update survey properties
+    response = client.set_survey_properties(
+        survey_id,
+        format=enums.NewSurveyType.ALL_ON_ONE_PAGE,
+    )
+    assert response == {"format": True}
+
+    new_props = client.get_survey_properties(survey_id, properties=["format"])
+    assert new_props["format"] == enums.NewSurveyType.ALL_ON_ONE_PAGE
+
 
 @pytest.mark.integration_test
-def test_import_group(client: citric.Client, survey_id: int):
-    """Test importing a group from an lsg file."""
+def test_group(client: citric.Client, survey_id: int):
+    """Test group methods."""
+    # Import a group
     with open("./examples/group.lsg", "rb") as f:
         group_id = client.import_group(f, survey_id)
 
+    # Get group properties
     group_props = client.get_group_properties(group_id)
     assert group_props["gid"] == group_id
     assert group_props["group_name"] == "First Group"
     assert group_props["description"] == "<p>A new group</p>"
+    assert group_props["group_order"] == 3
 
     questions = sorted(
         client.list_questions(survey_id, group_id),
@@ -121,20 +154,36 @@ def test_import_group(client: citric.Client, survey_id: int):
     assert questions[0]["question"] == "<p><strong>First question</p>"
     assert questions[1]["question"] == "<p><strong>Second question</p>"
 
+    # Update group properties
+    response = client.set_group_properties(group_id, group_order=1)
+    assert response == {"group_order": True}
+
+    new_props = client.get_group_properties(group_id, settings=["group_order"])
+    assert new_props["group_order"] == 1
+
 
 @pytest.mark.integration_test
-def test_import_question(client: citric.Client, survey_id: int):
-    """Test importing a question from an lsq file."""
+def test_question(client: citric.Client, survey_id: int):
+    """Test question methods."""
     group_id = client.add_group(survey_id, "Test Group")
 
+    # Import a question from a lsq file
     with open("./examples/free_text.lsq", "rb") as f:
         question_id = client.import_question(f, survey_id, group_id)
 
+    # Get question properties
     props = client.get_question_properties(question_id)
     assert props["gid"] == group_id
     assert props["qid"] == question_id
     assert props["sid"] == survey_id
     assert props["title"] == "FREETEXTEXAMPLE"
+
+    # Update question properties
+    response = client.set_question_properties(question_id, mandatory="Y")
+    assert response == {"mandatory": True}
+
+    new_props = client.get_question_properties(question_id, settings=["mandatory"])
+    assert new_props["mandatory"] == "Y"
 
 
 @pytest.mark.integration_test
@@ -166,7 +215,7 @@ def test_activate_tokens(client: citric.Client, survey_id: int):
 
 @pytest.mark.integration_test
 def test_participants(client: citric.Client, survey_id: int):
-    """Test adding participants."""
+    """Test participants methods."""
     client.activate_survey(survey_id)
     client.activate_tokens(survey_id)
 
@@ -175,6 +224,7 @@ def test_participants(client: citric.Client, survey_id: int):
         {"email": "jane@example.com", "firstname": "Jane", "lastname": "Doe"},
     ]
 
+    # Add participants
     added = client.add_participants(survey_id, data)
     for p, d in zip(added, data):
         assert p["email"] == d["email"]
@@ -187,11 +237,21 @@ def test_participants(client: citric.Client, survey_id: int):
         assert p["participant_info"]["firstname"] == d["firstname"]
         assert p["participant_info"]["lastname"] == d["lastname"]
 
+    # Get participant properties
     for p, d in zip(added, data):
         properties = client.get_participant_properties(survey_id, p["tid"])
         assert properties["email"] == d["email"]
         assert properties["firstname"] == d["firstname"]
         assert properties["lastname"] == d["lastname"]
+
+    # Update participant properties
+    response = client.set_participant_properties(
+        survey_id,
+        added[0]["tid"],
+        firstname="Johny",
+    )
+    assert response["firstname"] == "Johny"
+    assert response["lastname"] == "Doe"
 
 
 @pytest.mark.integration_test

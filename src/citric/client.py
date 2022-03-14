@@ -912,3 +912,90 @@ class Client:
             List of survey groups with basic information.
         """
         return self.__session.list_survey_groups(username)
+
+    def set_group_properties(self, group_id: int, **properties: Any) -> dict[str, bool]:
+        """Set properties of a group.
+
+        Args:
+            group_id: ID of the group.
+            properties: Properties to set.
+
+        Returns:
+            Mapping of property names to whether they were set successfully.
+        """
+        return self.session.set_group_properties(group_id, properties)
+
+    def set_language_properties(
+        self,
+        survey_id: int,
+        language: str | None = None,
+        **properties: Any,
+    ) -> dict[str, Any]:
+        """Set properties of a survey language.
+
+        Args:
+            survey_id: ID of the survey for which to set the language properties.
+            language: Language code.
+            properties: Properties to set.
+
+        Returns:
+            Mapping with status and updated properties.
+        """
+        return self.session.set_language_properties(survey_id, properties, language)
+
+    def set_participant_properties(
+        self,
+        survey_id: int,
+        token_query_properties: Mapping[str, Any] | int,
+        **token_data: Any,
+    ) -> dict[str, Any]:
+        """Set properties of a participant. Only one particpant can be updated.
+
+        Args:
+            survey_id: ID of the survey to which the participant belongs.
+            token_query_properties: Dictionary of properties to match the participant
+                or token ID.
+            token_data: Properties to set.
+
+        Returns:
+            New participant properties.
+        """
+        return self.session.set_participant_properties(
+            survey_id,
+            token_query_properties,
+            token_data,
+        )
+
+    def set_question_properties(
+        self,
+        question_id: int,
+        language: str | None = None,
+        **properties: Any,
+    ) -> dict[str, bool]:
+        """Set properties of a question.
+
+        Args:
+            question_id: ID of the question to set the properties of.
+            language: Language code.
+            properties: Properties to set.
+
+        Returns:
+            Mapping of property names to whether they were set successfully.
+        """
+        return self.session.set_question_properties(question_id, properties, language)
+
+    def set_survey_properties(
+        self,
+        survey_id: int,
+        **properties: Any,
+    ) -> dict[str, bool]:
+        """Set properties of a survey.
+
+        Args:
+            survey_id: ID of the survey to set the properties of.
+            properties: Properties to set.
+
+        Returns:
+            Mapping of property names to whether they were set successfully.
+        """
+        return self.session.set_survey_properties(survey_id, properties)

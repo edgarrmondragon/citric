@@ -44,11 +44,11 @@
 | `mail_registered_participants` | No          | Send e-mails to registered participants in a survey (RPC function)                |
 | `release_session_key`          | Yes         | Close the RPC session                                                             |
 | `remind_participants`          | No          | Send a reminder to participants in a survey (RPC function)                        |
-| `set_group_properties`         | No          | Set group properties (RPC function)                                               |
-| `set_language_properties`      | No          | Set survey language properties (RPC function)                                     |
-| `set_participant_properties`   | No          | Set properties of a survey participant (RPC function)                             |
-| `set_question_properties`      | No          | Set question properties.                                                          |
+| `set_group_properties`         | Yes         | Set group properties (RPC function)                                               |
+| `set_language_properties`      | Yes         | Set survey language properties (RPC function)                                     |
+| `set_participant_properties`   | Yes         | Set properties of a survey participant (RPC function)                             |
+| `set_question_properties`      | Yes         | Set question properties.                                                          |
 | `set_quota_properties`         | No          | Set quota attributes (RPC function)                                               |
-| `set_survey_properties`        | No          | Set survey properties (RPC function)                                              |
+| `set_survey_properties`        | Yes         | Set survey properties (RPC function)                                              |
 | `update_response`              | No          | Update a response in a given survey.                                              |
 | `upload_file`                  | No          | Uploads one file to be used later.                                                |
