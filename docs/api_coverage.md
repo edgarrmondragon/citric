@@ -48,7 +48,7 @@
 | `set_language_properties`      | Yes         | Set survey language properties (RPC function)                                     |
 | `set_participant_properties`   | Yes         | Set properties of a survey participant (RPC function)                             |
 | `set_question_properties`      | Yes         | Set question properties.                                                          |
-| `set_quota_properties`         | Yes         | Set quota attributes (RPC function)                                               |
+| `set_quota_properties`         | No          | Set quota attributes (RPC function)                                               |
 | `set_survey_properties`        | Yes         | Set survey properties (RPC function)                                              |
 | `update_response`              | No          | Update a response in a given survey.                                              |
 | `upload_file`                  | No          | Uploads one file to be used later.                                                |

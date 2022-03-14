@@ -984,18 +984,6 @@ class Client:
         """
         return self.session.set_question_properties(question_id, properties, language)
 
-    def set_quota_properties(self, quota_id: int, **properties: Any) -> bool:
-        """Set properties of a quota.
-
-        Args:
-            quota_id: Quota ID.
-            properties: Properties to set.
-
-        Returns:
-            True if the properties were set.
-        """
-        return self.session.set_quota_properties(quota_id, properties)
-
     def set_survey_properties(
         self,
         survey_id: int,
