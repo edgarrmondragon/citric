@@ -291,6 +291,20 @@ class Client:
         """
         return self.__session.delete_group(survey_id, group_id)
 
+    def delete_language(self, survey_id: int, language: str) -> dict[str, str]:
+        """Delete a language from a survey.
+
+        Requires at LimeSurvey >= 5.3.4.
+
+        Args:
+            survey_id: ID of the Survey for which a language will be deleted from.
+            language: Language to delete.
+
+        Returns:
+            Status message.
+        """
+        return self.__session.delete_language(survey_id, language)
+
     def delete_response(self, survey_id: int, response_id: int) -> dict[str, str]:
         """Delete a response in a survey.
 
