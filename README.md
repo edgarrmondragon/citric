@@ -217,6 +217,14 @@ pip install --user --upgrade pre-commit
 pre-commit install
 ```
 
+### Adding a changelog entry for your changes
+
+This project uses [changie](https://changie.dev/) to maintain the changelog. You'll need to install the Change CLI in order to add a changelog entry:
+
+```console
+changie new
+```
+
 ### Releasing an upgrade
 
 1. Update the changelog
