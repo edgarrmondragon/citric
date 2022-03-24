@@ -227,18 +227,11 @@ changie new
 
 ### Releasing an upgrade
 
-1. Update the changelog
+1. Merge the updates into the changelog and bump the package version
 
    ```shell
    changie batch <version>
    changie merge
-   ```
-
-1. Bump the package version
-
-   ```shell
-   poetry version <version>
-   poetry publish
    ```
 
 ## Credits

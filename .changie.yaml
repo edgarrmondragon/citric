@@ -17,3 +17,7 @@ kinds:
 - label: Removed
 - label: Fixed
 - label: Security
+replacements:
+- path: pyproject.toml
+  find: ^version = ".*"$
+  replace: version = "{{.VersionNoPrefix}}"
