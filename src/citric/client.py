@@ -294,6 +294,8 @@ class Client:
     def delete_language(self, survey_id: int, language: str) -> dict[str, str]:
         """Delete a language from a survey.
 
+        Requires at LimeSurvey >= 5.3.4.
+
         Args:
             survey_id: ID of the Survey for which a language will be deleted from.
             language: Language to delete.
