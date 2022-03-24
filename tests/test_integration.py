@@ -101,6 +101,13 @@ def test_language(client: citric.Client, survey_id: int):
     )
     assert new_props["surveyls_email_confirm"] == new_confirmation
 
+    # Delete language
+    response = client.delete_language(survey_id, "ru")
+    assert response["status"] == "OK"
+
+    props_after_delete_language = client.get_survey_properties(survey_id)
+    assert props_after_delete_language["additional_languages"] == "es"
+
 
 @pytest.mark.integration_test
 def test_survey(client: citric.Client):

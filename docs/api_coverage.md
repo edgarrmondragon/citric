@@ -12,7 +12,7 @@
 | `copy_survey`                  | Yes         | Copy survey (RPC function)                                                        |
 | `cpd_importParticipants`       | No          | Import a participant into the LimeSurvey CPDB                                     |
 | `delete_group`                 | Yes         | Delete a group from a chosen survey (RPC function)                                |
-| `delete_language`              | No          | Delete a language from a survey (RPC function)                                    |
+| `delete_language`              | Yes         | Delete a language from a survey (RPC function)                                    |
 | `delete_participants`          | Yes         | Delete multiple participants from the survey participants table (RPC function)    |
 | `delete_question`              | No          | Delete question from a survey (RPC function)                                      |
 | `delete_response`              | Yes         | Delete a response in a given survey using its Id                                  |
