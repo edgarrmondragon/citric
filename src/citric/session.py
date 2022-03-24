@@ -78,6 +78,15 @@ class Session:
         """RPC session key."""
         return self.__key
 
+    @key.setter
+    def key(self, value: str) -> None:
+        """Set RPC session key.
+
+        Args:
+            value: RPC session key.
+        """
+        self.__key = value
+
     def __getattr__(self, name: str) -> Method:
         """Magic method dispatcher."""
         return Method(self.rpc, name)
