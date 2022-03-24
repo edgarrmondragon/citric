@@ -219,12 +219,19 @@ pre-commit install
 
 ### Releasing an upgrade
 
-Bump the package version
+1. Update the changelog
 
-```shell
-poetry version <version>
-poetry publish
-```
+   ```shell
+   changie batch <version>
+   changie merge
+   ```
+
+1. Bump the package version
+
+   ```shell
+   poetry version <version>
+   poetry publish
+   ```
 
 ## Credits
 
