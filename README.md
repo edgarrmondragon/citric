@@ -217,14 +217,22 @@ pip install --user --upgrade pre-commit
 pre-commit install
 ```
 
+### Adding a changelog entry for your changes
+
+This project uses [changie](https://changie.dev/) to maintain the changelog. You'll need to install the Change CLI in order to add a changelog entry:
+
+```console
+changie new
+```
+
 ### Releasing an upgrade
 
-Bump the package version
+1. Merge the updates into the changelog and bump the package version
 
-```shell
-poetry version <version>
-poetry publish
-```
+   ```shell
+   changie batch <version>
+   changie merge
+   ```
 
 ## Credits
 

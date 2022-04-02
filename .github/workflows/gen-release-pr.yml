@@ -1,0 +1,38 @@
+name: Generate release Pull Request
+
+on:
+  workflow_dispatch:
+    inputs:
+      next-version:
+        description: 'Next version use vX.Y.Z, patch, minor or major'
+        default: 'patch'
+        required: true
+      changie-version:
+        description: Version of Changie to use
+        default: "1.6.1"
+        required: false
+
+jobs:
+  generate-pr:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3.0.0
+
+    - name: Setup Changie
+      run: |
+        curl -sSLO https://github.com/miniscruff/changie/releases/download/v${{ github.event.inputs.changie-version }}/changie_${{ github.event.inputs.changie-version }}_linux_amd64.deb \
+          && sudo dpkg -i changie_${{ github.event.inputs.changie-version }}_linux_amd64.deb && rm changie_${{ github.event.inputs.changie-version }}_linux_amd64.deb
+
+    - name: Batch and merge
+      run: |
+        changie batch ${{ github.event.inputs.next-version }}
+        changie merge
+        echo RELEASE_VERSION=$(changie latest) >> $GITHUB_ENV
+
+    - name: Create Pull Request
+      uses: peter-evans/create-pull-request@v4.0.0
+      with:
+        title: "chore: Release ${{ env.RELEASE_VERSION }}"
+        branch: release/${{ env.RELEASE_VERSION }}
+        commit-message: Release ${{ env.RELEASE_VERSION }}
