@@ -1,11 +1,18 @@
-image:
-  file: .gitpod.Dockerfile
-
 tasks:
-  - name: Install dependencies
-    init: >
-      poetry env use python &&
-      poetry install
+  - init: |
+      docker-compose pull
+      docker-compose build
+  - command: |
+      docker-compose -f docker-compose.yml -f docker-compose.jupyter.yml up
+
+ports:
+  - port: 8001
+    onOpen: open-browser
+    visibility: public
+  - port: 9001
+    onOpen: open-browser
+  - port: 8888
+    onOpen: open-browser
 
 vscode:
   extensions:
