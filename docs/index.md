@@ -13,6 +13,12 @@ license
 ```
 
 ```{toctree}
+:maxdepth: 2
+
+./changelog.md
+```
+
+```{toctree}
 
 ./api_coverage.md
 ```
