@@ -9,6 +9,8 @@
 [![Python versions][versions-badge]][pypi-link]
 [![PyPI - Downloads][downloads-badge]][pypi-link]
 
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/edgarrmondragon/citric)
+
 A client to the LimeSurvey Remote Control API 2, written in modern
 Python.
 
