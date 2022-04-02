@@ -22,6 +22,9 @@
     ],
     "enabled": true
   },
+  "pre-commit": {
+    "enabled": true
+  },
   "packageRules": [
     {
       "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
