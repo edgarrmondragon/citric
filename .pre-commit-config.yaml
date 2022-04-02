@@ -34,7 +34,6 @@ repos:
     rev: v0.942
     hooks:
     -   id: mypy
-        pass_filenames: false
         additional_dependencies:
         -   types-requests
         -   types-psycopg2
