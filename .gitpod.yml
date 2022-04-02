@@ -8,6 +8,7 @@ tasks:
 ports:
   - port: 8001
     onOpen: open-browser
+    visibility: public
   - port: 9001
     onOpen: open-browser
   - port: 8888
