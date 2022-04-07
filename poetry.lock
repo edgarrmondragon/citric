@@ -160,7 +160,7 @@ name = "cffi"
 version = "1.15.0"
 description = "Foreign Function Interface for Python calling C code."
 category = "main"
-optional = false
+optional = true
 python-versions = "*"
 
 [package.dependencies]
@@ -276,7 +276,7 @@ name = "entrypoints"
 version = "0.4"
 description = "Discover and load entry points from installed packages."
 category = "main"
-optional = false
+optional = true
 python-versions = ">=3.6"
 
 [[package]]
@@ -497,7 +497,7 @@ name = "jupyter-client"
 version = "7.2.2"
 description = "Jupyter protocol implementation and client libraries"
 category = "main"
-optional = false
+optional = true
 python-versions = ">=3.7"
 
 [package.dependencies]
@@ -518,7 +518,7 @@ name = "jupyter-core"
 version = "4.9.2"
 description = "Jupyter core package. A base package on which Jupyter projects rely."
 category = "main"
-optional = false
+optional = true
 python-versions = ">=3.6"
 
 [package.dependencies]
@@ -556,7 +556,7 @@ test = ["coverage", "pytest (>=6.0)", "pytest-cov", "pytest-mock", "pytest-timeo
 
 [[package]]
 name = "jupyterlab"
-version = "3.3.2"
+version = "3.3.3"
 description = "JupyterLab computational environment"
 category = "main"
 optional = true
@@ -573,7 +573,7 @@ packaging = "*"
 tornado = ">=6.1.0"
 
 [package.extras]
-test = ["coverage", "pytest (>=6.0)", "pytest-cov", "pytest-console-scripts", "pytest-check-links (>=0.5)", "jupyterlab-server[test] (>=2.2,<3.0)", "requests", "requests-cache", "virtualenv", "check-manifest"]
+test = ["coverage", "pytest (>=6.0)", "pytest-cov", "pytest-console-scripts", "pytest-check-links (>=0.5)", "jupyterlab-server", "requests", "requests-cache", "virtualenv", "check-manifest"]
 ui-tests = ["build"]
 
 [[package]]
@@ -837,7 +837,7 @@ name = "nest-asyncio"
 version = "1.5.5"
 description = "Patch asyncio to allow nested event loops"
 category = "main"
-optional = false
+optional = true
 python-versions = ">=3.5"
 
 [[package]]
@@ -1037,7 +1037,7 @@ name = "pycparser"
 version = "2.21"
 description = "C parser in Python"
 category = "main"
-optional = false
+optional = true
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 
 [[package]]
@@ -1094,7 +1094,7 @@ name = "python-dateutil"
 version = "2.8.2"
 description = "Extensions to the standard Python datetime module"
 category = "main"
-optional = false
+optional = true
 python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,>=2.7"
 
 [package.dependencies]
@@ -1130,7 +1130,7 @@ name = "pywin32"
 version = "303"
 description = "Python for Window Extensions"
 category = "main"
-optional = false
+optional = true
 python-versions = "*"
 
 [[package]]
@@ -1154,7 +1154,7 @@ name = "pyzmq"
 version = "22.3.0"
 description = "Python bindings for 0MQ"
 category = "main"
-optional = false
+optional = true
 python-versions = ">=3.6"
 
 [package.dependencies]
@@ -1451,7 +1451,7 @@ name = "tornado"
 version = "6.1"
 description = "Tornado is a Python web framework and asynchronous networking library, originally developed at FriendFeed."
 category = "main"
-optional = false
+optional = true
 python-versions = ">= 3.5"
 
 [[package]]
@@ -1459,7 +1459,7 @@ name = "traitlets"
 version = "5.1.1"
 description = "Traitlets Python configuration system"
 category = "main"
-optional = false
+optional = true
 python-versions = ">=3.7"
 
 [package.extras]
@@ -1886,8 +1886,8 @@ jupyter-server = [
     {file = "jupyter_server-1.16.0.tar.gz", hash = "sha256:c756f87ad64b84e2aa522ef482445e1a93f7fe4a5fc78358f4636e53c9a0463a"},
 ]
 jupyterlab = [
-    {file = "jupyterlab-3.3.2-py3-none-any.whl", hash = "sha256:32c9e3fae93d02f7a071f5e69a7a5450fa4bf087dd3d5aca58c7dd2adf2565d3"},
-    {file = "jupyterlab-3.3.2.tar.gz", hash = "sha256:3c716bf5592cb28c5c55c615c6e5bd3efc71898f6957d13719b56478bbbb587a"},
+    {file = "jupyterlab-3.3.3-py3-none-any.whl", hash = "sha256:60b8d2e013621b044cf2ca82fff199dfda6db803eb4d0b9fe62678fabb29d841"},
+    {file = "jupyterlab-3.3.3.tar.gz", hash = "sha256:294d67126015ba397f6b1c80563deec862e47e042623851bbe2a7d870d69eb6a"},
 ]
 jupyterlab-pygments = [
     {file = "jupyterlab_pygments-0.1.2-py2.py3-none-any.whl", hash = "sha256:abfb880fd1561987efaefcb2d2ac75145d2a5d0139b1876d5be806e32f630008"},
