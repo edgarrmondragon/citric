@@ -20,7 +20,7 @@ jobs:
         - { python-version: "3.9", os: "ubuntu-latest", session: "mypy", experimental: false }
         - { python-version: "3.8", os: "ubuntu-latest", session: "mypy", experimental: false }
         - { python-version: "3.7", os: "ubuntu-latest", session: "mypy", experimental: false }
-        - { python-version: "3.11", os: "ubuntu-latest", session: "tests", experimental: true, pre-release: "3.11.0-alpha.6" }
+        - { python-version: "3.11", os: "ubuntu-latest", session: "tests", experimental: true, pre-release: "3.11.0-alpha.7" }
         - { python-version: "3.10", os: "ubuntu-latest", session: "tests", experimental: false, integration: true }
         - { python-version: "3.10", os: "ubuntu-latest", session: "tests", experimental: false }
         - { python-version: "3.9", os: "ubuntu-latest", session: "tests", experimental: false }
