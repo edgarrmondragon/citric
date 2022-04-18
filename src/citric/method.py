@@ -28,7 +28,7 @@ class Method:
         """
         return Method(self.__caller, f"{self.__name}.{name}")
 
-    def __call__(self, *params: Any) -> Any:
+    def __call__(self, *params: Any) -> Any:  # noqa: ANN401
         """Call RPC method.
 
         Args:

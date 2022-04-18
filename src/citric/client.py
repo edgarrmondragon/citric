@@ -624,7 +624,7 @@ class Client:
         """
         return self.__session.get_response_ids(survey_id, token)
 
-    def _get_site_setting(self, setting_name: str) -> Any:
+    def _get_site_setting(self, setting_name: str) -> Any:  # noqa: ANN401
         """Get a global setting.
 
         Function to query site settings. Can only be used by super administrators.

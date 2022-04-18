@@ -82,7 +82,7 @@ class Session:
         """Magic method dispatcher."""
         return Method(self.rpc, name)
 
-    def rpc(self, method: str, *params: Any) -> Any:
+    def rpc(self, method: str, *params: Any) -> Any:  # noqa: ANN401
         """Execute RPC method on LimeSurvey, with optional token authentication.
 
         Any method, except for `get_session_key`.
@@ -103,7 +103,12 @@ class Session:
         return result
 
     @staticmethod
-    def _invoke(session: requests.Session, url: str, method: str, *params: Any) -> Any:
+    def _invoke(
+        session: requests.Session,
+        url: str,
+        method: str,
+        *params: Any,
+    ) -> Any:  # noqa: ANN401
         """Execute a LimeSurvey RPC with a JSON payload.
 
         Args:
