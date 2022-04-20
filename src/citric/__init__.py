@@ -1,4 +1,4 @@
-"""Top-level package for citric."""
+"""A client to the LimeSurvey Remote Control API 2, written in modern Python."""
 
 from __future__ import annotations
 
@@ -7,9 +7,11 @@ import sys
 from citric.client import Client  # noqa: F401
 
 if sys.version_info >= (3, 8):
-    from importlib.metadata import version
+    from importlib import metadata
 else:
-    from importlib_metadata import version
+    import importlib_metadata as metadata
 
-__version__ = version(__name__)
+__version__ = metadata.version(__package__)
 """Package version"""
+
+del annotations, metadata, sys
