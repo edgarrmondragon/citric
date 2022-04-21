@@ -22,6 +22,7 @@ except ImportError:
 
 package = "citric"
 python_versions = ["3.11", "3.10", "3.9", "3.8", "3.7"]
+pypy_versions = ["pypy-3.9"]
 locations = "src", "tests", "noxfile.py", "docs/conf.py"
 nox.options.sessions = (
     "lint",
@@ -72,7 +73,7 @@ def mypy(session: Session) -> None:
         session.run("mypy", f"--python-executable={sys.executable}", "noxfile.py")
 
 
-@session(python=python_versions)
+@session(python=python_versions + pypy_versions)
 def tests(session: Session) -> None:
     """Execute pytest tests."""
     session.install(".")
