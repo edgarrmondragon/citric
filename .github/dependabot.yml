@@ -15,9 +15,8 @@ updates:
       - "edgarrmondragon"
     labels:
       - "dependencies"
-    versioning-strategy: lockfile-only
     allow:
-      - dependency-type: "all"
+      - dependency-type: "development"
   - package-ecosystem: pip
     directory: "/.github/workflows"
     schedule:
