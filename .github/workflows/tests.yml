@@ -5,7 +5,7 @@ on:
     branches: [master]
 jobs:
   tests:
-    name: ${{ matrix.session }} ${{ matrix.python-version }}${{ matrix.integration && ' (integration)' || '' }} / ${{ matrix.os }}
+    name: ${{ matrix.session }} ${{ matrix.python-version }}${{ matrix.integration && format(' / integration with {0}', matrix.image_tag) || '' }} / ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     continue-on-error: ${{ matrix.experimental }}
     env:
@@ -21,7 +21,9 @@ jobs:
         - { python-version: "3.8", os: "ubuntu-latest", session: "mypy", experimental: false }
         - { python-version: "3.7", os: "ubuntu-latest", session: "mypy", experimental: false }
         - { python-version: "3.11", os: "ubuntu-latest", session: "tests", experimental: true, pre-release: "3.11.0-alpha.7" }
-        - { python-version: "3.10", os: "ubuntu-latest", session: "tests", experimental: false, integration: true }
+        - { python-version: "3.10", os: "ubuntu-latest", session: "tests", experimental: false, integration: true, image_tag: "5.3.9-220411-apache" }
+        - { python-version: "3.10", os: "ubuntu-latest", session: "tests", experimental: false, integration: true, image_tag: "5.3.8-220404-apache" }
+        - { python-version: "3.10", os: "ubuntu-latest", session: "tests", experimental: false, integration: true, image_tag: "5.3.7-220328-apache" }
         - { python-version: "3.10", os: "ubuntu-latest", session: "tests", experimental: false }
         - { python-version: "3.9", os: "ubuntu-latest", session: "tests", experimental: false }
         - { python-version: "3.8", os: "ubuntu-latest", session: "tests", experimental: false }
@@ -68,6 +70,8 @@ jobs:
 
     - name: Start services
       if: ${{ matrix.integration }}
+      env:
+        LS_IMAGE_TAG: ${{ matrix.image_tag }}
       run: |
         docker-compose -f docker-compose.yml -f docker-compose.test.yml up -d
         docker ps -a
