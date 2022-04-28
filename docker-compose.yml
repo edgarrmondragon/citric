@@ -2,7 +2,7 @@ version: '3'
 
 services:
   limesurvey:
-    image: martialblog/limesurvey:${LS_IMAGE_TAG:-5.3.9-220411-apache}
+    image: martialblog/limesurvey:${LS_IMAGE_TAG:-5-apache}
     volumes:
       - "surveys:/var/www/html/upload/surveys"
     depends_on:
