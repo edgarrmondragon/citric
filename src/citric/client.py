@@ -1097,3 +1097,50 @@ class Client:
             Mapping of property names to whether they were set successfully.
         """
         return self.session.set_survey_properties(survey_id, properties)
+
+    def upload_file_object(
+        self,
+        survey_id: int,
+        field: str,
+        filename: str,
+        file: BinaryIO,
+    ) -> dict[str, Any]:
+        """Upload a file to a LimeSurvey survey.
+
+        Args:
+            survey_id: ID of the survey to upload the file to.
+            field: Field name to upload the file to.
+            filename: Name of the file to upload.
+            file: File-like object to upload.
+
+        Returns:
+            File metadata with final upload path.
+        """
+        contents = base64.b64encode(file.read()).decode()
+        return self.session.upload_file(survey_id, field, filename, contents)
+
+    def upload_file(
+        self,
+        survey_id: int,
+        field: str,
+        path: PathLike,
+        *,
+        filename: str | None = None,
+    ) -> dict[str, Any]:
+        """Upload a file to a LimeSurvey survey from a local path.
+
+        Args:
+            survey_id: ID of the survey to which the file belongs.
+            field: Field to upload the file to.
+            path: Path to the file to upload.
+            filename: Optional filename override to use in LimeSurvey.
+
+        Returns:
+            File metadata with final upload path.
+        """
+        path = Path(path)
+        if filename is None:
+            filename = path.name
+
+        with open(path, "rb") as file:
+            return self.upload_file_object(survey_id, field, filename, file)

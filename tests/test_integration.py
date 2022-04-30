@@ -5,7 +5,9 @@ from __future__ import annotations
 import csv
 import io
 import os
+from pathlib import Path
 from typing import Any, Generator
+from urllib.parse import quote
 
 import pytest
 
@@ -296,3 +298,40 @@ def test_responses(client: citric.Client, survey_id: int):
         assert row["G01Q01"] == "Long text 3"
         assert row["G01Q02"] == ""
         assert row["token"] == "T00002"
+
+
+@pytest.mark.integration_test
+def test_files(client: citric.Client, survey_id: int, tmp_path: Path):
+    """Test uploading and downloading files from a survey."""
+    filepath = tmp_path / "hello world.txt"
+    filepath.write_text("Hello world!")
+
+    client.activate_survey(survey_id)
+    group = client.list_groups(survey_id)[1]
+    question = client.list_questions(survey_id, group["gid"])[0]
+
+    filename = "upload.txt"
+    result = client.upload_file(
+        survey_id,
+        f"{survey_id}X{group['gid']}X{question['qid']}",
+        filepath,
+        filename=filename,
+    )
+    assert result["success"]
+    assert result["size"] == pytest.approx(filepath.stat().st_size / 1000)
+    assert result["name"] == filename
+    assert result["ext"] == "txt"
+    assert "filename" in result
+    assert "msg" in result
+
+    result_no_filename = client.upload_file(
+        survey_id,
+        f"{survey_id}X{group['gid']}X{question['qid']}",
+        filepath,
+    )
+    assert result_no_filename["success"]
+    assert result_no_filename["size"] == pytest.approx(filepath.stat().st_size / 1000)
+    assert result_no_filename["name"] == quote(filepath.name)
+    assert result_no_filename["ext"] == "txt"
+    assert "filename" in result_no_filename
+    assert "msg" in result_no_filename
