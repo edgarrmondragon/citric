@@ -110,6 +110,10 @@ module = [
 ]
 ignore_missing_imports = true
 
+[tool.cibuildwheel]
+test-requires = ["nox", "nox-poetry"]
+test-command = "nox -s tests"
+
 [build-system]
 requires = ["poetry>=0.12"]
 build-backend = "poetry.masonry.api"

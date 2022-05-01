@@ -1,14 +1,36 @@
 name: Release
 
 on:
+  pull_request:
+  push:
   release:
     types: [published]
 
 jobs:
-  release:
-    name: Publish to PyPI
-    runs-on: ubuntu-latest
+  build_wheels:
+    name: Build wheels on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os:
+        - ubuntu-latest
+        - windows-latest
+        - macos-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3.0.2
 
+    - name: Build wheels
+      uses: pypa/cibuildwheel@v2.5.0
+
+    - name: Upload wheel
+      uses: actions/upload-artifact@v3.0.0
+      with:
+        path: ./wheelhouse/*.whl
+
+  build_sdist:
+    name: Build source distribution and pure python wheel
+    runs-on: ubuntu-latest
     steps:
     - name: Checkout code
       uses: actions/checkout@v3.0.2
@@ -28,14 +50,26 @@ jobs:
         pipx install --pip-args=--constraint=.github/workflows/constraints.txt poetry
         poetry --version
 
-    - name: Check version
-      run: |
-        version=$(poetry version | awk '{print $2}')
-        tag=$(echo "${{ github.ref }}" | awk '{split($0,p,"/"); print p[3]}')
-        if [ $version != $tag ]; then echo "Release tag and package version do not match!"; exit 1; fi;
-
     - name: Build
       run: poetry build
+
+    - name: Upload wheel
+      uses: actions/upload-artifact@v3.0.0
+      with:
+        path: ./wheelhouse/*.whl
+
+  release:
+    name: Publish to PyPI
+    needs: [build_wheels, build_sdist]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'release' && github.event.action == 'published'
+
+    steps:
+    - name: Download wheel and sdist
+      uses: actions/download-artifact@v3.0.0
+      with:
+        name: artifact
+        path: dist
 
     - name: Publish
       uses: pypa/gh-action-pypi-publish@v1.5.0
