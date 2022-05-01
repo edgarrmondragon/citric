@@ -112,6 +112,9 @@ ignore_missing_imports = true
 
 [tool.cibuildwheel]
 build = "cp37-* cp38-* cp39-* cp310-*"
+
+build-frontend = "build"
+
 test-requires = ["nox", "nox-poetry"]
 test-command = "nox -s tests"
 
