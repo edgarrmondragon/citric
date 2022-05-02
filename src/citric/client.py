@@ -4,11 +4,13 @@ from __future__ import annotations
 
 import base64
 import datetime
+import io
 import sys
+from dataclasses import dataclass
 from os import PathLike
 from pathlib import Path
 from types import TracebackType
-from typing import Any, BinaryIO, Iterable, Mapping, Sequence, TypeVar
+from typing import Any, BinaryIO, Generator, Iterable, Mapping, Sequence, TypeVar
 
 import requests
 
@@ -22,6 +24,61 @@ else:
 
 
 _T = TypeVar("_T", bound="Client")
+
+
+@dataclass
+class QuestionReference:
+    """Uploaded file question reference."""
+
+    title: str
+    """Question title."""
+
+    qid: int
+    """Question ID."""
+
+
+@dataclass
+class FileMetadata:
+    """Uploaded file metadata."""
+
+    title: str
+    """File title."""
+
+    comment: str
+    """File comment."""
+
+    name: str
+    """File name."""
+
+    filename: str
+    """LimeSurvey internal file name."""
+
+    size: float
+    """File size in bytes."""
+
+    ext: str
+    """File extension."""
+
+    question: QuestionReference
+    """:class:`~citric.client.QuestionReference` object."""
+
+    index: int
+    """File index."""
+
+
+@dataclass
+class UploadedFile:
+    """A file uploaded to a survey response."""
+
+    meta: FileMetadata
+    """:class:`~citric.client.FileMetadata` object."""
+
+    content: io.BytesIO
+    """File content as `io.BytesIO`_.
+
+    .. _io.BytesIO:
+            https://docs.python.org/3/library/io.html#io.BytesIO
+    """
 
 
 class Client:
@@ -715,6 +772,34 @@ class Client:
         """
         return self.__session.get_uploaded_files(survey_id, token)
 
+    def get_uploaded_file_objects(
+        self,
+        survey_id: int,
+        token: str | None = None,
+    ) -> Generator[UploadedFile, None, None]:
+        """Iterate over uploaded files in a survey response.
+
+        Args:
+            survey_id: Survey for which to download files.
+            token: Optional participant token to filter uploaded files.
+
+        Yields:
+            :class:`~citric.client.UploadedFile` objects.
+        """
+        files_data = self.get_uploaded_files(survey_id, token)
+        for file in files_data:
+            metadata: dict = files_data[file]["meta"]
+            question: dict = metadata.pop("question")
+            content = base64.b64decode(files_data[file]["content"])
+
+            yield UploadedFile(
+                meta=FileMetadata(
+                    **metadata,
+                    question=QuestionReference(**question),
+                ),
+                content=io.BytesIO(content),
+            )
+
     def download_files(
         self,
         directory: str | Path,
@@ -734,14 +819,13 @@ class Client:
         dirpath = Path(directory)
 
         filepaths = []
-        files_data = self.get_uploaded_files(survey_id, token=token)
+        uploaded_files = self.get_uploaded_file_objects(survey_id, token=token)
 
-        for file in files_data:
-            metadata = files_data[file]["meta"]
-            filepath = dirpath / metadata["filename"]
+        for file in uploaded_files:
+            filepath = dirpath / file.meta.filename
             filepaths.append(filepath)
             with open(filepath, "wb") as f:
-                f.write(base64.b64decode(files_data[file]["content"]))
+                f.write(file.content.read())
 
         return filepaths
 
