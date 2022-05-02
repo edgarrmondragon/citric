@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "citric"
-version = "0.0.12"
+version = "0.0.13"
 description="A client to the LimeSurvey Remote Control API 2, written in modern Python."
 license = "MIT"
 authors = ["Edgar Ramírez-Mondragón <edgarrm358@gmail.com>"]
