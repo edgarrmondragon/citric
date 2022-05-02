@@ -180,7 +180,7 @@ def docs_build(session: Session) -> None:
 @session(name="docs-serve", python=main_python_version)
 def docs_serve(session: Session) -> None:
     """Build the documentation."""
-    args = session.posargs or ["--open-browser", "docs", "build"]
+    args = session.posargs or ["--open-browser", "--watch", ".", "docs", "build"]
     session.install(".[docs]")
 
     build_dir = Path("build")

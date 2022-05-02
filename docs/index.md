@@ -15,6 +15,13 @@ license
 :maxdepth: 2
 :hidden:
 
+examples
+```
+
+```{toctree}
+:maxdepth: 2
+:hidden:
+
 ./changelog.md
 ```
 
@@ -40,4 +47,5 @@ contributing/environment
 contributing/testing
 contributing/docs
 contributing/docker
+contributing/release
 ```
