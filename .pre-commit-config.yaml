@@ -11,6 +11,7 @@ repos:
     -   id: check-toml
     -   id: check-yaml
     -   id: end-of-file-fixer
+        exclude: \.changes/.*\.md
     -   id: trailing-whitespace
 
 -   repo: https://github.com/psf/black
