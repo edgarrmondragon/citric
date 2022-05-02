@@ -30,3 +30,14 @@ license
 
 API <_api/index>
 ```
+
+```{toctree}
+:caption: Contributing
+:hidden:
+
+contributing/getting-started
+contributing/environment
+contributing/testing
+contributing/docs
+contributing/docker
+```

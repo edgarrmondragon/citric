@@ -153,83 +153,6 @@ with Client(LS_URL, "iamadmin", "secret") as client:
 - [Import a survey file from S3](https://github.com/edgarrmondragon/citric/blob/master/docs/notebooks/import_s3.ipynb)
 - [Download responses and save them to a SQLite database](https://github.com/edgarrmondragon/citric/blob/master/docs/notebooks/pandas_sqlite.ipynb)
 
-## Development
-
-Use pyenv to setup default Python versions for this repo:
-
-```shell
-pyenv local 3.10.0 3.9.7 3.8.11 3.7.11
-```
-
-Install project dependencies
-
-```shell
-poetry install
-```
-
-### Docs
-
-To generate the documentation site, use the following commands:
-
-```shell
-poetry install -E docs
-poetry run sphinx-build docs build
-```
-
-### Docker
-
-You can setup a local instance of LimeSurvey with [Docker Compose](https://docs.docker.com/compose/):
-
-```shell
-docker compose -f docker-compose.yml -f docker-compose.test.yml up -d
-```
-
-Now you can access LimeSurvey at [port 8001](http://localhost:8001/index.php/admin).
-
-Import an existing survey file and start testing with it:
-
-```python
-from citric import Client
-
-LS_URL = "http://localhost:8001/index.php/admin/remotecontrol"
-
-with Client(LS_URL, "iamadmin", "secret") as client:
-    # Import survey from a file
-    with open("examples/limesurvey_survey_432535.lss", "rb") as f:
-        survey_id = client.import_survey(f, "lss")
-    print("New survey:", survey_id)
-```
-
-### Testing
-
-This project uses [`nox`][nox] for running tests and linting on different Python versions:
-
-```shell
-pip install --user --upgrade nox
-nox -r
-```
-
-Run only a linting session
-
-```shell
-nox -rs lint
-```
-
-### pre-commit
-
-```shell
-pip install --user --upgrade pre-commit
-pre-commit install
-```
-
-### Adding a changelog entry for your changes
-
-This project uses [changie](https://changie.dev/) to maintain the changelog. You'll need to install the Change CLI in order to add a changelog entry:
-
-```console
-changie new
-```
-
 ### Releasing an upgrade
 
 1. Merge the updates into the changelog and bump the package version
@@ -239,12 +162,15 @@ changie new
    changie merge
    ```
 
+## Contributing
+
+If you'd like to contribute to this project, please see the [contributing guide](https://citric.readthedocs.io/en/latest/contributing/getting-started.html).
+
 ## Credits
 
 - [Claudio Jolowicz][claudio] and [his amazing blog post][hypermodern].
 
 [rc2api]: https://api.limesurvey.org/classes/remotecontrol_handle.html
-[nox]: https://nox.thea.codes/en/stable/
 [claudio]: https://twitter.com/cjolowicz/
 [hypermodern]: https://cjolowicz.github.io/posts/hypermodern-python-01-setup/
 
