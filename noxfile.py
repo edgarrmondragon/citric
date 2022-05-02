@@ -23,6 +23,7 @@ except ImportError:
 package = "citric"
 python_versions = ["3.11", "3.10", "3.9", "3.8", "3.7"]
 pypy_versions = ["pypy-3.9"]
+main_python_version = "3.10"
 locations = "src", "tests", "noxfile.py", "docs/conf.py"
 nox.options.sessions = (
     "lint",
@@ -49,7 +50,7 @@ def install_with_constraints(session: Session, *args, **kwargs) -> None:
         session.install(f"--constraint={requirements.name}", *args, **kwargs)
 
 
-@session(python=python_versions[1])
+@session(python=main_python_version)
 def safety(session: Session) -> None:
     """Check if packages are safe."""
     requirements = session.poetry.export_requirements()
@@ -75,7 +76,7 @@ def mypy(session: Session) -> None:
 
 @session(python=python_versions + pypy_versions)
 def tests(session: Session) -> None:
-    """Execute pytest tests."""
+    """Execute pytest tests and compute coverage."""
     session.install(".")
     session.install("coverage[toml]", "pytest", "psycopg2-binary")
     try:
@@ -85,7 +86,7 @@ def tests(session: Session) -> None:
             session.notify("coverage", posargs=[])
 
 
-@session(python=python_versions[-1:])
+@session(python="3.7")
 def pytype(session: Session) -> None:
     """Infer and check types with pytype."""
     args = session.posargs or ["--disable=import-error", *locations]
@@ -93,7 +94,7 @@ def pytype(session: Session) -> None:
     session.run("pytype", *args)
 
 
-@session(python=python_versions[1])
+@session(python=main_python_version)
 def typeguard(session: Session) -> None:
     """Runtime type checking using Typeguard."""
     session.install(".")
@@ -116,7 +117,7 @@ def xdoctest(session: Session) -> None:
     session.run("python", "-m", "xdoctest", *args)
 
 
-@session(python=python_versions[1])
+@session(python=main_python_version)
 def coverage(session: Session) -> None:
     """Upload coverage data."""
     args = session.posargs or ["report"]
@@ -144,7 +145,7 @@ def lint(session: Session) -> None:
     session.run("flake8", *args)
 
 
-@session(name="black-fix", python=python_versions)
+@session(name="black-fix", python=main_python_version)
 def black_fix(session: Session) -> None:
     """Format code."""
     args = session.posargs or locations
@@ -160,7 +161,7 @@ def black_check(session: Session) -> None:
     session.run("black", "--check", *args)
 
 
-@session(name="docs-build", python=python_versions[1])
+@session(name="docs-build", python=main_python_version)
 def docs_build(session: Session) -> None:
     """Build the documentation."""
     args = session.posargs or ["docs", "build"]
@@ -176,10 +177,10 @@ def docs_build(session: Session) -> None:
     session.run("sphinx-build", *args)
 
 
-@session(name="docs-serve", python=python_versions[1])
+@session(name="docs-serve", python=main_python_version)
 def docs_serve(session: Session) -> None:
     """Build the documentation."""
-    args = session.posargs or ["--open-browser", "docs", "build"]
+    args = session.posargs or ["--open-browser", "--watch", ".", "docs", "build"]
     session.install(".[docs]")
 
     build_dir = Path("build")
