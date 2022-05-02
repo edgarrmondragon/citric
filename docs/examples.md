@@ -88,9 +88,6 @@ Common plugins are `Authdb` (default), `AuthLDAP` and `Authwebserver`.
 ## Get uploaded files and move them to S3
 
 ```python
-import base64
-import io
-
 import boto3
 from citric import Client
 
@@ -102,14 +99,11 @@ with Client(
     "secret",
 ) as client:
     survey_id = 12345
-    files = client.get_uploaded_files(survey_id)
-    for file in files:
-        content = base64.b64decode(files[file]["content"])  # Decode content
-        question_id = files[file]["meta"]["question"]["qid"]
+    for file in client.get_uploaded_file_objects(survey_id):
         s3.upload_fileobj(
-            io.BytesIO(content),
+            file.content,
             "my-s3-bucket",
-            f"uploads/{survey_id}/{question_id}/{file}",
+            f"uploads/sid={survey_id}/qid={file.meta.question.qid}/{file.meta.filename}",
         )
 ```
 
