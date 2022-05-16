@@ -50,7 +50,7 @@ ipykernel = {version = "^6.8.0", optional = true}
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.1.2"
-coverage = {extras = ["toml"], version = "^6.2"}
+coverage = {extras = ["toml"], version = "^6.3"}
 safety = "^1.9.0"
 codecov = "^2.1.4"
 pytype = {version = "^2022.5.10", python = "<3.8"}
