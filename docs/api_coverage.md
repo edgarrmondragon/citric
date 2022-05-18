@@ -51,4 +51,4 @@
 | `set_quota_properties`         | No          | Set quota attributes (RPC function)                                               |
 | `set_survey_properties`        | Yes         | Set survey properties (RPC function)                                              |
 | `update_response`              | No          | Update a response in a given survey.                                              |
-| `upload_file`                  | No          | Uploads one file to be used later.                                                |
+| `upload_file`                  | Yes         | Uploads one file to be used later.                                                |
