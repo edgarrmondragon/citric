@@ -22,7 +22,7 @@ except ImportError:
 
 package = "citric"
 python_versions = ["3.11", "3.10", "3.9", "3.8", "3.7"]
-pypy_versions = ["pypy-3.9"]
+pypy_versions = ["pypy3.9"]
 main_python_version = "3.10"
 locations = "src", "tests", "noxfile.py", "docs/conf.py"
 nox.options.sessions = (
@@ -78,9 +78,30 @@ def mypy(session: Session) -> None:
 def tests(session: Session) -> None:
     """Execute pytest tests and compute coverage."""
     session.install(".")
-    session.install("coverage[toml]", "pytest", "psycopg2-binary")
+    session.install("coverage[toml]", "pytest")
     try:
         session.run("coverage", "run", "--parallel", "-m", "pytest", *session.posargs)
+    finally:
+        if session.interactive:
+            session.notify("coverage", posargs=[])
+
+
+@session(python=python_versions)
+def integration(session: Session) -> None:
+    """Execute integration tests and compute coverage."""
+    session.install(".")
+    session.install("coverage[toml]", "pytest", "psycopg2-binary")
+    try:
+        session.run(
+            "coverage",
+            "run",
+            "--parallel",
+            "-m",
+            "pytest",
+            "-m",
+            "integration_test",
+            *session.posargs,
+        )
     finally:
         if session.interactive:
             session.notify("coverage", posargs=[])

@@ -9,7 +9,7 @@ on:
     inputs: {}
 jobs:
   tests:
-    name: ${{ matrix.session }} ${{ matrix.python-version }}${{ matrix.integration && format(' / integration with {0}', matrix.image_tag) || '' }} / ${{ matrix.os }}
+    name: ${{ matrix.session }} ${{ matrix.python-version }}${{ matrix.session == 'integration' && format(' / integration with {0}', matrix.image_tag) || '' }} / ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     continue-on-error: ${{ matrix.experimental }}
     env:
@@ -25,12 +25,12 @@ jobs:
         - { python-version: "3.8", os: "ubuntu-latest", session: "mypy", experimental: false }
         - { python-version: "3.7", os: "ubuntu-latest", session: "mypy", experimental: false }
         - { python-version: "3.11", os: "ubuntu-latest", session: "tests", experimental: true }
-        - { python-version: "3.10", os: "ubuntu-latest", session: "tests", experimental: false, integration: true, image_tag: "5-apache" }
+        - { python-version: "3.10", os: "ubuntu-latest", session: "integration", experimental: false, image_tag: "5-apache" }
         - { python-version: "3.10", os: "ubuntu-latest", session: "tests", experimental: false }
         - { python-version: "3.9", os: "ubuntu-latest", session: "tests", experimental: false }
         - { python-version: "3.8", os: "ubuntu-latest", session: "tests", experimental: false }
         - { python-version: "3.7", os: "ubuntu-latest", session: "tests", experimental: false }
-        - { python-version: "pypy-3.9", os: "ubuntu-latest", session: "tests", experimental: false }
+        - { python-version: "pypy-3.9", os: "ubuntu-latest", session: "tests", experimental: false, interpreter: "pypy3.9" }
         - { python-version: "3.10", os: "windows-latest", session: "tests", experimental: false }
         - { python-version: "3.10", os: "macos-latest", session: "tests", experimental: false }
         - { python-version: "3.10", os: "ubuntu-latest", session: "xdoctest", experimental: false }
@@ -77,7 +77,7 @@ jobs:
         nox --version
 
     - name: Start services
-      if: ${{ matrix.integration }}
+      if: ${{ matrix.session == 'integration' }}
       env:
         LS_IMAGE_TAG: ${{ matrix.image_tag }}
       run: |
@@ -89,10 +89,10 @@ jobs:
         LIMESURVEY_URL: "http://localhost:8001/index.php/admin/remotecontrol"
         DB_URI: "postgresql://limesurvey:secret@localhost:5432/limesurvey"
       run: |
-        nox --python=${{ matrix.python-version }} -- ${{ matrix.integration && '-m integration_test' || '' }}
+        nox --python=${{ matrix.interpreter || matrix.python-version }}
 
     - name: Upload coverage data
-      if: always() && matrix.session == 'tests'
+      if: always() && (matrix.session == 'tests' || matrix.session == 'integration')
       uses: actions/upload-artifact@v3.0.0
       with:
         name: coverage-data
