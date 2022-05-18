@@ -54,3 +54,9 @@ repos:
     rev: v2.19.0
     hooks:
     -   id: validate_manifest
+
+-   repo: https://github.com/hadialqattan/pycln
+    rev: v1.3.2
+    hooks:
+    -   id: pycln
+        args: [--all]
