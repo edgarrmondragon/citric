@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import sys
 
-from citric.client import Client  # noqa: F401
+from citric.client import Client
 
 if sys.version_info >= (3, 8):
     from importlib import metadata
@@ -15,3 +15,5 @@ __version__ = metadata.version(__package__)
 """Package version"""
 
 del annotations, metadata, sys
+
+__all__ = ["Client"]
