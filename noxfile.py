@@ -22,7 +22,7 @@ except ImportError:
 
 package = "citric"
 python_versions = ["3.11", "3.10", "3.9", "3.8", "3.7"]
-pypy_versions = ["pypy-3.9"]
+pypy_versions = ["pypy3.9"]
 main_python_version = "3.10"
 locations = "src", "tests", "noxfile.py", "docs/conf.py"
 nox.options.sessions = (
