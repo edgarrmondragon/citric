@@ -7,7 +7,6 @@ import io
 import os
 from typing import Any, Generator
 
-import psycopg2
 import pytest
 
 import citric
@@ -31,6 +30,7 @@ def enable_json_rpc():
     ON CONFLICT(stg_name) DO UPDATE
     SET stg_value=EXCLUDED.stg_value;
     """
+    import psycopg2
 
     with psycopg2.connect(DB_URI) as conn, conn.cursor() as curs:
         curs.execute(sql)

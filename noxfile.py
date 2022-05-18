@@ -78,9 +78,30 @@ def mypy(session: Session) -> None:
 def tests(session: Session) -> None:
     """Execute pytest tests and compute coverage."""
     session.install(".")
-    session.install("coverage[toml]", "pytest", "psycopg2-binary")
+    session.install("coverage[toml]", "pytest")
     try:
         session.run("coverage", "run", "--parallel", "-m", "pytest", *session.posargs)
+    finally:
+        if session.interactive:
+            session.notify("coverage", posargs=[])
+
+
+@session(python=python_versions)
+def integration(session: Session) -> None:
+    """Execute integration tests and compute coverage."""
+    session.install(".")
+    session.install("coverage[toml]", "pytest", "psycopg2-binary")
+    try:
+        session.run(
+            "coverage",
+            "run",
+            "--parallel",
+            "-m",
+            "pytest",
+            "-m",
+            "integration_test",
+            *session.posargs,
+        )
     finally:
         if session.interactive:
             session.notify("coverage", posargs=[])
