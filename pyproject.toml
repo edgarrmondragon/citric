@@ -53,7 +53,7 @@ pytest = "^7.1.2"
 coverage = {extras = ["toml"], version = "^6.3"}
 safety = "^1.9.0"
 codecov = "^2.1.4"
-pytype = {version = "^2022.5.10", python = "<3.8"}
+pytype = {version = "^2022.5.19", python = "<3.8"}
 xdoctest = "^1.0.0"
 psycopg2-binary = "^2.9.3"
 colorama = "^0.4.4"
