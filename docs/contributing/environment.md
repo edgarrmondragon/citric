@@ -10,7 +10,7 @@ Ready to contribute? Here's how to set up `citric` for local development.
 1. Clone your fork locally:
 
    ```shell
-   git clone httpshttps://github.com/edgarrmondragon/citric.git
+   git clone https://github.com/edgarrmondragon/citric.git
    ```
 
 1. Install [`poetry`][poetry] and the project dependencies:
