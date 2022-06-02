@@ -3,7 +3,7 @@ tasks:
       docker-compose pull
       docker-compose build
   - command: |
-      docker-compose up
+      docker-compose --profile=web up
 
 ports:
   - port: 8001

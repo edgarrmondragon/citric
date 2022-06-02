@@ -11,8 +11,6 @@ services:
       - "5432:5432"
     volumes:
       - "limedb:/var/lib/postgresql/data"
-    profiles:
-      - test
 
 volumes:
   limedb:

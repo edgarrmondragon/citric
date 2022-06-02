@@ -19,9 +19,6 @@ services:
       ADMIN_USER: iamadmin
       ADMIN_NAME: Lime Administrator
       ADMIN_PASSWORD: secret
-    profiles:
-      - test
-      - web
 
   db:
     image: postgres:14
