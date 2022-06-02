@@ -18,11 +18,18 @@ from citric.exceptions import LimeSurveyStatusError
 LS_USER = "iamadmin"
 LS_PW = "secret"
 
-DB_URI = os.getenv("DB_URI")
+
+@pytest.fixture(scope="session")
+def db_uri() -> str:
+    """Get LimeSurvey database URI."""
+    return os.environ.get(
+        "DB_URI",
+        "postgresql://limesurvey:secret@localhost:5432/limesurvey",
+    )
 
 
 @pytest.fixture(scope="module", autouse=True)
-def enable_json_rpc():
+def enable_json_rpc(db_uri: str):
     """Enable JSON RPC interface for integration tests."""
     sql = """INSERT INTO lime_settings_global (
         stg_name,
@@ -34,7 +41,7 @@ def enable_json_rpc():
     """
     import psycopg2
 
-    with psycopg2.connect(DB_URI) as conn, conn.cursor() as curs:
+    with psycopg2.connect(db_uri) as conn, conn.cursor() as curs:
         curs.execute(sql)
         conn.commit()
 
@@ -42,7 +49,10 @@ def enable_json_rpc():
 @pytest.fixture(scope="session")
 def url() -> str:
     """Get LimeSurvey RC URL."""
-    return os.environ["LIMESURVEY_URL"]
+    return os.environ.get(
+        "LIMESURVEY_URL",
+        "http://localhost:8001/index.php/admin/remotecontrol",
+    )
 
 
 @pytest.fixture(scope="module")

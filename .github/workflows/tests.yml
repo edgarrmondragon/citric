@@ -87,9 +87,6 @@ jobs:
         docker ps -a
 
     - name: Run Nox
-      env:
-        LIMESURVEY_URL: "http://localhost:8001/index.php/admin/remotecontrol"
-        DB_URI: "postgresql://limesurvey:secret@localhost:5432/limesurvey"
       run: |
         nox --python=${{ matrix.interpreter || matrix.python-version }}
 
