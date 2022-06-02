@@ -3,7 +3,7 @@ tasks:
       docker-compose pull
       docker-compose build
   - command: |
-      docker-compose -f docker-compose.yml -f docker-compose.jupyter.yml up
+      docker-compose up
 
 ports:
   - port: 8001

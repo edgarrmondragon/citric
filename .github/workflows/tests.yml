@@ -81,6 +81,7 @@ jobs:
       env:
         LS_IMAGE_TAG: ${{ matrix.image_tag }}
         COMPOSE_FILE: "docker-compose.yml:docker-compose.test.yml"
+        COMPOSE_PROFILES: "test"
       run: |
         docker-compose up -d
         docker ps -a
