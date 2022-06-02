@@ -1,0 +1,24 @@
+services:
+  limesurvey:
+    build:
+      context: ${LS_DOCKERFILE_CONTEXT:-https://github.com/martialblog/docker-limesurvey.git#master:5.0/apache}
+      dockerfile: ${LS_DOCKERFILE:-Dockerfile}
+      args:
+        version: ${LS_VERSION}
+        sha256_checksum: ${LS_CHECKSUM}
+    volumes:
+      - "surveys:/var/www/html/upload/surveys"
+    depends_on:
+      - db
+    ports:
+     - "8001:8080"
+    environment:
+      DB_TYPE: pgsql
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: limesurvey
+      DB_USERNAME: limesurvey
+      DB_PASSWORD: secret
+      ADMIN_USER: iamadmin
+      ADMIN_NAME: Lime Administrator
+      ADMIN_PASSWORD: secret

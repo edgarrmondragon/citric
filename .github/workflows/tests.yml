@@ -9,7 +9,7 @@ on:
     inputs: {}
 jobs:
   tests:
-    name: ${{ matrix.session }} ${{ matrix.python-version }}${{ matrix.session == 'integration' && format(' / integration with {0}', matrix.image_tag) || '' }} / ${{ matrix.os }}
+    name: ${{ matrix.session }} ${{ matrix.python-version }}${{ matrix.session == 'integration' && format(' / integration with {0}', matrix.image_tag || matrix.limesurvey_version) || '' }} / ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     continue-on-error: ${{ matrix.experimental }}
     env:
@@ -76,18 +76,28 @@ jobs:
         pipx inject nox nox-poetry
         nox --version
 
+    - name: Checkout Docker image repository
+      if: ${{ matrix.session == 'integration' && matrix.limesurvey_version }}
+      uses: actions/checkout@v3.0.2
+      with:
+        repository: martialblog/docker-limesurvey
+        path: "./.docker-limesurvey"
+
     - name: Start services
       if: ${{ matrix.session == 'integration' }}
       env:
         LS_IMAGE_TAG: ${{ matrix.image_tag }}
+        LS_DOCKERFILE_CONTEXT: "./.docker-limesurvey/5.0/apache"
+        LS_DOCKERFILE: Dockerfile
+        LS_VERSION: ${{ matrix.limesurvey_version }}
+        LS_CHECKSUM: ${{ matrix.limesurvey_checksum }}
+        COMPOSE_FILE: "docker-compose.yml:docker-compose.test.yml${{ matrix.limesurvey_version && ':docker-compose.ref.yml' }}"
+        COMPOSE_PROFILES: "test"
       run: |
-        docker-compose -f docker-compose.yml -f docker-compose.test.yml up -d
+        docker-compose up -d
         docker ps -a
 
     - name: Run Nox
-      env:
-        LIMESURVEY_URL: "http://localhost:8001/index.php/admin/remotecontrol"
-        DB_URI: "postgresql://limesurvey:secret@localhost:5432/limesurvey"
       run: |
         nox --python=${{ matrix.interpreter || matrix.python-version }}
 
