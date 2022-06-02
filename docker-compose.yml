@@ -21,6 +21,7 @@ services:
       ADMIN_PASSWORD: secret
     profiles:
       - test
+      - web
 
   db:
     image: postgres:14
@@ -39,6 +40,8 @@ services:
       - "9000:9000"
       - "9001:9001"
     command: server /data --console-address ":9001"
+    profiles:
+      - web
 
   jupyter:
     build:
@@ -58,6 +61,8 @@ services:
     ports:
       - "8888:8888"
     command: poetry run jupyter lab --allow-root --ip 0.0.0.0
+    profiles:
+      - web
 
 volumes:
   limedb:
