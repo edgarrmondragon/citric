@@ -1,7 +1,7 @@
 # Citric
 
 [![Tests][tests-badge]][tests-link]
-[![License](https://img.shields.io/github/license/edgarrmondragon/citric)](https://github.com/edgarrmondragon/citric/blob/master/LICENSE)
+[![License](https://img.shields.io/github/license/edgarrmondragon/citric)](https://github.com/edgarrmondragon/citric/blob/main/LICENSE)
 [![Documentation Status][docs-badge]][docs-link]
 [![codecov][codecov-badge]][codecov-link]
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fedgarrmondragon%2Fcitric.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fedgarrmondragon%2Fcitric?ref=badge_shield)
@@ -12,7 +12,7 @@
 ![GitHub languages](https://img.shields.io/github/languages/top/edgarrmondragon/citric)
 ![GitHub repo size](https://img.shields.io/github/repo-size/edgarrmondragon/citric)
 ![GitHub stars](https://img.shields.io/github/stars/edgarrmondragon/citric)
-[![Github last-commit](https://img.shields.io/github/last-commit/edgarrmondragon/citric)](https://github.com/edgarrmondragon/citric/commits/master)
+[![Github last-commit](https://img.shields.io/github/last-commit/edgarrmondragon/citric)](https://github.com/edgarrmondragon/citric/commits/main)
 
 A client to the LimeSurvey Remote Control API 2, written in modern
 Python.
@@ -42,7 +42,7 @@ If you'd like to contribute to this project, please see the [contributing guide]
 [docs-badge]: https://readthedocs.org/projects/citric/badge/?version=latest
 [docs-link]: https://citric.readthedocs.io/en/latest/?badge=latest
 [updates-badge]: https://pyup.io/repos/github/edgarrmondragon/citric/shield.svg
-[codecov-badge]: https://codecov.io/gh/edgarrmondragon/citric/branch/master/graph/badge.svg
+[codecov-badge]: https://codecov.io/gh/edgarrmondragon/citric/branch/main/graph/badge.svg
 [codecov-link]: https://codecov.io/gh/edgarrmondragon/citric
 [tests-badge]: https://github.com/edgarrmondragon/citric/workflows/Tests/badge.svg
 [tests-link]: https://github.com/edgarrmondragon/citric/actions?workflow=Tests
