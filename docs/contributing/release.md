@@ -10,7 +10,7 @@ desired package version.
    ? Select a workflow Generate release Pull Request (gen-release-pr.yml)
    ? changie-version 1.7.0
    ? next-version patch
-   ✓ Created workflow_dispatch event for gen-release-pr.yml at master
+   ✓ Created workflow_dispatch event for gen-release-pr.yml at main
    ```
 
 1. Create a [release](https://github.com/edgarrmondragon/citric/releases/new).
