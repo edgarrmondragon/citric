@@ -75,3 +75,23 @@ class TimelineAggregationPeriod(str, enum.Enum):
 
     HOUR = "hour"
     DAY = "day"
+
+
+class QuotaAction(str, enum.Enum):
+    """Quota action."""
+
+    TERMINATE = "terminate"
+    CONFIRM_TERMINATE = "confirm_terminate"
+
+    @property
+    def integer_value(self) -> int:
+        """Return database value of the action.
+
+        Returns:
+            Database value of the action.
+        """
+        mapping = {
+            self.TERMINATE: 1,
+            self.CONFIRM_TERMINATE: 2,
+        }
+        return mapping[self]

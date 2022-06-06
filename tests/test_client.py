@@ -534,7 +534,8 @@ def test_set_quota_properties(client: MockClient):
     """Test set_quota_properties client method."""
     props = {"name": "foo", "quota": "bar", "action": "baz"}
     assert client.set_quota_properties(
-        1, **props
+        1,
+        **props,
     ) == client.session.set_quota_properties(1, props)
 
 

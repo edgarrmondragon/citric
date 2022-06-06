@@ -211,6 +211,40 @@ def test_question(client: citric.Client, survey_id: int):
 
 
 @pytest.mark.integration_test
+def test_quota(client: citric.Client, survey_id: int):
+    """Test quota methods."""
+    with pytest.raises(LimeSurveyStatusError, match="No quotas found"):
+        client.list_quotas(survey_id)
+
+    quota_id = client.add_quota(survey_id, "Test Quota", 100)
+
+    # List quotas
+    quotas = client.list_quotas(survey_id)
+    assert len(quotas) == 1
+    assert quotas[0]["id"] == quota_id
+
+    # Get quota properties
+    props = client.get_quota_properties(quota_id)
+    assert props["id"] == quota_id
+    assert props["name"] == "Test Quota"
+    assert props["qlimit"] == 100
+    assert props["active"] == 1
+    assert props["action"] == enums.QuotaAction.TERMINATE.integer_value
+
+    # Set quota properties
+    response = client.set_quota_properties(quota_id, qlimit=150)
+    assert response["success"] is True
+    assert response["message"]["qlimit"] == 150
+
+    # Delete quota
+    delete_response = client.delete_quota(quota_id)
+    assert delete_response["status"] == "OK"
+
+    with pytest.raises(LimeSurveyStatusError, match="Error: Invalid quota ID"):
+        client.get_quota_properties(quota_id)
+
+
+@pytest.mark.integration_test
 def test_activate_survey(client: citric.Client, survey_id: int):
     """Test whether the survey gets activated."""
     properties_before = client.get_survey_properties(survey_id, ["active"])

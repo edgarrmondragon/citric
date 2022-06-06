@@ -224,6 +224,47 @@ class Client:
             create_tokens,
         )
 
+    def add_quota(
+        self,
+        survey_id: int,
+        name: str,
+        limit: int,
+        *,
+        active: bool = True,
+        action: str = enums.QuotaAction.TERMINATE,
+        autoload_url: bool = False,
+        message: str = "",
+        url: str = "",
+        url_description: str = "",
+    ) -> int:
+        """Add a quota to a LimeSurvey survey.
+
+        Args:
+            survey_id: ID of the survey to add the quota to.
+            name: Name of the quota.
+            limit: Limit of the quota.
+            active: Whether the quota is active.
+            action: Action to take when the limit is reached.
+            autoload_url: Whether to automatically load the URL.
+            message: Message to display to the respondent when the limit is reached.
+            url: URL to redirect the respondent to when the limit is reached.
+            url_description: Description of the URL.
+
+        Returns:
+            ID of the newly created quota.
+        """
+        return self.session.add_quota(
+            survey_id,
+            name,
+            limit,
+            active,
+            enums.QuotaAction(action),
+            autoload_url,
+            message,
+            url,
+            url_description,
+        )
+
     def add_survey(
         self,
         survey_id: int,
@@ -440,6 +481,17 @@ class Client:
             Status message.
         """
         return self.__session.delete_language(survey_id, language)
+
+    def delete_quota(self, quota_id: int) -> types.OperationStatus:
+        """Delete a LimeSurvey quota.
+
+        Args:
+            quota_id: ID of the quota to delete.
+
+        Returns:
+            True if the quota was deleted.
+        """
+        return self.session.delete_quota(quota_id)
 
     def delete_response(
         self,
@@ -764,6 +816,24 @@ class Client:
             Dictionary of question properties.
         """
         return self.__session.get_question_properties(question_id, settings, language)
+
+    def get_quota_properties(
+        self,
+        quota_id: int,
+        settings: list[str] | None = None,
+        language: str | None = None,
+    ) -> types.QuotaProperties:
+        """Get properties of a LimeSurvey quota.
+
+        Args:
+            quota_id: ID of the quota to get properties for.
+            settings: Properties to get, default to all.
+            language: Parameter language for multilingual quotas.
+
+        Returns:
+            Quota properties.
+        """
+        return self.session.get_quota_properties(quota_id, settings, language)
 
     def get_response_ids(
         self,
@@ -1096,6 +1166,17 @@ class Client:
         """
         return self.__session.list_questions(survey_id, group_id, language)
 
+    def list_quotas(self, survey_id: int) -> list[types.QuotaProperties]:
+        """Get all quotas for a LimeSurvey survey.
+
+        Args:
+            survey_id: ID of the survey to get quotas for.
+
+        Returns:
+            List of quotas.
+        """
+        return self.session.list_quotas(survey_id)
+
     def list_surveys(self, username: str | None = None) -> list[dict[str, Any]]:
         """Get all surveys or only those owned by a user.
 
@@ -1192,7 +1273,11 @@ class Client:
         """
         return self.session.set_question_properties(question_id, properties, language)
 
-    def set_quota_properties(self, quota_id: int, **properties: Any) -> bool:
+    def set_quota_properties(
+        self,
+        quota_id: int,
+        **properties: Any,
+    ) -> types.SetQuotaPropertiesResult:
         """Set properties of a quota.
 
         Args:
@@ -1200,7 +1285,7 @@ class Client:
             properties: Properties to set.
 
         Returns:
-            True if the properties were set.
+            Mapping with success status and updated properties.
         """
         return self.session.set_quota_properties(quota_id, properties)
 

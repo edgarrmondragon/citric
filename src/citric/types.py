@@ -10,6 +10,11 @@ if sys.version_info >= (3, 8):
 else:
     from typing_extensions import Literal, TypedDict
 
+if sys.version_info >= (3, 11):
+    from typing import NotRequired
+else:
+    from typing_extensions import NotRequired
+
 if t.TYPE_CHECKING:
     from citric import enums
 
@@ -258,6 +263,16 @@ class QuestionProperties(TypedDict):
     attributes_lang: dict[str, t.Any]
 
 
+class QuotaProperties(TypedDict):
+    """Quota properties result."""
+
+    id: int  # noqa: A003
+    name: str
+    qlimit: int
+    active: int
+    action: int
+
+
 class RPCResponse(TypedDict):
     """RPC response payload.
 
@@ -270,6 +285,17 @@ class RPCResponse(TypedDict):
     id: int  # noqa: A003
     result: Result
     error: str | None
+
+
+class SetQuotaPropertiesResult(TypedDict):
+    """Set quota properties result.
+
+    Keys:
+        status: The status of the operation.
+    """
+
+    success: bool
+    message: QuotaProperties
 
 
 class SurveyProperties(TypedDict):
