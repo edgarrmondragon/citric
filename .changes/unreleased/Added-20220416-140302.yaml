@@ -1,3 +1,5 @@
 kind: Added
-body: '[#309](https://github.com/edgarrmondragon/citric/pull/309) Implement `set_quota_properties` in client'
+body: 'Implement `set_quota_properties` in client'
 time: 2022-04-16T14:03:02.287513-05:00
+custom:
+  Issue: 295
