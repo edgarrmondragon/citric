@@ -377,7 +377,7 @@ class Client:
     def delete_question(self, question_id: int) -> int:
         """Delete a survey.
 
-        Requires at least LimeSurvey 5.2.14+220214.
+        Requires at least LimeSurvey 5.3.19+220607.
 
         TODO: Add links to issue, PR, etc.
 

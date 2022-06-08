@@ -38,8 +38,8 @@ jobs:
           os: "ubuntu-latest"
           session: "integration"
           experimental: false
-          limesurvey_version: 5af7b00a674ecb872cd2f359366946f572af69b0
-          limesurvey_checksum: f21777810430c533929f51f5999e2b3bed0fc9c9921a461f21376b83a45fad9b
+          limesurvey_version: 5f982ad24783714d9b7352a30ebf95d69f8fc459
+          limesurvey_checksum: f6ecc0de75da68efc5199ffa0d73ac303685ad7d10a52fc3a30c481792f070d4
 
     steps:
     - name: Check out the repository
