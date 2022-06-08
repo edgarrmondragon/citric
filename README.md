@@ -1,6 +1,7 @@
 # Citric
 
 [![Tests][tests-badge]][tests-link]
+[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/edgarrmondragon/citric/main.svg)](https://results.pre-commit.ci/latest/github/edgarrmondragon/citric/main)
 [![License](https://img.shields.io/github/license/edgarrmondragon/citric)](https://github.com/edgarrmondragon/citric/blob/main/LICENSE)
 [![Documentation Status][docs-badge]][docs-link]
 [![codecov][codecov-badge]][codecov-link]
