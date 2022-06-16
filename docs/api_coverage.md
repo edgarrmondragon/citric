@@ -1,5 +1,7 @@
 # API coverage
 
+Full list available in [the Remote Control documentation](https://api.limesurvey.org/classes/remotecontrol_handle.html).
+
 |              Name              | Implemented |                                    Description                                    |
 |:-------------------------------|:-----------:|:----------------------------------------------------------------------------------|
 | `activate_survey`              | Yes         | Activate survey (RPC function)                                                    |
