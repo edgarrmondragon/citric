@@ -17,6 +17,7 @@ from citric.exceptions import LimeSurveyStatusError
 
 LS_USER = "iamadmin"
 LS_PW = "secret"
+NEW_SURVEY_NAME = "New Survey"
 
 
 @pytest.fixture(scope="session")
@@ -127,7 +128,7 @@ def test_survey(client: citric.Client):
     # Add a new survey
     survey_id = client.add_survey(
         5555,
-        "New Survey",
+        NEW_SURVEY_NAME,
         "es",
         enums.NewSurveyType.GROUP_BY_GROUP,
     )
@@ -138,7 +139,7 @@ def test_survey(client: citric.Client):
     assert survey_props["format"] == enums.NewSurveyType.GROUP_BY_GROUP
 
     matched = next(s for s in client.list_surveys() if s["sid"] == survey_id)
-    assert matched["surveyls_title"] == "New Survey"
+    assert matched["surveyls_title"] == NEW_SURVEY_NAME
 
     # Update survey properties
     response = client.set_survey_properties(
@@ -204,6 +205,12 @@ def test_question(client: citric.Client, survey_id: int):
     new_props = client.get_question_properties(question_id, settings=["mandatory"])
     assert new_props["mandatory"] == "Y"
 
+    # Delete question
+    client.delete_question(question_id)
+
+    with pytest.raises(LimeSurveyStatusError, match="No questions found"):
+        client.list_questions(survey_id, group_id)
+
 
 @pytest.mark.integration_test
 def test_activate_survey(client: citric.Client, survey_id: int):
@@ -267,9 +274,9 @@ def test_participants(client: citric.Client, survey_id: int):
     response = client.set_participant_properties(
         survey_id,
         added[0]["tid"],
-        firstname="Johny",
+        firstname="Johnny",
     )
-    assert response["firstname"] == "Johny"
+    assert response["firstname"] == "Johnny"
     assert response["lastname"] == "Doe"
 
 

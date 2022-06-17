@@ -374,6 +374,21 @@ class Client:
         """
         return self.__session.delete_response(survey_id, response_id)
 
+    def delete_question(self, question_id: int) -> int:
+        """Delete a survey.
+
+        Requires at least LimeSurvey 5.3.19+220607.
+
+        TODO: Add links to issue, PR, etc.
+
+        Args:
+            question_id: ID of Question to delete.
+
+        Returns:
+            ID of the deleted question.
+        """
+        return self.__session.delete_question(question_id)
+
     def delete_survey(self, survey_id: int) -> dict[str, str]:
         """Delete a survey.
 
