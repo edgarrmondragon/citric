@@ -36,3 +36,9 @@ jobs:
         title: "chore: Release ${{ env.RELEASE_VERSION }}"
         branch: release/${{ env.RELEASE_VERSION }}
         commit-message: "chore: Release ${{ env.RELEASE_VERSION }}"
+        body: "Prepare release for `${{ env.RELEASE_VERSION }}`"
+        reviewers: |
+          edgarrmondragon
+        assignees: |
+          edgarrmondragon
+        delete-branch: true
