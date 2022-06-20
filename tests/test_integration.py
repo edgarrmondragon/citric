@@ -286,24 +286,33 @@ def test_responses(client: citric.Client, survey_id: int):
     client.activate_survey(survey_id)
     client.activate_tokens(survey_id)
 
+    # Add a single response to a survey
+    single_response = {"G01Q01": "Long text 1", "G01Q02": "1", "token": "T00000"}
+    assert client.add_response(survey_id, single_response) == 1
+
+    # Add multiple responses to a survey
     data: list[dict[str, Any]]
     data = [
-        {"G01Q01": "Long text 1", "G01Q02": "1", "token": "T00000"},
         {"G01Q01": "Long text 2", "G01Q02": "5", "token": "T00001"},
         {"G01Q01": "Long text 3", "G01Q02": None, "token": "T00002"},
     ]
+    assert client.add_responses(survey_id, data) == [2, 3]
 
-    result = client.add_responses(survey_id, data)
-    assert result == [1, 2, 3]
+    # Update a response
+    client.set_survey_properties(survey_id, alloweditaftercompletion="Y")
+    data[1]["G01Q01"] = "New long text 3"
+    assert client.update_response(survey_id, data[1]) is True
+
+    all_responses = [single_response, *data]
 
     with io.BytesIO() as file, io.TextIOWrapper(file, encoding="utf-8-sig") as textfile:
         file.write(client.export_responses(survey_id, file_format="csv"))
         file.seek(0)
         reader = csv.DictReader(textfile, delimiter=";")
         for i, row in enumerate(reader):
-            assert row["G01Q01"] == (data[i]["G01Q01"] or "")
-            assert row["G01Q02"] == (data[i]["G01Q02"] or "")
-            assert row["token"] == (data[i]["token"] or "")
+            assert row["G01Q01"] == (all_responses[i]["G01Q01"] or "")
+            assert row["G01Q02"] == (all_responses[i]["G01Q02"] or "")
+            assert row["token"] == (all_responses[i]["token"] or "")
         file.seek(0)
 
         file.write(
@@ -312,7 +321,7 @@ def test_responses(client: citric.Client, survey_id: int):
         file.seek(0)
         reader = csv.DictReader(textfile, delimiter=";")
         row = next(reader)
-        assert row["G01Q01"] == "Long text 3"
+        assert row["G01Q01"] == "New long text 3"
         assert row["G01Q02"] == ""
         assert row["token"] == "T00002"
 

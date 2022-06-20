@@ -423,7 +423,12 @@ def test_import_survey(client: MockClient, tmp_path: Path):
 
 def test_map_response_data(client: MockClient):
     """Test question keys get mapped to LimeSurvey's internal representation."""
-    assert client._map_response_keys(1, {"Q1": "foo", "Q2": "bar", "BAZ": "qux"}) == {
+    question_mapping = client._get_question_mapping(1)
+    mapped_responses = client._map_response_keys(
+        {"Q1": "foo", "Q2": "bar", "BAZ": "qux"},
+        question_mapping,
+    )
+    assert mapped_responses == {
         "1X1X1": "foo",
         "1X1X2": "bar",
         "BAZ": "qux",

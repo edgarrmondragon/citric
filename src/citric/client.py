@@ -256,24 +256,60 @@ class Client:
             participant_ids,
         )
 
-    def _map_response_keys(
+    def _get_question_mapping(
         self,
         survey_id: int,
+    ) -> dict[str, dict[str, Any]]:
+        """Get question mapping.
+
+        Args:
+            survey_id: Survey ID.
+
+        Returns:
+            Question mapping.
+        """
+        return {q["title"]: q for q in self.list_questions(survey_id)}
+
+    @staticmethod
+    def _map_response_keys(
         response_data: Mapping[str, Any],
+        question_mapping: dict[str, dict[str, Any]],
     ) -> dict[str, Any]:
         """Converts response keys to LimeSurvey's internal representation.
 
         Args:
-            survey_id: The survey ID where the response belongs.
             response_data: The response mapping.
+            question_mapping: A mapping of question titles to question dictionaries.
 
         Returns:
             A new dictionary with the keys mapped to the <SID>X<GID>X<QID> format.
-        """
-        qs = {q["title"]: q for q in self.list_questions(survey_id)}
 
+        >>> mapped_keys = Client._map_response_keys(
+        ...     {"Q1": "foo", "Q2": "bar", "BAZ": "qux"},
+        ...     {
+        ...         "Q1": {
+        ...             "title": "Q1",
+        ...             "qid": 9,
+        ...             "gid": 7,
+        ...             "sid": 123,
+        ...         },
+        ...         "Q2": {
+        ...             "title": "Q2",
+        ...             "qid": 10,
+        ...             "gid": 7,
+        ...             "sid": 123,
+        ...         },
+        ...     },
+        ... )
+        >>> mapped_keys
+        {'123X7X9': 'foo', '123X7X10': 'bar', 'BAZ': 'qux'}
+        """
         return {
-            ("{sid}X{gid}X{qid}".format(**qs[key]) if key in qs else key): value
+            (
+                "{sid}X{gid}X{qid}".format(**question_mapping[key])
+                if key in question_mapping
+                else key
+            ): value
             for key, value in response_data.items()
         }
 
@@ -290,6 +326,19 @@ class Client:
         """
         return self.__session.add_group(survey_id, title, description)
 
+    def _add_response(self, survey_id: int, response_data: Mapping[str, Any]) -> int:
+        """Add a single response to a survey.
+
+        Args:
+            survey_id: Survey to add the response to.
+            response_data: Single response as a mapping from question codes of the form
+                <SID>X<GID>X<QID> to response values.
+
+        Returns:
+            ID of the new response.
+        """
+        return int(self.__session.add_response(survey_id, response_data))
+
     def add_response(self, survey_id: int, response_data: Mapping[str, Any]) -> int:
         """Add a single response to a survey.
 
@@ -301,8 +350,9 @@ class Client:
             ID of the new response.
         """
         # Transform question codes to the format LimeSurvey expects
-        data = self._map_response_keys(survey_id, response_data)
-        return int(self.__session.add_response(survey_id, data))
+        questions = self._get_question_mapping(survey_id)
+        data = self._map_response_keys(response_data, questions)
+        return self._add_response(survey_id, data)
 
     def add_responses(
         self,
@@ -319,10 +369,26 @@ class Client:
             IDs of the new responses.
         """
         ids = []
+        questions = self._get_question_mapping(survey_id)
         for response in responses:
-            response_id = self.add_response(survey_id, response)
+            data = self._map_response_keys(response, questions)
+            response_id = self._add_response(survey_id, data)
             ids.append(response_id)
         return ids
+
+    def update_response(self, survey_id: int, response_data: dict[str, Any]) -> bool:
+        """Update a response.
+
+        Args:
+            survey_id: Survey to update the response in.
+            response_data: Response data to update.
+
+        Returns:
+            True if the response was updated, False otherwise.
+        """
+        questions = self._get_question_mapping(survey_id)
+        data = self._map_response_keys(response_data, questions)
+        return self.__session.update_response(survey_id, data)
 
     def copy_survey(self, survey_id: int, name: str) -> int:
         """Copy a survey.
