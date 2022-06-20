@@ -15,7 +15,7 @@ body:
     attributes:
       label: Citric Version
       description: Version of the package you are using
-      placeholder: "0.0.6"
+      placeholder: "0.1.0"
     validations:
       required: true
   - type: dropdown
@@ -29,6 +29,7 @@ body:
         - "3.8"
         - "3.9"
         - "3.10"
+        - "NA"
     validations:
       required: true
   - type: input
@@ -36,7 +37,7 @@ body:
     attributes:
       label: LimeSurvey Version
       description: Version of LimeSurvey you are using
-      placeholder: "4.6.3"
+      placeholder: "5.3.19"
     validations:
       required: true
   - type: input
