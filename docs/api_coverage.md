@@ -52,5 +52,5 @@ Full list available in [the Remote Control documentation](https://api.limesurvey
 | `set_question_properties`      | Yes         | Set question properties.                                                          |
 | `set_quota_properties`         | No          | Set quota attributes (RPC function)                                               |
 | `set_survey_properties`        | Yes         | Set survey properties (RPC function)                                              |
-| `update_response`              | No          | Update a response in a given survey.                                              |
+| `update_response`              | Yes         | Update a response in a given survey.                                              |
 | `upload_file`                  | Yes         | Uploads one file to be used later.                                                |

@@ -1,0 +1,5 @@
+kind: Fixed
+body: Reduce number of calls to `list_questions` from `add_responses`
+time: 2022-06-20T10:44:36.403681-05:00
+custom:
+  Issue: "477"
