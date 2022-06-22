@@ -10,6 +10,8 @@ kindFormat: '### {{.Kind}}'
 changeFormat: '* [#{{.Custom.Issue}}](https://github.com/edgarrmondragon/citric/issues/{{.Custom.Issue}}) {{.Body}}'
 headerFormat: ""
 footerFormat: ""
+newlines:
+  beforeChangelogVersion: 2
 kinds:
 - label: Added
 - label: Changed

@@ -11,6 +11,12 @@ on:
         description: Version of Changie to use
         default: "1.8.0"
         required: false
+      prerelease:
+        description: Prerelease values to append to version
+        required: false
+      metadata:
+        description: Metadata values to append to version
+        required: false
 
 jobs:
   generate-pr:
@@ -24,9 +30,15 @@ jobs:
         curl -sSLO https://github.com/miniscruff/changie/releases/download/v${{ github.event.inputs.changie-version }}/changie_${{ github.event.inputs.changie-version }}_linux_amd64.deb \
           && sudo dpkg -i changie_${{ github.event.inputs.changie-version }}_linux_amd64.deb && rm changie_${{ github.event.inputs.changie-version }}_linux_amd64.deb
 
-    - name: Batch and merge
+    - name: Changie batch
+      run: >
+        changie batch
+        ${{ github.event.inputs.next-version }}
+        ${{ github.event.inputs.prerelease && format('-p {0}', github.event.inputs.prerelease) || '--remove-prereleases' }}
+        ${{ github.event.inputs.metadata && format('-m {0}', github.event.inputs.metadata) }}
+
+    - name: Changie merge
       run: |
-        changie batch ${{ github.event.inputs.next-version }}
         changie merge
         echo RELEASE_VERSION=$(changie latest) >> $GITHUB_ENV
 
