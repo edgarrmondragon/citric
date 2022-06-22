@@ -102,7 +102,7 @@ add_imports = [
 markers = [
     "integration_test: Integration and end-to-end tests",
 ]
-addopts = '-vvv -m "not integration_test"'
+addopts = '-vvv'
 
 [[tool.mypy.overrides]]
 module = [

@@ -79,8 +79,10 @@ def tests(session: Session) -> None:
     """Execute pytest tests and compute coverage."""
     session.install(".")
     session.install("coverage[toml]", "pytest")
+    args = session.posargs or ["-m", "not integration_test"]
+
     try:
-        session.run("coverage", "run", "--parallel", "-m", "pytest", *session.posargs)
+        session.run("coverage", "run", "--parallel", "-m", "pytest", *args)
     finally:
         if session.interactive:
             session.notify("coverage", posargs=[])
