@@ -1,7 +1,7 @@
 # Citric
 
 ```{include} ../README.md
-:start-line: 2
+:start-line: 4
 ```
 
 ```{toctree}
