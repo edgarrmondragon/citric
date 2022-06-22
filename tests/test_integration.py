@@ -325,6 +325,14 @@ def test_responses(client: citric.Client, survey_id: int):
         assert row["G01Q02"] == ""
         assert row["token"] == "T00002"
 
+    # Export existing response works
+    client.export_responses(survey_id, token="T00000")
+
+    # Delete a response and then fail to export it
+    client.delete_response(survey_id, 1)
+    with pytest.raises(LimeSurveyStatusError, match="No Response found for Token"):
+        client.export_responses(survey_id, token="T00000")
+
 
 @pytest.mark.integration_test
 def test_files(client: citric.Client, survey_id: int, tmp_path: Path):
