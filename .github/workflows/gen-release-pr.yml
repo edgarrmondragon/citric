@@ -9,7 +9,7 @@ on:
         required: true
       changie-version:
         description: Version of Changie to use
-        default: "1.7.0"
+        default: "1.8.0"
         required: false
 
 jobs:
