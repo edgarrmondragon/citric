@@ -327,7 +327,7 @@ def test_responses(client: citric.Client, survey_id: int):
         client.export_responses(survey_id, token="T00000")
 
     with pytest.raises(LimeSurveyStatusError, match="No matching Response"):
-        client.update_response(survey_id, data[0])
+        client.update_response(survey_id, all_responses[0])
 
 
 @pytest.mark.integration_test
