@@ -66,6 +66,17 @@ def survey_id(client: citric.Client) -> Generator[int, None, None]:
 
 
 @pytest.mark.integration_test
+def test_fieldmap(client: citric.Client, survey_id: int):
+    """Test fieldmap."""
+    fieldmap = client.get_fieldmap(survey_id)
+    for key, value in fieldmap.items():
+        assert key == value["fieldname"]
+
+        if value["qid"] and "_" not in key:
+            assert key == "{sid}X{gid}X{qid}".format(**value)
+
+
+@pytest.mark.integration_test
 def test_language(client: citric.Client, survey_id: int):
     """Test language methods."""
     # Add a new language

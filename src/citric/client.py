@@ -147,6 +147,17 @@ class Client:
         """Low-level RPC session."""
         return self.__session
 
+    def get_fieldmap(self, survey_id: int) -> dict:
+        """Get fieldmap for a survey.
+
+        Args:
+            survey_id: ID of survey to get fieldmap for.
+
+        Returns:
+            Dictionary mapping response keys to LimeSurvey internal representation.
+        """
+        return self.__session.get_fieldmap(survey_id)
+
     def activate_survey(self, survey_id: int) -> dict[str, Any]:
         """Activate a survey.
 
