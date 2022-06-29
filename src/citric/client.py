@@ -24,6 +24,7 @@ if TYPE_CHECKING:
     from typing_extensions import Unpack
 
     from citric import types
+    from citric.schema import Participant
 
     if sys.version_info >= (3, 8):
         from typing import Literal
@@ -462,6 +463,26 @@ class Client:
             Dictionary of status message and the new survey ID.
         """
         return self.__session.copy_survey(survey_id, name)
+
+    def import_cpdb_participants(
+        self,
+        participants: Sequence[Participant],
+        *,
+        update: bool = False,
+    ) -> dict:
+        """Import CPDB participants.
+
+        Args:
+            participants: CPDB participant data.
+            update: Whether to update existing participants.
+
+        Returns:
+            IDs of the new participants.
+        """
+        return self.session.cpd_importParticipants(
+            [participant.to_dict() for participant in participants],
+            update,
+        )
 
     def delete_group(self, survey_id: int, group_id: int) -> int:
         """Delete a group.
