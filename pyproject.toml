@@ -54,7 +54,7 @@ coverage = {extras = ["toml"], version = "^6.4"}
 safety = "^2.0.0"
 codecov = "^2.1.4"
 pytype = {version = "^2022.6.30", python = "<3.8"}
-xdoctest = "^1.0.0"
+xdoctest = "^1.0.1"
 psycopg2-binary = "^2.9.3"
 colorama = "^0.4.5"
 
