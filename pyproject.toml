@@ -51,7 +51,7 @@ ipykernel = {version = "^6.8.0", optional = true}
 [tool.poetry.dev-dependencies]
 pytest = "^7.1.2"
 coverage = {extras = ["toml"], version = "^6.4"}
-safety = "^2.0.0"
+safety = "^2.1.0"
 codecov = "^2.1.4"
 pytype = {version = "^2022.6.30", python = "<3.8"}
 xdoctest = "^1.0.1"
