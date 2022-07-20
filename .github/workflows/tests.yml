@@ -34,7 +34,7 @@ jobs:
         - { python-version: "3.10",    os: "windows-latest", session: "tests",       experimental: false }
         - { python-version: "3.10",    os: "macos-latest",   session: "tests",       experimental: false }
         - { python-version: "3.10",    os: "ubuntu-latest",  session: "xdoctest",    experimental: false }
-        - { python-version: "3.10",    os: "ubuntu-latest",  session: "integration", experimental: false, limesurvey_version: 5.3.23+220705, limesurvey_checksum: 27ff4c47714f1386d55f808b74c30d9d08cc4b1c0755aabc83517cf7e4176dec }
+        - { python-version: "3.10",    os: "ubuntu-latest",  session: "integration", experimental: false, limesurvey_version: 5.3.25+220718, limesurvey_checksum: de2dcaf013a2e8c4c10d1890f5446d9933f63d0fbbd026ddc7a15ac48f259a4b }
 
     steps:
     - name: Check out the repository
