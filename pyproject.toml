@@ -55,7 +55,6 @@ safety = "^2.1.1"
 codecov = "^2.1.4"
 pytype = {version = "^2022.7.18", python = "<3.8"}
 xdoctest = "^1.0.1"
-psycopg2-binary = "^2.9.3"
 colorama = "^0.4.5"
 
 [tool.poetry.extras]
