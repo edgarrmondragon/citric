@@ -23,6 +23,7 @@ Full list available in [the Remote Control documentation](https://api.limesurvey
 | `export_responses_by_token`    | Yes         | Export token response in a survey.                                                |
 | `export_statistics`            | Yes         | Export survey statistics (RPC function)                                           |
 | `export_timeline`              | Yes         | Export submission timeline (RPC function)                                         |
+| `get_fieldmap`                 | Yes         | Returns the requested survey's fieldmap in an array                               |
 | `get_group_properties`         | Yes         | Get the properties of a group of a survey .                                       |
 | `get_language_properties`      | Yes         | Get survey language properties (RPC function)                                     |
 | `get_participant_properties`   | Yes         | Get settings of a survey participant (RPC function)                               |
