@@ -1,5 +1,0 @@
-kind: Added
-body: Implement `get_fieldmap` in client
-time: 2022-06-29T03:15:41.515862-05:00
-custom:
-  Issue: "498"
