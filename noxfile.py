@@ -88,7 +88,7 @@ def tests(session: Session) -> None:
             session.notify("coverage", posargs=[])
 
 
-@session(python=python_versions)
+@session(python=python_versions + pypy_versions)
 def integration(session: Session) -> None:
     """Execute integration tests and compute coverage."""
     session.install(".")

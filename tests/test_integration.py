@@ -29,24 +29,6 @@ def db_uri() -> str:
     )
 
 
-@pytest.fixture(scope="module", autouse=True)
-def enable_json_rpc(db_uri: str):
-    """Enable JSON RPC interface for integration tests."""
-    sql = """INSERT INTO lime_settings_global (
-        stg_name,
-        stg_value
-    )
-    VALUES ('RPCInterface', 'json')
-    ON CONFLICT(stg_name) DO UPDATE
-    SET stg_value=EXCLUDED.stg_value;
-    """
-    import psycopg2
-
-    with psycopg2.connect(db_uri) as conn, conn.cursor() as curs:
-        curs.execute(sql)
-        conn.commit()
-
-
 @pytest.fixture(scope="session")
 def url() -> str:
     """Get LimeSurvey RC URL."""
