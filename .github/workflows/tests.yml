@@ -25,14 +25,15 @@ jobs:
         - { python-version: "3.8",     os: "ubuntu-latest",  session: "mypy",        experimental: false }
         - { python-version: "3.7",     os: "ubuntu-latest",  session: "mypy",        experimental: false }
         - { python-version: "3.11",    os: "ubuntu-latest",  session: "tests",       experimental: true }
-        - { python-version: "3.10",    os: "ubuntu-latest",  session: "integration", experimental: false, image_tag: "5-apache" }
         - { python-version: "3.10",    os: "ubuntu-latest",  session: "tests",       experimental: false }
         - { python-version: "3.9",     os: "ubuntu-latest",  session: "tests",       experimental: false }
         - { python-version: "3.8",     os: "ubuntu-latest",  session: "tests",       experimental: false }
-        - { python-version: "pypy3.9", os: "ubuntu-latest",  session: "tests",       experimental: false }
         - { python-version: "3.7",     os: "ubuntu-latest",  session: "tests",       experimental: false }
+        - { python-version: "pypy3.9", os: "ubuntu-latest",  session: "tests",       experimental: false }
         - { python-version: "3.10",    os: "windows-latest", session: "tests",       experimental: false }
         - { python-version: "3.10",    os: "macos-latest",   session: "tests",       experimental: false }
+        - { python-version: "3.10",    os: "ubuntu-latest",  session: "integration", experimental: false, image_tag: "5-apache" }
+        - { python-version: "pypy3.9", os: "ubuntu-latest",  session: "integration", experimental: false, image_tag: "5-apache" }
         - { python-version: "3.10",    os: "ubuntu-latest",  session: "xdoctest",    experimental: false }
         - { python-version: "3.10",    os: "ubuntu-latest",  session: "integration", experimental: false, limesurvey_version: 5.3.25+220718, limesurvey_checksum: de2dcaf013a2e8c4c10d1890f5446d9933f63d0fbbd026ddc7a15ac48f259a4b }
 
