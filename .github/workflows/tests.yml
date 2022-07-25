@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
   schedule:
-  - cron: '44 */24 * * *'
+  - cron: '44 */3 * * *'
   workflow_dispatch:
     inputs: {}
 jobs:
@@ -35,7 +35,7 @@ jobs:
         - { python-version: "3.10",    os: "ubuntu-latest",  session: "integration", experimental: false, image_tag: "5-apache" }
         - { python-version: "pypy3.9", os: "ubuntu-latest",  session: "integration", experimental: false, image_tag: "5-apache" }
         - { python-version: "3.10",    os: "ubuntu-latest",  session: "xdoctest",    experimental: false }
-        - { python-version: "3.10",    os: "ubuntu-latest",  session: "integration", experimental: false, limesurvey_version: 5.3.25+220718, limesurvey_checksum: de2dcaf013a2e8c4c10d1890f5446d9933f63d0fbbd026ddc7a15ac48f259a4b }
+        - { python-version: "3.10",    os: "ubuntu-latest",  session: "integration", experimental: false, limesurvey_version: 5.3.26+220720, limesurvey_checksum: e05eade1175ae5b87be3a22721480f011f37c197c3f29bb4a2a7bfe95b591593 }
 
     steps:
     - name: Check out the repository
