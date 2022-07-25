@@ -362,3 +362,12 @@ def test_files(client: citric.Client, survey_id: int, tmp_path: Path):
     assert result_no_filename["ext"] == "txt"
     assert "filename" in result_no_filename
     assert "msg" in result_no_filename
+
+
+@pytest.mark.integration_test
+def test_site_settings(client: citric.Client):
+    """Test getting site settings."""
+    assert client.get_available_languages() is None
+    assert client.get_default_language() == "en"
+    assert client.get_default_theme() == "fruity"
+    assert client.get_site_name() == "Citric - Test"
