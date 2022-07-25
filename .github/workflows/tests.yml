@@ -93,7 +93,7 @@ jobs:
         LS_DOCKERFILE: Dockerfile
         LS_VERSION: ${{ matrix.limesurvey_version }}
         LS_CHECKSUM: ${{ matrix.limesurvey_checksum }}
-        COMPOSE_FILE: "docker-compose.yml:docker-compose.test.yml${{ matrix.limesurvey_version && ':docker-compose.ref.yml' }}"
+        COMPOSE_FILE: "docker-compose.yml${{ matrix.limesurvey_version && ':docker-compose.ref.yml' }}"
         COMPOSE_PROFILES: "test"
       run: |
         docker-compose up -d

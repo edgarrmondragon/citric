@@ -32,5 +32,6 @@ return array(
         'debug' => 0,
         'debugsql' => 0,
         'RPCInterface' => 'json',
+        'sitename' => 'Citric - Test',
     )
 );

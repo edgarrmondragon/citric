@@ -92,7 +92,7 @@ def tests(session: Session) -> None:
 def integration(session: Session) -> None:
     """Execute integration tests and compute coverage."""
     session.install(".")
-    session.install("coverage[toml]", "pytest", "psycopg2-binary")
+    session.install("coverage[toml]", "pytest")
     try:
         session.run(
             "coverage",
@@ -121,7 +121,7 @@ def pytype(session: Session) -> None:
 def typeguard(session: Session) -> None:
     """Runtime type checking using Typeguard."""
     session.install(".")
-    session.install("pytest", "typeguard", "pygments", "psycopg2-binary")
+    session.install("pytest", "typeguard", "pygments")
     session.run("pytest", *session.posargs)
 
 
