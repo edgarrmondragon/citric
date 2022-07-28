@@ -77,8 +77,12 @@ def mypy(session: Session) -> None:
 @session(python=python_versions + pypy_versions)
 def tests(session: Session) -> None:
     """Execute pytest tests and compute coverage."""
+    deps = ["coverage[toml]", "pytest"]
+    if "GITHUB_ACTIONS" in os.environ:
+        deps.append("pytest-github-actions-annotate-failures")
+
     session.install(".")
-    session.install("coverage[toml]", "pytest")
+    session.install(*deps)
     args = session.posargs or ["-m", "not integration_test"]
 
     try:
@@ -91,8 +95,13 @@ def tests(session: Session) -> None:
 @session(python=python_versions + pypy_versions)
 def integration(session: Session) -> None:
     """Execute integration tests and compute coverage."""
+    deps = ["coverage[toml]", "pytest"]
+    if "GITHUB_ACTIONS" in os.environ:
+        deps.append("pytest-github-actions-annotate-failures")
+
     session.install(".")
-    session.install("coverage[toml]", "pytest")
+    session.install(*deps)
+
     try:
         session.run(
             "coverage",
