@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import random
-import sys
 
 import pytest
 import requests
@@ -79,10 +78,7 @@ def test_session_context(
     assert session.closed
     assert session.key is None
 
-    if sys.version_info < (3, 11):
-        message_regex = "can't set attribute"
-    else:
-        message_regex = "property .* of 'Session' object has no setter"
+    message_regex = "can't set attribute"
 
     with pytest.raises(AttributeError, match=message_regex):
         session.key = "123456"
