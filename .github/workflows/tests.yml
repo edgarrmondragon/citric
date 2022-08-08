@@ -35,7 +35,7 @@ jobs:
         - { python-version: "3.10",    os: "ubuntu-latest",  session: "integration", experimental: false, image_tag: "5-apache" }
         - { python-version: "pypy3.9", os: "ubuntu-latest",  session: "integration", experimental: false, image_tag: "5-apache" }
         - { python-version: "3.10",    os: "ubuntu-latest",  session: "xdoctest",    experimental: false }
-        - { python-version: "3.10",    os: "ubuntu-latest",  session: "integration", experimental: false, limesurvey_version: 5.3.28+220727, limesurvey_checksum: 0ac56133769b3b3e01c7ced6ec19dd4a0e5dd0d364ae0651c30d0fcff1373171 }
+        - { python-version: "3.10",    os: "ubuntu-latest",  session: "integration", experimental: false, limesurvey_version: 5.3.29+220801, limesurvey_checksum: 25bf38daf834f62cacfbc14aa29888ccecfec0a1dacbad5d9d2dbe29494e9584 }
 
     steps:
     - name: Check out the repository
