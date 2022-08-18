@@ -1,6 +1,6 @@
-# API coverage
+# RPC method coverage
 
-Full list available in [the Remote Control documentation](https://api.limesurvey.org/classes/remotecontrol_handle.html).
+Full list of methods is available at [the Remote Control documentation](https://api.limesurvey.org/classes/remotecontrol_handle.html).
 
 |              Name              | Implemented |                                    Description                                    |
 |:-------------------------------|:-----------:|:----------------------------------------------------------------------------------|

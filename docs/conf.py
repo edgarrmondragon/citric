@@ -38,3 +38,8 @@ html_theme_options = {
     "navigation_with_keys": True,
 }
 html_title = "Citric"
+
+source_suffix = {
+    ".rst": "restructuredtext",
+    ".md": "markdown",
+}

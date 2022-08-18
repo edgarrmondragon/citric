@@ -15,7 +15,7 @@ license
 :maxdepth: 2
 :hidden:
 
-examples
+how-to
 ```
 
 ```{toctree}
@@ -28,14 +28,14 @@ examples
 ```{toctree}
 :hidden:
 
-./api_coverage.md
+RPC method coverage <rpc_coverage>
 ```
 
 ```{toctree}
 :maxdepth: 4
 :hidden:
 
-API <_api/index>
+Python API reference <_api/index>
 ```
 
 ```{toctree}
