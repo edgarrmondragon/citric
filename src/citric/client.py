@@ -77,7 +77,7 @@ class UploadedFile:
     """File content as `io.BytesIO`_.
 
     .. _io.BytesIO:
-            https://docs.python.org/3/library/io.html#io.BytesIO
+        https://docs.python.org/3/library/io.html#io.BytesIO
     """
 
 
@@ -91,18 +91,14 @@ class Client:
         username: LimeSurvey user name.
         password: LimeSurvey password.
         requests_session: A `requests.Session`_ object.
-        auth_plugin: Name of the `plugin` to use for authentication.
-            For example, `AuthLDAP`_. Defaults to using the internal database
-            (`Authdb`_).
+        auth_plugin: Name of the :ls_manual:`plugin <Authentication_plugins>` to use for
+            authentication. For example,
+            :ls_manual:`AuthLDAP <Authentication_plugins#LDAP>`. Defaults to using the
+            :ls_manual:`internal database <Authentication_plugins#Internal_database>`
+            (``"Authdb"``).
 
     .. _requests.Session:
-        https://docs.python-requests.org/en/latest/api/#requests.Session
-    .. _plugin: https://manual.limesurvey.org/Authentication_plugins
-    .. _Authdb: https://manual.limesurvey.org/Authentication_plugins#Internal_database
-    .. _AuthLDAP: https://manual.limesurvey.org/Authentication_plugins#LDAP
-
-    .. _requests.Session:
-        https://docs.python-requests.org/en/latest/api/#requests.Session
+        https://requests.readthedocs.io/en/latest/api/#request-sessions
     """
 
     session_class = Session
@@ -789,6 +785,8 @@ class Client:
     def get_default_theme(self) -> str:
         """Get the global default theme.
 
+        Calls :rpc_method:`get_site_settings("defaulttheme") <get_site_settings>`.
+
         Returns:
             The name of the theme.
         """
@@ -796,6 +794,8 @@ class Client:
 
     def get_site_name(self) -> str:
         """Get the site name.
+
+        Calls :rpc_method:`get_site_settings("sitename") <get_site_settings>`.
 
         Returns:
             The name of the site.
@@ -805,6 +805,8 @@ class Client:
     def get_default_language(self) -> str:
         """Get the default site language.
 
+        Calls :rpc_method:`get_site_settings("defaultlang") <get_site_settings>`.
+
         Returns:
             A string representing the language.
         """
@@ -813,9 +815,12 @@ class Client:
     def get_available_languages(self) -> list[str] | None:
         """Get the list of available languages.
 
+        Calls
+        :rpc_method:`get_site_settings("restrictToLanguages") <get_site_settings>`.
+
         Returns:
             Either a list of strings for the available languages or None if there are
-                no restrictions.
+            no restrictions.
         """
         langs: str = self._get_site_setting("restrictToLanguages")
 

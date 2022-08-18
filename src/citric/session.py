@@ -24,19 +24,25 @@ logger = logging.getLogger(__name__)
 class Session:
     """LimeSurvey RemoteControl 2 session.
 
+    Upon creation, retrieves a session key with
+    :ls_manual:`get_session_key <RemoteControl_2_API#get_session_key>` and stores it in
+    the `key`_ attribute. The key is released upon session `closure`_.
+
     Args:
         url: LimeSurvey Remote Control endpoint.
         username: LimeSurvey user name.
         password: LimeSurvey password.
         requests_session: A `requests.Session`_ object.
-        auth_plugin: Name of the `plugin` to use for authentication.
-            For example, `AuthLDAP`_. Defaults to using the internal database
+        auth_plugin: Name of the :ls_manual:`plugin <Authentication_plugins>` to use for
+            authentication. For example,
+            :ls_manual:`AuthLDAP <Authentication_plugins#LDAP>`. Defaults to using the
+            :ls_manual:`internal database <Authentication_plugins#Internal_database>`
             (``"Authdb"``).
 
     .. _requests.Session:
-        https://docs.python-requests.org/en/latest/api/#requests.Session
-    .. _plugin: https://manual.limesurvey.org/Authentication_plugins
-    .. _AuthLDAP: https://manual.limesurvey.org/Authentication_plugins#LDAP
+        https://requests.readthedocs.io/en/latest/api/#request-sessions
+    .. _key: #citric.session.Session.key
+    .. _closure: #citric.session.Session.close
     """
 
     _headers = {
@@ -163,7 +169,11 @@ class Session:
         return result
 
     def close(self) -> None:
-        """Close RPC session."""
+        """Close RPC session.
+
+        Releases the session key with
+        :ls_manual:`release_session_key <RemoteControl_2_API#release_session_key>`.
+        """
         self.release_session_key()
         self._session.close()
         self.__key = None

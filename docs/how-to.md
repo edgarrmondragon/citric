@@ -1,4 +1,4 @@
-# Usage examples
+# How-to Guide
 
 For the full JSON-RPC reference, see the [RemoteControl 2 API docs][rc2api].
 
@@ -38,7 +38,7 @@ df = pd.read_csv(
 )
 ```
 
-## Custom `requests` session
+## Use custom `requests` session
 
 It's possible to use a custom session object to make requests. For example, to cache the requests
 and reduce the load on your server in read-intensive applications, you can use
@@ -70,7 +70,7 @@ with Client(
 ## Use a different authentication plugin
 
 By default, this client uses the internal database for authentication but
-[arbitrary plugins](https://manual.limesurvey.org/Authentication_plugins) are supported by the
+{ls_manual}`arbitrary plugins <Authentication_plugins>` are supported by the
 `auth_plugin` argument.
 
 ```python
@@ -85,7 +85,7 @@ with Client(
 
 Common plugins are `Authdb` (default), `AuthLDAP` and `Authwebserver`.
 
-## Get uploaded files and move them to S3
+## Get files uploaded to a survey and move them to S3
 
 ```python
 import boto3
@@ -107,9 +107,9 @@ with Client(
         )
 ```
 
-## Fall back to `citric.Session` for low-level interaction
+## Use the raw `Client.session` for low-level interaction
 
-This library doesn't (yet) implement all RPC methods, so if you're in dire need to use a method not currently supported, you can use the `session` attribute to invoke the underlying RPC interface without having to pass a session key explicitly:
+This library doesn't (yet) implement all RPC methods, so if you're in dire need of using a method not currently supported, you can use the `session` attribute to invoke the underlying RPC interface without having to pass a session key explicitly:
 
 ```python
 # Call the copy_survey method, not available in Client
