@@ -218,6 +218,8 @@ def docs_serve(session: Session) -> None:
         ".",
         "--ignore",
         "**/.nox/*",
+        "--ignore",
+        "**/.mypy_cache/*",
         "docs",
         "build",
     ]

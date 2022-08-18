@@ -57,6 +57,20 @@ Python.
 $ pip install citric
 ```
 
+## Usage
+
+```python
+from citric import Client
+
+with Client(
+    "https://mylimesite.limequery.com/admin/remotecontrol",
+    "myusername",
+    "mypassword",
+) as client
+    for survey in client.list_surveys():
+        print(survey["surveyls_title"])
+```
+
 ## Documentation
 
 Code samples and API documentation are available at [citric.readthedocs.io](https://citric.readthedocs.io/).

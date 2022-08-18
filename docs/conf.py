@@ -9,6 +9,7 @@ author = "Edgar Ramírez Mondragón"
 copyright = f"2020, {author}"
 extensions = [
     "sphinx.ext.autodoc",
+    "sphinx.ext.extlinks",
     "sphinx.ext.napoleon",
     "sphinx_autodoc_typehints",
     "autoapi.extension",
@@ -38,3 +39,19 @@ html_theme_options = {
     "navigation_with_keys": True,
 }
 html_title = "Citric"
+
+extlinks = {
+    "rpc_method": (
+        "https://api.limesurvey.org/classes/remotecontrol_handle.html#method_%s",
+        "RPC method %s",
+    ),
+    "ls_manual": (
+        "https://manual.limesurvey.org/%s",
+        "%s",
+    ),
+}
+
+source_suffix = {
+    ".rst": "restructuredtext",
+    ".md": "markdown",
+}
