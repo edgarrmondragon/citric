@@ -70,7 +70,7 @@ with Client(
 ## Use a different authentication plugin
 
 By default, this client uses the internal database for authentication but
-[arbitrary plugins](https://manual.limesurvey.org/Authentication_plugins) are supported by the
+{ls_manual}`arbitrary plugins <Authentication_plugins>` are supported by the
 `auth_plugin` argument.
 
 ```python
