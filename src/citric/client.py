@@ -864,6 +864,14 @@ class Client:
         """
         return self.__session.get_response_ids(survey_id, token)
 
+    def get_available_site_settings(self) -> list[str]:
+        """Get all available site settings.
+
+        Returns:
+            A list of all the available site settings.
+        """
+        return self.session.get_available_site_settings()
+
     def _get_site_setting(self, setting_name: str) -> types.Result:
         """Get a global setting.
 
