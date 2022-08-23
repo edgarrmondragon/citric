@@ -4,14 +4,14 @@ on:
   push:
     branches: [main]
   schedule:
-  - cron: '44 */3 * * *'
+  - cron: "44 */3 * * *"
   workflow_dispatch:
     inputs: {}
 jobs:
   tests:
     name: ${{ matrix.session }} ${{ matrix.python-version }}${{ matrix.session == 'integration' && format(' / integration with {0}', matrix.image_tag || matrix.limesurvey_version) || '' }} / ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
-    continue-on-error: ${{ matrix.experimental }}
+    continue-on-error: ${{ matrix.experimental || false }}
     env:
       NOXSESSION: ${{ matrix.session }}
       FORCE_COLOR: "1"
@@ -19,23 +19,78 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - { python-version: "3.10",    os: "ubuntu-latest",  session: "safety",      experimental: false }
-        - { python-version: "3.10",    os: "ubuntu-latest",  session: "mypy",        experimental: false }
-        - { python-version: "3.9",     os: "ubuntu-latest",  session: "mypy",        experimental: false }
-        - { python-version: "3.8",     os: "ubuntu-latest",  session: "mypy",        experimental: false }
-        - { python-version: "3.7",     os: "ubuntu-latest",  session: "mypy",        experimental: false }
-        - { python-version: "3.11",    os: "ubuntu-latest",  session: "tests",       experimental: true }
-        - { python-version: "3.10",    os: "ubuntu-latest",  session: "tests",       experimental: false }
-        - { python-version: "3.9",     os: "ubuntu-latest",  session: "tests",       experimental: false }
-        - { python-version: "3.8",     os: "ubuntu-latest",  session: "tests",       experimental: false }
-        - { python-version: "3.7",     os: "ubuntu-latest",  session: "tests",       experimental: false }
-        - { python-version: "pypy3.9", os: "ubuntu-latest",  session: "tests",       experimental: false }
-        - { python-version: "3.10",    os: "windows-latest", session: "tests",       experimental: false }
-        - { python-version: "3.10",    os: "macos-latest",   session: "tests",       experimental: false }
-        - { python-version: "3.10",    os: "ubuntu-latest",  session: "integration", experimental: false, image_tag: "5-apache" }
-        - { python-version: "pypy3.9", os: "ubuntu-latest",  session: "integration", experimental: false, image_tag: "5-apache" }
-        - { python-version: "3.10",    os: "ubuntu-latest",  session: "xdoctest",    experimental: false }
-        - { python-version: "3.10",    os: "ubuntu-latest",  session: "integration", experimental: false, limesurvey_version: 5.3.29+220801, limesurvey_checksum: 25bf38daf834f62cacfbc14aa29888ccecfec0a1dacbad5d9d2dbe29494e9584 }
+        - python-version: "3.10"
+          os: "ubuntu-latest"
+          session: "safety"
+
+        - python-version: "3.10"
+          os: "ubuntu-latest"
+          session: "mypy"
+
+        - python-version: "3.9"
+          os: "ubuntu-latest"
+          session: "mypy"
+
+        - python-version: "3.8"
+          os: "ubuntu-latest"
+          session: "mypy"
+
+        - python-version: "3.7"
+          os: "ubuntu-latest"
+          session: "mypy"
+
+        - python-version: "3.11"
+          os: "ubuntu-latest"
+          session: "tests"
+          experimental: true
+
+        - python-version: "3.10"
+          os: "ubuntu-latest"
+          session: "tests"
+
+        - python-version: "3.9"
+          os: "ubuntu-latest"
+          session: "tests"
+
+        - python-version: "3.8"
+          os: "ubuntu-latest"
+          session: "tests"
+
+        - python-version: "3.7"
+          os: "ubuntu-latest"
+          session: "tests"
+
+        - python-version: "pypy3.9"
+          os: "ubuntu-latest"
+          session: "tests"
+
+        - python-version: "3.10"
+          os: "windows-latest"
+          session: "tests"
+
+        - python-version: "3.10"
+          os: "macos-latest"
+          session: "tests"
+
+        - python-version: "3.10"
+          os: "ubuntu-latest"
+          session: "integration"
+          image_tag: "5-apache"
+
+        - python-version: "3.10"
+          os: "ubuntu-latest"
+          session: "integration"
+          limesurvey_version: 5.3.31+220815
+          limesurvey_checksum: 4edc26ab138eabe7038bdbd62e957949e9745f64e2f68fe20655fe7dbe503ded
+
+        - python-version: "pypy3.9"
+          os: "ubuntu-latest"
+          session: "integration"
+          image_tag: "5-apache"
+
+        - python-version: "3.10"
+          os: "ubuntu-latest"
+          session: "xdoctest"
 
     steps:
     - name: Check out the repository
