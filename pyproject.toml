@@ -53,7 +53,7 @@ pytest = "^7.1.2"
 coverage = {extras = ["toml"], version = "^6.4"}
 safety = "^2.1.1"
 codecov = "^2.1.4"
-pytype = {version = "^2022.8.17", python = "<3.8"}
+pytype = {version = "^2022.8.23", python = "<3.8"}
 xdoctest = "^1.0.2"
 colorama = "^0.4.5"
 pytest-github-actions-annotate-failures = "^0.1.7"
