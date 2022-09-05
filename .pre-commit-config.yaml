@@ -15,7 +15,7 @@ repos:
     -   id: trailing-whitespace
 
 -   repo: https://github.com/psf/black
-    rev: 22.6.0
+    rev: 22.8.0
     hooks:
     -   id: black
         language_version: python3.10
@@ -60,6 +60,6 @@ repos:
         args: [--all]
 
 -   repo: https://github.com/python-poetry/poetry
-    rev: 1.2.0
+    rev: 1.2.0rc1
     hooks:
     -   id: poetry-check
