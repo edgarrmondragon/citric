@@ -80,8 +80,8 @@ jobs:
         - python-version: "3.10"
           os: "ubuntu-latest"
           session: "integration"
-          limesurvey_version: 5.3.31+220815
-          limesurvey_checksum: 4edc26ab138eabe7038bdbd62e957949e9745f64e2f68fe20655fe7dbe503ded
+          limesurvey_version: 5.4.0+220913
+          limesurvey_checksum: a684db854dc0923c21d97bcfb3570461a0d4d773942c9e3c80a901873878279c
 
         - python-version: "pypy3.9"
           os: "ubuntu-latest"
