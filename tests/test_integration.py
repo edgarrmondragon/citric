@@ -321,10 +321,13 @@ def test_responses(client: citric.Client, survey_id: int):
     # Export existing response works
     client.export_responses(survey_id, token="T00000")
 
-    # Delete a response and then fail to export it
+    # Delete a response and then fail to export it or update it
     client.delete_response(survey_id, 1)
     with pytest.raises(LimeSurveyStatusError, match="No Response found for Token"):
         client.export_responses(survey_id, token="T00000")
+
+    with pytest.raises(LimeSurveyStatusError, match="No matching Response"):
+        client.update_response(survey_id, all_responses[0])
 
 
 @pytest.mark.integration_test
