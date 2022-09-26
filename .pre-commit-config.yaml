@@ -43,7 +43,7 @@ repos:
         -   types-psycopg2
 
 -   repo: https://github.com/asottile/pyupgrade
-    rev: v2.38.0
+    rev: v2.38.2
     hooks:
     -   id: pyupgrade
         args: [--py37-plus]
@@ -60,6 +60,6 @@ repos:
         args: [--all]
 
 -   repo: https://github.com/python-poetry/poetry
-    rev: 1.2.1
+    rev: 1.2.0rc1
     hooks:
     -   id: poetry-check
