@@ -189,15 +189,15 @@ class Session:
 
     def __exit__(
         self,
-        type: type[BaseException] | None,
-        value: BaseException | None,
+        exc_type: type[BaseException] | None,
+        exc_value: BaseException | None,
         traceback: TracebackType | None,
     ) -> None:
         """Safely exit an RPC session.
 
         Args:
-            type: Exception class.
-            value: Exception instance.
+            exc_type: Exception class.
+            exc_value: Exception instance.
             traceback: Error traceback.
         """
         self.close()

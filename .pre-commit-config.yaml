@@ -63,3 +63,8 @@ repos:
     rev: 1.2.2
     hooks:
     -   id: poetry-check
+
+-   repo: https://github.com/charliermarsh/ruff-pre-commit
+    rev: v0.0.81
+    hooks:
+      - id: lint

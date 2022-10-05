@@ -6,7 +6,7 @@ import os
 
 project = "citric"
 author = "Edgar Ramírez Mondragón"
-copyright = f"2020, {author}"
+project_copyright = f"2020, {author}"
 extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.extlinks",
