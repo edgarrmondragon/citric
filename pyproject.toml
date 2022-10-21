@@ -112,6 +112,97 @@ module = [
   "pytest.*",
 ]
 
+[tool.ruff]
+line-length = 88
+select = [
+  # pydocstyle (with google style docstring convention)
+  "D100",
+  "D101",
+  "D102",
+  "D103",
+  "D104",
+  "D105",
+  "D106",
+  "D107",
+  "D200",
+  "D201",
+  "D202",
+  "D205",
+  "D206",
+  "D207",
+  "D208",
+  "D209",
+  "D210",
+  "D211",
+  "D212",
+  "D214",
+  "D300",
+  "D402",
+  "D403",
+  "D405",
+  "D410",
+  "D411",
+  "D412",
+  "D414",
+  "D415",
+  "D416",
+  "D417",
+  "D418",
+  "D419",
+  # pyupgrade
+  "U001",
+  "U002",
+  "U003",
+  "U004",
+  "U005",
+  "U006",
+  "U007",
+  "U008",
+  # pep8-naming
+  "N801",
+  "N802",
+  "N803",
+  "N804",
+  "N805",
+  # FIXME: Uncomment when ruff > 0.0.81 is released
+  # "N807",
+  # "N811",
+  # "N812",
+  # "N813",
+  # "N814",
+  # "N817",
+  # flake8-comprehensions
+  "C400",
+  "C401",
+  "C402",
+  "C403",
+  "C404",
+  "C405",
+  "C406",
+  "C408",
+  "C409",
+  "C410",
+  "C411",
+  "C413",
+  "C414",
+  "C415",
+  "C416",
+  "C417",
+  # flake8-bugbear
+  "B011",
+  "B014",
+  "B025",
+  # flake8-builtins
+  "A001",
+  "A002",
+  "A003",
+  # flake8-print
+  "T201",
+  "T203", # Meta rules
+  # FIXME: Uncomment when flake8-annotations rules are implemented
+  # "M001", # Unused noqa directive
+]
+
 [build-system]
 build-backend = "poetry.masonry.api"
 requires = ["poetry>=0.12"]
