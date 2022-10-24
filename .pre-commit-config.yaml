@@ -60,11 +60,11 @@ repos:
         args: [--all]
 
 -   repo: https://github.com/python-poetry/poetry
-    rev: 1.2.2
+    rev: 1.2.0rc1
     hooks:
     -   id: poetry-check
 
 -   repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: v0.0.81
+    rev: v0.0.82
     hooks:
       - id: lint
