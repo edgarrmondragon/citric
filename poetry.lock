@@ -1719,7 +1719,7 @@ jupyter = ["ipykernel", "jupyterlab"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7.0"
-content-hash = "d023a364d44c0903a4cb41329f0ae9f4c3f22938a3fc43a87aa77b9e6d3ef7d4"
+content-hash = "832c482f4441ed095bd72b882aa4119b0e852f770020bea94f8871718a3ba68f"
 
 [metadata.files]
 alabaster = [
