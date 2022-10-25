@@ -1,0 +1,5 @@
+kind: Added
+body: Stable support for Python 3.11
+time: 2022-10-24T19:21:57.663867-05:00
+custom:
+  Issue: "582"
