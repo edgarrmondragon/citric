@@ -46,6 +46,12 @@ jobs:
         - python-version: "3.12"
           os: "ubuntu-latest"
           session: "tests"
+          experimental: true
+
+        - python-version: "3.12"
+          os: "ubuntu-latest"
+          session: "tests"
+          experimental: true
           nightly: true
 
         - python-version: "3.10"
