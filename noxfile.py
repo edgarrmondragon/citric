@@ -21,7 +21,7 @@ except ImportError:
     raise SystemExit(dedent(message)) from None
 
 package = "citric"
-python_versions = ["3.11", "3.10", "3.9", "3.8", "3.7"]
+python_versions = ["3.12", "3.11", "3.10", "3.9", "3.8", "3.7"]
 pypy_versions = ["pypy3.9"]
 main_python_version = "3.10"
 locations = "src", "tests", "noxfile.py", "docs/conf.py"
