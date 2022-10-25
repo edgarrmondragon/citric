@@ -9,7 +9,7 @@ on:
         required: true
       changie-version:
         description: Version of Changie to use
-        default: "1.8.0"
+        default: latest
         required: false
       prerelease:
         description: Prerelease values to append to version
@@ -25,30 +25,42 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3.1.0
 
-    - name: Setup Changie
-      run: |
-        curl -sSLO https://github.com/miniscruff/changie/releases/download/v${{ github.event.inputs.changie-version }}/changie_${{ github.event.inputs.changie-version }}_linux_amd64.deb \
-          && sudo dpkg -i changie_${{ github.event.inputs.changie-version }}_linux_amd64.deb && rm changie_${{ github.event.inputs.changie-version }}_linux_amd64.deb
+    - name: Batch changes
+      uses: miniscruff/changie-action@v0.2.0
+      with:
+        version: ${{ github.event.inputs.changie-version }}
+        args: >
+          batch
+          ${{ github.event.inputs.next-version }}
+          ${{ github.event.inputs.prerelease && format('-p {0}', github.event.inputs.prerelease) || '--remove-prereleases' }}
+          ${{ github.event.inputs.metadata && format('-m {0}', github.event.inputs.metadata) }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Changie batch
-      run: >
-        changie batch
-        ${{ github.event.inputs.next-version }}
-        ${{ github.event.inputs.prerelease && format('-p {0}', github.event.inputs.prerelease) || '--remove-prereleases' }}
-        ${{ github.event.inputs.metadata && format('-m {0}', github.event.inputs.metadata) }}
+    - name: Merge changes
+      uses: miniscruff/changie-action@v0.2.0
+      with:
+        version: ${{ github.event.inputs.changie-version }}
+        args: merge
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Changie merge
-      run: |
-        changie merge
-        echo RELEASE_VERSION=$(changie latest) >> $GITHUB_ENV
+    - name: Get the latest version
+      id: latest
+      uses: miniscruff/changie-action@v0.2.0
+      with:
+        version: ${{ github.event.inputs.changie-version }}
+        args: latest
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Create Pull Request
       uses: peter-evans/create-pull-request@v4.2.0
       with:
-        title: "chore: Release ${{ env.RELEASE_VERSION }}"
-        branch: release/${{ env.RELEASE_VERSION }}
-        commit-message: "chore: Release ${{ env.RELEASE_VERSION }}"
-        body: "Prepare release for `${{ env.RELEASE_VERSION }}`"
+        title: "chore: Release ${{ steps.latest.outputs.output }}"
+        branch: release/${{ steps.latest.outputs.output }}
+        commit-message: "chore: Release ${{ steps.latest.outputs.output }}"
+        body: "Prepare release for `${{ steps.latest.outputs.output }}`"
         reviewers: |
           edgarrmondragon
         assignees: |
