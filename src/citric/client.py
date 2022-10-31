@@ -1017,7 +1017,7 @@ class Client:
         limit: int = 10,
         unused: bool = False,
         attributes: Sequence[str] | bool = False,
-        conditions: Mapping[str, Any] | None = {},
+        conditions: Mapping[str, Any] | None = None,
     ) -> list[dict[str, Any]]:
         """Get participants in a survey.
 
@@ -1038,7 +1038,7 @@ class Client:
             limit,
             unused,
             attributes,
-            conditions,
+            conditions or {},
         )
 
     def list_users(self) -> list[dict[str, Any]]:
