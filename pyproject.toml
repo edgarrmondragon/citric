@@ -115,91 +115,48 @@ module = [
 [tool.ruff]
 line-length = 88
 select = [
+  # Pyflakes
+  "F",
+  # pycodestyle (error)
+  "E",
+  # pycodestyle (warning)
+  "W",
   # pydocstyle (with google style docstring convention)
-  "D100",
-  "D101",
-  "D102",
-  "D103",
-  "D104",
-  "D105",
-  "D106",
-  "D107",
-  "D200",
-  "D201",
-  "D202",
-  "D205",
-  "D206",
-  "D207",
-  "D208",
-  "D209",
-  "D210",
-  "D211",
-  "D212",
-  "D214",
-  "D300",
-  "D402",
-  "D403",
-  "D405",
-  "D410",
-  "D411",
-  "D412",
-  "D414",
-  "D415",
-  "D416",
-  "D417",
-  "D418",
-  "D419",
+  "D",
   # pyupgrade
-  "U001",
-  "U002",
-  "U003",
-  "U004",
-  "U005",
-  "U006",
-  "U007",
-  "U008",
+  "U",
   # pep8-naming
-  "N801",
-  "N802",
-  "N803",
-  "N804",
-  "N805",
-  "N807",
-  "N811",
-  "N812",
-  "N813",
-  "N814",
-  "N817",
+  "N8",
   # flake8-comprehensions
-  "C400",
-  "C401",
-  "C402",
-  "C403",
-  "C404",
-  "C405",
-  "C406",
-  "C408",
-  "C409",
-  "C410",
-  "C411",
-  "C413",
-  "C414",
-  "C415",
-  "C416",
-  "C417",
+  "C4",
   # flake8-bugbear
-  "B011",
-  "B014",
-  "B025",
+  "B0",
   # flake8-builtins
-  "A001",
-  "A002",
-  "A003",
+  "A0",
   # flake8-print
-  "T201",
-  "T203", # Meta rules
+  "T2",
+  # flake8-quotes
+  # "Q0",
   # FIXME: Uncomment when flake8-annotations rules are implemented
   # "M001", # Unused noqa directive
+]
+extend-ignore = [
+  # equivalent to `--docstring-convention=google`
+  "D203",
+  "D204",
+  "D213",
+  "D215",
+  "D400",
+  "D404",
+  "D406",
+  "D407",
+  "D408",
+  "D409",
+  "D413",
+]
+per-file-ignores = [
+  # "tests/*:S101,ANN",
+  # "noxfile.py:ANN",
 ]
 
 [build-system]
