@@ -109,7 +109,7 @@ class Client:
         username: str,
         password: str,
         *,
-        requests_session: requests.Session = requests.session(),
+        requests_session: requests.Session | None = None,
         auth_plugin: str = "Authdb",
     ) -> None:
         """Create a LimeSurvey Python API client."""
@@ -117,7 +117,7 @@ class Client:
             url,
             username,
             password,
-            requests_session=requests_session,
+            requests_session=requests_session or requests.session(),
             auth_plugin=auth_plugin,
         )
 
