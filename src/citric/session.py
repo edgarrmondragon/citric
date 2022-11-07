@@ -58,12 +58,12 @@ class Session:
         username: str,
         password: str,
         *,
-        requests_session: requests.Session = requests.session(),
+        requests_session: requests.Session | None = None,
         auth_plugin: str = "Authdb",
     ) -> None:
         """Create a LimeSurvey RPC session."""
         self.url = url
-        self._session = requests_session
+        self._session = requests_session or requests.session()
         self._session.headers.update(self._headers)
 
         self.__key: str | None = self.get_session_key(
