@@ -141,8 +141,8 @@ select = [
   "ANN",
   # Ruff-specific rules
   "RUF",
-  # FIXME: Uncomment when flake8-annotations ANN4** rules are implemented
-  # "M001", # Unused noqa directive
+  # Meta rules
+  "M",
 ]
 ignore = [
   "ANN101",
@@ -173,6 +173,9 @@ extend-ignore = [
 inline-quotes = "double"
 docstring-quotes = "double"
 multiline-quotes = "double"
+
+[tool.ruff.flake8-annotations]
+allow-star-arg-any = true
 
 [build-system]
 build-backend = "poetry.masonry.api"
