@@ -65,6 +65,6 @@ repos:
     -   id: poetry-check
 
 -   repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: v0.0.108
+    rev: v0.0.110
     hooks:
       - id: ruff
