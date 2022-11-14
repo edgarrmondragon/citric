@@ -139,6 +139,8 @@ select = [
   "Q0",
   # flake8-annotations
   "ANN",
+  # flake8-bandit
+  "S",
   # Ruff-specific rules
   "RUF",
   # Meta rules
@@ -164,7 +166,9 @@ extend-ignore = [
 
 [tool.ruff.per-file-ignores]
 "tests/*" = [
-  # "S101",  # FIXME: Uncomment if/when flake8-bandit checks are brought into Ruff
+  "S101",
+  "S105",
+  "S106",
   "ANN",
 ]
 "noxfile.py" = ["ANN"]
