@@ -241,6 +241,7 @@ def test_participants(client: citric.Client, survey_id: int):
     data = [
         {"email": "john@example.com", "firstname": "John", "lastname": "Doe"},
         {"email": "jane@example.com", "firstname": "Jane", "lastname": "Doe"},
+        {"email": "jane@example.com", "firstname": "Jane", "lastname": "Doe"},
     ]
 
     # Add participants
@@ -251,6 +252,11 @@ def test_participants(client: citric.Client, survey_id: int):
         assert p["lastname"] == d["lastname"]
 
     participants = client.list_participants(survey_id)
+
+    # Confirm that the participants are not deduplicated
+    assert len(participants) == 3
+
+    # Check added participant properties
     for p, d in zip(participants, data):
         assert p["participant_info"]["email"] == d["email"]
         assert p["participant_info"]["firstname"] == d["firstname"]
@@ -271,6 +277,11 @@ def test_participants(client: citric.Client, survey_id: int):
     )
     assert response["firstname"] == "Johnny"
     assert response["lastname"] == "Doe"
+
+    # Delete participants
+    deleted = client.delete_participants(survey_id, [added[0]["tid"]])
+    assert deleted == {added[0]["tid"]: "Deleted"}
+    assert len(client.list_participants(survey_id)) == 2
 
 
 @pytest.mark.integration_test
