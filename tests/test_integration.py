@@ -239,13 +239,28 @@ def test_participants(client: citric.Client, survey_id: int):
     client.activate_tokens(survey_id)
 
     data = [
-        {"email": "john@example.com", "firstname": "John", "lastname": "Doe"},
-        {"email": "jane@example.com", "firstname": "Jane", "lastname": "Doe"},
-        {"email": "jane@example.com", "firstname": "Jane", "lastname": "Doe"},
+        {
+            "email": "john@example.com",
+            "firstname": "John",
+            "lastname": "Doe",
+            "token": "1",
+        },
+        {
+            "email": "jane@example.com",
+            "firstname": "Jane",
+            "lastname": "Doe",
+            "token": "2",
+        },
+        {
+            "email": "jane@example.com",
+            "firstname": "Jane",
+            "lastname": "Doe",
+            "token": "2",
+        },
     ]
 
     # Add participants
-    added = client.add_participants(survey_id, data)
+    added = client.add_participants(survey_id, data, create_tokens=False)
     for p, d in zip(added, data):
         assert p["email"] == d["email"]
         assert p["firstname"] == d["firstname"]
@@ -253,17 +268,17 @@ def test_participants(client: citric.Client, survey_id: int):
 
     participants = client.list_participants(survey_id)
 
-    # Confirm that the participants are not deduplicated
-    assert len(participants) == 3
+    # Confirm that the participants are deduplicated based on token
+    assert len(participants) == 2
 
     # Check added participant properties
-    for p, d in zip(participants, data):
+    for p, d in zip(participants, data[:2]):
         assert p["participant_info"]["email"] == d["email"]
         assert p["participant_info"]["firstname"] == d["firstname"]
         assert p["participant_info"]["lastname"] == d["lastname"]
 
     # Get participant properties
-    for p, d in zip(added, data):
+    for p, d in zip(added, data[:2]):
         properties = client.get_participant_properties(survey_id, p["tid"])
         assert properties["email"] == d["email"]
         assert properties["firstname"] == d["firstname"]
@@ -281,7 +296,7 @@ def test_participants(client: citric.Client, survey_id: int):
     # Delete participants
     deleted = client.delete_participants(survey_id, [added[0]["tid"]])
     assert deleted == {added[0]["tid"]: "Deleted"}
-    assert len(client.list_participants(survey_id)) == 2
+    assert len(client.list_participants(survey_id)) == 1
 
 
 @pytest.mark.integration_test
