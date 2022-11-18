@@ -260,7 +260,11 @@ def test_participants(client: citric.Client, survey_id: int):
     ]
 
     # Add participants
-    added = client.add_participants(survey_id, data, create_tokens=False)
+    added = client.add_participants(
+        survey_id,
+        participant_data=data,
+        create_tokens=False,
+    )
     for p, d in zip(added, data):
         assert p["email"] == d["email"]
         assert p["firstname"] == d["firstname"]
