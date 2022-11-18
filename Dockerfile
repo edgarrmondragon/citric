@@ -14,4 +14,4 @@ COPY pyproject.toml poetry.lock /app/
 RUN poetry install --no-root --no-dev
 
 COPY . /app/
-RUN poetry install -E jupyter --no-dev
+RUN poetry install --no-dev

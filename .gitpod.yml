@@ -11,8 +11,6 @@ ports:
     visibility: public
   - port: 9001
     onOpen: open-browser
-  - port: 8888
-    onOpen: open-browser
 
 vscode:
   extensions:

@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Any, Generator
 
 import pytest
-from py import path
+from _pytest._py.path import LocalPath
 
 from citric.client import Client
 from citric.enums import ImportGroupType, ImportSurveyType, NewSurveyType
@@ -455,7 +455,7 @@ def test_add_responses(client: MockClient):
     assert client.add_responses(1, [{"Q1": "foo"}, {"Q1": "bar"}]) == [1, 1]
 
 
-def test_save_responses(client: MockClient, tmpdir: path.local):
+def test_save_responses(client: MockClient, tmpdir: LocalPath):
     """Test export_responses and export_responses_by_token client methods."""
     filename = tmpdir / "responses.csv"
     client.save_responses(filename, 1, file_format="csv")
@@ -466,7 +466,7 @@ def test_save_responses(client: MockClient, tmpdir: path.local):
     assert filename_token.read_binary() == b"FILE CONTENTS"
 
 
-def test_save_statistics(client: MockClient, tmpdir: path.local):
+def test_save_statistics(client: MockClient, tmpdir: LocalPath):
     """Test save_statistics and export_responses_by_token client methods."""
     filename = tmpdir / "example.html"
     client.save_statistics(filename, 1, file_format="html")
