@@ -41,27 +41,6 @@ services:
     profiles:
       - web
 
-  jupyter:
-    build:
-      context: .
-    depends_on:
-      - db
-      - limesurvey
-    environment:
-      LIMESURVEY_URL: http://limesurvey:8080/index.php/admin/remotecontrol
-      LIMESURVEY_USERNAME: iamadmin
-      LIMESURVEY_PASSWORD: secret
-      AWS_ACCESS_KEY_ID: minioadmin
-      AWS_SECRET_ACCESS_KEY: minioadmin
-      DB_URI: postgresql://limesurvey:secret@db/limesurvey
-    volumes:
-      - "./:/app/"
-    ports:
-      - "8888:8888"
-    command: poetry run jupyter lab --allow-root --ip 0.0.0.0
-    profiles:
-      - web
-
 volumes:
   limedb:
   surveys:
