@@ -332,7 +332,13 @@ def test_list_questions(client: MockClient):
 def test_add_participants(client: MockClient):
     """Test add_participants client method."""
     participants = [{"firstname": "Alice"}, {"firstname": "Bob"}]
-    assert_client_session_call(client, "add_participants", 1, participants, True)
+    assert_client_session_call(
+        client,
+        "add_participants",
+        1,
+        participant_data=participants,
+        create_tokens=True,
+    )
 
 
 def test_delete_participants(client: MockClient):
@@ -356,7 +362,16 @@ def test_participant_properties(client: MockClient):
 
 def test_list_participants(client: MockClient):
     """Test get_participant_properties client method."""
-    assert_client_session_call(client, "list_participants", 1, 0, 10, False, False, {})
+    assert_client_session_call(
+        client,
+        "list_participants",
+        1,
+        start=0,
+        limit=10,
+        unused=False,
+        attributes=False,
+        conditions={},
+    )
 
 
 def test_get_default_theme(client: MockClient):

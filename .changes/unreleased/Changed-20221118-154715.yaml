@@ -1,0 +1,5 @@
+kind: Changed
+body: Use keyword-only arguments for `add_participants` and `list_participants`
+time: 2022-11-18T15:47:15.502728-06:00
+custom:
+  Issue: "607"

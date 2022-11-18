@@ -199,6 +199,7 @@ class Client:
     def add_participants(
         self,
         survey_id: int,
+        *,
         participant_data: Sequence[Mapping[str, Any]],
         create_tokens: bool = True,
     ) -> list[dict[str, Any]]:
@@ -1013,6 +1014,7 @@ class Client:
     def list_participants(
         self,
         survey_id: int,
+        *,
         start: int = 0,
         limit: int = 10,
         unused: bool = False,
