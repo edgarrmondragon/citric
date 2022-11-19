@@ -105,52 +105,6 @@ module = [
 ]
 
 [tool.ruff]
-line-length = 88
-select = [
-  # Pyflakes
-  "F",
-  # pycodestyle (error)
-  "E",
-  # pycodestyle (warning)
-  "W",
-  # pydocstyle (with google style docstring convention)
-  "D",
-  # pyupgrade
-  "U",
-  # pep8-naming
-  "N8",
-  # flake8-2020
-  "YTT",
-  # flake8-comprehensions
-  "C4",
-  # flake8-boolean-trap
-  "FBT",
-  # flake8-bugbear
-  "B0",
-  # flake8-builtins
-  "A0",
-  # flake8-tidy-imports
-  "I25",
-  # flake8-print
-  "T2",
-  # flake8-quotes
-  "Q0",
-  # flake8-annotations
-  "ANN",
-  # flake8-bandit
-  "S",
-  # flake8-blind-except
-  "BLE",
-  # mccabe
-  "C9",
-  # Ruff-specific rules
-  "RUF",
-  # Meta rules
-  "M",
-]
-ignore = [
-  "ANN101",
-]
 extend-ignore = [
   # equivalent to `--docstring-convention=google`
   "D203",
@@ -165,8 +119,35 @@ extend-ignore = [
   "D409",
   "D413",
 ]
+ignore = [
+  "ANN101",
+]
+line-length = 88
+select = [
+  "F", # Pyflakes
+  "E", # pycodestyle (error)
+  "W", # pycodestyle (warning)
+  "D", # pydocstyle (with google style docstring convention)
+  "U", # pyupgrade
+  "N8", # pep8-naming
+  "S", # flake8-bandit
+  "C4", # flake8-comprehensions
+  "FBT", # flake8-boolean-trap
+  "B0", # flake8-bugbear
+  "A0", # flake8-builtins
+  "I25", # flake8-tidy-imports
+  "T2", # flake8-print
+  "Q0", # flake8-quotes
+  "ANN", # flake8-annotations
+  "YTT", # flake8-2020
+  "BLE", # flake8-blind-except
+  "C9", # mccabe
+  "RUF", # Ruff-specific rules
+  "M", # Meta rules
+]
 
 [tool.ruff.per-file-ignores]
+"noxfile.py" = ["ANN"]
 "tests/*" = [
   "C901",
   "FBT",
@@ -175,11 +156,10 @@ extend-ignore = [
   "S106",
   "ANN",
 ]
-"noxfile.py" = ["ANN"]
 
 [tool.ruff.flake8-quotes]
-inline-quotes = "double"
 docstring-quotes = "double"
+inline-quotes = "double"
 multiline-quotes = "double"
 
 [tool.ruff.flake8-annotations]
