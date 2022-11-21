@@ -92,6 +92,7 @@ jobs:
           session: "integration"
           limesurvey_version: 5.4.8+221024
           limesurvey_checksum: 8445c4f14dee4b16513a19d7e5298e86da885d02823b58ded9905496f558132c
+
         - python-version: "pypy3.9"
           os: "ubuntu-latest"
           session: "integration"

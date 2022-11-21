@@ -39,6 +39,7 @@ def test_method():
     m1 = Method(lambda x, *args: f"{x}({','.join(args)})", "hello")
     m2 = m1.world
 
+    assert m1("x", "y") == "hello(x,y)"
     assert m2("a", "b", "c") == "hello.world(a,b,c)"
 
 
