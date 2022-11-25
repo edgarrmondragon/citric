@@ -31,7 +31,6 @@ nox.options.sessions = (
     "safety",
     "mypy",
     "tests",
-    "pytype",
     "xdoctest",
 )
 
@@ -116,14 +115,6 @@ def integration(session: Session) -> None:
     finally:
         if session.interactive:
             session.notify("coverage", posargs=[])
-
-
-@session(python="3.7")
-def pytype(session: Session) -> None:
-    """Infer and check types with pytype."""
-    args = session.posargs or ["--disable=import-error", *locations]
-    session.install("pytype")
-    session.run("pytype", *args)
 
 
 @session(python=main_python_version)
