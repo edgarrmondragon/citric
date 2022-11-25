@@ -7,4 +7,8 @@ documentation site and watch the repo for changes:
 nox -rs docs-serve
 ```
 
+```{note}
+Python 3.9+ is required to build the documentation.
+```
+
 [environment]: /contributing/environment

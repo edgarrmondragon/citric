@@ -5,8 +5,8 @@ from __future__ import annotations
 import json
 import logging
 import random
-import sys
 import typing as t
+from importlib import metadata
 
 import requests
 
@@ -19,12 +19,8 @@ from citric.exceptions import (
 )
 from citric.method import Method
 
-if sys.version_info >= (3, 8):
-    from importlib import metadata
-else:
-    import importlib_metadata as metadata
-
 if t.TYPE_CHECKING:
+    import sys
     from types import TracebackType
 
     from citric.types import Result, RPCResponse

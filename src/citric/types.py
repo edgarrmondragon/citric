@@ -2,27 +2,23 @@
 
 from __future__ import annotations
 
-import sys
 import typing as t
 
-if sys.version_info >= (3, 8):
-    from typing import Literal, TypedDict  # noqa: ICN003
-else:
-    from typing_extensions import Literal, TypedDict
-
-if sys.version_info >= (3, 10):
-    from typing import TypeAlias  # noqa: ICN003
-else:
-    from typing_extensions import TypeAlias
-
 if t.TYPE_CHECKING:
+    import sys
+
+    if sys.version_info >= (3, 10):
+        from typing import TypeAlias  # noqa: ICN003
+    else:
+        from typing_extensions import TypeAlias
+
     from citric import enums
 
 Result: TypeAlias = t.Any
-YesNo: TypeAlias = Literal["Y", "N"]
+YesNo: TypeAlias = t.Literal["Y", "N"]
 
 
-class FileUploadResult(TypedDict):
+class FileUploadResult(t.TypedDict):
     """File upload result.
 
     Keys:
@@ -42,7 +38,7 @@ class FileUploadResult(TypedDict):
     msg: str
 
 
-class GroupProperties(TypedDict, total=False):
+class GroupProperties(t.TypedDict, total=False):
     """Group properties.
 
     Keys:
@@ -64,7 +60,7 @@ class GroupProperties(TypedDict, total=False):
     description: str
 
 
-class LanguageProperties(TypedDict, total=False):
+class LanguageProperties(t.TypedDict, total=False):
     """Language properties.
 
     Keys:
@@ -138,7 +134,7 @@ class LanguageProperties(TypedDict, total=False):
     attachments: str | None
 
 
-class OperationStatus(TypedDict):
+class OperationStatus(t.TypedDict):
     """Delete language result.
 
     Keys:
@@ -148,7 +144,7 @@ class OperationStatus(TypedDict):
     status: str
 
 
-class QuestionsListElement(TypedDict):
+class QuestionsListElement(t.TypedDict):
     """List questions result.
 
     Keys:
@@ -202,7 +198,7 @@ class QuestionsListElement(TypedDict):
     same_script: int
 
 
-class QuestionProperties(TypedDict, total=False):
+class QuestionProperties(t.TypedDict, total=False):
     """Question properties result.
 
     Keys:
@@ -263,7 +259,7 @@ class QuestionProperties(TypedDict, total=False):
     attributes_lang: dict[str, t.Any]
 
 
-class QuotaListElement(TypedDict):
+class QuotaListElement(t.TypedDict):
     """List quotas result.
 
     Keys:
@@ -283,7 +279,7 @@ class QuotaListElement(TypedDict):
     autoload_url: int
 
 
-class QuotaProperties(TypedDict, total=False):
+class QuotaProperties(t.TypedDict, total=False):
     """Quota properties result.
 
     Keys:
@@ -305,7 +301,7 @@ class QuotaProperties(TypedDict, total=False):
     autoload_url: int
 
 
-class RPCResponse(TypedDict):
+class RPCResponse(t.TypedDict):
     """RPC response payload.
 
     Keys:
@@ -319,7 +315,7 @@ class RPCResponse(TypedDict):
     error: str | None
 
 
-class SetQuotaPropertiesResult(TypedDict):
+class SetQuotaPropertiesResult(t.TypedDict):
     """Set quota properties result.
 
     Keys:
@@ -331,7 +327,7 @@ class SetQuotaPropertiesResult(TypedDict):
     message: QuotaProperties
 
 
-class SurveyProperties(TypedDict, total=False):
+class SurveyProperties(t.TypedDict, total=False):
     """Survey properties result.
 
     Keys:
@@ -473,7 +469,7 @@ class SurveyProperties(TypedDict, total=False):
     additional_languages: str
 
 
-class CPDBParticipantImportResult(TypedDict):
+class CPDBParticipantImportResult(t.TypedDict):
     """CPDB participant import result.
 
     Keys:
