@@ -126,11 +126,14 @@ select = [
   "F", # Pyflakes
   "E", # pycodestyle (error)
   "W", # pycodestyle (warning)
+  "I0", # isort
   "D", # pydocstyle (with google style docstring convention)
   "U", # pyupgrade
   "N8", # pep8-naming
+  "ERA", # eradicate
   "S", # flake8-bandit
   "C4", # flake8-comprehensions
+  "T1", # flake8-debugger
   "FBT", # flake8-boolean-trap
   "B0", # flake8-bugbear
   "A0", # flake8-builtins
@@ -144,6 +147,7 @@ select = [
   "RUF", # Ruff-specific rules
   "M", # Meta rules
 ]
+src = ["src", "tests"]
 
 [tool.ruff.per-file-ignores]
 "noxfile.py" = ["ANN"]
@@ -163,6 +167,9 @@ multiline-quotes = "double"
 
 [tool.ruff.flake8-annotations]
 allow-star-arg-any = true
+
+[tool.ruff.isort]
+known-first-party = ["citric"]
 
 [tool.ruff.mccabe]
 max-complexity = 5
