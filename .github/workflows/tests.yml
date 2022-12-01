@@ -8,6 +8,19 @@ on:
   workflow_dispatch:
     inputs: {}
 jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3.1.0
+    - uses: actions/setup-python@v4.3.0
+      with:
+        python-version: 3.9
+    - name: Install Ruff
+      run: pipx install git+https://github.com/edgarrmondragon/ruff.git@feat/974-github-format
+    - name: Ruff lint
+      run: ruff . --verbose --format github
+
   tests:
     name: ${{ matrix.session }} ${{ matrix.python-version }}${{ matrix.session == 'integration' && format(' / integration with {0}', matrix.image_tag || matrix.limesurvey_version) || '' }} / ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
