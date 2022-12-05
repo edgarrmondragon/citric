@@ -101,12 +101,10 @@ class Session:
             An RPC result.
         """
         if method == "get_session_key" or method.startswith("system."):
-            result = self._invoke(self._session, self.url, method, *params)
-        # Methods requiring authentication
-        else:
-            result = self._invoke(self._session, self.url, method, self.key, *params)
+            return self._invoke(self._session, self.url, method, *params)
 
-        return result
+        # Methods requiring authentication
+        return self._invoke(self._session, self.url, method, self.key, *params)
 
     @staticmethod
     def _invoke(

@@ -126,26 +126,31 @@ select = [
   "F", # Pyflakes
   "E", # pycodestyle (error)
   "W", # pycodestyle (warning)
+  "C9", # mccabe
   "I0", # isort
   "D", # pydocstyle (with google style docstring convention)
   "U", # pyupgrade
   "N8", # pep8-naming
-  "ERA", # eradicate
+  "YTT", # flake8-2020
+  "ANN", # flake8-annotations
   "S", # flake8-bandit
-  "C4", # flake8-comprehensions
-  "T1", # flake8-debugger
+  "BLE", # flake8-blind-except
   "FBT", # flake8-boolean-trap
   "B0", # flake8-bugbear
   "A0", # flake8-builtins
-  "I25", # flake8-tidy-imports
+  "C4", # flake8-comprehensions
+  "T1", # flake8-debugger
   "T2", # flake8-print
-  "Q0", # flake8-quotes
-  "ANN", # flake8-annotations
-  "YTT", # flake8-2020
-  "BLE", # flake8-blind-except
-  "C9", # mccabe
+  "Q", # flake8-quotes
+  "RET", # flake8-return
+  "I25", # flake8-tidy-imports
+  "ERA", # eradicate
+  "PGH", # pygrep-hooks
+  "PLC", # Pylint
+  "PLE", # Pylint
+  "PLR", # Pylint
+  "PLW", # Pylint
   "RUF", # Ruff-specific rules
-  "M", # Meta rules
 ]
 src = ["src", "tests"]
 
