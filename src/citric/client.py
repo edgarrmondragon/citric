@@ -519,21 +519,21 @@ class Client:
                     fields,
                 ),
             )
-        else:
-            return base64.b64decode(
-                self.__session.export_responses_by_token(
-                    survey_id,
-                    enums.ResponsesExportFormat(file_format),
-                    token,
-                    language,
-                    enums.SurveyCompletionStatus(completion_status),
-                    enums.HeadingType(heading_type),
-                    enums.ResponseType(response_type),
-                    from_response_id,
-                    to_response_id,
-                    fields,
-                ),
-            )
+
+        return base64.b64decode(
+            self.__session.export_responses_by_token(
+                survey_id,
+                enums.ResponsesExportFormat(file_format),
+                token,
+                language,
+                enums.SurveyCompletionStatus(completion_status),
+                enums.HeadingType(heading_type),
+                enums.ResponseType(response_type),
+                from_response_id,
+                to_response_id,
+                fields,
+            ),
+        )
 
     def save_responses(
         self,
