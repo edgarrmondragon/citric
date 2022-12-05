@@ -1,5 +1,0 @@
-kind: Refactor
-body: 'Refactor returns of the type `if: ... else: return ...`'
-time: 2022-12-05T13:13:02.258143-06:00
-custom:
-  Issue: "626"
