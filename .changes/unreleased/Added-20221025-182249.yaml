@@ -1,5 +1,0 @@
-kind: Added
-body: Experimental support for Python 3.12
-time: 2022-10-25T18:22:49.578716-05:00
-custom:
-  Issue: "586"
