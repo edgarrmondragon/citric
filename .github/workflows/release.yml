@@ -37,6 +37,14 @@ jobs:
     - name: Build
       run: poetry build
 
+    - name: Upload wheel to release
+      uses: svenstaro/upload-release-action@v2
+      with:
+        file: dist/*.whl
+        tag: ${{ github.ref }}
+        overwrite: true
+        file_glob: true
+
     - name: Publish
       uses: pypa/gh-action-pypi-publish@v1.6.1
       with:
