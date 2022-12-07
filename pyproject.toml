@@ -150,9 +150,13 @@ select = [
   "PLE", # Pylint
   "PLR", # Pylint
   "PLW", # Pylint
+  # TODO: enable when Juptyer is supported
+  # https://github.com/charliermarsh/ruff/issues/1079
+  # "ICN", # flake8-import-conventions
   "RUF", # Ruff-specific rules
 ]
 src = ["src", "tests"]
+target-version = "py37"
 
 [tool.ruff.per-file-ignores]
 "noxfile.py" = ["ANN"]
@@ -172,6 +176,8 @@ multiline-quotes = "double"
 
 [tool.ruff.flake8-annotations]
 allow-star-arg-any = true
+mypy-init-return = true
+suppress-dummy-args = true
 
 [tool.ruff.isort]
 known-first-party = ["citric"]
