@@ -129,7 +129,7 @@ select = [
   "C9", # mccabe
   "I0", # isort
   "D", # pydocstyle (with google style docstring convention)
-  "U", # pyupgrade
+  "UP", # pyupgrade
   "N8", # pep8-naming
   "YTT", # flake8-2020
   "ANN", # flake8-annotations
@@ -140,10 +140,12 @@ select = [
   "A0", # flake8-builtins
   "C4", # flake8-comprehensions
   "T1", # flake8-debugger
+  "ICN", # flake8-import-conventions
   "T2", # flake8-print
   "Q", # flake8-quotes
   "RET", # flake8-return
-  "I25", # flake8-tidy-imports
+  "TID", # flake8-tidy-imports
+  "ARG", # flake8-unused-arguments
   "ERA", # eradicate
   "PGH", # pygrep-hooks
   "PLC", # Pylint
@@ -161,6 +163,7 @@ target-version = "py37"
 [tool.ruff.per-file-ignores]
 "noxfile.py" = ["ANN"]
 "tests/*" = [
+  "ARG00",
   "C901",
   "FBT",
   "S101",

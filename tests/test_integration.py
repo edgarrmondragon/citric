@@ -226,7 +226,7 @@ def test_activate_tokens(client: citric.Client, survey_id: int):
     with pytest.raises(LimeSurveyStatusError, match="No survey participants table"):
         client.list_participants(survey_id)
 
-    client.activate_tokens(survey_id)
+    client.activate_tokens(survey_id, [1, 2, 3, 4, 5])
 
     with pytest.raises(LimeSurveyStatusError, match="No survey participants found"):
         client.list_participants(survey_id)
@@ -236,7 +236,7 @@ def test_activate_tokens(client: citric.Client, survey_id: int):
 def test_participants(client: citric.Client, survey_id: int):
     """Test participants methods."""
     client.activate_survey(survey_id)
-    client.activate_tokens(survey_id)
+    client.activate_tokens(survey_id, [1, 2])
 
     data = [
         {
@@ -244,18 +244,24 @@ def test_participants(client: citric.Client, survey_id: int):
             "firstname": "John",
             "lastname": "Doe",
             "token": "1",
+            "attribute_1": "Dog person",
+            "attribute_2": "Night owl",
         },
         {
             "email": "jane@example.com",
             "firstname": "Jane",
             "lastname": "Doe",
             "token": "2",
+            "attribute_1": "Cat person",
+            "attribute_2": "Early bird",
         },
         {
             "email": "jane@example.com",
             "firstname": "Jane",
             "lastname": "Doe",
             "token": "2",
+            "attribute_1": "Cat person",
+            "attribute_2": "Night owl",
         },
     ]
 
@@ -269,8 +275,13 @@ def test_participants(client: citric.Client, survey_id: int):
         assert p["email"] == d["email"]
         assert p["firstname"] == d["firstname"]
         assert p["lastname"] == d["lastname"]
+        assert p["attribute_1"] == d["attribute_1"]
+        assert p["attribute_2"] == d["attribute_2"]
 
-    participants = client.list_participants(survey_id)
+    participants = client.list_participants(
+        survey_id,
+        attributes=["attribute_1", "attribute_2"],
+    )
 
     # Confirm that the participants are deduplicated based on token
     assert len(participants) == 2
@@ -280,6 +291,8 @@ def test_participants(client: citric.Client, survey_id: int):
         assert p["participant_info"]["email"] == d["email"]
         assert p["participant_info"]["firstname"] == d["firstname"]
         assert p["participant_info"]["lastname"] == d["lastname"]
+        assert p["attribute_1"] == d["attribute_1"]
+        assert p["attribute_2"] == d["attribute_2"]
 
     # Get participant properties
     for p, d in zip(added, data[:2]):
@@ -287,15 +300,19 @@ def test_participants(client: citric.Client, survey_id: int):
         assert properties["email"] == d["email"]
         assert properties["firstname"] == d["firstname"]
         assert properties["lastname"] == d["lastname"]
+        assert properties["attribute_1"] == d["attribute_1"]
+        assert properties["attribute_2"] == d["attribute_2"]
 
     # Update participant properties
     response = client.set_participant_properties(
         survey_id,
         added[0]["tid"],
         firstname="Johnny",
+        attribute_1="Hamster person",
     )
     assert response["firstname"] == "Johnny"
     assert response["lastname"] == "Doe"
+    assert response["attribute_1"] == "Hamster person"
 
     # Delete participants
     deleted = client.delete_participants(survey_id, [added[0]["tid"]])
