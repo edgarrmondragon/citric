@@ -1,5 +1,0 @@
-kind: Security
-body: Pass `attributes` to `activate_tokens` RPC call
-time: 2022-12-09T22:33:09.952033-06:00
-custom:
-  Issue: "634"
