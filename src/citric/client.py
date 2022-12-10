@@ -131,9 +131,9 @@ class Client:
 
     def __exit__(
         self,
-        exc_type: type[BaseException] | None,
-        exc_value: BaseException | None,
-        traceback: TracebackType | None,
+        exc_type: type[BaseException] | None,  # noqa: ARG002
+        exc_value: BaseException | None,  # noqa: ARG002
+        traceback: TracebackType | None,  # noqa: ARG002
     ) -> None:
         """Safely exit the client context."""
         self.close()
@@ -168,7 +168,7 @@ class Client:
     def activate_tokens(
         self,
         survey_id: int,
-        attributes: list[str] | None = None,
+        attributes: list[int] | None = None,
     ) -> dict[str, str]:
         """Initialise the survey participant table.
 
@@ -176,12 +176,12 @@ class Client:
 
         Args:
             survey_id: ID of survey to be activated.
-            attributes: Additional fields.
+            attributes: Optional list of participant attributes numbers to be activated.
 
         Returns:
             Status message.
         """
-        return self.__session.activate_tokens(survey_id)
+        return self.__session.activate_tokens(survey_id, attributes or [])
 
     def add_language(self, survey_id: int, language: str) -> dict[str, Any]:
         """Add a survey language.

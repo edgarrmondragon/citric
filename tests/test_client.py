@@ -185,7 +185,7 @@ def test_activate_survey(client: MockClient):
 
 def test_activate_tokens(client: MockClient):
     """Test activate_tokens client method."""
-    assert_client_session_call(client, "activate_tokens", 1)
+    assert_client_session_call(client, "activate_tokens", 1, [])
 
 
 def test_add_group(client: MockClient):
