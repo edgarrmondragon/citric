@@ -1,0 +1,5 @@
+kind: Changed
+body: Remove upper bound constrain on `importlib-metadata`
+time: 2022-12-15T00:48:44.276712-06:00
+custom:
+  Issue: "642"

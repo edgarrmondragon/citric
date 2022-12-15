@@ -311,14 +311,14 @@ files = [
 
 [[package]]
 name = "importlib-metadata"
-version = "4.13.0"
+version = "5.1.0"
 description = "Read metadata from Python packages"
 category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "importlib_metadata-4.13.0-py3-none-any.whl", hash = "sha256:8a8a81bcf996e74fee46f0d16bd3eaa382a7eb20fd82445c3ad11f4090334116"},
-    {file = "importlib_metadata-4.13.0.tar.gz", hash = "sha256:dd0173e8f150d6815e098fd354f6414b0f079af4644ddfe90c71e2fc6174346d"},
+    {file = "importlib_metadata-5.1.0-py3-none-any.whl", hash = "sha256:d84d17e21670ec07990e1044a99efe8d615d860fd176fc29ef5c306068fda313"},
+    {file = "importlib_metadata-5.1.0.tar.gz", hash = "sha256:d5059f9f1e8e41f80e9c56c2ee58811450c31984dfa625329ffd7c0dad88a73b"},
 ]
 
 [package.dependencies]
@@ -1314,4 +1314,4 @@ docs = ["furo", "myst-parser", "sphinx", "sphinx-autoapi", "sphinx-autobuild", "
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.7.0"
-content-hash = "77f9cd8f8c83197ea4e4be486c08b840d3fa99512de569a3068c2a1dde299a3b"
+content-hash = "718205126e91a6a865bb2d8d65c6532b1b7fed1cf0ccb055271f57ed0c59dbea"
