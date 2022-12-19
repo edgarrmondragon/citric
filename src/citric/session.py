@@ -160,9 +160,8 @@ class Session:
             raise LimeSurveyApiError(error)
 
         if response_id != request_id:
-            raise ResponseMismatchError(
-                f"Response ID {response_id} does not match request ID {request_id}",
-            )
+            msg = f"Response ID {response_id} does not match request ID {request_id}"
+            raise ResponseMismatchError(msg)
 
         return result
 
