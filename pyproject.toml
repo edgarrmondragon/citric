@@ -140,6 +140,7 @@ select = [
   "A0", # flake8-builtins
   "C4", # flake8-comprehensions
   "T1", # flake8-debugger
+  "EM", # flake8-errmsg
   "ICN", # flake8-import-conventions
   "T2", # flake8-print
   "Q", # flake8-quotes
@@ -181,6 +182,9 @@ multiline-quotes = "double"
 allow-star-arg-any = true
 mypy-init-return = true
 suppress-dummy-args = true
+
+[tool.ruff.flake8-errmsg]
+max-string-length = 30
 
 [tool.ruff.isort]
 known-first-party = ["citric"]
