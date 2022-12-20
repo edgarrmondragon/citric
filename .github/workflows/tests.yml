@@ -158,7 +158,7 @@ jobs:
       env:
         PIP_CONSTRAINT: .github/workflows/constraints.txt
       run: |
-        pipx install poetry
+        pipx install poetry --verbose
         poetry --version
 
     - name: Install Nox
