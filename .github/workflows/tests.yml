@@ -13,8 +13,10 @@ jobs:
     runs-on: ${{ matrix.os }}
     continue-on-error: ${{ matrix.experimental || false }}
     env:
-      NOXSESSION: ${{ matrix.session }}-${{ matrix.python-version }}
       FORCE_COLOR: "1"
+      NOXSESSION: ${{ matrix.session }}-${{ matrix.python-version }}
+      PIP_CONSTRAINT: .github/workflows/constraints.txt
+      PIP_ONLY_BINARY: ":all:"
     strategy:
       fail-fast: false
       matrix:
@@ -138,8 +140,6 @@ jobs:
         python-version: "${{ matrix.python-version }}-dev"
 
     - name: Upgrade pip
-      env:
-        PIP_CONSTRAINT: .github/workflows/constraints.txt
       run: |
         pip install pip
         pip --version
@@ -154,15 +154,11 @@ jobs:
             print(f"VIRTUALENV_PIP={pip.__version__}", file=io)
 
     - name: Install Poetry
-      env:
-        PIP_CONSTRAINT: .github/workflows/constraints.txt
       run: |
         pipx install poetry
         poetry --version
 
     - name: Install Nox
-      env:
-        PIP_CONSTRAINT: .github/workflows/constraints.txt
       run: |
         pipx install nox
         pipx inject nox nox-poetry
