@@ -23,17 +23,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@v3.1.0
+      uses: actions/checkout@v3.2.0
 
     - name: Batch changes
       uses: miniscruff/changie-action@v0.2.0
       with:
         version: ${{ github.event.inputs.changie-version }}
         args: >
-          batch
-          ${{ github.event.inputs.next-version }}
-          ${{ github.event.inputs.prerelease && format('-p {0}', github.event.inputs.prerelease) || '--remove-prereleases' }}
-          ${{ github.event.inputs.metadata && format('-m {0}', github.event.inputs.metadata) }}
+          "batch"
+          "${{ github.event.inputs.next-version }}"
+          "${{ github.event.inputs.prerelease && format('-p {0}', github.event.inputs.prerelease) || '--remove-prereleases' }}"
+          "${{ github.event.inputs.metadata && format('-m {0}', github.event.inputs.metadata) }}"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -51,6 +51,17 @@ jobs:
       with:
         version: ${{ github.event.inputs.changie-version }}
         args: latest
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Draft Release
+      id: draft-release
+      uses: softprops/action-gh-release@v1
+      with:
+        draft: true
+        body_path: ".changes/${{ steps.latest.outputs.output }}.md"
+        tag_name: ${{ steps.latest.outputs.output }}
+        prerelease: "${{ github.event.inputs.prerelease != '' }}"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

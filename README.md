@@ -39,9 +39,13 @@
 </div>
 
 <div>
-  <img alt="GitHub languages" src="https://img.shields.io/github/languages/top/edgarrmondragon/citric">
+  <a href="https://github.com/edgarrmondragon/citric/search?l=python">
+    <img alt="GitHub languages" src="https://img.shields.io/github/languages/top/edgarrmondragon/citric">
+  </a>
   <img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/edgarrmondragon/citric">
-  <img alt="GitHub stars" src="https://img.shields.io/github/stars/edgarrmondragon/citric">
+  <a href="https://github.com/edgarrmondragon/citric/stargazers">
+    <img alt="GitHub stars" src="https://img.shields.io/github/stars/edgarrmondragon/citric">
+  </a>
   <a href="https://github.com/edgarrmondragon/citric/commits/main">
     <img alt="Github last-commit" src="https://img.shields.io/github/last-commit/edgarrmondragon/citric"/>
   </a>

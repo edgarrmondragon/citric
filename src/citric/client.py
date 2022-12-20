@@ -398,7 +398,7 @@ class Client:
         data = self._map_response_keys(response_data, questions)
         return self.__session.update_response(survey_id, data)
 
-    def copy_survey(self, survey_id: int, name: str) -> int:
+    def copy_survey(self, survey_id: int, name: str) -> dict[str, Any]:
         """Copy a survey.
 
         Args:
@@ -406,7 +406,7 @@ class Client:
             name: Name of the new survey.
 
         Returns:
-            ID of the new survey.
+            Dictionary of status message and the new survey ID.
         """
         return self.__session.copy_survey(survey_id, name)
 
@@ -841,7 +841,7 @@ class Client:
     def get_survey_properties(
         self,
         survey_id: int,
-        properties: list[str] | None = None,
+        properties: Sequence[str] | None = None,
     ) -> dict[str, Any]:
         """Get properties of a survey.
 
