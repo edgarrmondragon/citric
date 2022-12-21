@@ -1315,4 +1315,4 @@ docs = ["furo", "myst-parser", "sphinx", "sphinx-autoapi", "sphinx-autobuild", "
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.7.0"
-content-hash = "5aa5e26518749508dfabe517e8e35ee0c4ba9a6a404e99b6a549374f91498e0b"
+content-hash = "9c2eb6e910419a6686b582b381bd94f31571f8712069f0adeae379078771aec9"
