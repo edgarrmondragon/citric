@@ -192,7 +192,7 @@ jobs:
     - name: Run Nox
       env:
         PIP_ONLY_BINARY: ":all:"
-        PIP_NO_BINARY: ${{ matrix.python-version == '3.12' || matrix.python-version == 'pypy3.9' && 'coverage' }}
+        PIP_NO_BINARY: ${{ (matrix.python-version == '3.12' || matrix.python-version == 'pypy3.9') && 'coverage' }}
       run: |
         nox
 
