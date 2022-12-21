@@ -16,6 +16,7 @@ jobs:
       FORCE_COLOR: "1"
       NOXSESSION: ${{ matrix.session }}-${{ matrix.python-version }}
       PIP_ONLY_BINARY: ":all:"
+      PIP_NO_BINARY: ${{ matrix.experimental && 'coverage' }}
     strategy:
       fail-fast: false
       matrix:
@@ -82,6 +83,7 @@ jobs:
         - python-version: "pypy3.9"
           os: "ubuntu-latest"
           session: "tests"
+          experimental: true
 
         - python-version: "3.10"
           os: "windows-latest"
@@ -116,6 +118,7 @@ jobs:
           os: "ubuntu-latest"
           session: "integration"
           image_tag: "5-apache"
+          experimental: true
 
         - python-version: "3.10"
           os: "ubuntu-latest"
