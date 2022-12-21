@@ -13,8 +13,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     continue-on-error: ${{ matrix.experimental || false }}
     env:
-      NOXSESSION: ${{ matrix.session }}-${{ matrix.python-version }}
       FORCE_COLOR: "1"
+      NOXSESSION: ${{ matrix.session }}-${{ matrix.python-version }}
     strategy:
       fail-fast: false
       matrix:
@@ -157,7 +157,7 @@ jobs:
       env:
         PIP_CONSTRAINT: .github/workflows/constraints.txt
       run: |
-        pipx install poetry
+        pipx install poetry --verbose
         poetry --version
 
     - name: Install Nox
@@ -190,6 +190,9 @@ jobs:
         docker ps -a
 
     - name: Run Nox
+      env:
+        PIP_ONLY_BINARY: ":all:"
+        PIP_NO_BINARY: ${{ (matrix.python-version == '3.12' || matrix.python-version == 'pypy3.9') && 'coverage' }}
       run: |
         nox
 
