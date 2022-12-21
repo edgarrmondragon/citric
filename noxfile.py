@@ -77,10 +77,12 @@ def mypy(session: Session) -> None:
 def tests(session: Session) -> None:
     """Execute pytest tests and compute coverage."""
     deps = ["coverage[toml]", "pytest"]
+    env = {"PIP_ONLY_BINARY": ":all:"}
+
     if "GITHUB_ACTIONS" in os.environ:
         deps.append("pytest-github-actions-annotate-failures")
 
-    session.install(".")
+    session.install(".", env=env)
     session.install(*deps)
     args = session.posargs or ["-m", "not integration_test"]
 
