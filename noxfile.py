@@ -83,7 +83,7 @@ def tests(session: Session) -> None:
         deps.append("pytest-github-actions-annotate-failures")
 
     session.install(".", env=env)
-    session.install(*deps)
+    session.install(*deps, env=env)
     args = session.posargs or ["-m", "not integration_test"]
 
     try:
