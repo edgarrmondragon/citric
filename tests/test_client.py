@@ -349,7 +349,11 @@ def test_delete_participants(client: MockClient):
 
 def test_export_timeline(client: MockClient):
     """Test export_timeline client method."""
-    assert client.export_timeline(1, "hour", datetime.datetime(2020, 1, 1)) == {
+    assert client.export_timeline(
+        1,
+        "hour",
+        datetime.datetime(2020, 1, 1, tzinfo=datetime.timezone.utc),
+    ) == {
         "2022-01-01": 4,
         "2022-01-02": 2,
     }
