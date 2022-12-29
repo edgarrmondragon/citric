@@ -142,21 +142,21 @@ select = [
   "C4", # flake8-comprehensions
   "T1", # flake8-debugger
   "EM", # flake8-errmsg
-  "ICN", # flake8-import-conventions
+  # TODO: enable when Juptyer is supported
+  # https://github.com/charliermarsh/ruff/issues/1079
+  # "ICN", # flake8-import-conventions
   "T2", # flake8-print
   "Q", # flake8-quotes
   "RET", # flake8-return
   "TID", # flake8-tidy-imports
   "ARG", # flake8-unused-arguments
+  "DTZ", # flake8-datetimez
   "ERA", # eradicate
   "PGH", # pygrep-hooks
   "PLC", # Pylint
   "PLE", # Pylint
   "PLR", # Pylint
   "PLW", # Pylint
-  # TODO: enable when Juptyer is supported
-  # https://github.com/charliermarsh/ruff/issues/1079
-  # "ICN", # flake8-import-conventions
   "RUF", # Ruff-specific rules
 ]
 src = ["src", "tests"]
@@ -192,6 +192,9 @@ known-first-party = ["citric"]
 
 [tool.ruff.mccabe]
 max-complexity = 5
+
+[tool.ruff.pydocstyle]
+convention = "google"
 
 [build-system]
 build-backend = "poetry.masonry.api"
