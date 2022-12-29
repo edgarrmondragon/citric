@@ -675,7 +675,9 @@ class Client:
             survey_id,
             enums.TimelineAggregationPeriod(period),
             start.isoformat(),
-            end.isoformat() if end else datetime.datetime.utcnow().isoformat(),
+            end.isoformat()
+            if end
+            else datetime.datetime.now(tz=datetime.timezone.utc).isoformat(),
         )
 
     def get_group_properties(
