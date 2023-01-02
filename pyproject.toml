@@ -146,6 +146,8 @@ select = [
   # https://github.com/charliermarsh/ruff/issues/1079
   # "ICN", # flake8-import-conventions
   "T2", # flake8-print
+  # TODO(me): enable these
+  # "PT", # flake8-pytest-style
   "Q", # flake8-quotes
   "RET", # flake8-return
   "TID", # flake8-tidy-imports
@@ -186,6 +188,10 @@ suppress-dummy-args = true
 
 [tool.ruff.flake8-errmsg]
 max-string-length = 30
+
+# [tool.ruff.flake8-pytest-style]
+# fixture-parentheses = false
+# mark-parentheses = false
 
 [tool.ruff.isort]
 known-first-party = ["citric"]

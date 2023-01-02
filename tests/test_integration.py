@@ -54,7 +54,7 @@ def client(url: str) -> Generator[citric.Client, None, None]:
     client.close()
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def survey_id(client: citric.Client) -> Generator[int, None, None]:
     """Import a survey from a file and return its ID."""
     with open("./examples/survey.lss", "rb") as f:
