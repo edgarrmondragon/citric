@@ -1,5 +1,6 @@
 ci:
-  autofix_prs: false
+  autofix_commit_msg: '[pre-commit.ci] auto fixes'
+  autofix_prs: true
   autoupdate_schedule: weekly
   autoupdate_commit_msg: 'chore(deps): pre-commit autoupdate'
 
@@ -24,6 +25,7 @@ repos:
   rev: 5.11.4
   hooks:
   - id: isort
+    args: [--add-import, "from __future__ import annotations", "--append-only"]
 
 - repo: https://github.com/pycqa/flake8
   rev: 6.0.0
@@ -40,7 +42,6 @@ repos:
   - id: mypy
     additional_dependencies:
     - types-requests
-    - types-psycopg2
 
 - repo: https://github.com/asottile/pyupgrade
   rev: v3.3.1
@@ -65,7 +66,18 @@ repos:
   - id: poetry-check
 
 - repo: https://github.com/charliermarsh/ruff-pre-commit
-  rev: v0.0.206
+  rev: v0.0.209
   hooks:
   - id: ruff
+    args: ["--fix"]
+
+- repo: https://github.com/nbQA-dev/nbQA
+  rev: 1.6.0
+  hooks:
+  - id: nbqa-black
+  - id: nbqa-pyupgrade
+    args: ["--py37-plus"]
+  - id: nbqa-isort
+  - id: nbqa-ruff
+    additional_dependencies: [ruff==0.0.209]
     args: ["--fix"]
