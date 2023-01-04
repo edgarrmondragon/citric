@@ -102,20 +102,6 @@ module = [
 ]
 
 [tool.ruff]
-extend-ignore = [
-  # equivalent to `--docstring-convention=google`
-  "D203",
-  "D204",
-  "D213",
-  "D215",
-  "D400",
-  "D404",
-  "D406",
-  "D407",
-  "D408",
-  "D409",
-  "D413",
-]
 ignore = [
   "ANN101",
 ]
