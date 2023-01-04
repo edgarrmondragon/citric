@@ -80,9 +80,6 @@ show_missing = true
 line-length = 88
 
 [tool.isort]
-add_imports = [
-  "from __future__ import annotations",
-]
 include_trailing_comma = true
 known_first_party = "citric"
 multi_line_output = 3 # Vertical Hanging Indent
@@ -142,23 +139,22 @@ select = [
   "C4", # flake8-comprehensions
   "T1", # flake8-debugger
   "EM", # flake8-errmsg
-  # TODO: enable when Juptyer is supported
-  # https://github.com/charliermarsh/ruff/issues/1079
-  # "ICN", # flake8-import-conventions
+  "ICN", # flake8-import-conventions
   "T2", # flake8-print
-  # TODO(me): enable these
-  # "PT", # flake8-pytest-style
+  "PT", # flake8-pytest-style
   "Q", # flake8-quotes
   "RET", # flake8-return
   "TID", # flake8-tidy-imports
   "ARG", # flake8-unused-arguments
   "DTZ", # flake8-datetimez
   "ERA", # eradicate
+  "PD", # pandas-vet
   "PGH", # pygrep-hooks
   "PLC", # Pylint
   "PLE", # Pylint
   "PLR", # Pylint
   "PLW", # Pylint
+  "PIE", # flake8-pie
   "RUF", # Ruff-specific rules
 ]
 src = ["src", "tests"]
@@ -189,9 +185,9 @@ suppress-dummy-args = true
 [tool.ruff.flake8-errmsg]
 max-string-length = 30
 
-# [tool.ruff.flake8-pytest-style]
-# fixture-parentheses = false
-# mark-parentheses = false
+[tool.ruff.flake8-pytest-style]
+fixture-parentheses = false
+mark-parentheses = false
 
 [tool.ruff.isort]
 known-first-party = ["citric"]

@@ -41,7 +41,6 @@ class MockSession(Session):
 
     def __init__(self, *args, **kwargs) -> None:
         """Create a mock session."""
-        pass
 
     def rpc(self, method: str, *params: Any) -> dict[str, Any]:
         """A mock RPC call."""
