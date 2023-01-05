@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import contextlib
 import csv
 import io
 import os
@@ -45,11 +46,9 @@ def client(url: str) -> Generator[citric.Client, None, None]:
 
     yield client
 
-    try:
+    with contextlib.suppress(LimeSurveyStatusError):
         for survey in client.list_surveys():
             client.delete_survey(survey["sid"])
-    except LimeSurveyStatusError:
-        pass
 
     client.close()
 
