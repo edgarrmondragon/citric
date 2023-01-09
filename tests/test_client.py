@@ -23,10 +23,7 @@ def _get_random_bytes(n: int):
     return random.getrandbits(n * 8).to_bytes(n, "little")
 
 
-if sys.version_info >= (3, 9):
-    randbytes = random.randbytes
-else:
-    randbytes = _get_random_bytes
+randbytes = random.randbytes if sys.version_info >= (3, 9) else _get_random_bytes
 
 
 class MockSession(Session):
