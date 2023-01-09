@@ -80,7 +80,11 @@ def test_session_context(
     assert session.closed
     assert session.key is None
 
-    message_regex = "can't set attribute" if sys.version_info < (3, 11) else "property .* of 'Session' object has no setter"
+    message_regex = (
+        "can't set attribute"
+        if sys.version_info < (3, 11)
+        else "property .* of 'Session' object has no setter"
+    )
 
     with pytest.raises(AttributeError, match=message_regex):
         session.key = "123456"
