@@ -126,7 +126,7 @@ jobs:
 
     steps:
     - name: Check out the repository
-      uses: actions/checkout@v3.2.0
+      uses: actions/checkout@v3.3.0
 
     - name: Setup Python ${{ matrix.python-version }}
       if: "${{ !matrix.nightly }}"
@@ -174,7 +174,7 @@ jobs:
 
     - name: Checkout Docker image repository
       if: ${{ matrix.session == 'integration' && matrix.limesurvey_version }}
-      uses: actions/checkout@v3.2.0
+      uses: actions/checkout@v3.3.0
       with:
         repository: martialblog/docker-limesurvey
         path: "./.docker-limesurvey"
@@ -212,7 +212,7 @@ jobs:
       NOXSESSION: coverage
     steps:
     - name: Check out the repository
-      uses: actions/checkout@v3.2.0
+      uses: actions/checkout@v3.3.0
 
     - name: Set up Python
       uses: actions/setup-python@v4.4.0
