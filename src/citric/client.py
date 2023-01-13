@@ -131,9 +131,9 @@ class Client:
 
     def __exit__(
         self,
-        exc_type: type[BaseException] | None,  # noqa: ARG002
-        exc_value: BaseException | None,  # noqa: ARG002
-        traceback: TracebackType | None,  # noqa: ARG002
+        exc_type: type[BaseException] | None,
+        exc_value: BaseException | None,
+        traceback: TracebackType | None,
     ) -> None:
         """Safely exit the client context."""
         self.close()
