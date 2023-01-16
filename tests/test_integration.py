@@ -355,7 +355,7 @@ def test_responses(client: citric.Client, survey_id: int):
         file.seek(0)
 
         file.write(
-            client.export_responses(survey_id, token="T00002", file_format="csv")
+            client.export_responses(survey_id, token="T00002", file_format="csv"),
         )
         file.seek(0)
         reader = csv.DictReader(textfile, delimiter=";")

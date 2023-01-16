@@ -581,7 +581,7 @@ class Client:
                     from_response_id=from_response_id,
                     to_response_id=to_response_id,
                     fields=fields,
-                )
+                ),
             )
 
     def export_statistics(
@@ -614,7 +614,7 @@ class Client:
                 language,
                 "yes" if graph else "no",
                 group_ids,
-            )
+            ),
         )
 
     def save_statistics(
@@ -650,7 +650,7 @@ class Client:
                     language=language,
                     graph=graph,
                     group_ids=group_ids,
-                )
+                ),
             )
 
     def export_timeline(

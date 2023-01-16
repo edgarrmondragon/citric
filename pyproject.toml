@@ -157,6 +157,7 @@ target-version = "py37"
   "S105",
   "S106",
   "ANN",
+  "PLR2004",
 ]
 
 [tool.ruff.flake8-quotes]

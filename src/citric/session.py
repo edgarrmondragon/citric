@@ -17,6 +17,7 @@ from citric.exceptions import (
 )
 from citric.method import Method
 
+GET_SESSION_KEY = "get_session_key"
 _T = TypeVar("_T", bound="Session")
 logger = logging.getLogger(__name__)
 
@@ -100,7 +101,7 @@ class Session:
         Returns:
             An RPC result.
         """
-        if method == "get_session_key" or method.startswith("system."):
+        if method == GET_SESSION_KEY or method.startswith("system."):
             return self._invoke(self._session, self.url, method, *params)
 
         # Methods requiring authentication
