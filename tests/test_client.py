@@ -490,7 +490,8 @@ def test_set_group_properties(client: MockClient):
     """Test set_group_properties client method."""
     props = {"name": "foo"}
     assert client.set_group_properties(
-        1, **props
+        1,
+        **props,
     ) == client.session.set_group_properties(1, props)
 
 
@@ -518,7 +519,9 @@ def test_set_question_properties(client: MockClient):
     """Test set_question_properties client method."""
     props = {"title": "foo", "question": "bar", "type": "text"}
     assert client.set_question_properties(
-        1, language="en", **props
+        1,
+        language="en",
+        **props,
     ) == client.session.set_question_properties(1, props, "en")
 
 
@@ -526,5 +529,6 @@ def test_set_survey_properties(client: MockClient):
     """Test set_survey_properties client method."""
     props = {"title": "foo", "welcome": "bar", "end": "baz"}
     assert client.set_survey_properties(
-        1, **props
+        1,
+        **props,
     ) == client.session.set_survey_properties(1, props)

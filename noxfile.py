@@ -20,6 +20,10 @@ except ImportError:
     {sys.executable} -m pip install nox-poetry"""
     raise SystemExit(dedent(message)) from None
 
+GH_ACTIONS_ENV_VAR = "GITHUB_ACTIONS"
+FORCE_COLOR = "FORCE_COLOR"
+PY312 = "3.12"
+
 package = "citric"
 python_versions = ["3.12", "3.11", "3.10", "3.9", "3.8", "3.7"]
 pypy_versions = ["pypy3.7", "pypy3.8", "pypy3.9"]
@@ -79,10 +83,10 @@ def tests(session: Session) -> None:
     deps = ["coverage[toml]", "pytest"]
     env = {"PIP_ONLY_BINARY": ":all:"}
 
-    if "GITHUB_ACTIONS" in os.environ:
+    if GH_ACTIONS_ENV_VAR in os.environ:
         deps.append("pytest-github-actions-annotate-failures")
 
-    if session.python == "3.12":
+    if session.python == PY312:
         env["PIP_NO_BINARY"] = "coverage"
 
     session.install(".", env=env)
@@ -100,7 +104,7 @@ def tests(session: Session) -> None:
 def integration(session: Session) -> None:
     """Execute integration tests and compute coverage."""
     deps = ["coverage[toml]", "pytest"]
-    if "GITHUB_ACTIONS" in os.environ:
+    if GH_ACTIONS_ENV_VAR in os.environ:
         deps.append("pytest-github-actions-annotate-failures")
 
     session.install(".")
@@ -137,7 +141,7 @@ def xdoctest(session: Session) -> None:
         args = [package, *session.posargs]
     else:
         args = [f"--modname={package}", "--command=all"]
-        if "FORCE_COLOR" in os.environ:
+        if FORCE_COLOR in os.environ:
             args.append("--colored=1")
 
     session.install(".")
@@ -193,7 +197,7 @@ def black_check(session: Session) -> None:
 def docs_build(session: Session) -> None:
     """Build the documentation."""
     args = session.posargs or ["docs", "build"]
-    if not session.posargs and "FORCE_COLOR" in os.environ:
+    if not session.posargs and FORCE_COLOR in os.environ:
         args.insert(0, "--color")
 
     session.install(".[docs]")
