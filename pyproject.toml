@@ -143,6 +143,7 @@ select = [
   "PLR", # Pylint
   "PLW", # Pylint
   "PIE", # flake8-pie
+  "COM", # flake8-commas
   "RUF", # Ruff-specific rules
 ]
 src = ["src", "tests"]
