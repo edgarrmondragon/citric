@@ -144,13 +144,15 @@ select = [
   "PLW", # Pylint
   "PIE", # flake8-pie
   "COM", # flake8-commas
+  "INP", # flake8-no-pep420
   "RUF", # Ruff-specific rules
 ]
 src = ["src", "tests"]
 target-version = "py37"
 
 [tool.ruff.per-file-ignores]
-"noxfile.py" = ["ANN"]
+"docs/*" = ["INP00"]
+"noxfile.py" = ["ANN", "INP001"]
 "tests/*" = [
   "ARG00",
   "C901",
