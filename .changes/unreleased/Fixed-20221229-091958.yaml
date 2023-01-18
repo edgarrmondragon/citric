@@ -1,5 +1,0 @@
-kind: Fixed
-body: Use a correct UTC datetime as the default end value in `export_timeline`
-time: 2022-12-29T09:19:58.050872-06:00
-custom:
-  Issue: "659"
