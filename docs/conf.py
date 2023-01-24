@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import os
+from pathlib import Path
 
 project = "citric"
 author = "Edgar Ramírez Mondragón"
@@ -23,7 +23,7 @@ autodoc_typehints_description_target = "documented"
 autoapi_type = "python"
 autoapi_root = "_api"
 autoapi_dirs = [
-    os.path.abspath("../src"),
+    Path("../src").resolve(),
 ]
 autoapi_options = [
     "members",

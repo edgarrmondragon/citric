@@ -283,7 +283,7 @@ class Client:
         response_data: Mapping[str, Any],
         question_mapping: dict[str, dict[str, Any]],
     ) -> dict[str, Any]:
-        """Converts response keys to LimeSurvey's internal representation.
+        """Convert response keys to LimeSurvey's internal representation.
 
         Args:
             response_data: The response mapping.
@@ -568,7 +568,7 @@ class Client:
         Returns:
             Bytes length written to file.
         """
-        with open(filename, "wb") as f:
+        with Path(filename).open("wb") as f:
             return f.write(
                 self.export_responses(
                     survey_id,
@@ -642,7 +642,7 @@ class Client:
         Returns:
             Bytes length written to file.
         """
-        with open(filename, "wb") as f:
+        with Path(filename).open("wb") as f:
             return f.write(
                 self.export_statistics(
                     survey_id,
@@ -924,7 +924,7 @@ class Client:
         for file in uploaded_files:
             filepath = dirpath / file.meta.filename
             filepaths.append(filepath)
-            with open(filepath, "wb") as f:
+            with Path(filepath).open("wb") as f:
                 f.write(file.content.read())
 
         return filepaths
@@ -1243,5 +1243,5 @@ class Client:
         if filename is None:
             filename = path.name
 
-        with open(path, "rb") as file:
+        with Path(path).open("rb") as file:
             return self.upload_file_object(survey_id, field, filename, file)

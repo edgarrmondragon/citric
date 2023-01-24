@@ -57,7 +57,7 @@ def client(url: str) -> Generator[citric.Client, None, None]:
 @pytest.fixture
 def survey_id(client: citric.Client) -> Generator[int, None, None]:
     """Import a survey from a file and return its ID."""
-    with open("./examples/survey.lss", "rb") as f:
+    with Path("./examples/survey.lss").open("rb") as f:
         survey_id = client.import_survey(f, survey_id=98765)
 
     yield survey_id
@@ -149,7 +149,7 @@ def test_survey(client: citric.Client):
 def test_group(client: citric.Client, survey_id: int):
     """Test group methods."""
     # Import a group
-    with open("./examples/group.lsg", "rb") as f:
+    with Path("./examples/group.lsg").open("rb") as f:
         group_id = client.import_group(f, survey_id)
 
     # Get group properties
@@ -181,7 +181,7 @@ def test_question(client: citric.Client, survey_id: int):
     group_id = client.add_group(survey_id, "Test Group")
 
     # Import a question from a lsq file
-    with open("./examples/free_text.lsq", "rb") as f:
+    with Path("./examples/free_text.lsq").open("rb") as f:
         question_id = client.import_question(f, survey_id, group_id)
 
     # Get question properties
