@@ -36,7 +36,7 @@ class LimeSurveyMockAdapter(BaseAdapter):
         cert: Any | None = None,
         proxies: Mapping[str, str] | None = None,
     ):
-        """Sends a mocked request."""
+        """Send a mocked request."""
         request_data = json.loads(request.body or "{}")
 
         response = requests.Response()
@@ -76,18 +76,18 @@ class LimeSurveyMockAdapter(BaseAdapter):
         return response
 
     def close(self):
-        """Cleans up adapter specific items."""
+        """Clean up adapter specific items."""
 
 
 @pytest.fixture(scope="session")
 def url() -> str:
-    """Dummy LimeSurvey RemoteControl URL."""
+    """Get a dummy LimeSurvey RemoteControl URL."""
     return "lime://example.com"
 
 
 @pytest.fixture(scope="session")
 def mock_session(url: str) -> requests.Session:
-    """Factory for building mock sessions."""
+    """Create a mock requests session."""
     requests_session = requests.Session()
     requests_session.mount(url, LimeSurveyMockAdapter())
     return requests_session
@@ -95,13 +95,13 @@ def mock_session(url: str) -> requests.Session:
 
 @pytest.fixture(scope="session")
 def username() -> str:
-    """Dummy LimeSurvey username."""
+    """Get a dummy LimeSurvey username."""
     return "limeuser"
 
 
 @pytest.fixture(scope="session")
 def password() -> str:
-    """Dummy LimeSurvey password."""
+    """Get a dummy LimeSurvey password."""
     return "limesecret"
 
 

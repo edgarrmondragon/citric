@@ -43,7 +43,7 @@ class MockSession(Session):
         """Create a mock session."""
 
     def rpc(self, method: str, *params: Any) -> dict[str, Any]:
-        """A mock RPC call."""
+        """Process a mock RPC call."""
         return {"method": method, "params": [*params]}
 
     def import_group(
@@ -403,10 +403,10 @@ def test_import_group(client: MockClient, tmp_path: Path):
 
     filepath = Path(tmp_path) / "group.lsq"
 
-    with open(filepath, "wb") as f:
+    with Path(filepath).open("wb") as f:
         f.write(random_bytes)
 
-    with open(filepath, "rb") as f:
+    with Path(filepath).open("rb") as f:
         assert client.import_group(f, 100, ImportGroupType.LSG) == random_bytes
 
 
@@ -416,10 +416,10 @@ def test_import_question(client: MockClient, tmp_path: Path):
 
     filepath = Path(tmp_path) / "question.lsq"
 
-    with open(filepath, "wb") as f:
+    with Path(filepath).open("wb") as f:
         f.write(random_bytes)
 
-    with open(filepath, "rb") as f:
+    with Path(filepath).open("rb") as f:
         assert client.import_question(f, 100, 1) == random_bytes
 
 
@@ -429,10 +429,10 @@ def test_import_survey(client: MockClient, tmp_path: Path):
 
     filepath = Path(tmp_path) / "survey.lss"
 
-    with open(filepath, "wb") as f:
+    with Path(filepath).open("wb") as f:
         f.write(random_bytes)
 
-    with open(filepath, "rb") as f:
+    with Path(filepath).open("rb") as f:
         assert client.import_survey(f) == {
             "content": random_bytes,
             "type": ImportSurveyType.LSS,
