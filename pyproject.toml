@@ -156,7 +156,7 @@ target-version = "py37"
 
 [tool.ruff.per-file-ignores]
 "docs/*" = ["INP00"]
-"noxfile.py" = ["ANN", "INP001"]
+"noxfile.py" = ["ANN", "INP001", "TCH002"]
 "tests/*" = [
   "ARG00",
   "C901",

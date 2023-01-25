@@ -5,22 +5,25 @@ from __future__ import annotations
 import base64
 import datetime
 import io
-import sys
 from dataclasses import dataclass
-from os import PathLike
 from pathlib import Path
-from types import TracebackType
-from typing import Any, BinaryIO, Generator, Iterable, Mapping, Sequence, TypeVar
+from typing import TYPE_CHECKING, TypeVar
 
 import requests
 
 from citric import enums
 from citric.session import Session
 
-if sys.version_info >= (3, 8):
-    from typing import Literal
-else:
-    from typing_extensions import Literal
+if TYPE_CHECKING:
+    import sys
+    from os import PathLike
+    from types import TracebackType
+    from typing import Any, BinaryIO, Generator, Iterable, Mapping, Sequence
+
+    if sys.version_info >= (3, 8):
+        from typing import Literal
+    else:
+        from typing_extensions import Literal
 
 
 _T = TypeVar("_T", bound="Client")

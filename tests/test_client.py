@@ -7,14 +7,19 @@ import datetime
 import random
 import sys
 from pathlib import Path
-from typing import Any, Generator
+from typing import TYPE_CHECKING
 
 import pytest
-from _pytest._py.path import LocalPath
 
 from citric.client import Client
 from citric.enums import ImportGroupType, ImportSurveyType, NewSurveyType
 from citric.session import Session
+
+if TYPE_CHECKING:
+    from typing import Any, Generator
+
+    from _pytest._py.path import LocalPath
+
 
 NEW_SURVEY_NAME = "New Survey"
 

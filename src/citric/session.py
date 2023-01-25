@@ -4,8 +4,7 @@ from __future__ import annotations
 
 import logging
 import random
-from types import TracebackType
-from typing import Any, TypeVar
+from typing import TYPE_CHECKING, TypeVar
 
 import requests
 
@@ -16,6 +15,10 @@ from citric.exceptions import (
     ResponseMismatchError,
 )
 from citric.method import Method
+
+if TYPE_CHECKING:
+    from types import TracebackType
+    from typing import Any
 
 GET_SESSION_KEY = "get_session_key"
 _T = TypeVar("_T", bound="Session")
