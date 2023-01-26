@@ -3,13 +3,16 @@
 from __future__ import annotations
 
 import json
-from typing import Any, Mapping
+from typing import TYPE_CHECKING
 
 import pytest
 import requests
 from requests.adapters import BaseAdapter
 
 from citric.session import Session
+
+if TYPE_CHECKING:
+    from typing import Any, Mapping
 
 
 class LimeSurveyMockAdapter(BaseAdapter):

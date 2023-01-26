@@ -6,7 +6,7 @@ import csv
 import io
 import os
 from pathlib import Path
-from typing import Any, Generator
+from typing import TYPE_CHECKING
 from urllib.parse import quote
 
 import pytest
@@ -14,6 +14,9 @@ import pytest
 import citric
 from citric import enums
 from citric.exceptions import LimeSurveyStatusError
+
+if TYPE_CHECKING:
+    from typing import Any, Generator
 
 LS_USER = "iamadmin"
 LS_PW = "secret"
