@@ -74,6 +74,10 @@ branch = true
 source = ["citric"]
 
 [tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    '''if (t\.)?TYPE_CHECKING:''',
+]
 fail_under = 90
 show_missing = true
 
