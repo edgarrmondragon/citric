@@ -1,0 +1,6 @@
+kind: Changed
+body: Use a dedicated `RPCInterfaceNotEnabledError` exception when a disabled JSON
+  Interface is detected
+time: 2023-01-26T20:32:14.157813-06:00
+custom:
+  Issue: "687"

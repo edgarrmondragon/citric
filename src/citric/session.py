@@ -25,6 +25,14 @@ _T = TypeVar("_T", bound="Session")
 logger = logging.getLogger(__name__)
 
 
+class RPCInterfaceNotEnabledError(LimeSurveyError):
+    """RPC interface not enabled on LimeSurvey."""
+
+    def __init__(self) -> None:
+        """Create a new exception."""
+        super().__init__("RPC interface not enabled")
+
+
 class Session:
     """LimeSurvey RemoteControl 2 session.
 
@@ -130,8 +138,9 @@ class Session:
             LimeSurveyStatusError: The response key from the response payload has
                 a non-null status.
             LimeSurveyApiError: The response payload has a non-null error key.
-            LimeSurveyError: If the JSON RPC interface is not enabled (empty response).
             ResponseMismatchError: Request ID does not match the response ID.
+            RPCInterfaceNotEnabledError: If the JSON RPC interface is not enabled
+                (empty response).
 
         Returns:
             Any: An RPC result.
@@ -148,7 +157,7 @@ class Session:
         res.raise_for_status()
 
         if res.text == "":
-            raise LimeSurveyError("RPC interface not enabled")
+            raise RPCInterfaceNotEnabledError()
 
         data = res.json()
 
