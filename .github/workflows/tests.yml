@@ -1,4 +1,5 @@
 name: Tests
+
 on:
   pull_request: {}
   push:
@@ -7,6 +8,11 @@ on:
   - cron: "44 */3 * * *"
   workflow_dispatch:
     inputs: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
 jobs:
   tests:
     name: "${{ matrix.session }} ${{ matrix.python-version }}${{ matrix.session == 'integration' && format(' / integration with {0}', matrix.image_tag || matrix.limesurvey_version) || '' }} / ${{ matrix.os }}"
