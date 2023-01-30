@@ -108,8 +108,8 @@ jobs:
         - python-version: "3.10"
           os: "ubuntu-22.04"
           session: "integration"
-          limesurvey_version: 5.4.8+221024
-          limesurvey_checksum: 8445c4f14dee4b16513a19d7e5298e86da885d02823b58ded9905496f558132c
+          limesurvey_version: 5.6.1+230123
+          limesurvey_checksum: fb878f9276dc35fd0c7047dbd45bb4e450f5f74bdc12a38f5fbbe4c684ba16a4
 
         - python-version: "pypy3.7"
           os: "ubuntu-22.04"
