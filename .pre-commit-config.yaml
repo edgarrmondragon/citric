@@ -50,7 +50,7 @@ repos:
     args: [--py37-plus]
 
 - repo: https://github.com/pre-commit/pre-commit
-  rev: v2.21.0
+  rev: v3.0.2
   hooks:
   - id: validate_manifest
 
