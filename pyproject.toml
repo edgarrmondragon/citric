@@ -150,7 +150,7 @@ select = [
   "COM", # flake8-commas
   "INP", # flake8-no-pep420
   "EXE", # flake8-executable
-  "TYP", # flake8-type-checking
+  "TCH", # flake8-type-checking
   "TRY", # tryceratops
   "PTH", # flake8-use-pathlib
   "RUF", # Ruff-specific rules
