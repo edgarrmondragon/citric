@@ -16,7 +16,7 @@ repos:
   - id: trailing-whitespace
 
 - repo: https://github.com/psf/black
-  rev: 22.12.0
+  rev: 23.1.0
   hooks:
   - id: black
     language_version: python3.10
@@ -50,7 +50,7 @@ repos:
     args: [--py37-plus]
 
 - repo: https://github.com/pre-commit/pre-commit
-  rev: v3.0.2
+  rev: v3.0.3
   hooks:
   - id: validate_manifest
 
@@ -61,7 +61,7 @@ repos:
     args: [--all]
 
 - repo: https://github.com/charliermarsh/ruff-pre-commit
-  rev: v0.0.238
+  rev: v0.0.240
   hooks:
   - id: ruff
     args: ["--fix"]
@@ -74,5 +74,5 @@ repos:
     args: ["--py37-plus"]
   - id: nbqa-isort
   - id: nbqa-ruff
-    additional_dependencies: [ruff==0.0.238]
+    additional_dependencies: [ruff==0.0.240]
     args: ["--fix"]
