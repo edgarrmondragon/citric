@@ -128,6 +128,7 @@ select = [
   "B0", # flake8-bugbear
   "A0", # flake8-builtins
   "C4", # flake8-comprehensions
+  "DTZ", # flake8-datetimez
   "T1", # flake8-debugger
   "EM", # flake8-errmsg
   "ICN", # flake8-import-conventions
@@ -138,7 +139,7 @@ select = [
   "SIM", # flake8-simplify
   "TID", # flake8-tidy-imports
   "ARG", # flake8-unused-arguments
-  "DTZ", # flake8-datetimez
+  "PTH", # flake8-use-pathlib
   "ERA", # eradicate
   "PD", # pandas-vet
   "PGH", # pygrep-hooks
@@ -152,7 +153,6 @@ select = [
   "EXE", # flake8-executable
   "TCH", # flake8-type-checking
   "TRY", # tryceratops
-  "PTH", # flake8-use-pathlib
   "RUF", # Ruff-specific rules
 ]
 src = ["src", "tests"]

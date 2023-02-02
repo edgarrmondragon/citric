@@ -10,9 +10,9 @@ import requests
 
 from citric.exceptions import (
     LimeSurveyApiError,
-    LimeSurveyError,
     LimeSurveyStatusError,
     ResponseMismatchError,
+    RPCInterfaceNotEnabledError,
 )
 from citric.method import Method
 from citric.session import Session
@@ -94,7 +94,7 @@ def test_session_context(
 
 def test_empty_response(session: Session):
     """Test empty response."""
-    with pytest.raises(LimeSurveyError, match="RPC interface not enabled"):
+    with pytest.raises(RPCInterfaceNotEnabledError, match="RPC interface not enabled"):
         session.__disabled()
 
 
