@@ -10,9 +10,9 @@ import requests
 
 from citric.exceptions import (
     LimeSurveyApiError,
-    LimeSurveyError,
     LimeSurveyStatusError,
     ResponseMismatchError,
+    RPCInterfaceNotEnabledError,
 )
 from citric.method import Method
 
@@ -23,14 +23,6 @@ if TYPE_CHECKING:
 GET_SESSION_KEY = "get_session_key"
 _T = TypeVar("_T", bound="Session")
 logger = logging.getLogger(__name__)
-
-
-class RPCInterfaceNotEnabledError(LimeSurveyError):
-    """RPC interface not enabled on LimeSurvey."""
-
-    def __init__(self) -> None:
-        """Create a new exception."""
-        super().__init__("RPC interface not enabled")
 
 
 class Session:
@@ -157,7 +149,7 @@ class Session:
         res.raise_for_status()
 
         if res.text == "":
-            raise RPCInterfaceNotEnabledError()
+            raise RPCInterfaceNotEnabledError
 
         data = res.json()
 
