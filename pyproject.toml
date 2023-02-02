@@ -153,6 +153,8 @@ select = [
   "EXE", # flake8-executable
   "TCH", # flake8-type-checking
   "TRY", # tryceratops
+  "RSE", # flake8-raise
+  "SLF", # flake8-self
   "RUF", # Ruff-specific rules
 ]
 src = ["src", "tests"]
@@ -170,6 +172,7 @@ target-version = "py37"
   "S106",
   "ANN",
   "PLR2004",
+  "SLF001",
 ]
 
 [tool.ruff.flake8-quotes]
