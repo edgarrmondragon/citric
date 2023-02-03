@@ -5,7 +5,7 @@ on:
     inputs:
       next-version:
         description: 'Next version use vX.Y.Z, patch, minor or major'
-        default: 'patch'
+        default: 'auto'
         required: true
       changie-version:
         description: Version of Changie to use
