@@ -26,7 +26,7 @@ maintainers = ["Edgar Ramírez-Mondragón <edgarrm358@gmail.com>"]
 name = "citric"
 readme = "README.md"
 repository = 'https://github.com/edgarrmondragon/citric'
-version = "0.4.3"
+version = "0.4.4"
 
 [tool.poetry.urls]
 "Issue Tracker" = "https://github.com/edgarrmondragon/citric/issues"
