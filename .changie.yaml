@@ -14,12 +14,19 @@ newlines:
   beforeChangelogVersion: 2
 kinds:
 - label: Added
+  auto: minor
 - label: Changed
+  auto: major
 - label: Deprecated
+  auto: patch
 - label: Removed
+  auto: major
 - label: Fixed
+  auto: patch
 - label: Security
-- label: Refactor
+  auto: patch
+- label: Refactored
+  auto: patch
 replacements:
 - path: pyproject.toml
   find: ^version = ".*"$
