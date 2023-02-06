@@ -50,7 +50,7 @@ repos:
     args: [--py37-plus]
 
 - repo: https://github.com/pre-commit/pre-commit
-  rev: v3.0.3
+  rev: v3.0.4
   hooks:
   - id: validate_manifest
 
@@ -61,7 +61,7 @@ repos:
     args: [--all]
 
 - repo: https://github.com/charliermarsh/ruff-pre-commit
-  rev: v0.0.240
+  rev: v0.0.241
   hooks:
   - id: ruff
     args: ["--fix"]
