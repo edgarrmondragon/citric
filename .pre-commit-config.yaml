@@ -61,7 +61,7 @@ repos:
     args: [--all]
 
 - repo: https://github.com/charliermarsh/ruff-pre-commit
-  rev: v0.0.241
+  rev: v0.0.243
   hooks:
   - id: ruff
     args: ["--fix"]
@@ -74,5 +74,5 @@ repos:
     args: ["--py37-plus"]
   - id: nbqa-isort
   - id: nbqa-ruff
-    additional_dependencies: [ruff==0.0.240]
+    additional_dependencies: [ruff==0.0.243]
     args: ["--fix"]
