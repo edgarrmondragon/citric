@@ -1,4 +1,4 @@
-FROM python:3.11.1-slim-buster
+FROM python:3.12.0a5-slim-buster
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
