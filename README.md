@@ -51,7 +51,7 @@
   </a>
 </div>
 
-A client to the LimeSurvey Remote Control API 2, written in modern
+A client to the [LimeSurvey Remote Control API 2](https://manual.limesurvey.org/RemoteControl_2_API), written in modern
 Python.
 </div>
 
