@@ -2,8 +2,11 @@ tasks:
   - init: |
       docker-compose pull
       docker-compose build
+      pyenv install --skip-existing
   - command: |
       docker-compose --profile=web up
+
+image: gitpod/workspace-python-3.11:latest
 
 ports:
   - port: 8001
