@@ -1,4 +1,4 @@
-FROM python:3.11.1-slim-buster
+FROM python:3.11.2-slim-buster
 
 ENV POETRY_HOME /etc/poetry
 ENV PATH "${POETRY_HOME}/bin:${PATH}"
