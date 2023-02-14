@@ -30,9 +30,10 @@ class LimeSurveyMockAdapter(BaseAdapter):
 
     ldap_session_key = "ldap-key"
 
-    def send(  # noqa: PLR0913
+    def send(  # type: ignore[override]
         self,
         request: requests.PreparedRequest,
+        *,
         stream: bool = False,
         timeout: float | tuple[float, float] | tuple[float, None] | None = None,
         verify: bool | str = True,

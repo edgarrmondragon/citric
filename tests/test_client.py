@@ -24,7 +24,7 @@ if TYPE_CHECKING:
 NEW_SURVEY_NAME = "New Survey"
 
 
-def _get_random_bytes(n: int):
+def _get_random_bytes(n: int) -> bytes:
     return random.getrandbits(n * 8).to_bytes(n, "little")
 
 
@@ -44,7 +44,7 @@ class MockSession(Session):
         "restrictToLanguages": "en fr es",
     }
 
-    def __init__(self, *args, **kwargs) -> None:
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
         """Create a mock session."""
 
     def rpc(self, method: str, *params: Any) -> dict[str, Any]:

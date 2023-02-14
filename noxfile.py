@@ -8,6 +8,7 @@ import sys
 import tempfile
 from pathlib import Path
 from textwrap import dedent
+from typing import Any
 
 import nox
 
@@ -39,7 +40,7 @@ nox.options.sessions = (
 )
 
 
-def install_with_constraints(session: Session, *args, **kwargs) -> None:
+def install_with_constraints(session: Session, *args: str, **kwargs: Any) -> None:
     """Install individual packages with Poetry version constraints."""
     with tempfile.NamedTemporaryFile() as requirements:
         session.run(
