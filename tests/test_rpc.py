@@ -120,7 +120,7 @@ def test_status_ok(session: Session):
 def test_mismatching_request_id(session: Session, monkeypatch: pytest.MonkeyPatch):
     """Test result with status key raises LimeSurveyStatusError."""
 
-    def randint(a, b):
+    def randint(a: int, b: int) -> int:
         return 123
 
     monkeypatch.setattr(random, "randint", randint)
