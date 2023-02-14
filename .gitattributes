@@ -1,3 +1,2 @@
 tests/* linguist-vendored
-Dockerfile linguist-vendored
 *.Dockerfile linguist-vendored
