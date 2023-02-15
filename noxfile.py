@@ -71,7 +71,6 @@ def mypy(session: Session) -> None:
         "mypy",
         "pytest",
         "types-requests",
-        "types-psycopg2",
     )
     session.run("mypy", *args)
     if not session.posargs:

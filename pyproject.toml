@@ -98,6 +98,9 @@ markers = [
   "integration_test: Integration and end-to-end tests",
 ]
 
+[tool.mypy]
+warn_unreachable = true
+
 [[tool.mypy.overrides]]
 ignore_missing_imports = true
 module = [
