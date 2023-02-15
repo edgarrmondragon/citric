@@ -100,6 +100,8 @@ markers = [
 
 [tool.mypy]
 warn_unreachable = true
+warn_unused_configs = true
+warn_unused_ignores = true
 
 [[tool.mypy.overrides]]
 ignore_missing_imports = true
