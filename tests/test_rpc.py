@@ -56,7 +56,7 @@ def test_http_error(session: Session):
         session.__http_error()
 
 
-def test_session_context(
+def test_session(
     url: str,
     username: str,
     password: str,
@@ -67,6 +67,14 @@ def test_session_context(
         assert not session.closed
         assert session.key == LimeSurveyMockAdapter.session_key
 
+
+def test_session_auth_plugin(
+    url: str,
+    username: str,
+    password: str,
+    mock_session: requests.Session,
+):
+    """Test context creates a session key and uses auth plugin."""
     with Session(
         url,
         username,
@@ -77,6 +85,17 @@ def test_session_context(
         assert not session.closed
         assert session.key == LimeSurveyMockAdapter.ldap_session_key
 
+
+def test_closed_session(
+    url: str,
+    username: str,
+    password: str,
+    mock_session: requests.Session,
+):
+    """Test context closes session."""
+    with Session(url, username, password, requests_session=mock_session) as session:
+        pass
+
     assert session.closed
     assert session.key is None
 
@@ -86,10 +105,10 @@ def test_session_context(
         message_regex = "property .* of 'Session' object has no setter"
 
     with pytest.raises(AttributeError, match=message_regex):
-        session.key = "123456"
+        session.key = "123456"  # type: ignore[misc]
 
     with pytest.raises(AttributeError, match=message_regex):
-        session.closed = False
+        session.closed = False  # type: ignore[misc]
 
 
 def test_empty_response(session: Session):
