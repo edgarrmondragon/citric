@@ -1,3 +1,48 @@
+[tool.black]
+line-length = 88
+
+[tool.isort]
+include_trailing_comma = true
+known_first_party = "citric"
+multi_line_output = 3 # Vertical Hanging Indent
+profile = "black"
+src_paths = "citric"
+use_parentheses = true
+
+[tool.pytest.ini_options]
+addopts = '-vvv'
+markers = [
+  "integration_test: Integration and end-to-end tests",
+]
+
+[tool.coverage.paths]
+source = ["src", "*/site-packages"]
+
+[tool.coverage.run]
+branch = true
+source = ["citric"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    '''if (t\.)?TYPE_CHECKING:''',
+]
+fail_under = 90
+show_missing = true
+
+[tool.mypy]
+warn_unreachable = true
+warn_unused_configs = true
+warn_unused_ignores = true
+
+[[tool.mypy.overrides]]
+ignore_missing_imports = true
+module = [
+  "nox.*",
+  "nox_poetry.*",
+  "pytest.*",
+]
+
 [tool.poetry]
 authors = ["Edgar Ramírez-Mondragón <edgarrm358@gmail.com>"]
 classifiers = [
@@ -66,51 +111,6 @@ docs = [
   "sphinx-copybutton",
 ]
 
-[tool.coverage.paths]
-source = ["src", "*/site-packages"]
-
-[tool.coverage.run]
-branch = true
-source = ["citric"]
-
-[tool.coverage.report]
-exclude_lines = [
-    "pragma: no cover",
-    '''if (t\.)?TYPE_CHECKING:''',
-]
-fail_under = 90
-show_missing = true
-
-[tool.black]
-line-length = 88
-
-[tool.isort]
-include_trailing_comma = true
-known_first_party = "citric"
-multi_line_output = 3 # Vertical Hanging Indent
-profile = "black"
-src_paths = "citric"
-use_parentheses = true
-
-[tool.pytest.ini_options]
-addopts = '-vvv'
-markers = [
-  "integration_test: Integration and end-to-end tests",
-]
-
-[tool.mypy]
-warn_unreachable = true
-warn_unused_configs = true
-warn_unused_ignores = true
-
-[[tool.mypy.overrides]]
-ignore_missing_imports = true
-module = [
-  "nox.*",
-  "nox_poetry.*",
-  "pytest.*",
-]
-
 [tool.ruff]
 ignore = [
   "ANN101", # missing-type-self
@@ -163,4 +163,6 @@ convention = "google"
 
 [build-system]
 build-backend = "poetry.masonry.api"
-requires = ["poetry>=0.12"]
+requires = [
+  "poetry>=0.12",
+]
