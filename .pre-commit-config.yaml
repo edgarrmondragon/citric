@@ -74,5 +74,5 @@ repos:
     args: ["--py37-plus"]
   - id: nbqa-isort
   - id: nbqa-ruff
-    additional_dependencies: [ruff==0.0.247]
+    additional_dependencies: [ruff==0.0.249]
     args: ["--fix"]
