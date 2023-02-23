@@ -8,12 +8,20 @@ repos:
 - repo: https://github.com/pre-commit/pre-commit-hooks
   rev: v4.4.0
   hooks:
+  - id: check-added-large-files
   - id: check-json
   - id: check-toml
   - id: check-yaml
   - id: end-of-file-fixer
     exclude: \.changes/.*\.md
   - id: trailing-whitespace
+
+- repo: https://github.com/python-jsonschema/check-jsonschema
+  rev: 0.21.0
+  hooks:
+  - id: check-dependabot
+  - id: check-github-workflows
+  - id: check-readthedocs
 
 - repo: https://github.com/charliermarsh/ruff-pre-commit
   rev: v0.0.252
@@ -39,8 +47,6 @@ repos:
   - id: flake8
     additional_dependencies:
     - darglint==1.8.1
-    - flake8-annotations==2.9.1
-    - flake8-docstrings==1.6.0
 
 - repo: https://github.com/pre-commit/mirrors-mypy
   rev: v1.0.1
@@ -56,7 +62,7 @@ repos:
     args: [--py37-plus]
 
 - repo: https://github.com/pre-commit/pre-commit
-  rev: v3.0.4
+  rev: v3.1.0
   hooks:
   - id: validate_manifest
 
