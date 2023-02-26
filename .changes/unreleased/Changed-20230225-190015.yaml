@@ -1,0 +1,5 @@
+kind: Changed
+body: Replace `Client.session_class` class attribute with `rpc_session` argument
+time: 2023-02-25T19:00:15.458422-06:00
+custom:
+  Issue: "724"
