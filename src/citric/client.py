@@ -104,18 +104,19 @@ class Client:
         https://requests.readthedocs.io/en/latest/api/#request-sessions
     """
 
+    session_class = Session
+
     def __init__(
         self,
         url: str,
         username: str,
         password: str,
         *,
-        rpc_session: Session | None = None,
         requests_session: requests.Session | None = None,
         auth_plugin: str = "Authdb",
     ) -> None:
         """Create a LimeSurvey Python API client."""
-        self.__session = rpc_session or Session(
+        self.__session = self.session_class(
             url,
             username,
             password,
