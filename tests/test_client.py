@@ -44,7 +44,7 @@ class MockSession(Session):
         "restrictToLanguages": "en fr es",
     }
 
-    def __init__(self, *args: Any, **kwargs: Any) -> None:
+    def __init__(self) -> None:
         """Create a mock session."""
 
     def rpc(self, method: str, *params: Any) -> dict[str, Any]:
@@ -154,12 +154,6 @@ class MockSession(Session):
         }
 
 
-class MockClient(Client):
-    """A mock LimeSurvey client."""
-
-    session_class = MockSession
-
-
 def assert_client_session_call(client: Client, method: str, *args: Any, **kwargs: Any):
     """Assert client makes RPC call with the right arguments.
 
@@ -178,21 +172,22 @@ def assert_client_session_call(client: Client, method: str, *args: Any, **kwargs
 @pytest.fixture(scope="session")
 def client() -> Generator[Client, None, None]:
     """RemoteControl2 API client."""
-    with MockClient("mock://lime.com", "user", "secret") as client:
+    session = MockSession()
+    with Client("mock://lime.com", "user", "secret", rpc_session=session) as client:
         yield client
 
 
-def test_activate_survey(client: MockClient):
+def test_activate_survey(client: Client):
     """Test activate_survey client method."""
     assert_client_session_call(client, "activate_survey", 1)
 
 
-def test_activate_tokens(client: MockClient):
+def test_activate_tokens(client: Client):
     """Test activate_tokens client method."""
     assert_client_session_call(client, "activate_tokens", 1, [])
 
 
-def test_add_group(client: MockClient):
+def test_add_group(client: Client):
     """Test add_group client method."""
     assert_client_session_call(
         client,
@@ -203,12 +198,12 @@ def test_add_group(client: MockClient):
     )
 
 
-def test_add_language(client: MockClient):
+def test_add_language(client: Client):
     """Test add_language client method."""
     assert_client_session_call(client, "add_language", 1, "ru")
 
 
-def test_add_survey(client: MockClient):
+def test_add_survey(client: Client):
     """Test add_survey client method."""
     assert_client_session_call(
         client,
@@ -230,52 +225,52 @@ def test_add_survey(client: MockClient):
         )
 
 
-def test_copy_survey(client: MockClient):
+def test_copy_survey(client: Client):
     """Test copy_survey client method."""
     assert_client_session_call(client, "copy_survey", 1, NEW_SURVEY_NAME)
 
 
-def test_delete_group(client: MockClient):
+def test_delete_group(client: Client):
     """Test delete_group client method."""
     assert_client_session_call(client, "delete_group", 1, 10)
 
 
-def test_delete_language(client: MockClient):
+def test_delete_language(client: Client):
     """Test delete_language client method."""
     assert_client_session_call(client, "delete_language", 1, "ru")
 
 
-def test_delete_question(client: MockClient):
+def test_delete_question(client: Client):
     """Test delete_question client method."""
     assert_client_session_call(client, "delete_question", 400)
 
 
-def test_delete_response(client: MockClient):
+def test_delete_response(client: Client):
     """Test delete_response client method."""
     assert_client_session_call(client, "delete_response", 1, 1)
 
 
-def test_delete_survey(client: MockClient):
+def test_delete_survey(client: Client):
     """Test delete_survey client method."""
     assert_client_session_call(client, "delete_survey", 1)
 
 
-def test_list_groups(client: MockClient):
+def test_list_groups(client: Client):
     """Test list_groups client method."""
     assert_client_session_call(client, "list_groups", 1, "en")
 
 
-def test_list_surveys(client: MockClient):
+def test_list_surveys(client: Client):
     """Test list_surveys client method."""
     assert_client_session_call(client, "list_surveys", None)
 
 
-def test_list_survey_groups(client: MockClient):
+def test_list_survey_groups(client: Client):
     """Test list_survey_groups client method."""
     assert_client_session_call(client, "list_survey_groups", None)
 
 
-def test_get_group_properties(client: MockClient):
+def test_get_group_properties(client: Client):
     """Test get_group_properties client method."""
     assert_client_session_call(
         client,
@@ -286,7 +281,7 @@ def test_get_group_properties(client: MockClient):
     )
 
 
-def test_get_language_properties(client: MockClient):
+def test_get_language_properties(client: Client):
     """Test get_language_properties client method."""
     assert_client_session_call(
         client,
@@ -297,7 +292,7 @@ def test_get_language_properties(client: MockClient):
     )
 
 
-def test_get_question_properties(client: MockClient):
+def test_get_question_properties(client: Client):
     """Test get_question_properties client method."""
     assert_client_session_call(
         client,
@@ -308,32 +303,32 @@ def test_get_question_properties(client: MockClient):
     )
 
 
-def test_get_response_ids(client: MockClient):
+def test_get_response_ids(client: Client):
     """Test get stored response IDs from a survey."""
     assert_client_session_call(client, "get_response_ids", 1, "TOKEN")
 
 
-def test_get_summary(client: MockClient):
+def test_get_summary(client: Client):
     """Test get_summary client method."""
     assert_client_session_call(client, "get_summary", 1)
 
 
-def test_get_survey_properties(client: MockClient):
+def test_get_survey_properties(client: Client):
     """Test get_survey_properties client method."""
     assert_client_session_call(client, "get_survey_properties", 1, None)
 
 
-def test_list_users(client: MockClient):
+def test_list_users(client: Client):
     """Test list_users client method."""
     assert_client_session_call(client, "list_users")
 
 
-def test_list_questions(client: MockClient):
+def test_list_questions(client: Client):
     """Test list_questions client method."""
     assert_client_session_call(client, "list_questions", 1)
 
 
-def test_add_participants(client: MockClient):
+def test_add_participants(client: Client):
     """Test add_participants client method."""
     participants = [{"firstname": "Alice"}, {"firstname": "Bob"}]
     assert_client_session_call(
@@ -345,13 +340,13 @@ def test_add_participants(client: MockClient):
     )
 
 
-def test_delete_participants(client: MockClient):
+def test_delete_participants(client: Client):
     """Test delete_participants client method."""
     participants = [1, 2, 3]
     assert_client_session_call(client, "delete_participants", 1, participants)
 
 
-def test_export_timeline(client: MockClient):
+def test_export_timeline(client: Client):
     """Test export_timeline client method."""
     assert client.export_timeline(
         1,
@@ -363,12 +358,12 @@ def test_export_timeline(client: MockClient):
     }
 
 
-def test_participant_properties(client: MockClient):
+def test_participant_properties(client: Client):
     """Test get_participant_properties client method."""
     assert_client_session_call(client, "get_participant_properties", 1, 1, None)
 
 
-def test_list_participants(client: MockClient):
+def test_list_participants(client: Client):
     """Test get_participant_properties client method."""
     assert_client_session_call(
         client,
@@ -382,27 +377,27 @@ def test_list_participants(client: MockClient):
     )
 
 
-def test_get_default_theme(client: MockClient):
+def test_get_default_theme(client: Client):
     """Test get site default theme."""
     assert client.get_default_theme() == "mock-theme"
 
 
-def test_get_site_name(client: MockClient):
+def test_get_site_name(client: Client):
     """Test get site name."""
     assert client.get_site_name() == "mock-site"
 
 
-def test_get_default_language(client: MockClient):
+def test_get_default_language(client: Client):
     """Test get site default language."""
     assert client.get_default_language() == "mock-lang"
 
 
-def test_get_available_languages(client: MockClient):
+def test_get_available_languages(client: Client):
     """Test get site available languages."""
     assert client.get_available_languages() == ["en", "fr", "es"]
 
 
-def test_import_group(client: MockClient, tmp_path: Path):
+def test_import_group(client: Client, tmp_path: Path):
     """Test import_group client method."""
     random_bytes = randbytes(100)
 
@@ -415,7 +410,7 @@ def test_import_group(client: MockClient, tmp_path: Path):
         assert client.import_group(f, 100, ImportGroupType.LSG) == random_bytes
 
 
-def test_import_question(client: MockClient, tmp_path: Path):
+def test_import_question(client: Client, tmp_path: Path):
     """Test import_question client method."""
     random_bytes = randbytes(100)
 
@@ -428,7 +423,7 @@ def test_import_question(client: MockClient, tmp_path: Path):
         assert client.import_question(f, 100, 1) == random_bytes
 
 
-def test_import_survey(client: MockClient, tmp_path: Path):
+def test_import_survey(client: Client, tmp_path: Path):
     """Test import_survey client method."""
     random_bytes = randbytes(100)
 
@@ -444,7 +439,7 @@ def test_import_survey(client: MockClient, tmp_path: Path):
         }
 
 
-def test_map_response_data(client: MockClient):
+def test_map_response_data(client: Client):
     """Test question keys get mapped to LimeSurvey's internal representation."""
     question_mapping = client._get_question_mapping(1)
     mapped_responses = client._map_response_keys(
@@ -458,12 +453,12 @@ def test_map_response_data(client: MockClient):
     }
 
 
-def test_add_responses(client: MockClient):
+def test_add_responses(client: Client):
     """Test add_responses client method."""
     assert client.add_responses(1, [{"Q1": "foo"}, {"Q1": "bar"}]) == [1, 1]
 
 
-def test_save_responses(client: MockClient, tmpdir: LocalPath):
+def test_save_responses(client: Client, tmpdir: LocalPath):
     """Test export_responses and export_responses_by_token client methods."""
     filename = tmpdir / "responses.csv"
     client.save_responses(filename, 1, file_format="csv")
@@ -474,14 +469,14 @@ def test_save_responses(client: MockClient, tmpdir: LocalPath):
     assert filename_token.read_binary() == b"FILE CONTENTS"
 
 
-def test_save_statistics(client: MockClient, tmpdir: LocalPath):
+def test_save_statistics(client: Client, tmpdir: LocalPath):
     """Test save_statistics and export_responses_by_token client methods."""
     filename = tmpdir / "example.html"
     client.save_statistics(filename, 1, file_format="html")
     assert filename.read_binary() == b"FILE CONTENTS"
 
 
-def test_download_files(client: MockClient, tmp_path: Path):
+def test_download_files(client: Client, tmp_path: Path):
     """Test files are downloaded correctly."""
     expected = {tmp_path / "1234", tmp_path / "5678"}
     paths = client.download_files(tmp_path, 1, "TOKEN")
@@ -491,7 +486,7 @@ def test_download_files(client: MockClient, tmp_path: Path):
     assert paths[1].read_text() == "content-2"
 
 
-def test_set_group_properties(client: MockClient):
+def test_set_group_properties(client: Client):
     """Test set_group_properties client method."""
     props = {"name": "foo"}
     assert client.set_group_properties(
@@ -500,7 +495,7 @@ def test_set_group_properties(client: MockClient):
     ) == client.session.set_group_properties(1, props)
 
 
-def test_set_language_properties(client: MockClient):
+def test_set_language_properties(client: Client):
     """Test set_language_properties client method."""
     props = {"name": "foo"}
     assert client.set_language_properties(
@@ -510,7 +505,7 @@ def test_set_language_properties(client: MockClient):
     ) == client.session.set_language_properties(1, props, "en")
 
 
-def test_set_participant_properties(client: MockClient):
+def test_set_participant_properties(client: Client):
     """Test set_participant_properties client method."""
     token_data = {"name": "Bob"}
     assert client.set_participant_properties(
@@ -520,7 +515,7 @@ def test_set_participant_properties(client: MockClient):
     ) == client.session.set_participant_properties(1, 123, token_data)
 
 
-def test_set_question_properties(client: MockClient):
+def test_set_question_properties(client: Client):
     """Test set_question_properties client method."""
     props = {"title": "foo", "question": "bar", "type": "text"}
     assert client.set_question_properties(
@@ -530,7 +525,7 @@ def test_set_question_properties(client: MockClient):
     ) == client.session.set_question_properties(1, props, "en")
 
 
-def test_set_survey_properties(client: MockClient):
+def test_set_survey_properties(client: Client):
     """Test set_survey_properties client method."""
     props = {"title": "foo", "welcome": "bar", "end": "baz"}
     assert client.set_survey_properties(
