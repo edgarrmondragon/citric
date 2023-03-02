@@ -70,7 +70,7 @@ with Client(
     "https://mylimesite.limequery.com/admin/remotecontrol",
     "myusername",
     "mypassword",
-) as client
+) as client:
     for survey in client.list_surveys():
         print(survey["surveyls_title"])
 ```
