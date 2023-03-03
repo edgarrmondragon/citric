@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import logging
 import random
 from typing import TYPE_CHECKING, TypeVar
@@ -9,6 +10,7 @@ from typing import TYPE_CHECKING, TypeVar
 import requests
 
 from citric.exceptions import (
+    InvalidJSONResponseError,
     LimeSurveyApiError,
     LimeSurveyStatusError,
     ResponseMismatchError,
@@ -20,9 +22,30 @@ if TYPE_CHECKING:
     from types import TracebackType
     from typing import Any
 
+__all__ = ["Session"]
+
 GET_SESSION_KEY = "get_session_key"
 _T = TypeVar("_T", bound="Session")
 logger = logging.getLogger(__name__)
+
+
+def handle_rpc_errors(result: dict[str, Any], error: str | None) -> None:
+    """Handle RPC errors.
+
+    Args:
+        result: The result of the RPC call.
+        error: The error message of the RPC call.
+
+    Raises:
+        LimeSurveyStatusError: The response key from the response payload has
+            a non-null status.
+        LimeSurveyApiError: The response payload has a non-null error key.
+    """
+    if isinstance(result, dict) and result.get("status") not in {"OK", None}:
+        raise LimeSurveyStatusError(result["status"])
+
+    if error is not None:
+        raise LimeSurveyApiError(error)
 
 
 class Session:
@@ -127,12 +150,10 @@ class Session:
             params (Any): Positional arguments of the RPC method.
 
         Raises:
-            LimeSurveyStatusError: The response key from the response payload has
-                a non-null status.
-            LimeSurveyApiError: The response payload has a non-null error key.
             ResponseMismatchError: Request ID does not match the response ID.
             RPCInterfaceNotEnabledError: If the JSON RPC interface is not enabled
                 (empty response).
+            InvalidJSONResponseError: If the response is not valid JSON.
 
         Returns:
             Any: An RPC result.
@@ -151,18 +172,17 @@ class Session:
         if res.text == "":
             raise RPCInterfaceNotEnabledError
 
-        data = res.json()
+        try:
+            data = res.json()
+        except json.JSONDecodeError as e:
+            raise InvalidJSONResponseError from e
 
         result = data["result"]
         error = data["error"]
         response_id = data["id"]
         logger.info("Invoked RPC method %s with ID %d", method, request_id)
 
-        if isinstance(result, dict) and result.get("status") not in {"OK", None}:
-            raise LimeSurveyStatusError(result["status"])
-
-        if error is not None:
-            raise LimeSurveyApiError(error)
+        handle_rpc_errors(result, error)
 
         if response_id != request_id:
             msg = f"Response ID {response_id} does not match request ID {request_id}"

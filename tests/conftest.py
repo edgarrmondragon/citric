@@ -30,30 +30,15 @@ class LimeSurveyMockAdapter(BaseAdapter):
 
     ldap_session_key = "ldap-key"
 
-    def send(  # noqa: PLR0913
+    def _handle_json_response(
         self,
-        request: requests.PreparedRequest,
-        stream: bool = False,  # noqa: FBT001, FBT002
-        timeout: float | tuple[float, float] | tuple[float, None] | None = None,
-        verify: bool | str = True,  # noqa: FBT002
-        cert: Any | None = None,
-        proxies: Mapping[str, str] | None = None,
-    ):
-        """Send a mocked request."""
-        request_data = json.loads(request.body or "{}")
-
+        method: str,
+        params: list[Any],
+        request_id: int,
+    ) -> requests.Response:
         response = requests.Response()
-        response.__setattr__("_content", b"")
         response.status_code = 200
-
-        method = request_data["method"]
-        params = request_data["params"]
-        request_id = request_data.get("id", 1)
-
-        output = {"result": None, "error": None, "id": request_id}
-
-        if method == "__disabled":
-            return response
+        output: dict[str, Any] = {"result": None, "error": None, "id": request_id}
 
         if method in self.api_error_methods:
             output["error"] = "API Error!"
@@ -77,6 +62,34 @@ class LimeSurveyMockAdapter(BaseAdapter):
         response.__setattr__("_content", json.dumps(output).encode())
 
         return response
+
+    def send(  # noqa: PLR0913
+        self,
+        request: requests.PreparedRequest,
+        stream: bool = False,  # noqa: FBT001, FBT002
+        timeout: float | tuple[float, float] | tuple[float, None] | None = None,
+        verify: bool | str = True,  # noqa: FBT002
+        cert: Any | None = None,
+        proxies: Mapping[str, str] | None = None,
+    ):
+        """Send a mocked request."""
+        request_data = json.loads(request.body or "{}")
+        method = request_data["method"]
+        params = request_data["params"]
+        request_id = request_data.get("id", 1)
+
+        if method == "__disabled":
+            response = requests.Response()
+            response.status_code = 200
+            return response
+
+        if method == "__not_json":
+            response = requests.Response()
+            response.status_code = 200
+            response.__setattr__("_content", b"this is not json")
+            return response
+
+        return self._handle_json_response(method, params, request_id)
 
     def close(self):
         """Clean up adapter specific items."""

@@ -9,6 +9,7 @@ import pytest
 import requests
 
 from citric.exceptions import (
+    InvalidJSONResponseError,
     LimeSurveyApiError,
     LimeSurveyStatusError,
     ResponseMismatchError,
@@ -115,6 +116,12 @@ def test_empty_response(session: Session):
     """Test empty response."""
     with pytest.raises(RPCInterfaceNotEnabledError, match="RPC interface not enabled"):
         session.__disabled()
+
+
+def test_non_json_response(session: Session):
+    """Test non-JSON response."""
+    with pytest.raises(InvalidJSONResponseError, match="Received a non-JSON response"):
+        session.__not_json()
 
 
 def test_api_error(session: Session):
