@@ -12,7 +12,7 @@ from typing import TYPE_CHECKING, TypeVar
 import requests
 
 from citric import enums
-from citric.session import Session
+from citric.session import Session, _Result
 
 if TYPE_CHECKING:
     import sys
@@ -775,7 +775,7 @@ class Client:
         """
         return self.__session.get_response_ids(survey_id, token)
 
-    def _get_site_setting(self, setting_name: str) -> Any:  # noqa: ANN401
+    def _get_site_setting(self, setting_name: str) -> _Result:
         """Get a global setting.
 
         Function to query site settings. Can only be used by super administrators.
