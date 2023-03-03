@@ -33,3 +33,15 @@ class RPCInterfaceNotEnabledError(LimeSurveyError):
     def __init__(self) -> None:
         """Create a new exception."""
         super().__init__("RPC interface not enabled")
+
+
+class InvalidJSONResponseError(LimeSurveyError):
+    """RPC interface maybe not enabled on LimeSurvey."""
+
+    def __init__(self) -> None:
+        """Create a new exception."""
+        msg = (
+            "Received a non-JSON response, verify that the JSON RPC interface is "
+            "enabled in global settings"
+        )
+        super().__init__(msg)
