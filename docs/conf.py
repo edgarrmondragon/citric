@@ -32,6 +32,7 @@ autoapi_options = [
     "show-module-summary",
     "special-members",
     "imported-members",
+    "private-members",
 ]
 
 html_theme = "furo"
