@@ -9,7 +9,6 @@ import pytest
 import requests
 from requests.adapters import BaseAdapter
 
-from citric.exceptions import LimeSurveyStatusError
 from citric.session import Session
 
 if TYPE_CHECKING:
