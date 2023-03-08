@@ -13,6 +13,7 @@ use_parentheses = true
 addopts = '-vvv'
 markers = [
   "integration_test: Integration and end-to-end tests",
+  "xfail_mysql: Mark a test as expected to fail on MySQL",
 ]
 
 [tool.coverage.paths]

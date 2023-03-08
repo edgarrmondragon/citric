@@ -15,6 +15,27 @@ if TYPE_CHECKING:
     from typing import Any, Mapping
 
 
+def pytest_addoption(parser: pytest.Parser):
+    """Add command line options to pytest."""
+    parser.addoption(
+        "--database-type",
+        action="store",
+        default="postgres",
+        choices=["postgres", "mysql"],
+        help="Database used for integration tests.",
+    )
+
+
+def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item]):
+    """Modify test collection."""
+    if config.getoption("--database-type") == "postgres":
+        return
+    xfail = pytest.mark.xfail(reason="This test fails on MySQL")
+    for item in items:
+        if "xfail_mysql" in item.keywords:
+            item.add_marker(xfail)
+
+
 class LimeSurveyMockAdapter(BaseAdapter):
     """Requests adapter that mocks LSRC2 API calls."""
 

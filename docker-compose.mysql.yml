@@ -1,0 +1,36 @@
+version: '3'
+
+services:
+  limesurvey:
+    image: martialblog/limesurvey:${LS_IMAGE_TAG:-5-apache}
+    volumes:
+      - "surveys:/var/www/html/upload/surveys"
+      - "./tests/resources/config.php:/var/www/html/application/config/config.php"
+    depends_on:
+      - db
+    ports:
+      - "8001:8080"
+    environment:
+      DB_TYPE: mysql
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_NAME: limesurvey
+      DB_USERNAME: limesurvey
+      DB_PASSWORD: secret
+      ADMIN_USER: iamadmin
+      ADMIN_NAME: Lime Administrator
+      ADMIN_PASSWORD: secret
+
+  db:
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: limesurvey
+      MYSQL_USER: limesurvey
+      MYSQL_PASSWORD: secret
+    volumes:
+      - "mysql:/var/lib/mysql"
+
+volumes:
+  mysql:
+  surveys:

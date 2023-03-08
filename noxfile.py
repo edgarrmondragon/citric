@@ -101,7 +101,8 @@ def tests(session: Session) -> None:
 
 
 @session(python=python_versions + pypy_versions)
-def integration(session: Session) -> None:
+@nox.parametrize("database", ["postgres", "mysql"])
+def integration(session: Session, database: str) -> None:
     """Execute integration tests and compute coverage."""
     deps = ["coverage[toml]", "pytest"]
     if GH_ACTIONS_ENV_VAR in os.environ:
@@ -119,6 +120,7 @@ def integration(session: Session) -> None:
             "pytest",
             "-m",
             "integration_test",
+            f"--database-type={database}",
             *session.posargs,
         )
     finally:

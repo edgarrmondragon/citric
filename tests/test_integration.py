@@ -134,7 +134,7 @@ def test_survey(client: citric.Client):
     assert survey_props["language"] == "es"
     assert survey_props["format"] == enums.NewSurveyType.GROUP_BY_GROUP
 
-    matched = next(s for s in client.list_surveys() if s["sid"] == survey_id)
+    matched = next(s for s in client.list_surveys() if int(s["sid"]) == survey_id)
     assert matched["surveyls_title"] == NEW_SURVEY_NAME
 
     # Update survey properties
@@ -157,10 +157,10 @@ def test_group(client: citric.Client, survey_id: int):
 
     # Get group properties
     group_props = client.get_group_properties(group_id)
-    assert group_props["gid"] == group_id
+    assert int(group_props["gid"]) == group_id
     assert group_props["group_name"] == "First Group"
     assert group_props["description"] == "<p>A new group</p>"
-    assert group_props["group_order"] == 3
+    assert int(group_props["group_order"]) == 3
 
     questions = sorted(
         client.list_questions(survey_id, group_id),
@@ -175,7 +175,7 @@ def test_group(client: citric.Client, survey_id: int):
     assert response == {"group_order": True}
 
     new_props = client.get_group_properties(group_id, settings=["group_order"])
-    assert new_props["group_order"] == 1
+    assert int(new_props["group_order"]) == 1
 
 
 @pytest.mark.integration_test
@@ -189,9 +189,9 @@ def test_question(client: citric.Client, survey_id: int):
 
     # Get question properties
     props = client.get_question_properties(question_id)
-    assert props["gid"] == group_id
-    assert props["qid"] == question_id
-    assert props["sid"] == survey_id
+    assert int(props["gid"]) == group_id
+    assert int(props["qid"]) == question_id
+    assert int(props["sid"]) == survey_id
     assert props["title"] == "FREETEXTEXAMPLE"
 
     # Update question properties
@@ -381,7 +381,8 @@ def test_responses(client: citric.Client, survey_id: int):
 
 
 @pytest.mark.integration_test
-def test_files(client: citric.Client, survey_id: int, tmp_path: Path):
+@pytest.mark.xfail_mysql
+def test_file_upload(client: citric.Client, survey_id: int, tmp_path: Path):
     """Test uploading and downloading files from a survey."""
     filepath = tmp_path / "hello world.txt"
     filepath.write_text("Hello world!")
@@ -404,6 +405,18 @@ def test_files(client: citric.Client, survey_id: int, tmp_path: Path):
     assert "filename" in result
     assert "msg" in result
 
+
+@pytest.mark.integration_test
+@pytest.mark.xfail_mysql
+def test_file_upload_no_filename(client: citric.Client, survey_id: int, tmp_path: Path):
+    """Test uploading and downloading files from a survey without a filename."""
+    filepath = tmp_path / "hello world.txt"
+    filepath.write_text("Hello world!")
+
+    client.activate_survey(survey_id)
+    group = client.list_groups(survey_id)[1]
+    question = client.list_questions(survey_id, group["gid"])[0]
+
     result_no_filename = client.upload_file(
         survey_id,
         f"{survey_id}X{group['gid']}X{question['qid']}",
@@ -415,6 +428,32 @@ def test_files(client: citric.Client, survey_id: int, tmp_path: Path):
     assert result_no_filename["ext"] == "txt"
     assert "filename" in result_no_filename
     assert "msg" in result_no_filename
+
+
+@pytest.mark.integration_test
+@pytest.mark.xfail_mysql
+def test_file_upload_invalid_extension(
+    client: citric.Client,
+    survey_id: int,
+    tmp_path: Path,
+):
+    """Test uploading and downloading files from a survey with an invalid extension."""
+    filepath = tmp_path / "hello world.abc"
+    filepath.write_text("Hello world!")
+
+    client.activate_survey(survey_id)
+    group = client.list_groups(survey_id)[1]
+    question = client.list_questions(survey_id, group["gid"])[0]
+
+    with pytest.raises(
+        LimeSurveyStatusError,
+        match="The extension abc is not valid. Valid extensions are: txt",
+    ):
+        client.upload_file(
+            survey_id,
+            f"{survey_id}X{group['gid']}X{question['qid']}",
+            filepath,
+        )
 
 
 @pytest.mark.integration_test

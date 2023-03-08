@@ -4,7 +4,7 @@ cli:
 merge:
   required_statuses:
     - Coverage
-    - integration 3.10 / integration with 5-apache / ubuntu-22.04
+    - integration 3.10 / integration with 5-apache / postgres / ubuntu-22.04
     - mypy 3.8 / ubuntu-22.04
     - mypy 3.9 / ubuntu-22.04
     - mypy 3.10 / ubuntu-22.04
