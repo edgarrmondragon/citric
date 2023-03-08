@@ -30,7 +30,7 @@ jobs:
       NOXSESSION: "\
         ${{ matrix.session }}\
         -${{ matrix.python-version }}\
-        ${{ matrix.database && format(\"(database='{0}')\", matrix.database) }}"
+        ${{ matrix.database && matrix.database == 'postgres' && '(database=''postgres'')' || matrix.database == 'mysql' && '(database=''mysql'')' || '' }}"
     strategy:
       fail-fast: false
       matrix:

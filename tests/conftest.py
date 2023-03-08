@@ -21,15 +21,15 @@ def pytest_addoption(parser: pytest.Parser):
     parser.addoption(
         "--database-type",
         action="store",
-        default="psql",
-        choices=["psql", "mysql"],
+        default="postgres",
+        choices=["postgres", "mysql"],
         help="Database used for integration tests.",
     )
 
 
 def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item]):
     """Modify test collection."""
-    if config.getoption("--database-type") == "psql":
+    if config.getoption("--database-type") == "postgres":
         return
     xfail = pytest.mark.xfail(
         reason="This test fails on MySQL",
