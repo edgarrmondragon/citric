@@ -41,6 +41,14 @@ body:
     validations:
       required: true
   - type: input
+    id: db
+    attributes:
+      label: Backend database
+      description: What database and version the LimeSurvey installation is connected to
+      placeholder: MySQL 5.5.3
+    validations:
+      required: false
+  - type: input
     id: os
     attributes:
       label: Operating System
