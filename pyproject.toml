@@ -163,4 +163,6 @@ convention = "google"
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
-requires = ["poetry-core>=1"]
+requires = [
+  "poetry-core>=1",
+]
