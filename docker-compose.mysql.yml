@@ -29,4 +29,8 @@ services:
       MYSQL_USER: limesurvey
       MYSQL_PASSWORD: secret
     volumes:
-      - "limedb:/var/lib/mysql"
+      - "mysql:/var/lib/mysql"
+
+volumes:
+  mysql:
+  surveys:
