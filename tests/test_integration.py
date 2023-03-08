@@ -381,7 +381,8 @@ def test_responses(client: citric.Client, survey_id: int):
 
 
 @pytest.mark.integration_test
-def test_files(client: citric.Client, survey_id: int, tmp_path: Path):
+@pytest.mark.xfail_mysql
+def test_file_upload(client: citric.Client, survey_id: int, tmp_path: Path):
     """Test uploading and downloading files from a survey."""
     filepath = tmp_path / "hello world.txt"
     filepath.write_text("Hello world!")
@@ -404,6 +405,18 @@ def test_files(client: citric.Client, survey_id: int, tmp_path: Path):
     assert "filename" in result
     assert "msg" in result
 
+
+@pytest.mark.integration_test
+@pytest.mark.xfail_mysql
+def test_file_upload_no_filename(client: citric.Client, survey_id: int, tmp_path: Path):
+    """Test uploading and downloading files from a survey without a filename."""
+    filepath = tmp_path / "hello world.txt"
+    filepath.write_text("Hello world!")
+
+    client.activate_survey(survey_id)
+    group = client.list_groups(survey_id)[1]
+    question = client.list_questions(survey_id, group["gid"])[0]
+
     result_no_filename = client.upload_file(
         survey_id,
         f"{survey_id}X{group['gid']}X{question['qid']}",
@@ -416,8 +429,21 @@ def test_files(client: citric.Client, survey_id: int, tmp_path: Path):
     assert "filename" in result_no_filename
     assert "msg" in result_no_filename
 
-    new_filepath = filepath.with_suffix(".abc")
-    new_filepath.write_text("Hello world!")
+
+@pytest.mark.integration_test
+@pytest.mark.xfail_mysql
+def test_file_upload_invalid_extension(
+    client: citric.Client,
+    survey_id: int,
+    tmp_path: Path,
+):
+    """Test uploading and downloading files from a survey with an invalid extension."""
+    filepath = tmp_path / "hello world.abc"
+    filepath.write_text("Hello world!")
+
+    client.activate_survey(survey_id)
+    group = client.list_groups(survey_id)[1]
+    question = client.list_questions(survey_id, group["gid"])[0]
 
     with pytest.raises(
         LimeSurveyStatusError,
@@ -426,7 +452,7 @@ def test_files(client: citric.Client, survey_id: int, tmp_path: Path):
         client.upload_file(
             survey_id,
             f"{survey_id}X{group['gid']}X{question['qid']}",
-            new_filepath,
+            filepath,
         )
 
 

@@ -9,10 +9,35 @@ import pytest
 import requests
 from requests.adapters import BaseAdapter
 
+from citric.exceptions import LimeSurveyStatusError
 from citric.session import Session
 
 if TYPE_CHECKING:
     from typing import Any, Mapping
+
+
+def pytest_addoption(parser: pytest.Parser):
+    """Add command line options to pytest."""
+    parser.addoption(
+        "--database-type",
+        action="store",
+        default="psql",
+        choices=["psql", "mysql"],
+        help="Database used for integration tests.",
+    )
+
+
+def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item]):
+    """Modify test collection."""
+    if config.getoption("--database-type") == "psql":
+        return
+    xfail = pytest.mark.xfail(
+        reason="This test fails on MySQL",
+        raises=LimeSurveyStatusError,
+    )
+    for item in items:
+        if "xfail_mysql" in item.keywords:
+            item.add_marker(xfail)
 
 
 class LimeSurveyMockAdapter(BaseAdapter):

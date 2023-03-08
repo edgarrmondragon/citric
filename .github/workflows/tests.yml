@@ -27,7 +27,10 @@ jobs:
     continue-on-error: ${{ matrix.experimental || false }}
     env:
       FORCE_COLOR: "1"
-      NOXSESSION: ${{ matrix.session }}-${{ matrix.python-version }}
+      NOXSESSION: "\
+        ${{ matrix.session }}\
+        -${{ matrix.python-version }}\
+        ${{ matrix.database && format(\"(database='{0}')\", matrix.database) }}"
     strategy:
       fail-fast: false
       matrix:
