@@ -416,6 +416,19 @@ def test_files(client: citric.Client, survey_id: int, tmp_path: Path):
     assert "filename" in result_no_filename
     assert "msg" in result_no_filename
 
+    new_filepath = filepath.with_suffix(".abc")
+    new_filepath.write_text("Hello world!")
+
+    with pytest.raises(
+        LimeSurveyStatusError,
+        match="The extension abc is not valid. Valid extensions are: txt",
+    ):
+        client.upload_file(
+            survey_id,
+            f"{survey_id}X{group['gid']}X{question['qid']}",
+            new_filepath,
+        )
+
 
 @pytest.mark.integration_test
 def test_site_settings(client: citric.Client):
