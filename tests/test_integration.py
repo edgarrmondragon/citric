@@ -134,7 +134,7 @@ def test_survey(client: citric.Client):
     assert survey_props["language"] == "es"
     assert survey_props["format"] == enums.NewSurveyType.GROUP_BY_GROUP
 
-    matched = next(s for s in client.list_surveys() if s["sid"] == survey_id)
+    matched = next(s for s in client.list_surveys() if int(s["sid"]) == survey_id)
     assert matched["surveyls_title"] == NEW_SURVEY_NAME
 
     # Update survey properties
@@ -157,10 +157,10 @@ def test_group(client: citric.Client, survey_id: int):
 
     # Get group properties
     group_props = client.get_group_properties(group_id)
-    assert group_props["gid"] == group_id
+    assert int(group_props["gid"]) == group_id
     assert group_props["group_name"] == "First Group"
     assert group_props["description"] == "<p>A new group</p>"
-    assert group_props["group_order"] == 3
+    assert int(group_props["group_order"]) == 3
 
     questions = sorted(
         client.list_questions(survey_id, group_id),
@@ -175,7 +175,7 @@ def test_group(client: citric.Client, survey_id: int):
     assert response == {"group_order": True}
 
     new_props = client.get_group_properties(group_id, settings=["group_order"])
-    assert new_props["group_order"] == 1
+    assert int(new_props["group_order"]) == 1
 
 
 @pytest.mark.integration_test
@@ -189,9 +189,9 @@ def test_question(client: citric.Client, survey_id: int):
 
     # Get question properties
     props = client.get_question_properties(question_id)
-    assert props["gid"] == group_id
-    assert props["qid"] == question_id
-    assert props["sid"] == survey_id
+    assert int(props["gid"]) == group_id
+    assert int(props["qid"]) == question_id
+    assert int(props["sid"]) == survey_id
     assert props["title"] == "FREETEXTEXAMPLE"
 
     # Update question properties
