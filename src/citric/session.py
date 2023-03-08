@@ -5,7 +5,6 @@ from __future__ import annotations
 import json
 import logging
 import random
-import sys
 from typing import TYPE_CHECKING, Any, TypeVar
 
 import requests
@@ -22,37 +21,17 @@ from citric.method import Method
 if TYPE_CHECKING:
     from types import TracebackType
 
-
-if sys.version_info >= (3, 8):
-    from typing import TypedDict
-else:
-    from typing_extensions import TypedDict
-
+    from citric.types import Result, RPCResponse
 
 __all__ = ["Session"]
 
 GET_SESSION_KEY = "get_session_key"
 _T = TypeVar("_T", bound="Session")
-_Result = Any
 
 logger = logging.getLogger(__name__)
 
 
-class RPCResponse(TypedDict):
-    """RPC response payload.
-
-    Args:
-        id: Request ID.
-        result: RPC result.
-        error: RPC error message.
-    """
-
-    id: int  # noqa: A003
-    result: _Result
-    error: str | None
-
-
-def handle_rpc_errors(result: _Result, error: str | None) -> None:
+def handle_rpc_errors(result: Result, error: str | None) -> None:
     """Handle RPC errors.
 
     Args:
@@ -134,11 +113,11 @@ class Session:
         """RPC session key."""
         return self.__key
 
-    def __getattr__(self, name: str) -> Method[_Result]:
+    def __getattr__(self, name: str) -> Method[Result]:
         """Magic method dispatcher."""
         return Method(self.rpc, name)
 
-    def rpc(self, method: str, *params: Any) -> _Result:
+    def rpc(self, method: str, *params: Any) -> Result:
         """Execute RPC method on LimeSurvey, with optional token authentication.
 
         Any method, except for `get_session_key`.
@@ -162,7 +141,7 @@ class Session:
         url: str,
         method: str,
         *params: Any,
-    ) -> _Result:
+    ) -> Result:
         """Execute a LimeSurvey RPC with a JSON payload.
 
         Args:

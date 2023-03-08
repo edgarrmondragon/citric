@@ -83,8 +83,8 @@ def test_fieldmap(client: citric.Client, survey_id: int):
 def test_language(client: citric.Client, survey_id: int):
     """Test language methods."""
     # Add a new language
-    client.add_language(survey_id, "es")
-    client.add_language(survey_id, "ru")
+    assert client.add_language(survey_id, "es")["status"] == "OK"
+    assert client.add_language(survey_id, "ru")["status"] == "OK"
 
     survey_props = client.get_survey_properties(survey_id)
     assert survey_props["additional_languages"] == "es ru"
@@ -111,8 +111,8 @@ def test_language(client: citric.Client, survey_id: int):
     assert new_props["surveyls_email_confirm"] == new_confirmation
 
     # Delete language
-    response = client.delete_language(survey_id, "ru")
-    assert response["status"] == "OK"
+    delete_response = client.delete_language(survey_id, "ru")
+    assert delete_response["status"] == "OK"
 
     props_after_delete_language = client.get_survey_properties(survey_id)
     assert props_after_delete_language["additional_languages"] == "es"
@@ -158,6 +158,7 @@ def test_group(client: citric.Client, survey_id: int):
     # Get group properties
     group_props = client.get_group_properties(group_id)
     assert int(group_props["gid"]) == group_id
+    assert int(group_props["sid"]) == survey_id
     assert group_props["group_name"] == "First Group"
     assert group_props["description"] == "<p>A new group</p>"
     assert int(group_props["group_order"]) == 3
@@ -192,6 +193,7 @@ def test_question(client: citric.Client, survey_id: int):
     assert int(props["gid"]) == group_id
     assert int(props["qid"]) == question_id
     assert int(props["sid"]) == survey_id
+    assert props["type"] == "T"
     assert props["title"] == "FREETEXTEXAMPLE"
 
     # Update question properties
