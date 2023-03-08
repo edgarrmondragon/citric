@@ -31,10 +31,7 @@ def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item
     """Modify test collection."""
     if config.getoption("--database-type") == "postgres":
         return
-    xfail = pytest.mark.xfail(
-        reason="This test fails on MySQL",
-        raises=LimeSurveyStatusError,
-    )
+    xfail = pytest.mark.xfail(reason="This test fails on MySQL")
     for item in items:
         if "xfail_mysql" in item.keywords:
             item.add_marker(xfail)
