@@ -56,3 +56,7 @@ source_suffix = {
     ".rst": "restructuredtext",
     ".md": "markdown",
 }
+
+napoleon_custom_sections = [
+    ("Keys", "params_style"),
+]

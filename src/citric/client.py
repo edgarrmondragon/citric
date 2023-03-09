@@ -12,13 +12,15 @@ from typing import TYPE_CHECKING, TypeVar
 import requests
 
 from citric import enums
-from citric.session import Session, _Result
+from citric.session import Session
 
 if TYPE_CHECKING:
     import sys
     from os import PathLike
     from types import TracebackType
     from typing import Any, BinaryIO, Generator, Iterable, Mapping, Sequence
+
+    from citric import types
 
     if sys.version_info >= (3, 8):
         from typing import Literal
@@ -157,7 +159,7 @@ class Client:
         """
         return self.__session.get_fieldmap(survey_id)
 
-    def activate_survey(self, survey_id: int) -> dict[str, Any]:
+    def activate_survey(self, survey_id: int) -> types.OperationStatus:
         """Activate a survey.
 
         Args:
@@ -172,7 +174,7 @@ class Client:
         self,
         survey_id: int,
         attributes: list[int] | None = None,
-    ) -> dict[str, str]:
+    ) -> types.OperationStatus:
         """Initialise the survey participant table.
 
         New participant tokens may be later added.
@@ -186,7 +188,7 @@ class Client:
         """
         return self.__session.activate_tokens(survey_id, attributes or [])
 
-    def add_language(self, survey_id: int, language: str) -> dict[str, Any]:
+    def add_language(self, survey_id: int, language: str) -> types.OperationStatus:
         """Add a survey language.
 
         Args:
@@ -270,7 +272,7 @@ class Client:
     def _get_question_mapping(
         self,
         survey_id: int,
-    ) -> dict[str, dict[str, Any]]:
+    ) -> dict[str, types.QuestionsListElement]:
         """Get question mapping.
 
         Args:
@@ -284,7 +286,7 @@ class Client:
     @staticmethod
     def _map_response_keys(
         response_data: Mapping[str, Any],
-        question_mapping: dict[str, dict[str, Any]],
+        question_mapping: dict[str, types.QuestionsListElement],
     ) -> dict[str, Any]:
         """Convert response keys to LimeSurvey's internal representation.
 
@@ -425,7 +427,7 @@ class Client:
         """
         return self.__session.delete_group(survey_id, group_id)
 
-    def delete_language(self, survey_id: int, language: str) -> dict[str, str]:
+    def delete_language(self, survey_id: int, language: str) -> types.OperationStatus:
         """Delete a language from a survey.
 
         Requires at LimeSurvey >= 5.3.4.
@@ -439,7 +441,11 @@ class Client:
         """
         return self.__session.delete_language(survey_id, language)
 
-    def delete_response(self, survey_id: int, response_id: int) -> dict[str, str]:
+    def delete_response(
+        self,
+        survey_id: int,
+        response_id: int,
+    ) -> types.OperationStatus:
         """Delete a response in a survey.
 
         Args:
@@ -466,7 +472,7 @@ class Client:
         """
         return self.__session.delete_question(question_id)
 
-    def delete_survey(self, survey_id: int) -> dict[str, str]:
+    def delete_survey(self, survey_id: int) -> types.OperationStatus:
         """Delete a survey.
 
         Args:
@@ -689,7 +695,7 @@ class Client:
         *,
         settings: list[str] | None = None,
         language: str | None = None,
-    ) -> dict[str, Any]:
+    ) -> types.GroupProperties:
         """Get the properties of a group of a survey.
 
         Args:
@@ -708,7 +714,7 @@ class Client:
         *,
         settings: list[str] | None = None,
         language: str | None = None,
-    ) -> dict[str, Any]:
+    ) -> types.LanguageProperties:
         """Get survey language properties.
 
         Args:
@@ -746,7 +752,7 @@ class Client:
         *,
         settings: list[str] | None = None,
         language: str | None = None,
-    ) -> dict[str, Any]:
+    ) -> types.QuestionProperties:
         """Get properties of a question in a survey.
 
         Args:
@@ -775,7 +781,7 @@ class Client:
         """
         return self.__session.get_response_ids(survey_id, token)
 
-    def _get_site_setting(self, setting_name: str) -> _Result:
+    def _get_site_setting(self, setting_name: str) -> types.Result:
         """Get a global setting.
 
         Function to query site settings. Can only be used by super administrators.
@@ -847,7 +853,7 @@ class Client:
         self,
         survey_id: int,
         properties: Sequence[str] | None = None,
-    ) -> dict[str, Any]:
+    ) -> types.SurveyProperties:
         """Get properties of a survey.
 
         Args:
@@ -1077,7 +1083,7 @@ class Client:
         survey_id: int,
         group_id: int | None = None,
         language: str | None = None,
-    ) -> list[dict[str, Any]]:
+    ) -> list[types.QuestionsListElement]:
         """Get questions in a survey, in a specific group or all.
 
         Args:
@@ -1208,7 +1214,7 @@ class Client:
         field: str,
         filename: str,
         file: BinaryIO,
-    ) -> dict[str, Any]:
+    ) -> types.FileUploadResult:
         """Upload a file to a LimeSurvey survey.
 
         Args:
@@ -1230,7 +1236,7 @@ class Client:
         path: PathLike,
         *,
         filename: str | None = None,
-    ) -> dict[str, Any]:
+    ) -> types.FileUploadResult:
         """Upload a file to a LimeSurvey survey from a local path.
 
         Args:
