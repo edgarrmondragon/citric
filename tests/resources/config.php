@@ -29,8 +29,8 @@ return array(
     ),
     'config' => array(
         'publicurl' => '',
-        'debug' => 0,
-        'debugsql' => 0,
+        'debug' => 2,
+        'debugsql' => 1,
         'RPCInterface' => 'json',
         'sitename' => 'Citric - Test',
     )
