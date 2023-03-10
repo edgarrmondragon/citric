@@ -1,0 +1,5 @@
+kind: Added
+body: Annotate some responses with `TypedDict`
+time: 2023-03-10T00:55:02.836568-06:00
+custom:
+  Issue: "745"

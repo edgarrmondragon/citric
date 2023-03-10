@@ -1,0 +1,5 @@
+kind: Added
+body: Support custom JSON encoders
+time: 2023-03-10T00:54:39.780553-06:00
+custom:
+  Issue: "748"
