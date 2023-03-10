@@ -67,15 +67,17 @@ class Session:
             :ls_manual:`AuthLDAP <Authentication_plugins#LDAP>`. Defaults to using the
             :ls_manual:`internal database <Authentication_plugins#Internal_database>`
             (``"Authdb"``).
+        json_encoder: A `JSON encoder class <JSONEncoder>` to use for encoding RPC
+            parameters.
 
     .. _requests.Session:
         https://requests.readthedocs.io/en/latest/api/#request-sessions
     .. _key: #citric.session.Session.key
     .. _closure: #citric.session.Session.close
+    .. _JSONEncoder: https://docs.python.org/3/library/json.html#json.JSONEncoder
     """
 
     _headers = {
-        "content-type": "application/json",
         "user-agent": "citric-client",
     }
 
@@ -87,13 +89,15 @@ class Session:
         username: str,
         password: str,
         *,
-        requests_session: requests.Session | None = None,
         auth_plugin: str = "Authdb",
+        requests_session: requests.Session | None = None,
+        json_encoder: type[json.JSONEncoder] | None = None,
     ) -> None:
         """Create a LimeSurvey RPC session."""
         self.url = url
         self._session = requests_session or requests.session()
         self._session.headers.update(self._headers)
+        self._encoder = json_encoder or json.JSONEncoder
 
         self.__key: str | None = self.get_session_key(
             username,
@@ -130,24 +134,20 @@ class Session:
             An RPC result.
         """
         if method == GET_SESSION_KEY or method.startswith("system."):
-            return self._invoke(self._session, self.url, method, *params)
+            return self._invoke(method, *params)
 
         # Methods requiring authentication
-        return self._invoke(self._session, self.url, method, self.key, *params)
+        return self._invoke(method, self.key, *params)
 
-    @staticmethod
+    # @staticmethod
     def _invoke(
-        session: requests.Session,
-        url: str,
+        self,
         method: str,
         *params: Any,
     ) -> Result:
         """Execute a LimeSurvey RPC with a JSON payload.
 
         Args:
-            session: An HTTP session for communication with
-                the LSRC2 API.
-            url: URL of the LSRC2 API.
             method: Name of the method to call.
             params: Positional arguments of the RPC method.
 
@@ -168,7 +168,13 @@ class Session:
             "id": request_id,
         }
 
-        res = session.post(url, json=payload)
+        res = self._session.post(
+            self.url,
+            data=json.dumps(payload, cls=self._encoder),
+            headers={
+                "content-type": "application/json",
+            },
+        )
         res.raise_for_status()
 
         if res.text == "":

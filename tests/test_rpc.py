@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import random
 import sys
 
@@ -122,6 +123,55 @@ def test_non_json_response(session: Session):
     """Test non-JSON response."""
     with pytest.raises(InvalidJSONResponseError, match="Received a non-JSON response"):
         session.__not_json()
+
+
+def test_json_encode_error(session: Session):
+    """Test JSON encoding error."""
+
+    class NotSerializable:
+        """Not serializable."""
+
+        def __init__(self, value: int):
+            self.value = value
+
+    with pytest.raises(
+        TypeError,
+        match="Object of type NotSerializable is not JSON serializable",
+    ):
+        session._invoke("json_encode_error", NotSerializable(123))
+
+
+def test_custom_json_encoder(
+    url: str,
+    username: str,
+    password: str,
+    mock_session: requests.Session,
+):
+    """Test custom JSON encoder."""
+
+    class NotSerializable:
+        """Not serializable."""
+
+        def __init__(self, value: int):
+            self.value = value
+
+    class CustomJSONEncoder(json.JSONEncoder):
+        """Custom JSON encoder."""
+
+        def default(self, o: object) -> object:
+            if isinstance(o, NotSerializable):
+                return o.value
+            return super().default(o)
+
+    session = Session(
+        url,
+        username,
+        password,
+        requests_session=mock_session,
+        json_encoder=CustomJSONEncoder,
+    )
+
+    session._invoke("json_encode_error", NotSerializable(123))
 
 
 def test_api_error(session: Session):
