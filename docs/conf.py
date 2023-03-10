@@ -39,7 +39,7 @@ html_theme = "furo"
 html_theme_options = {
     "navigation_with_keys": True,
 }
-html_title = "Citric"
+html_title = "Citric, a Python client for LimeSurvey"
 
 extlinks = {
     "rpc_method": (

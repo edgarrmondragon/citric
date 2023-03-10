@@ -229,7 +229,7 @@ class Client:
         survey_id: int,
         title: str,
         language: str,
-        survey_format: str = "G",
+        survey_format: str | enums.NewSurveyType = "G",
     ) -> int:
         """Add a new empty survey.
 
@@ -488,11 +488,11 @@ class Client:
         survey_id: int,
         *,
         token: str | None = None,
-        file_format: str = "json",
+        file_format: str | enums.ResponsesExportFormat = "json",
         language: str | None = None,
-        completion_status: str = "all",
-        heading_type: str = "code",
-        response_type: str = "short",
+        completion_status: str | enums.SurveyCompletionStatus = "all",
+        heading_type: str | enums.HeadingType = "code",
+        response_type: str | enums.ResponseType = "short",
         from_response_id: int | None = None,
         to_response_id: int | None = None,
         fields: Sequence[str] | None = None,
@@ -597,7 +597,7 @@ class Client:
         self,
         survey_id: int,
         *,
-        file_format: str = "pdf",
+        file_format: str | enums.StatisticsExportFormat = "pdf",
         language: str | None = None,
         graph: bool = False,
         group_ids: list[int] | None = None,
@@ -665,7 +665,7 @@ class Client:
     def export_timeline(
         self,
         survey_id: int,
-        period: Literal["day", "hour"],
+        period: Literal["day", "hour"] | enums.TimelineAggregationPeriod,
         start: datetime.datetime,
         end: datetime.datetime | None = None,
     ) -> dict[str, int]:
@@ -942,7 +942,7 @@ class Client:
         self,
         file: BinaryIO,
         survey_id: int,
-        file_type: str = "lsg",
+        file_type: str | enums.ImportGroupType = "lsg",
     ) -> int:
         """Import group from a file.
 
@@ -996,7 +996,7 @@ class Client:
     def import_survey(
         self,
         file: BinaryIO,
-        file_type: str = "lss",
+        file_type: str | enums.ImportSurveyType = "lss",
         survey_name: str | None = None,
         survey_id: int | None = None,
     ) -> int:
