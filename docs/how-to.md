@@ -120,6 +120,7 @@ with Client(LS_URL, "iamadmin", "secret") as client:
 ## Notebook samples
 
 - [Import a survey file from S3](https://github.com/edgarrmondragon/citric/blob/main/docs/notebooks/import_s3.ipynb)
+- [Download responses and analyze them with DuckDB](https://github.com/edgarrmondragon/citric/blob/main/docs/notebooks/duckdb.ipynb)
 - [Download responses and save them to a SQLite database](https://github.com/edgarrmondragon/citric/blob/main/docs/notebooks/pandas_sqlite.ipynb)
 
 [rc2api]: https://api.limesurvey.org/classes/remotecontrol_handle.html
