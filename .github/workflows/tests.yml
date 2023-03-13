@@ -1,11 +1,27 @@
 name: Tests
 
 on:
-  pull_request: {}
+  pull_request:
+    paths:
+    - src/**
+    - tests/**
+    - noxfile.py
+    - poetry.lock
+    - pyproject.toml
+    - .github/workflows/tests.yml
+    - .github/workflows/constraints.txt
   push:
     branches:
     - 'main'
     - 'trunk-merge/**'
+    paths:
+    - src/**
+    - tests/**
+    - noxfile.py
+    - poetry.lock
+    - pyproject.toml
+    - .github/workflows/tests.yml
+    - .github/workflows/constraints.txt
   schedule:
   - cron: "44 */3 * * *"
   workflow_dispatch:
