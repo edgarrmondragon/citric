@@ -177,7 +177,7 @@ class Session:
         )
         res.raise_for_status()
 
-        if res.text == "":
+        if not res.text:
             raise RPCInterfaceNotEnabledError
 
         data: RPCResponse
