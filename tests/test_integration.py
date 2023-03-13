@@ -367,7 +367,7 @@ def test_responses(client: citric.Client, survey_id: int):
         reader = csv.DictReader(textfile, delimiter=";")
         row = next(reader)
         assert row["G01Q01"] == "New long text 3"
-        assert row["G01Q02"] == ""
+        assert not row["G01Q02"]
         assert row["token"] == "T00002"
 
     # Export existing response works
