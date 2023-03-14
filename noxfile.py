@@ -110,14 +110,6 @@ def integration(session: Session) -> None:
 
     session.install(".")
     session.install(*deps)
-
-    database = os.environ.get("BACKEND", "postgres")
-    url = os.environ.get(
-        "LS_URL",
-        "http://localhost:8001/index.php/admin/remotecontrol",
-    )
-    username = os.environ.get("LS_USER", "iamadmin")
-    password = os.environ.get("LS_PASSWORD", "secret")
     version = os.environ.get("LS_VERSION")
 
     args = [
@@ -128,10 +120,6 @@ def integration(session: Session) -> None:
         "pytest",
         "-m",
         "integration_test",
-        f"--database-type={database}",
-        f"--limesurvey-url={url}",
-        f"--limesurvey-username={username}",
-        f"--limesurvey-password={password}",
     ]
 
     if version:

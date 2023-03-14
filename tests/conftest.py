@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 from typing import TYPE_CHECKING
 
 import pytest
@@ -26,6 +27,14 @@ def _add_integration_skip(
         item.add_marker(marker)
 
 
+def _from_env_var(
+    env_var: str,
+    default: str,
+) -> str:
+    """Get a value from an environment variable or return a default."""
+    return os.environ.get(env_var, default)
+
+
 def pytest_addoption(parser: pytest.Parser):
     """Add command line options to pytest."""
     parser.addoption(
@@ -33,24 +42,34 @@ def pytest_addoption(parser: pytest.Parser):
         action="store",
         choices=["postgres", "mysql"],
         help="Database used for integration tests.",
+        default=_from_env_var("BACKEND", "postgres"),
     )
 
     parser.addoption(
         "--limesurvey-url",
         action="store",
         help="URL of the LimeSurvey instance to test against.",
+        default=_from_env_var(
+            "LS_URL",
+            "http://localhost:8001/index.php/admin/remotecontrol",
+        ),
     )
 
     parser.addoption(
         "--limesurvey-username",
         action="store",
         help="Username of the LimeSurvey user to test against.",
+        default=_from_env_var("LS_USER", "iamadmin"),
     )
 
     parser.addoption(
         "--limesurvey-password",
         action="store",
         help="Password of the LimeSurvey user to test against.",
+        default=_from_env_var(
+            "LS_PASSWORD",
+            "secret",
+        ),
     )
 
     parser.addoption(
