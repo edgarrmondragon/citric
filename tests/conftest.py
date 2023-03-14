@@ -67,10 +67,23 @@ def pytest_addoption(parser: pytest.Parser):
     )
 
     parser.addoption(
-        "--limesurvey-future",
-        action="store_true",
-        help="Require tests that check unreleased features to pass.",
+        "--limesurvey-version",
+        action="store",
+        help="Tests that check unreleased features of this version should pass.",
+        default=_from_env_var("LS_VERSION"),
     )
+
+
+def pytest_runtest_setup(item: pytest.Item):
+    """Run before each test."""
+    versions = [mark.args[0] for mark in item.iter_markers(name="version")]
+    if versions and item.config.getoption("--limesurvey-version") not in versions:
+        xfail_unreleased = pytest.mark.xfail(
+            reason=f"This test requires a version of LimeSurvey in '{versions}'",
+            raises=requests.exceptions.HTTPError,
+            strict=True,
+        )
+        item.add_marker(xfail_unreleased)
 
 
 def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item]):
@@ -79,7 +92,6 @@ def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item
     url = config.getoption("--limesurvey-url")
     username = config.getoption("--limesurvey-username")
     password = config.getoption("--limesurvey-password")
-    future = config.getoption("--limesurvey-future")
 
     xfail_mysql = pytest.mark.xfail(reason="This test fails on MySQL")
     skip_integration = [
@@ -88,11 +100,6 @@ def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item
         (username, "No LimeSurvey username specified"),
         (password, "No LimeSurvey password specified"),
     ]
-    xfail_unreleased = pytest.mark.xfail(
-        reason="This test may not be available in released versions of LimeSurvey",
-        raises=requests.exceptions.HTTPError,
-        strict=True,
-    )
 
     for item in items:
         if backend == "mysql" and "xfail_mysql" in item.keywords:
@@ -101,9 +108,6 @@ def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item
         if "integration_test" in item.keywords:
             for value, reason in skip_integration:
                 _add_integration_skip(item, value, reason)
-
-        if not future and "future" in item.keywords:
-            item.add_marker(xfail_unreleased)
 
 
 @pytest.fixture(scope="session")

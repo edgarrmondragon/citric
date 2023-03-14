@@ -145,7 +145,14 @@ jobs:
         - python-version: "3.10"
           os: "ubuntu-22.04"
           session: "integration"
-          limesurvey_version: 'develop'
+          limesurvey_version: "develop"
+          database: postgres
+          experimental: true
+
+        - python-version: "3.10"
+          os: "ubuntu-22.04"
+          session: "integration"
+          limesurvey_version: "master"
           database: postgres
           experimental: true
 
