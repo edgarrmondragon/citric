@@ -25,7 +25,7 @@ services:
       interval: 1m
       timeout: 10s
       retries: 3
-      start_period: 15s
+      start_period: 45s
 
   db:
     image: mysql
