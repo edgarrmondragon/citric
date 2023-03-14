@@ -22,3 +22,9 @@ services:
       ADMIN_USER: iamadmin
       ADMIN_NAME: Lime Administrator
       ADMIN_PASSWORD: secret
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/index.php/admin"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
+      start_period: 15s
