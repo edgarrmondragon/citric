@@ -59,7 +59,7 @@ Python.
 
 - Supports the full RPC API via the [`Session` class](https://citric.readthedocs.io/en/latest/_api/citric/session/index.html#citric.session.Session).
 - Best effort to implement all the RPC methods in the [`Client` class](https://citric.readthedocs.io/en/latest/_api/citric/client/index.html#citric.client.Client). See the [API coverage page](https://citric.readthedocs.io/en/latest/rpc_coverage.html) for details.
-- Easily export survey data to CSV files, [Pandas DataFrames](https://citric.readthedocs.io/en/latest/how-to.html#export-responses-to-a-pandas-dataframe) and [DuckDB databases](https://citric.readthedocs.io/en/latest/export-responses-to-a-duckdb-database-and-analyze-with-sql).
+- Easily export survey data to CSV files, [Pandas DataFrames](https://citric.readthedocs.io/en/latest/how-to.html#export-responses-to-a-pandas-dataframe) and [DuckDB databases](https://citric.readthedocs.io/en/latest/how-to.html#export-responses-to-a-duckdb-database-and-analyze-with-sql).
 - Easily [download survey files](https://citric.readthedocs.io/en/latest/how-to.html#get-files-uploaded-to-a-survey-and-move-them-to-s3) (e.g. images, audio, etc.) to a local directory.
 
 ## Installation
