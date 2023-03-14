@@ -53,8 +53,7 @@ duckdb.execute("CREATE TABLE responses AS SELECT * FROM 'responses.csv'")
 duckdb.sql("""
     SELECT
         token,
-        submitdate - startdate
-    AS duration
+        submitdate - startdate AS duration
     FROM responses
     ORDER BY 2 DESC
     LIMIT 10
