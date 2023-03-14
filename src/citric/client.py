@@ -1166,7 +1166,7 @@ class Client:
         """
         return self.__session.list_questions(survey_id, group_id, language)
 
-    def list_quotas(self, survey_id: int) -> list[types.QuotaProperties]:
+    def list_quotas(self, survey_id: int) -> list[types.QuotaListElement]:
         """Get all quotas for a LimeSurvey survey.
 
         Args:

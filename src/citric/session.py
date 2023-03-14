@@ -139,7 +139,6 @@ class Session:
         # Methods requiring authentication
         return self._invoke(method, self.key, *params)
 
-    # @staticmethod
     def _invoke(
         self,
         method: str,
