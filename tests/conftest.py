@@ -73,11 +73,10 @@ def pytest_addoption(parser: pytest.Parser):
     )
 
     parser.addoption(
-        "--limesurvey-develop",
+        "--limesurvey-unreleased",
         action="store_true",
         help=(
-            "Require tests that only work on development versions of LimeSurvey to "
-            "pass."
+            "Require tests that only rely on unreleased features of LimeSurvey to pass."
         ),
     )
 
@@ -88,7 +87,7 @@ def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item
     url = config.getoption("--limesurvey-url")
     username = config.getoption("--limesurvey-username")
     password = config.getoption("--limesurvey-password")
-    dev = config.getoption("--limesurvey-develop")
+    unreleased = config.getoption("--limesurvey-unreleased")
 
     xfail_mysql = pytest.mark.xfail(reason="This test fails on MySQL")
     skip_integration = [
@@ -97,8 +96,9 @@ def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item
         (username, "No LimeSurvey username specified"),
         (password, "No LimeSurvey password specified"),
     ]
-    xfail_non_dev_only = pytest.mark.xfail(
-        reason="This test may fail on non-dev versions of LimeSurvey",
+    xfail_unreleased = pytest.mark.xfail(
+        reason="This test may not be available in released versions of LimeSurvey",
+        strict=True,
     )
 
     for item in items:
@@ -109,8 +109,8 @@ def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item
             for value, reason in skip_integration:
                 _add_integration_skip(item, value, reason)
 
-        if not dev and "dev_only" in item.keywords:
-            item.add_marker(xfail_non_dev_only)
+        if not unreleased and "unreleased" in item.keywords:
+            item.add_marker(xfail_unreleased)
 
 
 @pytest.fixture(scope="session")
