@@ -257,6 +257,7 @@ jobs:
     - name: Run Nox
       env:
         BACKEND: ${{ matrix.database }}
+        LS_URL: http://localhost:${{ env.LS_PORT }}/index.php/admin/remotecontrol
         LS_VERSION: ${{ matrix.limesurvey_version }}
       run: |
         nox
