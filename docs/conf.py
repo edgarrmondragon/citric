@@ -39,6 +39,9 @@ autoapi_options = [
     "private-members",
 ]
 
+html_extra_path = [
+    "googled10b55fb460af091.html",
+]
 html_theme = "furo"
 html_theme_options = {
     "navigation_with_keys": True,
