@@ -70,6 +70,7 @@ def mypy(session: Session) -> None:
     session.install(
         "mypy",
         "pytest",
+        "types-docutils",
         "types-requests",
     )
     session.run("mypy", *args)
@@ -101,8 +102,7 @@ def tests(session: Session) -> None:
 
 
 @session(python=python_versions + pypy_versions)
-@nox.parametrize("database", ["postgres", "mysql"])
-def integration(session: Session, database: str) -> None:
+def integration(session: Session) -> None:
     """Execute integration tests and compute coverage."""
     deps = ["coverage[toml]", "pytest"]
     if GH_ACTIONS_ENV_VAR in os.environ:
@@ -110,19 +110,23 @@ def integration(session: Session, database: str) -> None:
 
     session.install(".")
     session.install(*deps)
+    version = os.environ.get("LS_VERSION")
+
+    args = [
+        "coverage",
+        "run",
+        "--parallel",
+        "-m",
+        "pytest",
+        "-m",
+        "integration_test",
+    ]
+
+    if version:
+        args.append("--limesurvey-develop")
 
     try:
-        session.run(
-            "coverage",
-            "run",
-            "--parallel",
-            "-m",
-            "pytest",
-            "-m",
-            "integration_test",
-            f"--database-type={database}",
-            *session.posargs,
-        )
+        session.run(*args, *session.posargs)
     finally:
         if session.interactive:
             session.notify("coverage", posargs=[])

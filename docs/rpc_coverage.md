@@ -50,7 +50,7 @@ Full list of methods is available at [the Remote Control documentation](https://
 | `set_language_properties`      | [Yes](citric.Client.set_language_properties)    | Set survey language properties (RPC function)                                     |
 | `set_participant_properties`   | [Yes](citric.Client.set_participant_properties) | Set properties of a survey participant (RPC function)                             |
 | `set_question_properties`      | [Yes](citric.Client.set_question_properties)    | Set question properties.                                                          |
-| `set_quota_properties`         | No                                              | Set quota attributes (RPC function)                                               |
+| `set_quota_properties`         | [Yes](citric.Client.set_quota_properties)       | Set quota attributes (RPC function)                                               |
 | `set_survey_properties`        | [Yes](citric.Client.set_survey_properties)      | Set survey properties (RPC function)                                              |
 | `update_response`              | [Yes](citric.Client.update_response)            | Update a response in a given survey.                                              |
 | `upload_file`                  | [Yes](citric.Client.upload_file)                | Uploads one file to be used later.                                                |

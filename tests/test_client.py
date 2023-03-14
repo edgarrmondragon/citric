@@ -530,6 +530,15 @@ def test_set_question_properties(client: MockClient):
     ) == client.session.set_question_properties(1, props, "en")
 
 
+def test_set_quota_properties(client: MockClient):
+    """Test set_quota_properties client method."""
+    props = {"name": "foo", "quota": "bar", "action": "baz"}
+    assert client.set_quota_properties(
+        1,
+        **props,
+    ) == client.session.set_quota_properties(1, props)
+
+
 def test_set_survey_properties(client: MockClient):
     """Test set_survey_properties client method."""
     props = {"title": "foo", "welcome": "bar", "end": "baz"}

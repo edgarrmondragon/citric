@@ -258,6 +258,48 @@ class QuestionProperties(TypedDict):
     attributes_lang: dict[str, t.Any]
 
 
+class QuotaListElement(TypedDict):
+    """List quotas result.
+
+    Keys:
+        id: The quota ID.
+        name: The quota name.
+        qlimit: The quota limit.
+        active: Whether the quota is active.
+        action: The quota action.
+        autoload_url: Whether the quota autoload URL is active.
+    """
+
+    id: int  # noqa: A003
+    name: str
+    action: int
+    limit: int
+    active: int
+    autoload_url: int
+
+
+class QuotaProperties(TypedDict):
+    """Quota properties result.
+
+    Keys:
+        id: The quota ID.
+        sid: The survey ID.
+        name: The quota name.
+        qlimit: The quota limit.
+        action: The quota action.
+        active: Whether the quota is active.
+        autoload_url: Whether the quota autoload URL is active.
+    """
+
+    id: int  # noqa: A003
+    sid: int
+    name: str
+    qlimit: int
+    action: int
+    active: int
+    autoload_url: int
+
+
 class RPCResponse(TypedDict):
     """RPC response payload.
 
@@ -270,6 +312,18 @@ class RPCResponse(TypedDict):
     id: int  # noqa: A003
     result: Result
     error: str | None
+
+
+class SetQuotaPropertiesResult(TypedDict):
+    """Set quota properties result.
+
+    Keys:
+        success: Whether the operation was successful.
+        message: The quota properties.
+    """
+
+    success: bool
+    message: QuotaProperties
 
 
 class SurveyProperties(TypedDict):

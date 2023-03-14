@@ -12,6 +12,7 @@ from typing import TYPE_CHECKING, TypeVar
 import requests
 
 from citric import enums
+from citric._compat import dev_only
 from citric.session import Session
 
 if TYPE_CHECKING:
@@ -222,6 +223,51 @@ class Client:
             survey_id,
             participant_data,
             create_tokens,
+        )
+
+    @dev_only("5.7")
+    def add_quota(
+        self,
+        survey_id: int,
+        name: str,
+        limit: int,
+        *,
+        active: bool = True,
+        action: str = enums.QuotaAction.TERMINATE,
+        autoload_url: bool = False,
+        message: str = "",
+        url: str = "",
+        url_description: str = "",
+    ) -> int:
+        """Add a quota to a LimeSurvey survey.
+
+        Args:
+            survey_id: ID of the survey to add the quota to.
+            name: Name of the quota.
+            limit: Limit of the quota.
+            active: Whether the quota is active.
+            action: Action to take when the limit is reached.
+            autoload_url: Whether to automatically load the URL.
+            message: Message to display to the respondent when the limit is reached.
+            url: URL to redirect the respondent to when the limit is reached.
+            url_description: Description of the URL.
+
+        Returns:
+            ID of the newly created quota.
+
+        .. versionadded:: NEXT_VERSION
+        .. limesurvey_develop:: 5.7
+        """
+        return self.session.add_quota(
+            survey_id,
+            name,
+            limit,
+            active,
+            enums.QuotaAction(action),
+            autoload_url,
+            message,
+            url,
+            url_description,
         )
 
     def add_survey(
@@ -440,6 +486,21 @@ class Client:
             Status message.
         """
         return self.__session.delete_language(survey_id, language)
+
+    @dev_only("5.7")
+    def delete_quota(self, quota_id: int) -> types.OperationStatus:
+        """Delete a LimeSurvey quota.
+
+        Args:
+            quota_id: ID of the quota to delete.
+
+        Returns:
+            True if the quota was deleted.
+
+        .. versionadded:: NEXT_VERSION
+        .. limesurvey_develop:: 5.7
+        """
+        return self.session.delete_quota(quota_id)
 
     def delete_response(
         self,
@@ -764,6 +825,28 @@ class Client:
             Dictionary of question properties.
         """
         return self.__session.get_question_properties(question_id, settings, language)
+
+    @dev_only("5.7")
+    def get_quota_properties(
+        self,
+        quota_id: int,
+        settings: list[str] | None = None,
+        language: str | None = None,
+    ) -> types.QuotaProperties:
+        """Get properties of a LimeSurvey quota.
+
+        Args:
+            quota_id: ID of the quota to get properties for.
+            settings: Properties to get, default to all.
+            language: Parameter language for multilingual quotas.
+
+        Returns:
+            Quota properties.
+
+        .. versionadded:: NEXT_VERSION
+        .. limesurvey_develop:: 5.7
+        """
+        return self.session.get_quota_properties(quota_id, settings, language)
 
     def get_response_ids(
         self,
@@ -1096,6 +1179,21 @@ class Client:
         """
         return self.__session.list_questions(survey_id, group_id, language)
 
+    @dev_only("5.7")
+    def list_quotas(self, survey_id: int) -> list[types.QuotaListElement]:
+        """Get all quotas for a LimeSurvey survey.
+
+        Args:
+            survey_id: ID of the survey to get quotas for.
+
+        Returns:
+            List of quotas.
+
+        .. versionadded:: NEXT_VERSION
+        .. limesurvey_develop:: 5.7
+        """
+        return self.session.list_quotas(survey_id)
+
     def list_surveys(self, username: str | None = None) -> list[dict[str, Any]]:
         """Get all surveys or only those owned by a user.
 
@@ -1191,6 +1289,26 @@ class Client:
             Mapping of property names to whether they were set successfully.
         """
         return self.session.set_question_properties(question_id, properties, language)
+
+    def set_quota_properties(
+        self,
+        quota_id: int,
+        **properties: Any,
+    ) -> types.SetQuotaPropertiesResult:
+        """Set properties of a quota.
+
+        Calls :rpc_method:`set_quota_properties`.
+
+        Args:
+            quota_id: Quota ID.
+            properties: Properties to set.
+
+        Returns:
+            Mapping with success status and updated properties.
+
+        .. versionadded:: NEXT_VERSION
+        """
+        return self.session.set_quota_properties(quota_id, properties)
 
     def set_survey_properties(
         self,
