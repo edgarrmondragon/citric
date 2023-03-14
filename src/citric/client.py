@@ -1290,13 +1290,14 @@ class Client:
         """
         return self.session.set_question_properties(question_id, properties, language)
 
-    @dev_only("5.7")
     def set_quota_properties(
         self,
         quota_id: int,
         **properties: Any,
     ) -> types.SetQuotaPropertiesResult:
         """Set properties of a quota.
+
+        Calls :rpc_method:`set_quota_properties`.
 
         Args:
             quota_id: Quota ID.
@@ -1306,7 +1307,6 @@ class Client:
             Mapping with success status and updated properties.
 
         .. versionadded:: NEXT_VERSION
-        .. limesurvey_develop:: 5.7
         """
         return self.session.set_quota_properties(quota_id, properties)
 
