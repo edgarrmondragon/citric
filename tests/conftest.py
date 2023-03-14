@@ -18,22 +18,96 @@ if TYPE_CHECKING:
 def pytest_addoption(parser: pytest.Parser):
     """Add command line options to pytest."""
     parser.addoption(
+        "--only-integration",
+        action="store_true",
+        help="Run integration tests.",
+    )
+
+    parser.addoption(
         "--database-type",
         action="store",
-        default="postgres",
         choices=["postgres", "mysql"],
         help="Database used for integration tests.",
+    )
+
+    parser.addoption(
+        "--limesurvey-url",
+        action="store",
+        help="URL of the LimeSurvey instance to test against.",
+    )
+
+    parser.addoption(
+        "--limesurvey-username",
+        action="store",
+        help="Username of the LimeSurvey user to test against.",
+    )
+
+    parser.addoption(
+        "--limesurvey-password",
+        action="store",
+        help="Password of the LimeSurvey user to test against.",
+    )
+
+    parser.addoption(
+        "--limesurvey-version",
+        action="store_true",
+        help="Run tests for a development version of LimeSurvey.",
     )
 
 
 def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item]):
     """Modify test collection."""
-    if config.getoption("--database-type") == "postgres":
-        return
-    xfail = pytest.mark.xfail(reason="This test fails on MySQL")
+    backend = config.getoption("--database-type")
+    only_integration = config.getoption("--only-integration")
+    url = config.getoption("--limesurvey-url")
+    username = config.getoption("--limesurvey-username")
+    password = config.getoption("--limesurvey-password")
+    version = config.getoption("--limesurvey-version")
+
+    xfail_mysql = pytest.mark.xfail(reason="This test fails on MySQL")
+    skip_non_integration = pytest.mark.skip(reason="Only integration tests requested")
+    skip_integration = [
+        (backend, pytest.mark.skip(reason="No database type specified")),
+        (url, pytest.mark.skip(reason="No LimeSurvey URL specified")),
+        (username, pytest.mark.skip(reason="No LimeSurvey username specified")),
+        (password, pytest.mark.skip(reason="No LimeSurvey password specified")),
+    ]
+    xfail_non_dev_only = pytest.mark.xfail(
+        reason="This test may fail on non-dev versions of LimeSurvey",
+    )
+
     for item in items:
-        if "xfail_mysql" in item.keywords:
-            item.add_marker(xfail)
+        if backend == "mysql" and "xfail_mysql" in item.keywords:
+            item.add_marker(xfail_mysql)
+
+        if "integration_test" in item.keywords:
+            for value, skip in skip_integration:
+                if value is None:
+                    item.add_marker(skip)
+
+        if only_integration and "integration_test" not in item.keywords:
+            item.add_marker(skip_non_integration)
+
+        if version and "dev_only" not in item.keywords:
+            item.add_marker(xfail_non_dev_only)
+
+
+@pytest.fixture(scope="session")
+def integration_url(request: pytest.FixtureRequest) -> str:
+    """LimeSurvey URL."""
+    return request.config.getoption("--limesurvey-url")
+
+
+@pytest.fixture(scope="session")
+def integration_username(request: pytest.FixtureRequest) -> str:
+    """LimeSurvey username."""
+    return request.config.getoption("--limesurvey-username")
+
+
+@pytest.fixture(scope="session")
+def integration_password(request: pytest.FixtureRequest) -> str:
+    """LimeSurvey password."""
+    return request.config.getoption("--limesurvey-password")
 
 
 class LimeSurveyMockAdapter(BaseAdapter):

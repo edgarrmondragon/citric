@@ -2,7 +2,10 @@
 
 from __future__ import annotations
 
+import sys
 from pathlib import Path
+
+sys.path.append(str(Path("./_ext").resolve()))
 
 project = "citric"
 author = "Edgar Ramírez Mondragón"
@@ -15,6 +18,7 @@ extensions = [
     "autoapi.extension",
     "myst_parser",
     "sphinx_copybutton",
+    "limesurvey_develop",
 ]
 
 autodoc_typehints = "description"

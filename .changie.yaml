@@ -31,6 +31,9 @@ replacements:
 - path: pyproject.toml
   find: ^version = ".*"$
   replace: version = "{{.VersionNoPrefix}}"
+- path: src/citric/client.py
+  find: "NEXT_VERSION"
+  replace: "{{.VersionNoPrefix}}"
 custom:
 - key: Issue
   type: int

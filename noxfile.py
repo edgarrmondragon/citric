@@ -21,6 +21,20 @@ except ImportError:
     {sys.executable} -m pip install nox-poetry"""
     raise SystemExit(dedent(message)) from None
 
+DATABASE_TYPE_ENV_VAR = "BACKEND"
+DEFAULT_DATABASE_TYPE = "postgres"
+
+LS_URL_ENV_VAR = "LS_URL"
+DEFAULT_LS_URL = "http://localhost:8001/index.php/admin/remotecontrol"
+
+LS_USERNAME_ENV_VAR = "LS_USER"
+DEFAULT_LS_USERNAME = "iamadmin"
+
+LS_PASSWORD_ENV_VAR = "LS_PASS"  # noqa: S105
+DEFAULT_LS_PASSWORD = "secret"  # noqa: S105
+
+LS_VERSION_ENV_VAR = "LS_VERSION"
+
 GH_ACTIONS_ENV_VAR = "GITHUB_ACTIONS"
 FORCE_COLOR = "FORCE_COLOR"
 PY312 = "3.12"
@@ -70,6 +84,7 @@ def mypy(session: Session) -> None:
     session.install(
         "mypy",
         "pytest",
+        "types-docutils",
         "types-requests",
     )
     session.run("mypy", *args)
@@ -91,18 +106,16 @@ def tests(session: Session) -> None:
 
     session.install(".", env=env)
     session.install(*deps, env=env)
-    args = session.posargs or ["-m", "not integration_test"]
 
     try:
-        session.run("coverage", "run", "--parallel", "-m", "pytest", *args)
+        session.run("coverage", "run", "--parallel", "-m", "pytest", *session.posargs)
     finally:
         if session.interactive:
             session.notify("coverage", posargs=[])
 
 
 @session(python=python_versions + pypy_versions)
-@nox.parametrize("database", ["postgres", "mysql"])
-def integration(session: Session, database: str) -> None:
+def integration(session: Session) -> None:
     """Execute integration tests and compute coverage."""
     deps = ["coverage[toml]", "pytest"]
     if GH_ACTIONS_ENV_VAR in os.environ:
@@ -111,18 +124,30 @@ def integration(session: Session, database: str) -> None:
     session.install(".")
     session.install(*deps)
 
+    database = os.environ.get(DATABASE_TYPE_ENV_VAR, DEFAULT_DATABASE_TYPE)
+    url = os.environ.get(LS_URL_ENV_VAR, DEFAULT_LS_URL)
+    username = os.environ.get(LS_USERNAME_ENV_VAR, DEFAULT_LS_USERNAME)
+    password = os.environ.get(LS_PASSWORD_ENV_VAR, DEFAULT_LS_PASSWORD)
+    version = os.environ.get(LS_VERSION_ENV_VAR)
+
+    args = [
+        "coverage",
+        "run",
+        "--parallel",
+        "-m",
+        "pytest",
+        "--only-integration",
+        f"--database-type={database}",
+        f"--limesurvey-url={url}",
+        f"--limesurvey-username={username}",
+        f"--limesurvey-password={password}",
+    ]
+
+    if version:
+        args.append(f"--limesurvey-version={version}")
+
     try:
-        session.run(
-            "coverage",
-            "run",
-            "--parallel",
-            "-m",
-            "pytest",
-            "-m",
-            "integration_test",
-            f"--database-type={database}",
-            *session.posargs,
-        )
+        session.run(*args, *session.posargs)
     finally:
         if session.interactive:
             session.notify("coverage", posargs=[])

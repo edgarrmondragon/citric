@@ -1,0 +1,56 @@
+"""Compatibility functions and classes for different versions of LimeSurvey."""
+
+from __future__ import annotations
+
+import warnings
+from functools import wraps
+from typing import Any, Callable
+
+__all__ = ["DevOnlyWarning", "dev_only"]
+
+
+def _warning_message(next_version: str) -> tuple[str, ...]:
+    """Format a warning message.
+
+    Args:
+        next_version: The first version of LimeSurvey that this function is
+            available in.
+
+    Returns:
+        The formatted warning message.
+    """
+    return (
+        "is only supported in the current development build of",
+        f"LimeSurvey and is subject to change before version {next_version}.",
+    )
+
+
+class DevOnlyWarning(UserWarning):
+    """Warning for development only functions."""
+
+
+def dev_only(next_version: str) -> Callable:
+    """Mark a function as only available in the current development build of LimeSurvey.
+
+    Args:
+        next_version: The earliest version of LimeSurvey that this function is
+            available in.
+
+    Returns:
+        The wrapped function.
+    """
+    message = _warning_message(next_version)
+
+    def decorate(fn: Callable) -> Callable:
+        @wraps(fn)
+        def wrapper(*args: Any, **kwargs: Any) -> Callable:
+            warnings.warn(
+                f"Method {fn.__name__} {''.join(message)}",
+                DevOnlyWarning,
+                stacklevel=2,
+            )
+            return fn(*args, **kwargs)
+
+        return wrapper
+
+    return decorate

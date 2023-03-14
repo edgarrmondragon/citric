@@ -38,7 +38,6 @@ jobs:
       ${{ matrix.session }}
       ${{ matrix.python-version }}\
       ${{ matrix.session == 'integration' && format(' / integration with {0}', matrix.image_tag || matrix.limesurvey_version) || '' }}\
-      ${{ matrix.session == 'integration' && format(' / {0}', matrix.database) || '' }}
       / ${{ matrix.os }}"
     runs-on: ${{ matrix.os }}
     continue-on-error: ${{ matrix.experimental || false }}
@@ -46,8 +45,7 @@ jobs:
       FORCE_COLOR: "1"
       NOXSESSION: "\
         ${{ matrix.session }}\
-        -${{ matrix.python-version }}\
-        ${{ matrix.database && matrix.database == 'postgres' && '(database=''postgres'')' || matrix.database == 'mysql' && '(database=''mysql'')' || '' }}"
+        -${{ matrix.python-version }}"
     strategy:
       fail-fast: false
       matrix:
@@ -143,9 +141,9 @@ jobs:
         - python-version: "3.10"
           os: "ubuntu-22.04"
           session: "integration"
-          limesurvey_version: f3aa319fdd01ee7e0665c8bad926aaec8533e823
-          limesurvey_checksum: 6dc3649c02a5fc63dcf1530879055008eb74e5943bd3b63642cf3058fb99b49e
+          limesurvey_version: 'develop'
           database: postgres
+          experimental: true
 
         - python-version: "pypy3.7"
           os: "ubuntu-22.04"
@@ -224,6 +222,12 @@ jobs:
         repository: martialblog/docker-limesurvey
         path: "./.docker-limesurvey"
 
+    - name: Download LimeSurvey archive
+      if: ${{ matrix.session == 'integration' && matrix.limesurvey_version }}
+      run: |
+        wget https://github.com/LimeSurvey/LimeSurvey/archive/${{ matrix.limesurvey_version }}.tar.gz -O ls.tar.gz
+        echo "LS_CHECKSUM=$(sha256sum ls.tar.gz | cut -d' ' -f1)" >> $GITHUB_ENV
+
     - name: Start services
       if: ${{ matrix.session == 'integration' }}
       env:
@@ -231,14 +235,18 @@ jobs:
         LS_DOCKERFILE_CONTEXT: "./.docker-limesurvey/5.0/apache"
         LS_DOCKERFILE: Dockerfile
         LS_VERSION: ${{ matrix.limesurvey_version }}
-        LS_CHECKSUM: ${{ matrix.limesurvey_checksum }}
-        COMPOSE_FILE: "docker-compose.yml${{ matrix.limesurvey_version && ':docker-compose.ref.yml' }}${{ matrix.database == 'mysql' && ':docker-compose.mysql.yml' || '' }}"
+        COMPOSE_FILE: "\
+          docker-compose.yml\
+          ${{ matrix.limesurvey_version && ':docker-compose.ref.yml' }}\
+          ${{ matrix.database == 'mysql' && ':docker-compose.mysql.yml' || '' }}"
         COMPOSE_PROFILES: "test"
       run: |
         docker-compose up -d
         docker ps -a
 
     - name: Run Nox
+      env:
+        BACKEND: ${{ matrix.database }}
       run: |
         nox
 

@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import csv
 import io
-import os
 from pathlib import Path
 from typing import TYPE_CHECKING
 from urllib.parse import quote
@@ -18,33 +17,21 @@ from citric.exceptions import LimeSurveyStatusError
 if TYPE_CHECKING:
     from typing import Any, Generator
 
-LS_USER = "iamadmin"
-LS_PW = "secret"
 NEW_SURVEY_NAME = "New Survey"
 
 
-@pytest.fixture(scope="session")
-def db_uri() -> str:
-    """Get LimeSurvey database URI."""
-    return os.environ.get(
-        "DB_URI",
-        "postgresql://limesurvey:secret@localhost:5432/limesurvey",
-    )
-
-
-@pytest.fixture(scope="session")
-def url() -> str:
-    """Get LimeSurvey RC URL."""
-    return os.environ.get(
-        "LIMESURVEY_URL",
-        "http://localhost:8001/index.php/admin/remotecontrol",
-    )
-
-
 @pytest.fixture(scope="module")
-def client(url: str) -> Generator[citric.Client, None, None]:
+def client(
+    integration_url: str,
+    integration_username: str,
+    integration_password: str,
+) -> Generator[citric.Client, None, None]:
     """RemoteControl2 API client."""
-    client = citric.Client(url, LS_USER, LS_PW)
+    client = citric.Client(
+        integration_url,
+        integration_username,
+        integration_password,
+    )
 
     yield client
 
@@ -210,6 +197,7 @@ def test_question(client: citric.Client, survey_id: int):
         client.list_questions(survey_id, group_id)
 
 
+@pytest.mark.dev_only
 @pytest.mark.integration_test
 def test_quota(client: citric.Client, survey_id: int):
     """Test quota methods."""

@@ -53,6 +53,7 @@ repos:
   hooks:
   - id: mypy
     additional_dependencies:
+    - types-docutils
     - types-requests
 
 - repo: https://github.com/asottile/pyupgrade
