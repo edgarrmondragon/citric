@@ -19,7 +19,7 @@ extensions = [
     "myst_parser",
     "sphinx_copybutton",
     "sphinxext.opengraph",
-    "limesurvey_unreleased",
+    "limesurvey_future",
 ]
 
 autodoc_typehints = "description"
