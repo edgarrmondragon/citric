@@ -38,6 +38,28 @@ df = pd.read_csv(
 )
 ```
 
+## Export responses to a [DuckDB](https://duckdb.org/) database and analyze with SQL
+
+```python
+import citric
+import duckdb
+
+client = citric.Client(...)
+
+with open("responses.csv", "wb") as file:
+    file.write(client.export_responses(<your survey ID>, file_format="csv"))
+
+duckdb.execute("CREATE TABLE responses AS SELECT * FROM 'responses.csv'")
+duckdb.sql("""
+    SELECT
+        token,
+        submitdate - startdate AS duration
+    FROM responses
+    ORDER BY 2 DESC
+    LIMIT 10
+""").show()
+```
+
 ## Use custom `requests` session
 
 It's possible to use a custom session object to make requests. For example, to cache the requests
