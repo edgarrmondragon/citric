@@ -21,20 +21,6 @@ except ImportError:
     {sys.executable} -m pip install nox-poetry"""
     raise SystemExit(dedent(message)) from None
 
-DATABASE_TYPE_ENV_VAR = "BACKEND"
-DEFAULT_DATABASE_TYPE = "postgres"
-
-LS_URL_ENV_VAR = "LS_URL"
-DEFAULT_LS_URL = "http://localhost:8001/index.php/admin/remotecontrol"
-
-LS_USERNAME_ENV_VAR = "LS_USER"
-DEFAULT_LS_USERNAME = "iamadmin"
-
-LS_PASSWORD_ENV_VAR = "LS_PASS"  # noqa: S105
-DEFAULT_LS_PASSWORD = "secret"  # noqa: S105
-
-LS_VERSION_ENV_VAR = "LS_VERSION"
-
 GH_ACTIONS_ENV_VAR = "GITHUB_ACTIONS"
 FORCE_COLOR = "FORCE_COLOR"
 PY312 = "3.12"
@@ -125,11 +111,14 @@ def integration(session: Session) -> None:
     session.install(".")
     session.install(*deps)
 
-    database = os.environ.get(DATABASE_TYPE_ENV_VAR, DEFAULT_DATABASE_TYPE)
-    url = os.environ.get(LS_URL_ENV_VAR, DEFAULT_LS_URL)
-    username = os.environ.get(LS_USERNAME_ENV_VAR, DEFAULT_LS_USERNAME)
-    password = os.environ.get(LS_PASSWORD_ENV_VAR, DEFAULT_LS_PASSWORD)
-    version = os.environ.get(LS_VERSION_ENV_VAR)
+    database = os.environ.get("BACKEND", "postgres")
+    url = os.environ.get(
+        "LS_URL",
+        "http://localhost:8001/index.php/admin/remotecontrol",
+    )
+    username = os.environ.get("LS_USER", "iamadmin")
+    password = os.environ.get("LS_PASSWORD", "secret")
+    version = os.environ.get("LS_VERSION")
 
     args = [
         "coverage",

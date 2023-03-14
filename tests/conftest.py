@@ -15,6 +15,17 @@ if TYPE_CHECKING:
     from typing import Any, Mapping
 
 
+def _add_integration_skip(
+    item: pytest.Item,
+    value: str | None,
+    reason: str,
+) -> None:
+    """Add a skip marker to integration tests if the required option is not set."""
+    if value is None:
+        marker = pytest.mark.skip(reason=reason)
+        item.add_marker(marker)
+
+
 def pytest_addoption(parser: pytest.Parser):
     """Add command line options to pytest."""
     parser.addoption(
@@ -62,10 +73,10 @@ def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item
 
     xfail_mysql = pytest.mark.xfail(reason="This test fails on MySQL")
     skip_integration = [
-        (backend, pytest.mark.skip(reason="No database type specified")),
-        (url, pytest.mark.skip(reason="No LimeSurvey URL specified")),
-        (username, pytest.mark.skip(reason="No LimeSurvey username specified")),
-        (password, pytest.mark.skip(reason="No LimeSurvey password specified")),
+        (backend, "No database type specified"),
+        (url, "No LimeSurvey URL specified"),
+        (username, "No LimeSurvey username specified"),
+        (password, "No LimeSurvey password specified"),
     ]
     xfail_non_dev_only = pytest.mark.xfail(
         reason="This test may fail on non-dev versions of LimeSurvey",
@@ -76,9 +87,8 @@ def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item
             item.add_marker(xfail_mysql)
 
         if "integration_test" in item.keywords:
-            for value, skip in skip_integration:
-                if value is None:
-                    item.add_marker(skip)
+            for value, reason in skip_integration:
+                _add_integration_skip(item, value, reason)
 
         if not dev and "dev_only" in item.keywords:
             item.add_marker(xfail_non_dev_only)
