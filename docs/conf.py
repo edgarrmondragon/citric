@@ -18,6 +18,7 @@ extensions = [
     "autoapi.extension",
     "myst_parser",
     "sphinx_copybutton",
+    "sphinxext.opengraph",
     "limesurvey_unreleased",
 ]
 
@@ -41,6 +42,7 @@ autoapi_options = [
 
 html_extra_path = [
     "googled10b55fb460af091.html",
+    "code.png",
 ]
 html_theme = "furo"
 html_theme_options = {
@@ -67,3 +69,8 @@ source_suffix = {
 napoleon_custom_sections = [
     ("Keys", "params_style"),
 ]
+
+ogp_site_name = "Citric"
+ogp_image = "code.png"
+ogp_image_alt = "Citric sample code"
+ogp_enable_meta_description = True

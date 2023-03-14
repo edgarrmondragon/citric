@@ -88,13 +88,14 @@ requests = "^2.23.0"
 typing-extensions = {version = "^4.4.0", python = "<3.8"}
 
 # Docs
-furo = {version = "2022.4.7", optional = true}
-myst-parser = {version = "0.17.2", optional = true}
-sphinx = {version = "4.5.0", optional = true}
-sphinx-autoapi = {version = "1.8.4", optional = true}
+furo = {version = "^2022.12.7", optional = true}
+myst-parser = {version = "^1.0.0", optional = true}
+sphinx = {version = "<6", optional = true}
+sphinx-autoapi = {version = "^2.0.1", optional = true}
 sphinx-autobuild = {version = "^2021.3.14", optional = true}
-sphinx-autodoc-typehints = {version = "1.18.1", optional = true}
-sphinx-copybutton = {version = "^0.5.0", optional = true}
+sphinx-autodoc-typehints = {version = "^1.22", optional = true}
+sphinx-copybutton = {version = "^0.5.1", optional = true}
+sphinxext-opengraph = {version = "^0.8.1", optional = true}
 
 [tool.poetry.group.dev.dependencies]
 codecov = "^2.1.4"
@@ -114,6 +115,7 @@ docs = [
   "sphinx-autobuild",
   "sphinx-autodoc-typehints",
   "sphinx-copybutton",
+  "sphinxext-opengraph",
 ]
 
 [tool.ruff]

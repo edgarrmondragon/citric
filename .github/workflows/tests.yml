@@ -248,6 +248,7 @@ jobs:
     - name: Run Nox
       env:
         BACKEND: ${{ matrix.database }}
+        LS_VERSION: ${{ matrix.limesurvey_version }}
       run: |
         nox
 
@@ -295,8 +296,6 @@ jobs:
         name: coverage-data
 
     - name: Combine coverage data and display human readable report
-      env:
-        LS_VERSION: ${{ matrix.limesurvey_version }}
       run: |
         nox
 
