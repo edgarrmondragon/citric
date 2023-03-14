@@ -18,7 +18,7 @@ extensions = [
     "autoapi.extension",
     "myst_parser",
     "sphinx_copybutton",
-    "limesurvey_develop",
+    "limesurvey_unreleased",
 ]
 
 autodoc_typehints = "description"

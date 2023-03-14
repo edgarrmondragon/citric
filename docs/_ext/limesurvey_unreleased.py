@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from sphinx.application import Sphinx
 
 
-class DevOnly(Directive):
+class UnreleasedFeature(Directive):
     """A directive for development-only features.
 
     Adds a warning to features only available until the next minor release of
@@ -35,7 +35,7 @@ class DevOnly(Directive):
 
 
 def setup(app: Sphinx) -> dict[str, Any]:
-    app.add_directive("limesurvey_develop", DevOnly)
+    app.add_directive("unreleased", UnreleasedFeature)
 
     return {
         "version": "0.1",

@@ -13,8 +13,8 @@ use_parentheses = true
 addopts = '-vvv'
 markers = [
   "integration_test: Integration and end-to-end tests",
+  "unreleased: Mark a test that might fail on non-development LimeSurvey builds",
   "xfail_mysql: Mark a test as expected to fail on MySQL",
-  "dev_only: Mark a test that might fail on non-development LimeSurvey builds",
 ]
 
 [tool.coverage.paths]

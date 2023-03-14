@@ -4,10 +4,10 @@ from __future__ import annotations
 
 import pytest
 
-from citric._compat import FutureVersionWarning, dev_only
+from citric._compat import FutureVersionWarning, unreleased
 
 
-@dev_only("4.0.0")
+@unreleased("4.0.0")
 def my_function():
     """A simple function."""
 
