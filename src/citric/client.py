@@ -225,7 +225,7 @@ class Client:
             create_tokens,
         )
 
-    @dev_only("5.7")
+    @dev_only("6.0")
     def add_quota(
         self,
         survey_id: int,
@@ -256,7 +256,7 @@ class Client:
             ID of the newly created quota.
 
         .. versionadded:: NEXT_VERSION
-        .. limesurvey_develop:: 5.7
+        .. limesurvey_develop:: 6.0
         """
         return self.session.add_quota(
             survey_id,
@@ -487,7 +487,7 @@ class Client:
         """
         return self.__session.delete_language(survey_id, language)
 
-    @dev_only("5.7")
+    @dev_only("6.0")
     def delete_quota(self, quota_id: int) -> types.OperationStatus:
         """Delete a LimeSurvey quota.
 
@@ -498,7 +498,7 @@ class Client:
             True if the quota was deleted.
 
         .. versionadded:: NEXT_VERSION
-        .. limesurvey_develop:: 5.7
+        .. limesurvey_develop:: 6.0
         """
         return self.session.delete_quota(quota_id)
 
@@ -826,7 +826,7 @@ class Client:
         """
         return self.__session.get_question_properties(question_id, settings, language)
 
-    @dev_only("5.7")
+    @dev_only("6.0")
     def get_quota_properties(
         self,
         quota_id: int,
@@ -844,7 +844,7 @@ class Client:
             Quota properties.
 
         .. versionadded:: NEXT_VERSION
-        .. limesurvey_develop:: 5.7
+        .. limesurvey_develop:: 6.0
         """
         return self.session.get_quota_properties(quota_id, settings, language)
 
@@ -864,11 +864,15 @@ class Client:
         """
         return self.__session.get_response_ids(survey_id, token)
 
+    @dev_only("6.0")
     def get_available_site_settings(self) -> list[str]:
         """Get all available site settings.
 
         Returns:
             A list of all the available site settings.
+
+        .. versionadded:: NEXT_VERSION
+        .. limesurvey_develop:: 6.0
         """
         return self.session.get_available_site_settings()
 
@@ -1187,7 +1191,7 @@ class Client:
         """
         return self.__session.list_questions(survey_id, group_id, language)
 
-    @dev_only("5.7")
+    @dev_only("6.0")
     def list_quotas(self, survey_id: int) -> list[types.QuotaListElement]:
         """Get all quotas for a LimeSurvey survey.
 
@@ -1198,7 +1202,7 @@ class Client:
             List of quotas.
 
         .. versionadded:: NEXT_VERSION
-        .. limesurvey_develop:: 5.7
+        .. limesurvey_develop:: 6.0
         """
         return self.session.list_quotas(survey_id)
 

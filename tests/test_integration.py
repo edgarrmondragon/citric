@@ -480,11 +480,16 @@ def test_file_upload_invalid_extension(
         )
 
 
+@pytest.mark.dev_only
+@pytest.mark.integration_test
+def test_get_available_site_settings(client: citric.Client):
+    """Test getting available site settings."""
+    assert client.get_available_site_settings()
+
+
 @pytest.mark.integration_test
 def test_site_settings(client: citric.Client):
     """Test getting site settings."""
-    assert client.get_available_site_settings()
-
     assert client.get_available_languages() is None
     assert client.get_default_language() == "en"
     assert client.get_default_theme() == "fruity"
