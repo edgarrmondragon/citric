@@ -5,6 +5,7 @@ on:
     paths:
     - src/**
     - tests/**
+    - docker-compose*.yml
     - noxfile.py
     - poetry.lock
     - pyproject.toml
