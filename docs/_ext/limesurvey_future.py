@@ -35,7 +35,7 @@ class UnreleasedFeature(Directive):
 
 
 def setup(app: Sphinx) -> dict[str, Any]:
-    app.add_directive("unreleased", UnreleasedFeature)
+    app.add_directive("future", UnreleasedFeature)
 
     return {
         "version": "0.1",

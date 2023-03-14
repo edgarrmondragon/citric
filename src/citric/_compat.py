@@ -6,7 +6,7 @@ import warnings
 from functools import wraps
 from typing import Any, Callable
 
-__all__ = ["FutureVersionWarning", "unreleased"]
+__all__ = ["FutureVersionWarning", "future"]
 
 
 def _warning_message(next_version: str) -> tuple[str, ...]:
@@ -29,17 +29,17 @@ class FutureVersionWarning(UserWarning):
     """Warning for features only available in an unreleased version of LimeSurvey."""
 
 
-def unreleased(next_version: str) -> Callable:
+def future(version: str) -> Callable:
     """Mark a function as only available in the current development build of LimeSurvey.
 
     Args:
-        next_version: The earliest version of LimeSurvey that this function is
+        version: The earliest version of LimeSurvey that this function is
             available in.
 
     Returns:
         The wrapped function.
     """
-    message = _warning_message(next_version)
+    message = _warning_message(version)
 
     def decorate(fn: Callable) -> Callable:
         @wraps(fn)

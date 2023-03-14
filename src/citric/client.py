@@ -12,7 +12,7 @@ from typing import TYPE_CHECKING, TypeVar
 import requests
 
 from citric import enums
-from citric._compat import unreleased
+from citric._compat import future
 from citric.session import Session
 
 if TYPE_CHECKING:
@@ -225,7 +225,7 @@ class Client:
             create_tokens,
         )
 
-    @unreleased("6.0")
+    @future("6.0")
     def add_quota(
         self,
         survey_id: int,
@@ -487,7 +487,7 @@ class Client:
         """
         return self.__session.delete_language(survey_id, language)
 
-    @unreleased("6.0")
+    @future("6.0")
     def delete_quota(self, quota_id: int) -> types.OperationStatus:
         """Delete a LimeSurvey quota.
 
@@ -826,7 +826,7 @@ class Client:
         """
         return self.__session.get_question_properties(question_id, settings, language)
 
-    @unreleased("6.0")
+    @future("6.0")
     def get_quota_properties(
         self,
         quota_id: int,
@@ -864,7 +864,7 @@ class Client:
         """
         return self.__session.get_response_ids(survey_id, token)
 
-    @unreleased("6.0")
+    @future("6.0")
     def get_available_site_settings(self) -> list[str]:
         """Get all available site settings.
 
@@ -1191,7 +1191,7 @@ class Client:
         """
         return self.__session.list_questions(survey_id, group_id, language)
 
-    @unreleased("6.0")
+    @future("6.0")
     def list_quotas(self, survey_id: int) -> list[types.QuotaListElement]:
         """Get all quotas for a LimeSurvey survey.
 

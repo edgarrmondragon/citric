@@ -73,11 +73,9 @@ def pytest_addoption(parser: pytest.Parser):
     )
 
     parser.addoption(
-        "--limesurvey-unreleased",
+        "--limesurvey-future",
         action="store_true",
-        help=(
-            "Require tests that only rely on unreleased features of LimeSurvey to pass."
-        ),
+        help="Require tests that check unreleased features to pass.",
     )
 
 
@@ -87,7 +85,7 @@ def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item
     url = config.getoption("--limesurvey-url")
     username = config.getoption("--limesurvey-username")
     password = config.getoption("--limesurvey-password")
-    unreleased = config.getoption("--limesurvey-unreleased")
+    future = config.getoption("--limesurvey-future")
 
     xfail_mysql = pytest.mark.xfail(reason="This test fails on MySQL")
     skip_integration = [
@@ -98,6 +96,7 @@ def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item
     ]
     xfail_unreleased = pytest.mark.xfail(
         reason="This test may not be available in released versions of LimeSurvey",
+        raises=requests.exceptions.HTTPError,
         strict=True,
     )
 
@@ -109,7 +108,7 @@ def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item
             for value, reason in skip_integration:
                 _add_integration_skip(item, value, reason)
 
-        if not unreleased and "unreleased" in item.keywords:
+        if not future and "future" in item.keywords:
             item.add_marker(xfail_unreleased)
 
 
