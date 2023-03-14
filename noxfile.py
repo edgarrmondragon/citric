@@ -110,7 +110,6 @@ def integration(session: Session) -> None:
 
     session.install(".")
     session.install(*deps)
-    version = os.environ.get("LS_VERSION")
 
     args = [
         "coverage",
@@ -121,9 +120,6 @@ def integration(session: Session) -> None:
         "-m",
         "integration_test",
     ]
-
-    if version:
-        args.append("--limesurvey-future")
 
     try:
         session.run(*args, *session.posargs)
