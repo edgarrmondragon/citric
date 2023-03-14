@@ -6,7 +6,7 @@ import warnings
 from functools import wraps
 from typing import Any, Callable
 
-__all__ = ["DevOnlyWarning", "dev_only"]
+__all__ = ["FutureVersionWarning", "dev_only"]
 
 
 def _warning_message(next_version: str) -> tuple[str, ...]:
@@ -25,8 +25,8 @@ def _warning_message(next_version: str) -> tuple[str, ...]:
     )
 
 
-class DevOnlyWarning(UserWarning):
-    """Warning for development only functions."""
+class FutureVersionWarning(UserWarning):
+    """Warning for features not yet available in a released version of LimeSurvey."""
 
 
 def dev_only(next_version: str) -> Callable:
@@ -46,7 +46,7 @@ def dev_only(next_version: str) -> Callable:
         def wrapper(*args: Any, **kwargs: Any) -> Callable:
             warnings.warn(
                 f"Method {fn.__name__} {''.join(message)}",
-                DevOnlyWarning,
+                FutureVersionWarning,
                 stacklevel=2,
             )
             return fn(*args, **kwargs)
