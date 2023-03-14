@@ -44,6 +44,9 @@ jobs:
     continue-on-error: ${{ matrix.experimental || false }}
     env:
       FORCE_COLOR: "1"
+      LS_USER: "citric_ci"
+      LS_PASSWORD: "notverysecret"
+      LS_PORT: "8080"
       NOXSESSION: "\
         ${{ matrix.session }}\
         -${{ matrix.python-version }}"
@@ -240,7 +243,6 @@ jobs:
           docker-compose.yml\
           ${{ matrix.limesurvey_version && ':docker-compose.ref.yml' }}\
           ${{ matrix.database == 'mysql' && ':docker-compose.mysql.yml' || '' }}"
-        COMPOSE_PROFILES: "test"
       run: |
         docker-compose up -d
         docker ps -a

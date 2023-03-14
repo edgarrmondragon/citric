@@ -12,7 +12,7 @@ from typing import TYPE_CHECKING, TypeVar
 import requests
 
 from citric import enums
-from citric._compat import unreleased
+from citric._compat import future
 from citric.session import Session
 
 if TYPE_CHECKING:
@@ -225,7 +225,7 @@ class Client:
             create_tokens,
         )
 
-    @unreleased("6.0")
+    @future("6.0")
     def add_quota(
         self,
         survey_id: int,
@@ -256,7 +256,7 @@ class Client:
             ID of the newly created quota.
 
         .. versionadded:: NEXT_VERSION
-        .. unreleased:: 6.0
+        .. future:: 6.0
         """
         return self.session.add_quota(
             survey_id,
@@ -487,7 +487,7 @@ class Client:
         """
         return self.__session.delete_language(survey_id, language)
 
-    @unreleased("6.0")
+    @future("6.0")
     def delete_quota(self, quota_id: int) -> types.OperationStatus:
         """Delete a LimeSurvey quota.
 
@@ -498,7 +498,7 @@ class Client:
             True if the quota was deleted.
 
         .. versionadded:: NEXT_VERSION
-        .. unreleased:: 6.0
+        .. future:: 6.0
         """
         return self.session.delete_quota(quota_id)
 
@@ -826,7 +826,7 @@ class Client:
         """
         return self.__session.get_question_properties(question_id, settings, language)
 
-    @unreleased("6.0")
+    @future("6.0")
     def get_quota_properties(
         self,
         quota_id: int,
@@ -844,7 +844,7 @@ class Client:
             Quota properties.
 
         .. versionadded:: NEXT_VERSION
-        .. unreleased:: 6.0
+        .. future:: 6.0
         """
         return self.session.get_quota_properties(quota_id, settings, language)
 
@@ -864,7 +864,7 @@ class Client:
         """
         return self.__session.get_response_ids(survey_id, token)
 
-    @unreleased("6.0")
+    @future("6.0")
     def get_available_site_settings(self) -> list[str]:
         """Get all available site settings.
 
@@ -872,7 +872,7 @@ class Client:
             A list of all the available site settings.
 
         .. versionadded:: NEXT_VERSION
-        .. unreleased:: 6.0
+        .. future:: 6.0
         """
         return self.session.get_available_site_settings()
 
@@ -1191,7 +1191,7 @@ class Client:
         """
         return self.__session.list_questions(survey_id, group_id, language)
 
-    @unreleased("6.0")
+    @future("6.0")
     def list_quotas(self, survey_id: int) -> list[types.QuotaListElement]:
         """Get all quotas for a LimeSurvey survey.
 
@@ -1202,7 +1202,7 @@ class Client:
             List of quotas.
 
         .. versionadded:: NEXT_VERSION
-        .. unreleased:: 6.0
+        .. future:: 6.0
         """
         return self.session.list_quotas(survey_id)
 
