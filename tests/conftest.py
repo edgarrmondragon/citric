@@ -29,8 +29,8 @@ def _add_integration_skip(
 
 def _from_env_var(
     env_var: str,
-    default: str,
-) -> str:
+    default: str | None = None,
+) -> str | None:
     """Get a value from an environment variable or return a default."""
     return os.environ.get(env_var, default)
 
@@ -42,34 +42,28 @@ def pytest_addoption(parser: pytest.Parser):
         action="store",
         choices=["postgres", "mysql"],
         help="Database used for integration tests.",
-        default=_from_env_var("BACKEND", "postgres"),
+        default=_from_env_var("BACKEND"),
     )
 
     parser.addoption(
         "--limesurvey-url",
         action="store",
         help="URL of the LimeSurvey instance to test against.",
-        default=_from_env_var(
-            "LS_URL",
-            "http://localhost:8001/index.php/admin/remotecontrol",
-        ),
+        default=_from_env_var("LS_URL"),
     )
 
     parser.addoption(
         "--limesurvey-username",
         action="store",
         help="Username of the LimeSurvey user to test against.",
-        default=_from_env_var("LS_USER", "iamadmin"),
+        default=_from_env_var("LS_USER"),
     )
 
     parser.addoption(
         "--limesurvey-password",
         action="store",
         help="Password of the LimeSurvey user to test against.",
-        default=_from_env_var(
-            "LS_PASSWORD",
-            "secret",
-        ),
+        default=_from_env_var("LS_PASSWORD"),
     )
 
     parser.addoption(

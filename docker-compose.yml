@@ -9,7 +9,7 @@ services:
     depends_on:
       - db
     ports:
-      - "8001:8080"
+      - "${LS_PORT}:8080"
     environment:
       DB_TYPE: pgsql
       DB_HOST: db
@@ -17,9 +17,9 @@ services:
       DB_NAME: limesurvey
       DB_USERNAME: limesurvey
       DB_PASSWORD: secret
-      ADMIN_USER: iamadmin
+      ADMIN_USER: ${LS_USER}
       ADMIN_NAME: Lime Administrator
-      ADMIN_PASSWORD: secret
+      ADMIN_PASSWORD: ${LS_PASSWORD}
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/index.php/admin"]
       interval: 1m

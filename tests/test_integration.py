@@ -36,7 +36,7 @@ def client(
     yield client
 
     try:
-        for survey in client.list_surveys():
+        for survey in client.list_surveys(integration_username):
             client.delete_survey(survey["sid"])
     except LimeSurveyStatusError:
         pass
