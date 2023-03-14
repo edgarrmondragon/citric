@@ -18,7 +18,6 @@ extensions = [
     "autoapi.extension",
     "myst_parser",
     "sphinx_copybutton",
-    "sphinxext.opengraph",
     "limesurvey_future",
 ]
 
@@ -69,8 +68,3 @@ source_suffix = {
 napoleon_custom_sections = [
     ("Keys", "params_style"),
 ]
-
-ogp_site_name = "Citric"
-ogp_image = "code.png"
-ogp_image_alt = "Citric sample code"
-ogp_enable_meta_description = True

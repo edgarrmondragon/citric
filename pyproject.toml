@@ -95,7 +95,6 @@ sphinx-autoapi = {version = "^2.0.1", optional = true}
 sphinx-autobuild = {version = "^2021.3.14", optional = true}
 sphinx-autodoc-typehints = {version = "^1.22", optional = true}
 sphinx-copybutton = {version = "^0.5.1", optional = true}
-sphinxext-opengraph = {version = "^0.8.1", optional = true}
 
 [tool.poetry.group.dev.dependencies]
 codecov = "^2.1.4"
@@ -115,7 +114,6 @@ docs = [
   "sphinx-autobuild",
   "sphinx-autodoc-typehints",
   "sphinx-copybutton",
-  "sphinxext-opengraph",
 ]
 
 [tool.ruff]
