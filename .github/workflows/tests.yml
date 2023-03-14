@@ -38,6 +38,7 @@ jobs:
       ${{ matrix.session }}
       ${{ matrix.python-version }}\
       ${{ matrix.session == 'integration' && format(' / integration with {0}', matrix.image_tag || matrix.limesurvey_version) || '' }}\
+      ${{ matrix.session == 'integration' && format(' / {0}', matrix.database) || '' }}
       / ${{ matrix.os }}"
     runs-on: ${{ matrix.os }}
     continue-on-error: ${{ matrix.experimental || false }}

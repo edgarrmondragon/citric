@@ -18,12 +18,6 @@ if TYPE_CHECKING:
 def pytest_addoption(parser: pytest.Parser):
     """Add command line options to pytest."""
     parser.addoption(
-        "--only-integration",
-        action="store_true",
-        help="Run integration tests.",
-    )
-
-    parser.addoption(
         "--database-type",
         action="store",
         choices=["postgres", "mysql"],
@@ -61,14 +55,12 @@ def pytest_addoption(parser: pytest.Parser):
 def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item]):
     """Modify test collection."""
     backend = config.getoption("--database-type")
-    only_integration = config.getoption("--only-integration")
     url = config.getoption("--limesurvey-url")
     username = config.getoption("--limesurvey-username")
     password = config.getoption("--limesurvey-password")
     dev = config.getoption("--limesurvey-develop")
 
     xfail_mysql = pytest.mark.xfail(reason="This test fails on MySQL")
-    skip_non_integration = pytest.mark.skip(reason="Only integration tests requested")
     skip_integration = [
         (backend, pytest.mark.skip(reason="No database type specified")),
         (url, pytest.mark.skip(reason="No LimeSurvey URL specified")),
@@ -87,9 +79,6 @@ def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item
             for value, skip in skip_integration:
                 if value is None:
                     item.add_marker(skip)
-
-        if only_integration and "integration_test" not in item.keywords:
-            item.add_marker(skip_non_integration)
 
         if not dev and "dev_only" in item.keywords:
             item.add_marker(xfail_non_dev_only)

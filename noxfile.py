@@ -106,9 +106,10 @@ def tests(session: Session) -> None:
 
     session.install(".", env=env)
     session.install(*deps, env=env)
+    args = session.posargs or ["-m", "not integration_test"]
 
     try:
-        session.run("coverage", "run", "--parallel", "-m", "pytest", *session.posargs)
+        session.run("coverage", "run", "--parallel", "-m", "pytest", *args)
     finally:
         if session.interactive:
             session.notify("coverage", posargs=[])
@@ -136,7 +137,8 @@ def integration(session: Session) -> None:
         "--parallel",
         "-m",
         "pytest",
-        "--only-integration",
+        "-m",
+        "integration_test",
         f"--database-type={database}",
         f"--limesurvey-url={url}",
         f"--limesurvey-username={username}",
