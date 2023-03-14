@@ -144,7 +144,7 @@ def integration(session: Session) -> None:
     ]
 
     if version:
-        args.append(f"--limesurvey-version={version}")
+        args.append("--limesurvey-develop")
 
     try:
         session.run(*args, *session.posargs)

@@ -49,9 +49,12 @@ def pytest_addoption(parser: pytest.Parser):
     )
 
     parser.addoption(
-        "--limesurvey-version",
+        "--limesurvey-develop",
         action="store_true",
-        help="Run tests for a development version of LimeSurvey.",
+        help=(
+            "Require tests that only work on development versions of LimeSurvey to "
+            "pass."
+        ),
     )
 
 
@@ -62,7 +65,7 @@ def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item
     url = config.getoption("--limesurvey-url")
     username = config.getoption("--limesurvey-username")
     password = config.getoption("--limesurvey-password")
-    version = config.getoption("--limesurvey-version")
+    dev = config.getoption("--limesurvey-develop")
 
     xfail_mysql = pytest.mark.xfail(reason="This test fails on MySQL")
     skip_non_integration = pytest.mark.skip(reason="Only integration tests requested")
@@ -88,7 +91,7 @@ def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item
         if only_integration and "integration_test" not in item.keywords:
             item.add_marker(skip_non_integration)
 
-        if version and "dev_only" not in item.keywords:
+        if not dev and "dev_only" in item.keywords:
             item.add_marker(xfail_non_dev_only)
 
 
