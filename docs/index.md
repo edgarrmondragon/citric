@@ -1,3 +1,11 @@
+```{eval-rst}
+.. meta::
+    :description lang=en:
+        A Python client for the LimeSurvey Remote Control API 2.
+    :description lang=es:
+        Un cliente de Python para la API de control remoto de LimeSurvey.
+```
+
 # Citric
 
 ```{include} ../README.md
