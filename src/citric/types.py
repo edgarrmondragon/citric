@@ -37,7 +37,7 @@ class FileUploadResult(TypedDict):
     msg: str
 
 
-class GroupProperties(TypedDict):
+class GroupProperties(TypedDict, total=False):
     """Group properties.
 
     Keys:
@@ -59,7 +59,7 @@ class GroupProperties(TypedDict):
     description: str
 
 
-class LanguageProperties(TypedDict):
+class LanguageProperties(TypedDict, total=False):
     """Language properties.
 
     Keys:
@@ -197,7 +197,7 @@ class QuestionsListElement(TypedDict):
     same_script: int
 
 
-class QuestionProperties(TypedDict):
+class QuestionProperties(TypedDict, total=False):
     """Question properties result.
 
     Keys:
@@ -278,7 +278,7 @@ class QuotaListElement(TypedDict):
     autoload_url: int
 
 
-class QuotaProperties(TypedDict):
+class QuotaProperties(TypedDict, total=False):
     """Quota properties result.
 
     Keys:
@@ -326,7 +326,7 @@ class SetQuotaPropertiesResult(TypedDict):
     message: QuotaProperties
 
 
-class SurveyProperties(TypedDict):
+class SurveyProperties(TypedDict, total=False):
     """Survey properties result.
 
     Keys:

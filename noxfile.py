@@ -70,6 +70,7 @@ def mypy(session: Session) -> None:
     session.install(
         "mypy",
         "pytest",
+        "sphinx",
         "types-docutils",
         "types-requests",
     )
