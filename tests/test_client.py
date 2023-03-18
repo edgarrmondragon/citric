@@ -20,6 +20,7 @@ if TYPE_CHECKING:
 
     from _pytest._py.path import LocalPath
 
+    from citric import types
 
 NEW_SURVEY_NAME = "New Survey"
 
@@ -493,7 +494,7 @@ def test_download_files(client: MockClient, tmp_path: Path):
 
 def test_set_group_properties(client: MockClient):
     """Test set_group_properties client method."""
-    props = {"name": "foo"}
+    props: types.GroupProperties = {"group_name": "foo"}
     assert client.set_group_properties(
         1,
         **props,
@@ -502,7 +503,7 @@ def test_set_group_properties(client: MockClient):
 
 def test_set_language_properties(client: MockClient):
     """Test set_language_properties client method."""
-    props = {"name": "foo"}
+    props: types.LanguageProperties = {"surveyls_title": "foo"}
     assert client.set_language_properties(
         1,
         language="en",
@@ -522,7 +523,7 @@ def test_set_participant_properties(client: MockClient):
 
 def test_set_question_properties(client: MockClient):
     """Test set_question_properties client method."""
-    props = {"title": "foo", "question": "bar", "type": "text"}
+    props: types.QuestionProperties = {"title": "foo", "mandatory": "Y", "type": "text"}
     assert client.set_question_properties(
         1,
         language="en",
@@ -532,7 +533,7 @@ def test_set_question_properties(client: MockClient):
 
 def test_set_quota_properties(client: MockClient):
     """Test set_quota_properties client method."""
-    props = {"name": "foo", "quota": "bar", "action": "baz"}
+    props: types.QuotaProperties = {"name": "foo", "qlimit": 150, "action": 1}
     assert client.set_quota_properties(
         1,
         **props,
@@ -541,7 +542,11 @@ def test_set_quota_properties(client: MockClient):
 
 def test_set_survey_properties(client: MockClient):
     """Test set_survey_properties client method."""
-    props = {"title": "foo", "welcome": "bar", "end": "baz"}
+    props: types.SurveyProperties = {
+        "allowsave": "Y",
+        "ipanonymize": "Y",
+        "emailnotificationto": "john.doe@example.com",
+    }
     assert client.set_survey_properties(
         1,
         **props,

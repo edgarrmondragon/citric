@@ -36,6 +36,7 @@ omit = [
 show_missing = true
 
 [tool.mypy]
+enable_incomplete_feature = "Unpack"
 warn_unreachable = true
 warn_unused_configs = true
 warn_unused_ignores = true
@@ -85,7 +86,7 @@ version = "0.5.0"
 importlib_metadata = {version = ">=1.6", python = "<3.8"}
 python = "^3.7.0"
 requests = "^2.23.0"
-typing-extensions = {version = "^4.4.0", python = "<3.8"}
+typing-extensions = {version = "^4.4.0", python = "<3.12"}
 
 # Docs
 furo = {version = "^2022.12.7", optional = true}

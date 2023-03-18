@@ -21,6 +21,8 @@ if TYPE_CHECKING:
     from types import TracebackType
     from typing import Any, BinaryIO, Generator, Iterable, Mapping, Sequence
 
+    from typing_extensions import Unpack
+
     from citric import types
 
     if sys.version_info >= (3, 8):
@@ -1231,7 +1233,11 @@ class Client:
         """
         return self.__session.list_survey_groups(username)
 
-    def set_group_properties(self, group_id: int, **properties: Any) -> dict[str, bool]:
+    def set_group_properties(
+        self,
+        group_id: int,
+        **properties: Unpack[types.GroupProperties],
+    ) -> dict[str, bool]:
         """Set properties of a group.
 
         Args:
@@ -1247,7 +1253,7 @@ class Client:
         self,
         survey_id: int,
         language: str | None = None,
-        **properties: Any,
+        **properties: Unpack[types.LanguageProperties],
     ) -> dict[str, Any]:
         """Set properties of a survey language.
 
@@ -1288,7 +1294,7 @@ class Client:
         self,
         question_id: int,
         language: str | None = None,
-        **properties: Any,
+        **properties: Unpack[types.QuestionProperties],
     ) -> dict[str, bool]:
         """Set properties of a question.
 
@@ -1305,7 +1311,7 @@ class Client:
     def set_quota_properties(
         self,
         quota_id: int,
-        **properties: Any,
+        **properties: Unpack[types.QuotaProperties],
     ) -> types.SetQuotaPropertiesResult:
         """Set properties of a quota.
 
@@ -1325,7 +1331,7 @@ class Client:
     def set_survey_properties(
         self,
         survey_id: int,
-        **properties: Any,
+        **properties: Unpack[types.SurveyProperties],
     ) -> dict[str, bool]:
         """Set properties of a survey.
 
