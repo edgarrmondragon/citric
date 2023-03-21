@@ -1,0 +1,5 @@
+kind: Fixed
+body: Remove direct dependency on `typing-extensions`
+time: 2023-03-21T16:30:17.093769-06:00
+custom:
+  Issue: "774"
