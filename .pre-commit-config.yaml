@@ -55,6 +55,7 @@ repos:
     additional_dependencies:
     - types-docutils
     - types-requests
+    - typing-extensions
 
 - repo: https://github.com/asottile/pyupgrade
   rev: v3.3.1
