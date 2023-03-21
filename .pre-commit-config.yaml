@@ -77,7 +77,7 @@ repos:
   rev: 1.6.4
   hooks:
   - id: nbqa-ruff
-    additional_dependencies: [ruff==0.0.254]
+    additional_dependencies: [ruff==0.0.257]
     args: ["--fix"]
   - id: nbqa-black
   - id: nbqa-isort
