@@ -258,7 +258,8 @@ jobs:
           ${{ matrix.database == 'mysql' && ':docker-compose.mysql.yml' || '' }}"
       run: |
         docker compose up -d
-        docker ps -a
+        docker compose ps -a
+        docker compose config
 
     - name: Run Nox
       env:
