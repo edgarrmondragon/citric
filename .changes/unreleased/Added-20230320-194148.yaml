@@ -1,5 +1,0 @@
-kind: Added
-body: Use `TypedDict` for more precise `**kwargs` typing
-time: 2023-03-20T19:41:48.232793-06:00
-custom:
-  Issue: "765"
