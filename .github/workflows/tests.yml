@@ -250,7 +250,7 @@ jobs:
           ${{ matrix.limesurvey_version && ':docker-compose.ref.yml' }}\
           ${{ matrix.database == 'mysql' && ':docker-compose.mysql.yml' || '' }}"
       run: |
-        docker compose up -d --wait --abort-on-container-exit --quiet-pull
+        docker compose up -d --wait --quiet-pull
         docker compose ps -a
         docker compose config
 
