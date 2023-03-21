@@ -21,7 +21,7 @@ services:
       ADMIN_NAME: Lime Administrator
       ADMIN_PASSWORD: ${LS_PASSWORD}
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/index.php/admin"]
+      test: ["CMD", "curl", "-f", "http://localhost:8080/index.php/admin/remotecontrol"]
       interval: 1m
       timeout: 10s
       retries: 3
