@@ -257,7 +257,7 @@ class Client:
         Returns:
             ID of the newly created quota.
 
-        .. versionadded:: NEXT_VERSION
+        .. versionadded:: 0.6.0
         .. future:: 6.0
         """
         return self.session.add_quota(
@@ -499,7 +499,7 @@ class Client:
         Returns:
             True if the quota was deleted.
 
-        .. versionadded:: NEXT_VERSION
+        .. versionadded:: 0.6.0
         .. future:: 6.0
         """
         return self.session.delete_quota(quota_id)
@@ -845,7 +845,7 @@ class Client:
         Returns:
             Quota properties.
 
-        .. versionadded:: NEXT_VERSION
+        .. versionadded:: 0.6.0
         .. future:: 6.0
         """
         return self.session.get_quota_properties(quota_id, settings, language)
@@ -873,7 +873,7 @@ class Client:
         Returns:
             A list of all the available site settings.
 
-        .. versionadded:: NEXT_VERSION
+        .. versionadded:: 0.6.0
         .. future:: 6.0
         """
         return self.session.get_available_site_settings()
@@ -1203,7 +1203,7 @@ class Client:
         Returns:
             List of quotas.
 
-        .. versionadded:: NEXT_VERSION
+        .. versionadded:: 0.6.0
         .. future:: 6.0
         """
         return self.session.list_quotas(survey_id)
@@ -1324,7 +1324,7 @@ class Client:
         Returns:
             Mapping with success status and updated properties.
 
-        .. versionadded:: NEXT_VERSION
+        .. versionadded:: 0.6.0
         """
         return self.session.set_quota_properties(quota_id, properties)
 

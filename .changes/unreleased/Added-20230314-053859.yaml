@@ -1,5 +1,0 @@
-kind: Added
-body: Implement `get_available_site_settings` in client
-time: 2023-03-14T05:38:59.801934-06:00
-custom:
-  Issue: "552"
