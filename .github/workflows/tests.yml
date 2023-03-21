@@ -239,12 +239,6 @@ jobs:
         wget https://github.com/LimeSurvey/LimeSurvey/archive/${{ matrix.limesurvey_version }}.tar.gz -O ls.tar.gz
         echo "LS_CHECKSUM=$(sha256sum ls.tar.gz | cut -d' ' -f1)" >> $GITHUB_ENV
 
-    - name: Get Docker
-      if: ${{ matrix.session == 'integration' }}
-      uses: actions-hub/docker/cli@v1.0.3
-      env:
-        SKIP_LOGIN: true
-
     - name: Start services
       if: ${{ matrix.session == 'integration' }}
       env:
@@ -257,9 +251,9 @@ jobs:
           ${{ matrix.limesurvey_version && ':docker-compose.ref.yml' }}\
           ${{ matrix.database == 'mysql' && ':docker-compose.mysql.yml' || '' }}"
       run: |
-        docker compose up -d
-        docker compose ps -a
-        docker compose config
+        docker-compose up -d
+        docker-compose ps -a
+        docker-compose config
 
     - name: Run Nox
       env:
