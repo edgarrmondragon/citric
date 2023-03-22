@@ -73,6 +73,7 @@ def mypy(session: Session) -> None:
         "sphinx",
         "types-docutils",
         "types-requests",
+        "typing-extensions",
     )
     session.run("mypy", *args)
     if not session.posargs:
