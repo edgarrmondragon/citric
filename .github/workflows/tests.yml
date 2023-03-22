@@ -211,13 +211,20 @@ jobs:
         with open(os.environ["GITHUB_ENV"], mode="a") as io:
             print(f"VIRTUALENV_PIP={pip.__version__}", file=io)
 
+    - name: Install Poetry
+      env:
+        PIP_CONSTRAINT: .github/workflows/constraints.txt
+      run: |
+        pipx install poetry --verbose
+        pipx inject poetry 'poetry-core @ git+https://github.com/python-poetry/poetry-core.git@refactor/multiple-project-type-take-2'
+        poetry --version
+
     - name: Install Nox
       env:
         PIP_CONSTRAINT: .github/workflows/constraints.txt
       run: |
         pipx install nox
         pipx inject nox nox-poetry
-        pipx inject nox 'poetry-core @ git+https://github.com/python-poetry/poetry-core.git@master'
         nox --version
 
     - name: Download LimeSurvey archive
@@ -289,13 +296,20 @@ jobs:
         pip install pip
         pip --version
 
+    - name: Install Poetry
+      env:
+        PIP_CONSTRAINT: .github/workflows/constraints.txt
+      run: |
+        pipx install poetry
+        pipx inject poetry 'poetry-core @ git+https://github.com/python-poetry/poetry-core.git@refactor/multiple-project-type-take-2'
+        poetry --version
+
     - name: Install Nox
       env:
         PIP_CONSTRAINT: .github/workflows/constraints.txt
       run: |
         pipx install nox
         pipx inject nox nox-poetry
-        pipx inject nox 'poetry-core @ git+https://github.com/python-poetry/poetry-core.git@master'
         nox --version
 
     - name: Download coverage data
