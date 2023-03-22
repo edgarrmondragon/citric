@@ -229,7 +229,7 @@ jobs:
     - name: Download LimeSurvey archive
       if: ${{ matrix.session == 'integration' && matrix.limesurvey_version }}
       run: |
-        wget https://github.com/LimeSurvey/LimeSurvey/archive/${{ matrix.limesurvey_version }}.tar.gz -O ls.tar.gz
+        wget https://github.com/LimeSurvey/LimeSurvey/archive/${{ matrix.limesurvey_version }}.tar.gz -O ls.tar.gz -nv
         echo "LS_CHECKSUM=$(sha256sum ls.tar.gz | cut -d' ' -f1)" >> $GITHUB_ENV
 
     - name: Set up Docker Buildx
