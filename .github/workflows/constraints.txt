@@ -2,4 +2,3 @@ pip==23.0.1
 nox==2022.11.21
 nox-poetry==1.0.2
 poetry==1.4.1
-poetry-core @ git+https://github.com/python-poetry/poetry-core.git@master
