@@ -159,7 +159,7 @@ class Session:
         Returns:
             An RPC result.
         """
-        request_id = random.randint(1, 999_999)
+        request_id = random.randint(1, 999_999)  # noqa: S311
 
         payload = {
             "method": method,
