@@ -24,7 +24,7 @@ repos:
   - id: check-readthedocs
 
 - repo: https://github.com/charliermarsh/ruff-pre-commit
-  rev: v0.0.258
+  rev: v0.0.259
   hooks:
   - id: ruff
     args: [--fix, --exit-non-zero-on-fix]
@@ -78,7 +78,7 @@ repos:
   rev: 1.6.4
   hooks:
   - id: nbqa-ruff
-    additional_dependencies: [ruff==0.0.258]
+    additional_dependencies: [ruff==0.0.259]
     args: ["--fix"]
   - id: nbqa-black
   - id: nbqa-isort
