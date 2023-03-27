@@ -1,5 +1,4 @@
 [flake8]
 select = DAR
 docstring-convention = google
-ignore = ANN101
 max-line-length = 88
