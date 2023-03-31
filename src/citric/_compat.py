@@ -20,7 +20,7 @@ def _warning_message(next_version: str) -> tuple[str, ...]:
         The formatted warning message.
     """
     return (
-        "is only supported in the current development build of",
+        "is only supported in the current development build of ",
         f"LimeSurvey and is subject to change before version {next_version}.",
     )
 

@@ -1,0 +1,5 @@
+kind: Added
+body: Implement `cpd_importParticipants` in client
+time: 2022-06-29T03:17:36.614673-05:00
+custom:
+  Issue: "492"

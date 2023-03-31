@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import csv
 import io
+import uuid
 from pathlib import Path
 from typing import TYPE_CHECKING
 from urllib.parse import quote
@@ -13,6 +14,7 @@ import pytest
 import citric
 from citric import enums
 from citric.exceptions import LimeSurveyStatusError
+from citric.objects import Participant
 
 if TYPE_CHECKING:
     from typing import Any, Generator
@@ -494,3 +496,51 @@ def test_site_settings(client: citric.Client):
     assert client.get_default_language() == "en"
     assert client.get_default_theme() == "fruity"
     assert client.get_site_name() == "Citric - Test"
+
+
+@pytest.mark.integration_test
+def test_cpdb(client: citric.Client):
+    """Test the CPDB methods."""
+    participants = [
+        Participant(
+            email="john@example.com",
+            firstname="John",
+            lastname="Doe",
+            participant_id=uuid.uuid4(),
+            attributes={
+                "favorite_color": "red",
+            },
+        ),
+        Participant(
+            email="jane@example.com",
+            firstname="Jane",
+            lastname="Doe",
+            participant_id=uuid.uuid4(),
+        ),
+    ]
+    assert client.import_cpdb_participants(participants) == {
+        "ImportCount": 2,
+        "UpdateCount": 0,
+    }
+
+    more_participants = [
+        Participant(
+            email=participants[0].email,
+            firstname=participants[0].firstname,
+            lastname=participants[0].lastname,
+            participant_id=participants[0].participant_id,
+            attributes={
+                "favorite_color": "blue",
+            },
+        ),
+        Participant(
+            email="dave@example.com",
+            firstname="Dave",
+            lastname="Doe",
+            participant_id=uuid.uuid4(),
+        ),
+    ]
+    assert client.import_cpdb_participants(more_participants, update=True) == {
+        "ImportCount": 1,
+        "UpdateCount": 1,
+    }
