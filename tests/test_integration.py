@@ -59,12 +59,6 @@ def survey_id(client: citric.Client) -> Generator[int, None, None]:
     client.delete_survey(survey_id)
 
 
-@pytest.fixture(scope="session", autouse=True)
-def faker_seed() -> int:
-    """Set faker seed."""
-    return 12345
-
-
 @pytest.mark.integration_test
 def test_fieldmap(client: citric.Client, survey_id: int):
     """Test fieldmap."""

@@ -247,3 +247,9 @@ def session(
     yield session
 
     session.close()
+
+
+@pytest.fixture(scope="session", autouse=True)
+def faker_seed() -> int:
+    """Set faker seed."""
+    return 12345
