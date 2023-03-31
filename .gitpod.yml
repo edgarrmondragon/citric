@@ -2,7 +2,10 @@ tasks:
   - init: |
       docker compose pull
       docker compose build
-  - command: |
+  - env:
+      LS_USER: "citric_gitpod"
+      LS_PASSWORD: "notverysecret"
+    command: |
       docker compose --profile=web up
 
 ports:
