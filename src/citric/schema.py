@@ -33,7 +33,7 @@ class Participant:
             Dictionary representation of participant.
         """
         return {
-            "participant_id": self.participant_id,
+            "participant_id": str(self.participant_id) if self.participant_id else None,
             "firstname": self.firstname,
             "lastname": self.lastname,
             "email": self.email,
