@@ -88,10 +88,10 @@ python = "^3.7.0"
 requests = "^2.23.0"
 
 # Docs
-furo = {version = "^2022.12.7", optional = true}
+furo = {version = "^2023.3.27", optional = true}
 myst-parser = {version = "^1.0.0", optional = true}
-sphinx = {version = "<6", optional = true}
-sphinx-autoapi = {version = "^2.0.1", optional = true}
+sphinx = {version = "<7", optional = true}
+sphinx-autoapi = {version = "^2.1.0", optional = true}
 sphinx-autobuild = {version = "^2021.3.14", optional = true}
 sphinx-autodoc-typehints = {version = "^1.22", optional = true}
 sphinx-copybutton = {version = "^0.5.1", optional = true}
