@@ -24,6 +24,7 @@ except ImportError:
 GH_ACTIONS_ENV_VAR = "GITHUB_ACTIONS"
 FORCE_COLOR = "FORCE_COLOR"
 PY312 = "3.12"
+TEST_DEPS = ["coverage[toml]", "faker", "pytest"]
 
 package = "citric"
 python_versions = ["3.12", "3.11", "3.10", "3.9", "3.8", "3.7"]
@@ -68,7 +69,6 @@ def mypy(session: Session) -> None:
     args = session.posargs or ["src", "tests", "docs/conf.py"]
     session.install(".")
     session.install(
-        "faker",
         "mypy",
         "pytest",
         "sphinx",
@@ -84,7 +84,7 @@ def mypy(session: Session) -> None:
 @session(python=python_versions + pypy_versions)
 def tests(session: Session) -> None:
     """Execute pytest tests and compute coverage."""
-    deps = ["coverage[toml]", "pytest"]
+    deps = [*TEST_DEPS]
     env = {"PIP_ONLY_BINARY": ":all:"}
 
     if GH_ACTIONS_ENV_VAR in os.environ:
@@ -107,7 +107,7 @@ def tests(session: Session) -> None:
 @session(python=python_versions + pypy_versions)
 def integration(session: Session) -> None:
     """Execute integration tests and compute coverage."""
-    deps = ["coverage[toml]", "pytest"]
+    deps = [*TEST_DEPS]
     if GH_ACTIONS_ENV_VAR in os.environ:
         deps.append("pytest-github-actions-annotate-failures")
 
