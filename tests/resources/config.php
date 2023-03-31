@@ -37,9 +37,9 @@ return array(
         'debugsql' => 1,
         'RPCInterface' => 'json',
         'sitename' => 'Citric - Test',
-        'smtphost' => $email_smtphost,
-        'smtpuser' => $email_smtpuser,
-        'smtppassword' => $email_smtppassword,
+        'emailsmtphost' => $email_smtphost,
+        'emailsmtpuser' => $email_smtpuser,
+        'emailsmtppassword' => $email_smtppassword,
         'emailmethod' => 'smtp',
     )
 );
