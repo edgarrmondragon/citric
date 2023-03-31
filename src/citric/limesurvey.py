@@ -1,4 +1,4 @@
-"""Schemas for LimeSurvey objects."""
+"""Python classes associated with LimeSurvey objects (surveys, questions, etc.)."""
 
 from __future__ import annotations
 
@@ -8,8 +8,10 @@ from dataclasses import dataclass, field
 if t.TYPE_CHECKING:
     from uuid import UUID
 
+    from citric.types import YesNo
 
-def to_yes_no(*, value: bool) -> str:
+
+def to_yes_no(*, value: bool) -> YesNo:
     """Convert boolean to yes/no string."""
     return "Y" if value else "N"
 
