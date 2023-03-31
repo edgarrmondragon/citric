@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import csv
 import io
+import uuid
 from pathlib import Path
 from typing import TYPE_CHECKING
 from urllib.parse import quote
@@ -505,6 +506,7 @@ def test_cpdb(client: citric.Client):
             email="john@example.com",
             firstname="John",
             lastname="Doe",
+            participant_id=uuid.uuid4(),
             attributes={
                 "favorite_color": "red",
             },
@@ -513,6 +515,7 @@ def test_cpdb(client: citric.Client):
             email="jane@example.com",
             firstname="Jane",
             lastname="Doe",
+            participant_id=uuid.uuid4(),
         ),
     ]
     assert client.import_cpdb_participants(participants) == {
@@ -522,9 +525,10 @@ def test_cpdb(client: citric.Client):
 
     more_participants = [
         Participant(
-            email="john@example.com",
-            firstname="John",
-            lastname="Doe",
+            email=participants[0].email,
+            firstname=participants[0].firstname,
+            lastname=participants[0].lastname,
+            participant_id=participants[0].participant_id,
             attributes={
                 "favorite_color": "blue",
             },
@@ -533,6 +537,7 @@ def test_cpdb(client: citric.Client):
             email="dave@example.com",
             firstname="Dave",
             lastname="Doe",
+            participant_id=uuid.uuid4(),
         ),
     ]
     assert client.import_cpdb_participants(more_participants, update=True) == {
