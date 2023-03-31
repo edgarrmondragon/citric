@@ -8,6 +8,10 @@ $db_username = getenv('DB_USERNAME');
 $db_password = getenv('DB_PASSWORD');
 $db_charset = getenv('DB_CHARSET') ?: 'utf8';
 
+$email_smtphost = getenv('EMAIL_SMTPHOST');
+$email_smtpuser = getenv('EMAIL_SMTPUSER');
+$email_smtppassword = getenv('EMAIL_SMTPPASSWORD');
+
 return array(
     'components' => array(
         'db' => array(
@@ -33,5 +37,9 @@ return array(
         'debugsql' => 1,
         'RPCInterface' => 'json',
         'sitename' => 'Citric - Test',
+        'smtphost' => $email_smtphost,
+        'smtpuser' => $email_smtpuser,
+        'smtppassword' => $email_smtppassword,
+        'emailmethod' => 'smtp',
     )
 );
