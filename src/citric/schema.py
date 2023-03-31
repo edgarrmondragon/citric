@@ -2,8 +2,11 @@
 
 from __future__ import annotations
 
+import typing as t
 from dataclasses import dataclass, field
-from typing import Any
+
+if t.TYPE_CHECKING:
+    from uuid import UUID
 
 
 def to_yes_no(*, value: bool) -> str:
@@ -18,10 +21,10 @@ class Participant:
     firstname: str
     lastname: str
     email: str
-    participant_id: str | None = None
+    participant_id: UUID | None = None
     language: str | None = "en"
     blacklisted: bool = False
-    attributes: dict[str, Any] = field(default_factory=dict)
+    attributes: dict[str, t.Any] = field(default_factory=dict)
 
     def to_dict(self) -> dict:
         """Convert to dictionary.
