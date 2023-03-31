@@ -54,6 +54,7 @@ services:
       - web
 
 volumes:
+  apache:
   limedb:
   surveys:
   object_storage:
