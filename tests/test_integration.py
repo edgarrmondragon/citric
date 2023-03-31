@@ -19,6 +19,8 @@ from citric.objects import Participant
 if TYPE_CHECKING:
     from typing import Any, Generator
 
+    from faker import Faker
+
 NEW_SURVEY_NAME = "New Survey"
 
 
@@ -55,6 +57,12 @@ def survey_id(client: citric.Client) -> Generator[int, None, None]:
     yield survey_id
 
     client.delete_survey(survey_id)
+
+
+@pytest.fixture(scope="session", autouse=True)
+def faker_seed() -> int:
+    """Set faker seed."""
+    return 12345
 
 
 @pytest.mark.integration_test
@@ -262,32 +270,32 @@ def test_activate_tokens(client: citric.Client, survey_id: int):
 
 
 @pytest.mark.integration_test
-def test_participants(client: citric.Client, survey_id: int):
+def test_participants(faker: Faker, client: citric.Client, survey_id: int):
     """Test participants methods."""
     client.activate_survey(survey_id)
     client.activate_tokens(survey_id, [1, 2])
 
     data = [
         {
-            "email": "john@example.com",
-            "firstname": "John",
-            "lastname": "Doe",
+            "email": faker.email(),
+            "firstname": faker.first_name(),
+            "lastname": faker.last_name(),
             "token": "1",
             "attribute_1": "Dog person",
             "attribute_2": "Night owl",
         },
         {
-            "email": "jane@example.com",
-            "firstname": "Jane",
-            "lastname": "Doe",
+            "email": faker.email(),
+            "firstname": faker.first_name(),
+            "lastname": faker.last_name(),
             "token": "2",
             "attribute_1": "Cat person",
             "attribute_2": "Early bird",
         },
         {
-            "email": "jane@example.com",
-            "firstname": "Jane",
-            "lastname": "Doe",
+            "email": faker.email(),
+            "firstname": faker.first_name(),
+            "lastname": faker.last_name(),
             "token": "2",
             "attribute_1": "Cat person",
             "attribute_2": "Night owl",
@@ -333,15 +341,18 @@ def test_participants(client: citric.Client, survey_id: int):
         assert properties["attribute_2"] == d["attribute_2"]
 
     # Update participant properties
+    new_firstname = faker.first_name()
+    new_attribute_1 = "Hamster person"
+
     response = client.set_participant_properties(
         survey_id,
         added[0]["tid"],
-        firstname="Johnny",
-        attribute_1="Hamster person",
+        firstname=new_firstname,
+        attribute_1=new_attribute_1,
     )
-    assert response["firstname"] == "Johnny"
-    assert response["lastname"] == "Doe"
-    assert response["attribute_1"] == "Hamster person"
+    assert response["firstname"] == new_firstname
+    assert response["lastname"] == added[0]["lastname"]
+    assert response["attribute_1"] == new_attribute_1
 
     # Delete participants
     deleted = client.delete_participants(survey_id, [added[0]["tid"]])
@@ -499,22 +510,22 @@ def test_site_settings(client: citric.Client):
 
 
 @pytest.mark.integration_test
-def test_cpdb(client: citric.Client):
+def test_cpdb(faker: Faker, client: citric.Client):
     """Test the CPDB methods."""
     participants = [
         Participant(
-            email="john@example.com",
-            firstname="John",
-            lastname="Doe",
+            email=faker.email(),
+            firstname=faker.first_name(),
+            lastname=faker.last_name(),
             participant_id=uuid.uuid4(),
             attributes={
                 "favorite_color": "red",
             },
         ),
         Participant(
-            email="jane@example.com",
-            firstname="Jane",
-            lastname="Doe",
+            email=faker.email(),
+            firstname=faker.first_name(),
+            lastname=faker.last_name(),
             participant_id=uuid.uuid4(),
         ),
     ]
@@ -534,9 +545,9 @@ def test_cpdb(client: citric.Client):
             },
         ),
         Participant(
-            email="dave@example.com",
-            firstname="Dave",
-            lastname="Doe",
+            email=faker.email(),
+            firstname=faker.first_name(),
+            lastname=faker.last_name(),
             participant_id=uuid.uuid4(),
         ),
     ]

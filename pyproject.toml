@@ -100,6 +100,7 @@ sphinx-copybutton = {version = "^0.5.1", optional = true}
 codecov = "^2.1.4"
 colorama = "^0.4.5"
 coverage = {extras = ["toml"], version = "^7.0.1"}
+faker = "^18.3.1"
 pytest = "^7.1.2"
 pytest-github-actions-annotate-failures = "^0.1.7"
 safety = "^2.1.1"
