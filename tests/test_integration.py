@@ -14,7 +14,7 @@ import pytest
 import citric
 from citric import enums
 from citric.exceptions import LimeSurveyStatusError
-from citric.limesurvey import Participant
+from citric.objects import Participant
 
 if TYPE_CHECKING:
     from typing import Any, Generator

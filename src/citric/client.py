@@ -24,7 +24,7 @@ if TYPE_CHECKING:
     from typing_extensions import Unpack
 
     from citric import types
-    from citric.limesurvey import Participant
+    from citric.objects import Participant
 
     if sys.version_info >= (3, 8):
         from typing import Literal
