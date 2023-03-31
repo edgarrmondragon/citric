@@ -5,6 +5,7 @@ tasks:
   - env:
       LS_USER: "citric_gitpod"
       LS_PASSWORD: "notverysecret"
+      PUBLIC_URL: https://8001-edgarrmondragon-citric-${GITPOD_WORKSPACE_ID}.gitpod.io
     command: |
       docker compose --profile=web up
 
