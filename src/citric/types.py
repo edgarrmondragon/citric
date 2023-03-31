@@ -466,3 +466,15 @@ class SurveyProperties(TypedDict, total=False):
 
     language: str
     additional_languages: str
+
+
+class CPDBParticipantImportResult(TypedDict):
+    """CPDB participant import result.
+
+    Keys:
+        ImportCount: The number of participants imported.
+        UpdateCount: The number of participants updated.
+    """
+
+    ImportCount: int
+    UpdateCount: int

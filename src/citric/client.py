@@ -469,7 +469,7 @@ class Client:
         participants: Sequence[Participant],
         *,
         update: bool = False,
-    ) -> dict:
+    ) -> types.CPDBParticipantImportResult:
         """Import CPDB participants.
 
         Args:
