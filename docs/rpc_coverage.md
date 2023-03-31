@@ -11,7 +11,7 @@ Full list of methods is available at [the Remote Control documentation](https://
 | `add_response`                 | [Yes](citric.Client.add_response)               | Add a response to the survey responses collection.                                |
 | `add_survey`                   | [Yes](citric.Client.add_survey)                 | Add an empty survey with minimum details                                          |
 | `copy_survey`                  | [Yes](citric.Client.copy_survey)                | Copy survey (RPC function)                                                        |
-| `cpd_importParticipants`       | No                                              | Import a participant into the LimeSurvey CPDB                                     |
+| `cpd_importParticipants`       | [Yes](citric.Client.import_cpdb_participants)   | Import a participant into the LimeSurvey CPDB                                     |
 | `delete_group`                 | [Yes](citric.Client.delete_group)               | Delete a group from a chosen survey (RPC function)                                |
 | `delete_language`              | [Yes](citric.Client.delete_language)            | Delete a language from a survey (RPC function)                                    |
 | `delete_participants`          | [Yes](citric.Client.delete_participants)        | Delete multiple participants from the survey participants table (RPC function)    |
