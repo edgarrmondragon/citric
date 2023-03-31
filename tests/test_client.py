@@ -19,6 +19,7 @@ if TYPE_CHECKING:
     from typing import Any, Generator
 
     from _pytest._py.path import LocalPath
+    from faker import Faker
 
     from citric import types
 
@@ -334,9 +335,12 @@ def test_list_questions(client: MockClient):
     assert_client_session_call(client, "list_questions", 1)
 
 
-def test_add_participants(client: MockClient):
+def test_add_participants(client: MockClient, faker: Faker):
     """Test add_participants client method."""
-    participants = [{"firstname": "Alice"}, {"firstname": "Bob"}]
+    participants = [
+        {"firstname": faker.first_name()},
+        {"firstname": faker.first_name()},
+    ]
     assert_client_session_call(
         client,
         "add_participants",
@@ -540,12 +544,12 @@ def test_set_quota_properties(client: MockClient):
     ) == client.session.set_quota_properties(1, props)
 
 
-def test_set_survey_properties(client: MockClient):
+def test_set_survey_properties(client: MockClient, faker: Faker):
     """Test set_survey_properties client method."""
     props: types.SurveyProperties = {
         "allowsave": "Y",
         "ipanonymize": "Y",
-        "emailnotificationto": "john.doe@example.com",
+        "emailnotificationto": faker.email(),
     }
     assert client.set_survey_properties(
         1,
