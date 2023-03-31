@@ -479,7 +479,7 @@ class Client:
         Returns:
             IDs of the new participants.
 
-        .. versionadded:: NEXT_VERSION
+        .. versionadded:: 0.7.0
         """
         return self.session.cpd_importParticipants(
             [participant.to_dict() for participant in participants],
