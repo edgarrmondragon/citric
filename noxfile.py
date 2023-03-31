@@ -69,6 +69,7 @@ def mypy(session: Session) -> None:
     args = session.posargs or ["src", "tests", "docs/conf.py"]
     session.install(".")
     session.install(
+        "faker",
         "mypy",
         "pytest",
         "sphinx",
