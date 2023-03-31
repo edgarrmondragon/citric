@@ -169,7 +169,7 @@ class Session:
 
         res = self._session.post(
             self.url,
-            data=json.dumps(payload, cls=self._encoder),
+            data=json.dumps(payload, cls=self._encoder, default=str),
             headers={
                 "content-type": "application/json",
             },
