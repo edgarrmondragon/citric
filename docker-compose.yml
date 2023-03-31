@@ -5,6 +5,7 @@ services:
     image: martialblog/limesurvey:${LS_IMAGE_TAG:-5-apache}
     volumes:
       - "surveys:/var/www/html/upload/surveys"
+      - "apache:/var/log/apache2"
       - "./tests/resources/config.php:/var/www/html/application/config/config.php"
     depends_on:
       - db
