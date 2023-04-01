@@ -5,6 +5,7 @@ from __future__ import annotations
 import base64
 import datetime
 import io
+import re
 import typing as t
 from dataclasses import dataclass
 from pathlib import Path
@@ -12,6 +13,7 @@ from pathlib import Path
 import requests
 
 from citric import enums
+from citric.exceptions import LimeSurveyStatusError
 from citric.session import Session
 
 if t.TYPE_CHECKING:
@@ -31,6 +33,8 @@ if t.TYPE_CHECKING:
         from typing import Self, Unpack  # noqa: ICN003
     else:
         from typing_extensions import Self, Unpack
+
+EMAILS_SENT_STATUS_PATTERN = re.compile(r"(-?\d+) left to send")
 
 
 @dataclass
@@ -1606,3 +1610,41 @@ class Client:
 
         with Path(path).open("rb") as file:
             return self.upload_file_object(survey_id, field, filename, file)
+
+    def invite_participants(
+        self,
+        survey_id: int,
+        *,
+        token_ids: list[int] | None = None,
+        strategy: int = enums.EmailSendStrategy.PENDING,
+    ) -> int:
+        """Invite participants to a survey.
+
+        Args:
+            survey_id: ID of the survey to invite participants to.
+            token_ids: IDs of the participants to invite.
+            strategy: Strategy to use for sending emails. See
+                :class:`~citric.enums.EmailSendStrategy`.
+
+        Returns:
+            Number of emails left to send.
+
+        Raises:
+            LimeSurveyStatusError: If the number of emails left to send could not be
+                determined.
+            RuntimeError: If an unexpected error occurs.
+
+        .. versionadded:: NEXT_VERSION
+        """
+        email_flag = enums.EmailSendStrategy.to_flag(strategy)
+        try:
+            self.session.invite_participants(survey_id, token_ids, email_flag)
+        except LimeSurveyStatusError as error:
+            status_match = re.match(EMAILS_SENT_STATUS_PATTERN, error.args[0])
+            if not status_match:
+                raise
+
+            return int(status_match[1])
+
+        msg = "Could not determine invitation status"
+        raise RuntimeError(msg)
