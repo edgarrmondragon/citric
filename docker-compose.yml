@@ -21,7 +21,7 @@ services:
       ADMIN_USER: ${LS_USER}
       ADMIN_NAME: Lime Administrator
       ADMIN_PASSWORD: ${LS_PASSWORD}
-      EMAIL_SMTPHOST: ${LS_SMTP_HOST:-localhost:25}
+      EMAIL_SMTPHOST: ${LS_SMTP_HOST:-mailhog:1025}
       EMAIL_SMTPUSER: ${LS_SMTP_USER:-citric@example.com}
       EMAIL_SMTPPASSWORD: ${LS_SMTP_PASSWORD:-secret}
     healthcheck:

@@ -6,9 +6,6 @@ tasks:
       LS_USER: "citric_gitpod"
       LS_PASSWORD: "notverysecret"
       PUBLIC_URL: https://8001-edgarrmondragon-citric-${GITPOD_WORKSPACE_ID}.gitpod.io
-      EMAIL_SMTPHOST: https://1025-edgarrmondragon-citric-${GITPOD_WORKSPACE_ID}.gitpod.io
-      EMAIL_SMTPUSER: citric@example.com
-      EMAIL_SMTPPASSWORD: "secret"
     command: |
       docker compose --profile=web -f docker-compose.yml -f docker-compose.email.yml up
 
