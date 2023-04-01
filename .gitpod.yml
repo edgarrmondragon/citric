@@ -7,7 +7,7 @@ tasks:
       LS_PASSWORD: "notverysecret"
       PUBLIC_URL: https://8001-edgarrmondragon-citric-${GITPOD_WORKSPACE_ID}.gitpod.io
     command: |
-      docker compose --profile=web -f docker-compose.yml -f docker-compose.email.yml up
+      docker compose --profile=web up
 
 ports:
   - port: 8001
