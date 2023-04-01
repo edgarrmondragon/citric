@@ -2,14 +2,9 @@ version: '3'
 
 services:
   limesurvey:
-    image: martialblog/limesurvey:${LS_IMAGE_TAG:-5-apache}
     volumes:
       - "surveys:/var/www/html/upload/surveys"
       - "./tests/resources/config.php:/var/www/html/application/config/config.php"
-    depends_on:
-      - db
-    ports:
-      - "${LS_PORT}:8080"
     environment:
       DB_TYPE: mysql
       DB_HOST: db
@@ -20,12 +15,6 @@ services:
       ADMIN_USER: ${LS_USER}
       ADMIN_NAME: Lime Administrator
       ADMIN_PASSWORD: ${LS_PASSWORD}
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/index.php/admin/remotecontrol"]
-      interval: 1m
-      timeout: 10s
-      retries: 3
-      start_period: 45s
 
   db:
     image: mysql

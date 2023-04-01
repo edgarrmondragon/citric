@@ -5,11 +5,12 @@ services:
     image: martialblog/limesurvey:${LS_IMAGE_TAG:-5-apache}
     volumes:
       - "surveys:/var/www/html/upload/surveys"
+      - "apache:/var/log/apache2"
       - "./tests/resources/config.php:/var/www/html/application/config/config.php"
     depends_on:
       - db
     ports:
-      - "${LS_PORT}:8080"
+      - "${LS_PORT:-8001}:8080"
     environment:
       DB_TYPE: pgsql
       DB_HOST: db
@@ -20,6 +21,9 @@ services:
       ADMIN_USER: ${LS_USER}
       ADMIN_NAME: Lime Administrator
       ADMIN_PASSWORD: ${LS_PASSWORD}
+      EMAIL_SMTPHOST: ${LS_SMTP_HOST:-mailhog:1025}
+      EMAIL_SMTPUSER: ${LS_SMTP_USER:-citric@example.com}
+      EMAIL_SMTPPASSWORD: ${LS_SMTP_PASSWORD:-secret}
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/index.php/admin"]
       interval: 1m
@@ -53,6 +57,7 @@ services:
       - web
 
 volumes:
+  apache:
   limedb:
   surveys:
   object_storage:
