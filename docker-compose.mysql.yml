@@ -12,9 +12,9 @@ services:
       DB_NAME: limesurvey
       DB_USERNAME: limesurvey
       DB_PASSWORD: secret
-      ADMIN_USER: ${LS_USER}
+      ADMIN_USER: ${LS_USER:-iamadmin}
       ADMIN_NAME: Lime Administrator
-      ADMIN_PASSWORD: ${LS_PASSWORD}
+      ADMIN_PASSWORD: ${LS_PASSWORD:-admin}
 
   db:
     image: mysql
