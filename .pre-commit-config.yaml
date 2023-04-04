@@ -89,3 +89,10 @@ repos:
   rev: "0.9.2"
   hooks:
   - id: pyproject-fmt
+
+- repo: https://github.com/python-jsonschema/check-jsonschema
+  rev: 0.22.0
+  hooks:
+  - id: check-dependabot
+  - id: check-github-workflows
+  - id: check-readthedocs
