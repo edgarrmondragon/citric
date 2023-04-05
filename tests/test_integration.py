@@ -202,7 +202,6 @@ def test_question(client: citric.Client, survey_id: int):
 
 
 @pytest.mark.integration_test
-@pytest.mark.version("develop")
 def test_quota(client: citric.Client, survey_id: int):
     """Test quota methods."""
     with pytest.raises(LimeSurveyStatusError, match="No quotas found"):
@@ -488,7 +487,6 @@ def test_file_upload_invalid_extension(
 
 
 @pytest.mark.integration_test
-@pytest.mark.version("develop")
 def test_get_available_site_settings(client: citric.Client):
     """Test getting available site settings."""
     assert client.get_available_site_settings()
