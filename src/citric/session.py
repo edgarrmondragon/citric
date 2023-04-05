@@ -70,6 +70,16 @@ class Session:
         json_encoder: A `JSON encoder class <JSONEncoder>` to use for encoding RPC
             parameters.
 
+    .. versionchanged:: 0.0.4
+       Replaced the ``requests_session_factory`` parameter with ``requests_session``.
+
+    .. versionadded:: 0.0.6
+       Support Auth plugins with the ``auth_plugin`` parameter.
+
+    .. versionadded:: 0.5.0
+       The ``json_encoder`` parameter.
+
+
     .. _requests.Session:
         https://requests.readthedocs.io/en/latest/api/#request-sessions
     .. _key: #citric.session.Session.key
