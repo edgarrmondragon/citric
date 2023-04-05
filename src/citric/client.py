@@ -12,7 +12,6 @@ from typing import TYPE_CHECKING, TypeVar
 import requests
 
 from citric import enums
-from citric._compat import future
 from citric.session import Session
 
 if TYPE_CHECKING:
@@ -106,6 +105,9 @@ class Client:
             :ls_manual:`internal database <Authentication_plugins#Internal_database>`
             (``"Authdb"``).
 
+    .. versionadded:: 0.0.6
+       Support Auth plugins with the ``auth_plugin`` parameter.
+
     .. _requests.Session:
         https://requests.readthedocs.io/en/latest/api/#request-sessions
     """
@@ -160,6 +162,8 @@ class Client:
 
         Returns:
             Dictionary mapping response keys to LimeSurvey internal representation.
+
+        .. versionadded:: 0.3.0
         """
         return self.__session.get_fieldmap(survey_id)
 
@@ -171,6 +175,8 @@ class Client:
 
         Returns:
             Status and plugin feedback.
+
+        .. versionadded:: 0.0.1
         """
         return self.__session.activate_survey(survey_id)
 
@@ -189,6 +195,8 @@ class Client:
 
         Returns:
             Status message.
+
+        .. versionadded:: 0.0.1
         """
         return self.__session.activate_tokens(survey_id, attributes or [])
 
@@ -202,6 +210,8 @@ class Client:
 
         Returns:
             Status message.
+
+        .. versionadded:: 0.0.10
         """
         return self.__session.add_language(survey_id, language)
 
@@ -221,6 +231,10 @@ class Client:
 
         Returns:
             Information of newly created participants.
+
+        .. versionadded:: 0.0.1
+        .. versionchanged:: 0.4.0
+           Use keyword-only arguments.
         """
         return self.__session.add_participants(
             survey_id,
@@ -228,7 +242,6 @@ class Client:
             create_tokens,
         )
 
-    @future("6.0")
     def add_quota(
         self,
         survey_id: int,
@@ -259,7 +272,7 @@ class Client:
             ID of the newly created quota.
 
         .. versionadded:: 0.6.0
-        .. future:: 6.0
+        .. minlimesurvey:: 6.0.0
         """
         return self.session.add_quota(
             survey_id,
@@ -291,6 +304,8 @@ class Client:
 
         Returns:
             The new survey ID.
+
+        .. versionadded:: 0.0.10
         """
         return self.__session.add_survey(
             survey_id,
@@ -312,6 +327,8 @@ class Client:
 
         Returns:
             Information of removed participants.
+
+        .. versionadded:: 0.0.1
         """
         return self.__session.delete_participants(
             survey_id,
@@ -385,6 +402,8 @@ class Client:
 
         Returns:
             The id of the new group.
+
+        .. versionadded:: 0.0.8
         """
         return self.__session.add_group(survey_id, title, description)
 
@@ -410,6 +429,8 @@ class Client:
 
         Returns:
             ID of the new response.
+
+        .. versionadded:: 0.0.1
         """
         # Transform question codes to the format LimeSurvey expects
         questions = self._get_question_mapping(survey_id)
@@ -429,6 +450,8 @@ class Client:
 
         Returns:
             IDs of the new responses.
+
+        .. versionadded:: 0.0.1
         """
         ids = []
         questions = self._get_question_mapping(survey_id)
@@ -447,6 +470,8 @@ class Client:
 
         Returns:
             True if the response was updated, False otherwise.
+
+        .. versionadded:: 0.2.0
         """
         questions = self._get_question_mapping(survey_id)
         data = self._map_response_keys(response_data, questions)
@@ -461,6 +486,8 @@ class Client:
 
         Returns:
             Dictionary of status message and the new survey ID.
+
+        .. versionadded:: 0.0.10
         """
         return self.__session.copy_survey(survey_id, name)
 
@@ -495,13 +522,13 @@ class Client:
 
         Returns:
             ID of the deleted group.
+
+        .. versionadded:: 0.0.10
         """
         return self.__session.delete_group(survey_id, group_id)
 
     def delete_language(self, survey_id: int, language: str) -> types.OperationStatus:
         """Delete a language from a survey.
-
-        Requires at LimeSurvey >= 5.3.4.
 
         Args:
             survey_id: ID of the Survey for which a language will be deleted from.
@@ -509,10 +536,12 @@ class Client:
 
         Returns:
             Status message.
+
+        .. versionadded:: 0.0.12
+        .. minlimesurvey:: 5.3.4
         """
         return self.__session.delete_language(survey_id, language)
 
-    @future("6.0")
     def delete_quota(self, quota_id: int) -> types.OperationStatus:
         """Delete a LimeSurvey quota.
 
@@ -523,7 +552,7 @@ class Client:
             True if the quota was deleted.
 
         .. versionadded:: 0.6.0
-        .. future:: 6.0
+        .. minlimesurvey:: 6.0.0
         """
         return self.session.delete_quota(quota_id)
 
@@ -540,21 +569,22 @@ class Client:
 
         Returns:
             Status message.
+
+        .. versionadded:: 0.0.2
         """
         return self.__session.delete_response(survey_id, response_id)
 
     def delete_question(self, question_id: int) -> int:
         """Delete a survey.
 
-        Requires at least LimeSurvey 5.3.19+220607.
-
-        TODO: Add links to issue, PR, etc.
-
         Args:
             question_id: ID of Question to delete.
 
         Returns:
             ID of the deleted question.
+
+        .. versionadded:: 0.1.0
+        .. minlimesurvey:: 5.3.19
         """
         return self.__session.delete_question(question_id)
 
@@ -566,6 +596,8 @@ class Client:
 
         Returns:
             Status message.
+
+        .. versionadded:: 0.0.1
         """
         return self.__session.delete_survey(survey_id)
 
@@ -599,6 +631,11 @@ class Client:
 
         Returns:
             Content bytes of exported to file.
+
+        .. versionadded:: 0.0.1
+
+        .. versionchanged:: 0.0.2
+           Return raw bytes instead of number of bytes written.
         """
         if token is None:
             return base64.b64decode(
@@ -662,6 +699,8 @@ class Client:
 
         Returns:
             Bytes length written to file.
+
+        .. versionadded:: 0.0.10
         """
         with Path(filename).open("wb") as f:
             return f.write(
@@ -701,6 +740,8 @@ class Client:
 
         Returns:
             File contents.
+
+        .. versionadded:: 0.0.10
         """
         return base64.b64decode(
             self.session.export_statistics(
@@ -765,6 +806,8 @@ class Client:
 
         Returns:
             Mapping of days/hours to submission counts.
+
+        .. versionadded:: 0.0.10
         """
         return self.session.export_timeline(
             survey_id,
@@ -791,6 +834,8 @@ class Client:
 
         Returns:
             Dictionary of group properties.
+
+        .. versionadded:: 0.0.10
         """
         return self.__session.get_group_properties(group_id, settings, language)
 
@@ -810,6 +855,8 @@ class Client:
 
         Returns:
             Dictionary of survey language properties.
+
+        .. versionadded:: 0.0.10
         """
         return self.__session.get_language_properties(survey_id, settings, language)
 
@@ -829,6 +876,8 @@ class Client:
 
         Returns:
             List of participants properties.
+
+        .. versionadded:: 0.0.1
         """
         return self.__session.get_participant_properties(survey_id, query, properties)
 
@@ -848,10 +897,11 @@ class Client:
 
         Returns:
             Dictionary of question properties.
+
+        .. versionadded:: 0.0.10
         """
         return self.__session.get_question_properties(question_id, settings, language)
 
-    @future("6.0")
     def get_quota_properties(
         self,
         quota_id: int,
@@ -869,7 +919,7 @@ class Client:
             Quota properties.
 
         .. versionadded:: 0.6.0
-        .. future:: 6.0
+        .. minlimesurvey:: 6.0.0
         """
         return self.session.get_quota_properties(quota_id, settings, language)
 
@@ -886,10 +936,11 @@ class Client:
 
         Returns:
             A list of response IDs.
+
+        .. versionadded:: 0.0.1
         """
         return self.__session.get_response_ids(survey_id, token)
 
-    @future("6.0")
     def get_available_site_settings(self) -> list[str]:
         """Get all available site settings.
 
@@ -897,7 +948,7 @@ class Client:
             A list of all the available site settings.
 
         .. versionadded:: 0.6.0
-        .. future:: 6.0
+        .. minlimesurvey:: 6.0.0
         """
         return self.session.get_available_site_settings()
 
@@ -911,6 +962,8 @@ class Client:
 
         Returns:
             The requested setting value.
+
+        .. versionadded:: 0.0.1
         """
         return self.__session.get_site_settings(setting_name)
 
@@ -921,6 +974,8 @@ class Client:
 
         Returns:
             The name of the theme.
+
+        .. versionadded:: 0.0.1
         """
         return self._get_site_setting("defaulttheme")
 
@@ -931,6 +986,8 @@ class Client:
 
         Returns:
             The name of the site.
+
+        .. versionadded:: 0.0.1
         """
         return self._get_site_setting("sitename")
 
@@ -941,6 +998,8 @@ class Client:
 
         Returns:
             A string representing the language.
+
+        .. versionadded:: 0.0.1
         """
         return self._get_site_setting("defaultlang")
 
@@ -953,6 +1012,8 @@ class Client:
         Returns:
             Either a list of strings for the available languages or None if there are
             no restrictions.
+
+        .. versionadded:: 0.0.1
         """
         langs: str = self._get_site_setting("restrictToLanguages")
 
@@ -966,6 +1027,8 @@ class Client:
 
         Returns:
             Mapping of survey statistics.
+
+        .. versionadded:: 0.0.10
         """
         return self.session.get_summary(survey_id)
 
@@ -982,6 +1045,8 @@ class Client:
 
         Returns:
             Dictionary of survey properties.
+
+        .. versionadded:: 0.0.1
         """
         return self.__session.get_survey_properties(survey_id, properties)
 
@@ -998,6 +1063,8 @@ class Client:
 
         Returns:
             Dictionary with uploaded files metadata.
+
+        .. versionadded:: 0.0.5
         """
         return self.__session.get_uploaded_files(survey_id, token)
 
@@ -1014,6 +1081,8 @@ class Client:
 
         Yields:
             :class:`~citric.client.UploadedFile` objects.
+
+        .. versionadded:: 0.0.13
         """
         files_data = self.get_uploaded_files(survey_id, token)
         for file in files_data:
@@ -1044,6 +1113,8 @@ class Client:
 
         Returns:
             List with the paths of downloaded files.
+
+        .. versionadded:: 0.0.1
         """
         dirpath = Path(directory)
 
@@ -1077,6 +1148,8 @@ class Client:
 
         Returns:
             The ID of the new group.
+
+        .. versionadded:: 0.0.10
         """
         contents = base64.b64encode(file.read()).decode()
         return self.__session.import_group(
@@ -1104,6 +1177,8 @@ class Client:
 
         Returns:
             The ID of the new question.
+
+        .. versionadded:: 0.0.8
         """
         contents = base64.b64encode(file.read()).decode()
         return self.__session.import_question(
@@ -1133,6 +1208,10 @@ class Client:
 
         Returns:
             The ID of the new survey.
+
+        .. versionadded:: 0.0.1
+        .. versionchanged:: 0.0.5
+           Accept a binary file object instead of a path.
         """
         contents = base64.b64encode(file.read()).decode()
         return self.__session.import_survey(
@@ -1164,6 +1243,10 @@ class Client:
 
         Returns:
             List of participants with basic information.
+
+        .. versionadded:: 0.0.1
+        .. versionchanged:: 0.4.0
+           Use keyword-only arguments.
         """
         return self.__session.list_participants(
             survey_id,
@@ -1179,6 +1262,8 @@ class Client:
 
         Returns:
             List of users.
+
+        .. versionadded:: 0.0.3
         """
         return self.__session.list_users()
 
@@ -1195,6 +1280,8 @@ class Client:
 
         Returns:
             List of question groups.
+
+        .. versionadded:: 0.0.10
         """
         return self.__session.list_groups(survey_id, language)
 
@@ -1213,10 +1300,11 @@ class Client:
 
         Returns:
             List of questions with basic information.
+
+        .. versionadded:: 0.0.1
         """
         return self.__session.list_questions(survey_id, group_id, language)
 
-    @future("6.0")
     def list_quotas(self, survey_id: int) -> list[types.QuotaListElement]:
         """Get all quotas for a LimeSurvey survey.
 
@@ -1227,7 +1315,7 @@ class Client:
             List of quotas.
 
         .. versionadded:: 0.6.0
-        .. future:: 6.0
+        .. minlimesurvey:: 6.0.0
         """
         return self.session.list_quotas(survey_id)
 
@@ -1239,6 +1327,8 @@ class Client:
 
         Returns:
             List of surveys with basic information.
+
+        .. versionadded:: 0.0.1
         """
         return self.__session.list_surveys(username)
 
@@ -1253,6 +1343,8 @@ class Client:
 
         Returns:
             List of survey groups with basic information.
+
+        .. versionadded:: 0.0.2
         """
         return self.__session.list_survey_groups(username)
 
@@ -1269,6 +1361,8 @@ class Client:
 
         Returns:
             Mapping of property names to whether they were set successfully.
+
+        .. versionadded:: 0.0.11
         """
         return self.session.set_group_properties(group_id, properties)
 
@@ -1287,6 +1381,8 @@ class Client:
 
         Returns:
             Mapping with status and updated properties.
+
+        .. versionadded:: 0.0.11
         """
         return self.session.set_language_properties(survey_id, properties, language)
 
@@ -1306,6 +1402,8 @@ class Client:
 
         Returns:
             New participant properties.
+
+        .. versionadded:: 0.0.11
         """
         return self.session.set_participant_properties(
             survey_id,
@@ -1328,6 +1426,8 @@ class Client:
 
         Returns:
             Mapping of property names to whether they were set successfully.
+
+        .. versionadded:: 0.0.11
         """
         return self.session.set_question_properties(question_id, properties, language)
 
@@ -1364,6 +1464,8 @@ class Client:
 
         Returns:
             Mapping of property names to whether they were set successfully.
+
+        .. versionadded:: 0.0.11
         """
         return self.session.set_survey_properties(survey_id, properties)
 
@@ -1384,6 +1486,8 @@ class Client:
 
         Returns:
             File metadata with final upload path.
+
+        .. versionadded:: 0.0.14
         """
         contents = base64.b64encode(file.read()).decode()
         return self.session.upload_file(survey_id, field, filename, contents)
@@ -1406,6 +1510,8 @@ class Client:
 
         Returns:
             File metadata with final upload path.
+
+        .. versionadded:: 0.0.14
         """
         path = Path(path)
         if filename is None:

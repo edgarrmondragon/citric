@@ -10,6 +10,8 @@ from docutils.parsers.rst import Directive
 if TYPE_CHECKING:
     from sphinx.application import Sphinx
 
+__all__ = ["ReleasedFeature", "UnreleasedFeature", "setup"]
+
 
 class UnreleasedFeature(Directive):
     """A directive for development-only features.
@@ -19,23 +21,31 @@ class UnreleasedFeature(Directive):
     """
 
     required_arguments = 1
+    message = (
+        "This method is only supported in LimeSurvey >= {next_version} "
+        "(currently in development)."
+    )
+    admonition_type = nodes.warning
 
     def run(self) -> list[nodes.Node]:
         next_version = self.arguments[0]
-        admonition_node = nodes.warning(
-            "",
-            nodes.paragraph(
-                text=(
-                    f"This method is only available in LimeSurvey >= {next_version} "
-                    "(currently in development)."
-                ),
-            ),
-        )
-        return [admonition_node]
+        text = self.message.format(next_version=next_version)
+        return [self.admonition_type("", nodes.paragraph(text=text))]
+
+
+class ReleasedFeature(UnreleasedFeature):
+    """A directive for released features.
+
+    Adds a note to features only available after some release of LimeSurvey.
+    """
+
+    message = "This method is only supported in LimeSurvey >= {next_version}."
+    admonition_type = nodes.note
 
 
 def setup(app: Sphinx) -> dict[str, Any]:
     app.add_directive("future", UnreleasedFeature)
+    app.add_directive("minlimesurvey", ReleasedFeature)
 
     return {
         "version": "0.1",
