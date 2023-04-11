@@ -29,11 +29,11 @@ jobs:
       uses: miniscruff/changie-action@v1.0.1
       with:
         version: ${{ github.event.inputs.changie-version }}
-        args: >
-          "batch"
-          "${{ github.event.inputs.next-version }}"
-          "${{ github.event.inputs.prerelease && format('-p {0}', github.event.inputs.prerelease) || '--remove-prereleases' }}"
-          "${{ github.event.inputs.metadata && format('-m {0}', github.event.inputs.metadata) }}"
+        args: "\
+          batch
+          ${{ github.event.inputs.next-version }}
+          ${{ github.event.inputs.prerelease && format('-p {0}', github.event.inputs.prerelease) || '--remove-prereleases' }}
+          ${{ github.event.inputs.metadata && format('-m {0}', github.event.inputs.metadata) }}"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
