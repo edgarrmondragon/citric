@@ -129,6 +129,7 @@ jobs:
           os: "macos-12"
           session: "tests"
 
+        # Test on the LTS version of LimeSurvey
         - python-version: "3.10"
           os: "ubuntu-22.04"
           session: "integration"
@@ -138,7 +139,13 @@ jobs:
         - python-version: "3.10"
           os: "ubuntu-22.04"
           session: "integration"
-          image_tag: "5-apache"
+          image_tag: "6-apache"
+          database: postgres
+
+        - python-version: "3.10"
+          os: "ubuntu-22.04"
+          session: "integration"
+          image_tag: "6-apache"
           experimental: true
           database: mysql
 
@@ -159,19 +166,19 @@ jobs:
         - python-version: "pypy3.7"
           os: "ubuntu-22.04"
           session: "integration"
-          image_tag: "5-apache"
+          image_tag: "6-apache"
           database: postgres
 
         - python-version: "pypy3.8"
           os: "ubuntu-22.04"
           session: "integration"
-          image_tag: "5-apache"
+          image_tag: "6-apache"
           database: postgres
 
         - python-version: "pypy3.9"
           os: "ubuntu-22.04"
           session: "integration"
-          image_tag: "5-apache"
+          image_tag: "6-apache"
           database: postgres
 
         - python-version: "3.10"
@@ -262,7 +269,7 @@ jobs:
       env:
         BACKEND: ${{ matrix.database }}
         LS_URL: http://localhost:${{ env.LS_PORT }}/index.php/admin/remotecontrol
-        LS_VERSION: ${{ matrix.limesurvey_version }}
+        LS_VERSION: ${{ matrix.image_tag || matrix.limesurvey_version }}
       run: |
         nox
 
