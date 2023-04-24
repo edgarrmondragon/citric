@@ -7,8 +7,8 @@ on:
     - tests/**
     - docker-compose*.yml
     - noxfile.py
-    - poetry.lock
     - pyproject.toml
+    - requirements*.txt
     - .github/workflows/tests.yml
     - .github/workflows/constraints.txt
   push:
@@ -19,8 +19,8 @@ on:
     - src/**
     - tests/**
     - noxfile.py
-    - poetry.lock
     - pyproject.toml
+    - requirements*.txt
     - .github/workflows/tests.yml
     - .github/workflows/constraints.txt
   schedule:
@@ -154,19 +154,11 @@ jobs:
         with open(os.environ["GITHUB_ENV"], mode="a") as io:
             print(f"VIRTUALENV_PIP={pip.__version__}", file=io)
 
-    - name: Install Poetry
-      env:
-        PIP_CONSTRAINT: .github/workflows/constraints.txt
-      run: |
-        pipx install poetry --verbose
-        poetry --version
-
     - name: Install Nox
       env:
         PIP_CONSTRAINT: .github/workflows/constraints.txt
       run: |
         pipx install nox
-        pipx inject nox nox-poetry
         nox --version
 
     - name: Download LimeSurvey archive
@@ -238,19 +230,11 @@ jobs:
         pip install pip
         pip --version
 
-    - name: Install Poetry
-      env:
-        PIP_CONSTRAINT: .github/workflows/constraints.txt
-      run: |
-        pipx install poetry
-        poetry --version
-
     - name: Install Nox
       env:
         PIP_CONSTRAINT: .github/workflows/constraints.txt
       run: |
         pipx install nox
-        pipx inject nox nox-poetry
         nox --version
 
     - name: Download coverage data

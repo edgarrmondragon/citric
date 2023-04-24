@@ -4,20 +4,10 @@ from __future__ import annotations
 
 import os
 import shutil
-import sys
 from pathlib import Path
-from textwrap import dedent
 
-try:
-    from nox_poetry import Session, session
-except ImportError:
-    message = f"""\
-    Nox failed to import the 'nox-poetry' package.
-    Please install it using the following command:
-    {sys.executable} -m pip install nox-poetry"""
-    raise SystemExit(dedent(message)) from None
+from nox import Session, session
 
-GH_ACTIONS_ENV_VAR = "GITHUB_ACTIONS"
 FORCE_COLOR = "FORCE_COLOR"
 TEST_DEPS = ["coverage[toml]", "faker", "pytest"]
 
@@ -36,17 +26,15 @@ locations = "src", "tests", "noxfile.py", "docs/conf.py"
 @session(python=all_python_versions, tags=["test"])
 def tests(session: Session) -> None:
     """Execute pytest tests and compute coverage."""
-    deps = [*TEST_DEPS]
-    env = {"PIP_ONLY_BINARY": ":all:"}
-
-    if GH_ACTIONS_ENV_VAR in os.environ:
-        deps.append("pytest-github-actions-annotate-failures")
+    env = {
+        "PIP_CONSTRAINT": "requirements.txt",
+        "PIP_ONLY_BINARY": ":all:",
+    }
 
     if session.python == "3.13":
         env["PIP_NO_BINARY"] = "coverage"
 
-    session.install(".", env=env)
-    session.install(*deps, env=env)
+    session.install(".[test]", env=env)
     args = session.posargs or ["-m", "not integration_test"]
 
     try:
@@ -59,13 +47,10 @@ def tests(session: Session) -> None:
 @session(python=[main_cpython_version, main_pypy_version], tags=["test"])
 def integration(session: Session) -> None:
     """Execute integration tests and compute coverage."""
-    deps = [*TEST_DEPS]
-    if GH_ACTIONS_ENV_VAR in os.environ:
-        deps.append("pytest-github-actions-annotate-failures")
-
-    session.install(".")
-    session.install(*deps)
-
+    session.install(
+        ".[test]",
+        env={"PIP_CONSTRAINT": "requirements.txt"},
+    )
     args = [
         "coverage",
         "run",
@@ -93,8 +78,7 @@ def xdoctest(session: Session) -> None:
         if FORCE_COLOR in os.environ:
             args.append("--colored=1")
 
-    session.install(".")
-    session.install("xdoctest[colors]")
+    session.install(".[test]")
     session.run("python", "-m", "xdoctest", *args)
 
 
@@ -103,7 +87,10 @@ def coverage(session: Session) -> None:
     """Upload coverage data."""
     args = session.posargs or ["report"]
 
-    session.install("coverage[toml]")
+    session.install(
+        "coverage[toml]",
+        env={"PIP_CONSTRAINT": "requirements.txt"},
+    )
 
     if not session.posargs and any(Path().glob(".coverage.*")):
         session.run("coverage", "combine")
@@ -118,7 +105,10 @@ def docs_build(session: Session) -> None:
     if not session.posargs and FORCE_COLOR in os.environ:
         args.insert(0, "--color")
 
-    session.install(".[docs]")
+    session.install(
+        ".[docs]",
+        env={"PIP_CONSTRAINT": "requirements.txt"},
+    )
 
     build_dir = Path("build")
     if build_dir.exists():
@@ -141,7 +131,10 @@ def docs_serve(session: Session) -> None:
         "docs",
         "build",
     ]
-    session.install(".[docs]")
+    session.install(
+        ".[docs]",
+        env={"PIP_CONSTRAINT": "requirements.txt"},
+    )
 
     build_dir = Path("build")
     if build_dir.exists():
