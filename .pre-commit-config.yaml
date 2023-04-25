@@ -23,6 +23,11 @@ repos:
   - id: check-github-workflows
   - id: check-readthedocs
 
+- repo: https://github.com/crate-ci/typos
+  rev: v1.14.8
+  hooks:
+  - id: typos
+
 - repo: https://github.com/charliermarsh/ruff-pre-commit
   rev: v0.0.263
   hooks:
