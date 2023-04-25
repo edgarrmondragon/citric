@@ -53,10 +53,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - python-version: "3.10"
-          os: "ubuntu-22.04"
-          session: "safety"
-
         - python-version: "3.11"
           os: "ubuntu-22.04"
           session: "tests"
@@ -109,50 +105,38 @@ jobs:
           session: "tests"
 
         # Test on the LTS version of LimeSurvey
-        - python-version: "3.10"
+        - python-version: "3.11"
           os: "ubuntu-22.04"
           session: "integration"
           image_tag: "5-apache"
           database: postgres
 
-        - python-version: "3.10"
+        - python-version: "3.11"
           os: "ubuntu-22.04"
           session: "integration"
           image_tag: "6-apache"
           database: postgres
 
-        - python-version: "3.10"
+        - python-version: "3.11"
           os: "ubuntu-22.04"
           session: "integration"
           image_tag: "6-apache"
           experimental: true
           database: mysql
 
-        - python-version: "3.10"
+        - python-version: "3.11"
           os: "ubuntu-22.04"
           session: "integration"
           limesurvey_version: "develop"
           database: postgres
           experimental: true
 
-        - python-version: "3.10"
+        - python-version: "3.11"
           os: "ubuntu-22.04"
           session: "integration"
           limesurvey_version: "master"
           database: postgres
           experimental: true
-
-        - python-version: "pypy3.7"
-          os: "ubuntu-22.04"
-          session: "integration"
-          image_tag: "6-apache"
-          database: postgres
-
-        - python-version: "pypy3.8"
-          os: "ubuntu-22.04"
-          session: "integration"
-          image_tag: "6-apache"
-          database: postgres
 
         - python-version: "pypy3.9"
           os: "ubuntu-22.04"
@@ -160,7 +144,7 @@ jobs:
           image_tag: "6-apache"
           database: postgres
 
-        - python-version: "3.10"
+        - python-version: "3.11"
           os: "ubuntu-22.04"
           session: "xdoctest"
 

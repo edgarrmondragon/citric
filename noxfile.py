@@ -8,8 +8,6 @@ import sys
 from pathlib import Path
 from textwrap import dedent
 
-import nox
-
 try:
     from nox_poetry import Session, session
 except ImportError:
@@ -25,18 +23,18 @@ PY312 = "3.12"
 TEST_DEPS = ["coverage[toml]", "faker", "pytest"]
 
 package = "citric"
+
 python_versions = ["3.12", "3.11", "3.10", "3.9", "3.8", "3.7"]
 pypy_versions = ["pypy3.7", "pypy3.8", "pypy3.9"]
 all_python_versions = python_versions + pypy_versions
-main_python_version = "3.10"
+
+main_cpython_version = "3.11"
+main_pypy_version = "pypy3.9"
+
 locations = "src", "tests", "noxfile.py", "docs/conf.py"
-nox.options.sessions = (
-    "tests",
-    "xdoctest",
-)
 
 
-@session(python=all_python_versions)
+@session(python=all_python_versions, tags=["test"])
 def tests(session: Session) -> None:
     """Execute pytest tests and compute coverage."""
     deps = [*TEST_DEPS]
@@ -59,7 +57,7 @@ def tests(session: Session) -> None:
             session.notify("coverage", posargs=[])
 
 
-@session(python=all_python_versions)
+@session(python=[main_cpython_version, main_pypy_version], tags=["test"])
 def integration(session: Session) -> None:
     """Execute integration tests and compute coverage."""
     deps = [*TEST_DEPS]
@@ -86,7 +84,7 @@ def integration(session: Session) -> None:
             session.notify("coverage", posargs=[])
 
 
-@session(python=all_python_versions)
+@session(python=[main_cpython_version, main_pypy_version], tags=["test"])
 def xdoctest(session: Session) -> None:
     """Run examples with xdoctest."""
     if session.posargs:
@@ -101,7 +99,7 @@ def xdoctest(session: Session) -> None:
     session.run("python", "-m", "xdoctest", *args)
 
 
-@session(python=main_python_version)
+@session(python=main_cpython_version)
 def coverage(session: Session) -> None:
     """Upload coverage data."""
     args = session.posargs or ["report"]
@@ -114,7 +112,7 @@ def coverage(session: Session) -> None:
     session.run("coverage", *args)
 
 
-@session(name="docs-build", python=main_python_version)
+@session(name="docs-build", python=main_cpython_version)
 def docs_build(session: Session) -> None:
     """Build the documentation."""
     args = session.posargs or ["docs", "build"]
@@ -130,7 +128,7 @@ def docs_build(session: Session) -> None:
     session.run("sphinx-build", *args)
 
 
-@session(name="docs-serve", python=main_python_version)
+@session(name="docs-serve", python=main_cpython_version)
 def docs_serve(session: Session) -> None:
     """Build the documentation."""
     args = session.posargs or [
