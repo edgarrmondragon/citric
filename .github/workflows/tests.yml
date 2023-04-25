@@ -96,11 +96,11 @@ jobs:
           os: "ubuntu-22.04"
           session: "tests"
 
-        - python-version: "3.10"
+        - python-version: "3.11"
           os: "windows-2022"
           session: "tests"
 
-        - python-version: "3.10"
+        - python-version: "3.11"
           os: "macos-12"
           session: "tests"
 
