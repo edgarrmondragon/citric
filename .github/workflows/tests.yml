@@ -47,37 +47,12 @@ jobs:
       LS_USER: "citric_ci"
       LS_PASSWORD: "notverysecret"
       LS_PORT: "8080"
-      NOXSESSION: "\
-        ${{ matrix.session }}\
-        -${{ matrix.python-version }}"
+      NOXSESSION: "${{ matrix.session }}"
+      NOXPYTHON: "${{ matrix.python-version }}"
     strategy:
       fail-fast: false
       matrix:
         include:
-        - python-version: "3.10"
-          os: "ubuntu-22.04"
-          session: "safety"
-
-        - python-version: "3.11"
-          os: "ubuntu-22.04"
-          session: "mypy"
-
-        - python-version: "3.10"
-          os: "ubuntu-22.04"
-          session: "mypy"
-
-        - python-version: "3.9"
-          os: "ubuntu-22.04"
-          session: "mypy"
-
-        - python-version: "3.8"
-          os: "ubuntu-22.04"
-          session: "mypy"
-
-        - python-version: "3.7"
-          os: "ubuntu-22.04"
-          session: "mypy"
-
         - python-version: "3.11"
           os: "ubuntu-22.04"
           session: "tests"
@@ -121,59 +96,47 @@ jobs:
           os: "ubuntu-22.04"
           session: "tests"
 
-        - python-version: "3.10"
+        - python-version: "3.11"
           os: "windows-2022"
           session: "tests"
 
-        - python-version: "3.10"
+        - python-version: "3.11"
           os: "macos-12"
           session: "tests"
 
         # Test on the LTS version of LimeSurvey
-        - python-version: "3.10"
+        - python-version: "3.11"
           os: "ubuntu-22.04"
           session: "integration"
           image_tag: "5-apache"
           database: postgres
 
-        - python-version: "3.10"
+        - python-version: "3.11"
           os: "ubuntu-22.04"
           session: "integration"
           image_tag: "6-apache"
           database: postgres
 
-        - python-version: "3.10"
+        - python-version: "3.11"
           os: "ubuntu-22.04"
           session: "integration"
           image_tag: "6-apache"
           experimental: true
           database: mysql
 
-        - python-version: "3.10"
+        - python-version: "3.11"
           os: "ubuntu-22.04"
           session: "integration"
           limesurvey_version: "develop"
           database: postgres
           experimental: true
 
-        - python-version: "3.10"
+        - python-version: "3.11"
           os: "ubuntu-22.04"
           session: "integration"
           limesurvey_version: "master"
           database: postgres
           experimental: true
-
-        - python-version: "pypy3.7"
-          os: "ubuntu-22.04"
-          session: "integration"
-          image_tag: "6-apache"
-          database: postgres
-
-        - python-version: "pypy3.8"
-          os: "ubuntu-22.04"
-          session: "integration"
-          image_tag: "6-apache"
-          database: postgres
 
         - python-version: "pypy3.9"
           os: "ubuntu-22.04"
@@ -181,7 +144,7 @@ jobs:
           image_tag: "6-apache"
           database: postgres
 
-        - python-version: "3.10"
+        - python-version: "3.11"
           os: "ubuntu-22.04"
           session: "xdoctest"
 
@@ -294,7 +257,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v4.6.0
       with:
-        python-version: "3.10"
+        python-version: "3.11"
 
     - name: Upgrade pip
       run: |

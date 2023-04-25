@@ -5,12 +5,8 @@ from __future__ import annotations
 import os
 import shutil
 import sys
-import tempfile
 from pathlib import Path
 from textwrap import dedent
-from typing import Any
-
-import nox
 
 try:
     from nox_poetry import Session, session
@@ -27,62 +23,18 @@ PY312 = "3.12"
 TEST_DEPS = ["coverage[toml]", "faker", "pytest"]
 
 package = "citric"
+
 python_versions = ["3.12", "3.11", "3.10", "3.9", "3.8", "3.7"]
 pypy_versions = ["pypy3.7", "pypy3.8", "pypy3.9"]
-main_python_version = "3.10"
+all_python_versions = python_versions + pypy_versions
+
+main_cpython_version = "3.11"
+main_pypy_version = "pypy3.9"
+
 locations = "src", "tests", "noxfile.py", "docs/conf.py"
-nox.options.sessions = (
-    "lint",
-    "black-check",
-    "safety",
-    "mypy",
-    "tests",
-    "xdoctest",
-)
 
 
-def install_with_constraints(session: Session, *args: str, **kwargs: Any) -> None:
-    """Install individual packages with Poetry version constraints."""
-    with tempfile.NamedTemporaryFile() as requirements:
-        session.run(
-            "poetry",
-            "export",
-            "--dev",
-            "--format=requirements.txt",
-            f"--output={requirements.name}",
-            external=True,
-        )
-        session.install(f"--constraint={requirements.name}", *args, **kwargs)
-
-
-@session(python=main_python_version)
-def safety(session: Session) -> None:
-    """Check if packages are safe."""
-    requirements = session.poetry.export_requirements()
-    session.install("safety")
-    session.run("safety", "check", "--full-report", f"--file={requirements}")
-
-
-@session(python=python_versions)
-def mypy(session: Session) -> None:
-    """Check types with mypy."""
-    args = session.posargs or ["src", "tests", "docs/conf.py"]
-    session.install(".")
-    session.install(
-        "faker",
-        "mypy",
-        "pytest",
-        "sphinx",
-        "types-docutils",
-        "types-requests",
-        "typing-extensions",
-    )
-    session.run("mypy", *args)
-    if not session.posargs:
-        session.run("mypy", f"--python-executable={sys.executable}", "noxfile.py")
-
-
-@session(python=python_versions + pypy_versions)
+@session(python=all_python_versions, tags=["test"])
 def tests(session: Session) -> None:
     """Execute pytest tests and compute coverage."""
     deps = [*TEST_DEPS]
@@ -105,7 +57,7 @@ def tests(session: Session) -> None:
             session.notify("coverage", posargs=[])
 
 
-@session(python=python_versions + pypy_versions)
+@session(python=[main_cpython_version, main_pypy_version], tags=["test"])
 def integration(session: Session) -> None:
     """Execute integration tests and compute coverage."""
     deps = [*TEST_DEPS]
@@ -132,15 +84,7 @@ def integration(session: Session) -> None:
             session.notify("coverage", posargs=[])
 
 
-@session(python=main_python_version)
-def typeguard(session: Session) -> None:
-    """Runtime type checking using Typeguard."""
-    session.install(".")
-    session.install("pytest", "typeguard", "pygments")
-    session.run("pytest", *session.posargs)
-
-
-@session(python=python_versions)
+@session(python=[main_cpython_version, main_pypy_version], tags=["test"])
 def xdoctest(session: Session) -> None:
     """Run examples with xdoctest."""
     if session.posargs:
@@ -155,7 +99,7 @@ def xdoctest(session: Session) -> None:
     session.run("python", "-m", "xdoctest", *args)
 
 
-@session(python=main_python_version)
+@session(python=main_cpython_version)
 def coverage(session: Session) -> None:
     """Upload coverage data."""
     args = session.posargs or ["report"]
@@ -168,38 +112,7 @@ def coverage(session: Session) -> None:
     session.run("coverage", *args)
 
 
-@session(python=python_versions)
-def lint(session: Session) -> None:
-    """Check code linting."""
-    args = session.posargs or locations
-    session.install(
-        "flake8",
-        "flake8-annotations",
-        "flake8-black",
-        "flake8-docstrings",
-        "flake8-isort",
-        "darglint",
-    )
-    session.run("flake8", *args)
-
-
-@session(name="black-fix", python=main_python_version)
-def black_fix(session: Session) -> None:
-    """Format code."""
-    args = session.posargs or locations
-    session.install("black")
-    session.run("black", *args)
-
-
-@session(name="black-check", python=python_versions)
-def black_check(session: Session) -> None:
-    """Check code format."""
-    args = session.posargs or locations
-    session.install("black")
-    session.run("black", "--check", *args)
-
-
-@session(name="docs-build", python=main_python_version)
+@session(name="docs-build", python=main_cpython_version)
 def docs_build(session: Session) -> None:
     """Build the documentation."""
     args = session.posargs or ["docs", "build"]
@@ -215,7 +128,7 @@ def docs_build(session: Session) -> None:
     session.run("sphinx-build", *args)
 
 
-@session(name="docs-serve", python=main_python_version)
+@session(name="docs-serve", python=main_cpython_version)
 def docs_serve(session: Session) -> None:
     """Build the documentation."""
     args = session.posargs or [
