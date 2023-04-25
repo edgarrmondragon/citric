@@ -23,7 +23,6 @@ Ready to contribute? Here's how to set up `citric` for local development.
 
     ```shell
     pipx install nox
-    pipx inject nox nox-poetry
     nox -l
     ```
 

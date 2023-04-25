@@ -166,7 +166,6 @@ jobs:
         PIP_CONSTRAINT: .github/workflows/constraints.txt
       run: |
         pipx install nox
-        pipx inject nox nox-poetry
         nox --version
 
     - name: Download LimeSurvey archive
@@ -250,7 +249,6 @@ jobs:
         PIP_CONSTRAINT: .github/workflows/constraints.txt
       run: |
         pipx install nox
-        pipx inject nox nox-poetry
         nox --version
 
     - name: Download coverage data
