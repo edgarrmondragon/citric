@@ -6,8 +6,8 @@ import base64
 import datetime
 import random
 import sys
+import typing as t
 from pathlib import Path
-from typing import TYPE_CHECKING
 
 import pytest
 
@@ -15,9 +15,7 @@ from citric.client import Client
 from citric.enums import ImportGroupType, ImportSurveyType, NewSurveyType
 from citric.session import Session
 
-if TYPE_CHECKING:
-    from typing import Any, Generator
-
+if t.TYPE_CHECKING:
     from _pytest._py.path import LocalPath
     from faker import Faker
 
@@ -46,10 +44,10 @@ class MockSession(Session):
         "restrictToLanguages": "en fr es",
     }
 
-    def __init__(self, *args: Any, **kwargs: Any) -> None:
+    def __init__(self, *args: t.Any, **kwargs: t.Any) -> None:
         """Create a mock session."""
 
-    def rpc(self, method: str, *params: Any) -> dict[str, Any]:
+    def rpc(self, method: str, *params: t.Any) -> dict[str, t.Any]:
         """Process a mock RPC call."""
         return {"method": method, "params": [*params]}
 
@@ -84,7 +82,7 @@ class MockSession(Session):
         file_type: str = "lss",
         survey_name: str | None = None,
         survey_id: int | None = None,
-    ) -> dict[str, Any]:
+    ) -> dict[str, t.Any]:
         """Mock result from importing a survey file."""
         return {"content": base64.b64decode(content.encode()), "type": file_type}
 
@@ -92,31 +90,31 @@ class MockSession(Session):
         self,
         survey_id: int,
         group_id: int | None = None,
-        *args: Any,
-    ) -> list[dict[str, Any]]:
+        *args: t.Any,
+    ) -> list[dict[str, t.Any]]:
         """Mock questions."""
         return [
             {"title": "Q1", "qid": 1, "gid": group_id or 1, "sid": survey_id},
             {"title": "Q2", "qid": 2, "gid": group_id or 1, "sid": survey_id},
         ]
 
-    def add_response(self, *args: Any) -> str:
+    def add_response(self, *args: t.Any) -> str:
         """Mock result from adding a response."""
         return "1"
 
-    def export_responses(self, *args: Any) -> bytes:
+    def export_responses(self, *args: t.Any) -> bytes:
         """Mock responses file content."""
         return base64.b64encode(b"FILE CONTENTS")
 
-    def export_responses_by_token(self, *args: Any) -> bytes:
+    def export_responses_by_token(self, *args: t.Any) -> bytes:
         """Mock responses file content."""
         return base64.b64encode(b"FILE CONTENTS")
 
-    def export_statistics(self, *args: Any) -> bytes:
+    def export_statistics(self, *args: t.Any) -> bytes:
         """Mock statistics file content."""
         return base64.b64encode(b"FILE CONTENTS")
 
-    def export_timeline(self, *args: Any) -> dict[str, int]:
+    def export_timeline(self, *args: t.Any) -> dict[str, int]:
         """Mock submission timeline."""
         return {"2022-01-01": 4, "2022-01-02": 2}
 
@@ -124,7 +122,7 @@ class MockSession(Session):
         """Return the setting value or an empty string."""
         return self.settings.get(setting_name, "")
 
-    def get_uploaded_files(self, *args: Any) -> dict[str, dict[str, Any]]:
+    def get_uploaded_files(self, *args: t.Any) -> dict[str, dict[str, t.Any]]:
         """Return uploaded files fake metadata."""
         return {
             "1234": {
@@ -162,7 +160,12 @@ class MockClient(Client):
     session_class = MockSession
 
 
-def assert_client_session_call(client: Client, method: str, *args: Any, **kwargs: Any):
+def assert_client_session_call(
+    client: Client,
+    method: str,
+    *args: t.Any,
+    **kwargs: t.Any,
+):
     """Assert client makes RPC call with the right arguments.
 
     Args:
@@ -178,7 +181,7 @@ def assert_client_session_call(client: Client, method: str, *args: Any, **kwargs
 
 
 @pytest.fixture(scope="session")
-def client() -> Generator[Client, None, None]:
+def client() -> t.Generator[Client, None, None]:
     """RemoteControl2 API client."""
     with MockClient("mock://lime.com", "user", "secret") as client:
         yield client

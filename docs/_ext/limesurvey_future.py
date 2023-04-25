@@ -2,12 +2,12 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+import typing as t
 
 from docutils import nodes
 from docutils.parsers.rst import Directive
 
-if TYPE_CHECKING:
+if t.TYPE_CHECKING:
     from sphinx.application import Sphinx
 
 __all__ = ["ReleasedFeature", "UnreleasedFeature", "setup"]
@@ -43,7 +43,7 @@ class ReleasedFeature(UnreleasedFeature):
     admonition_type = nodes.note
 
 
-def setup(app: Sphinx) -> dict[str, Any]:
+def setup(app: Sphinx) -> dict[str, t.Any]:
     app.add_directive("future", UnreleasedFeature)
     app.add_directive("minlimesurvey", ReleasedFeature)
 
