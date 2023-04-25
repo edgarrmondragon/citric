@@ -6,15 +6,20 @@ import sys
 import typing as t
 
 if sys.version_info >= (3, 8):
-    from typing import Literal, TypedDict
+    from typing import Literal, TypedDict  # noqa: ICN003
 else:
     from typing_extensions import Literal, TypedDict
+
+if sys.version_info >= (3, 10):
+    from typing import TypeAlias  # noqa: ICN003
+else:
+    from typing_extensions import TypeAlias
 
 if t.TYPE_CHECKING:
     from citric import enums
 
-Result = t.Any
-YesNo = Literal["Y", "N"]
+Result: TypeAlias = t.Any
+YesNo: TypeAlias = Literal["Y", "N"]
 
 
 class FileUploadResult(TypedDict):

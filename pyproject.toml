@@ -155,6 +155,12 @@ suppress-dummy-args = true
 [tool.ruff.flake8-errmsg]
 max-string-length = 30
 
+[tool.ruff.flake8-import-conventions]
+banned-from = ["typing"]
+
+[tool.ruff.flake8-import-conventions.extend-aliases]
+typing = "t"
+
 [tool.ruff.flake8-pytest-style]
 fixture-parentheses = false
 mark-parentheses = false

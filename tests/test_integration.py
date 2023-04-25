@@ -4,9 +4,9 @@ from __future__ import annotations
 
 import csv
 import io
+import typing as t
 import uuid
 from pathlib import Path
-from typing import TYPE_CHECKING
 from urllib.parse import quote
 
 import pytest
@@ -16,9 +16,7 @@ from citric import enums
 from citric.exceptions import LimeSurveyStatusError
 from citric.objects import Participant
 
-if TYPE_CHECKING:
-    from typing import Any, Generator
-
+if t.TYPE_CHECKING:
     from faker import Faker
 
 NEW_SURVEY_NAME = "New Survey"
@@ -29,7 +27,7 @@ def client(
     integration_url: str,
     integration_username: str,
     integration_password: str,
-) -> Generator[citric.Client, None, None]:
+) -> t.Generator[citric.Client, None, None]:
     """RemoteControl2 API client."""
     client = citric.Client(
         integration_url,
@@ -49,7 +47,7 @@ def client(
 
 
 @pytest.fixture
-def survey_id(client: citric.Client) -> Generator[int, None, None]:
+def survey_id(client: citric.Client) -> t.Generator[int, None, None]:
     """Import a survey from a file and return its ID."""
     with Path("./examples/survey.lss").open("rb") as f:
         survey_id = client.import_survey(f, survey_id=98765)
@@ -367,7 +365,7 @@ def test_responses(client: citric.Client, survey_id: int):
     assert client.add_response(survey_id, single_response) == 1
 
     # Add multiple responses to a survey
-    data: list[dict[str, Any]]
+    data: list[dict[str, t.Any]]
     data = [
         {"G01Q01": "Long text 2", "G01Q02": "5", "token": "T00001"},
         {"G01Q01": "Long text 3", "G01Q02": None, "token": "T00002"},
