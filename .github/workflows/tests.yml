@@ -47,9 +47,8 @@ jobs:
       LS_USER: "citric_ci"
       LS_PASSWORD: "notverysecret"
       LS_PORT: "8080"
-      NOXSESSION: "\
-        ${{ matrix.session }}\
-        -${{ matrix.python-version }}"
+      NOXSESSION: "${{ matrix.session }}"
+      NOXPYTHON: "${{ matrix.python-version }}"
     strategy:
       fail-fast: false
       matrix:
