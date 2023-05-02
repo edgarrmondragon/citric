@@ -24,7 +24,7 @@ repos:
   - id: check-readthedocs
 
 - repo: https://github.com/charliermarsh/ruff-pre-commit
-  rev: v0.0.263
+  rev: v0.0.264
   hooks:
   - id: ruff
     args: [--fix, --exit-non-zero-on-fix]
@@ -64,7 +64,7 @@ repos:
     args: [--py37-plus]
 
 - repo: https://github.com/pre-commit/pre-commit
-  rev: v3.2.2
+  rev: v3.3.1
   hooks:
   - id: validate_manifest
 
@@ -78,7 +78,7 @@ repos:
   rev: 1.7.0
   hooks:
   - id: nbqa-ruff
-    additional_dependencies: [ruff==0.0.263]
+    additional_dependencies: [ruff==0.0.264]
     args: ["--fix"]
   - id: nbqa-black
   - id: nbqa-isort
