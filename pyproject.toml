@@ -102,7 +102,7 @@ colorama = "^0.4.5"
 coverage = {extras = ["toml"], version = "^7.0.1"}
 faker = "^18.3.1"
 pytest = "^7.1.2"
-pytest-github-actions-annotate-failures = "^0.1.7"
+pytest-github-actions-annotate-failures = ">=0.1.7,<0.3.0"
 safety = "^2.1.1"
 typing-extensions = {version = "^4.4.0", python = "<3.12"}
 xdoctest = "^1.0.2"
