@@ -173,6 +173,9 @@ max-complexity = 5
 [tool.ruff.pydocstyle]
 convention = "google"
 
+[tool.ruff.pylint]
+max-args = 10
+
 [build-system]
 build-backend = "poetry.core.masonry.api"
 requires = [

@@ -51,7 +51,7 @@ class MockSession(Session):
         """Process a mock RPC call."""
         return {"method": method, "params": [*params]}
 
-    def import_group(  # noqa: PLR0913
+    def import_group(
         self,
         survey_id: int,
         content: str,
@@ -62,7 +62,7 @@ class MockSession(Session):
         """Mock result from importing a group file."""
         return base64.b64decode(content.encode())
 
-    def import_question(  # noqa: PLR0913
+    def import_question(
         self,
         survey_id: int,
         group_id: int,

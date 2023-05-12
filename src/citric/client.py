@@ -604,7 +604,7 @@ class Client:
         """
         return self.__session.delete_survey(survey_id)
 
-    def export_responses(
+    def export_responses(  # noqa: PLR0913
         self,
         survey_id: int,
         *,
@@ -670,7 +670,7 @@ class Client:
             ),
         )
 
-    def save_responses(
+    def save_responses(  # noqa: PLR0913
         self,
         filename: PathLike,
         survey_id: int,
