@@ -49,7 +49,7 @@ repos:
     - darglint==1.8.1
 
 - repo: https://github.com/pre-commit/mirrors-mypy
-  rev: v1.2.0
+  rev: v1.3.0
   hooks:
   - id: mypy
     additional_dependencies:
@@ -86,7 +86,7 @@ repos:
     args: ["--py37-plus"]
 
 - repo: https://github.com/tox-dev/pyproject-fmt
-  rev: "0.11.1"
+  rev: "0.11.2"
   hooks:
   - id: pyproject-fmt
 

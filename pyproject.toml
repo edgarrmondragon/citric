@@ -1,54 +1,3 @@
-[tool.black]
-line-length = 88
-
-[tool.isort]
-include_trailing_comma = true
-known_first_party = "citric"
-multi_line_output = 3 # Vertical Hanging Indent
-profile = "black"
-src_paths = "citric"
-use_parentheses = true
-
-[tool.pytest.ini_options]
-addopts = '-vvv'
-markers = [
-  "integration_test: Integration and end-to-end tests",
-  "version(ref): Mark a test that depends on a specific version of LimeSurvey",
-  "xfail_mysql: Mark a test as expected to fail on MySQL",
-]
-
-[tool.coverage.paths]
-source = ["src", "*/site-packages"]
-
-[tool.coverage.run]
-branch = true
-source = ["citric"]
-
-[tool.coverage.report]
-exclude_lines = [
-    "pragma: no cover",
-    '''if (t\.)?TYPE_CHECKING:''',
-]
-fail_under = 90
-omit = [
-  "src/citric/types.py",
-]
-show_missing = true
-
-[tool.mypy]
-enable_incomplete_feature = "Unpack"
-warn_unreachable = true
-warn_unused_configs = true
-warn_unused_ignores = true
-
-[[tool.mypy.overrides]]
-ignore_missing_imports = true
-module = [
-  "nox.*",
-  "nox_poetry.*",
-  "pytest.*",
-]
-
 [tool.poetry]
 authors = ["Edgar Ramírez-Mondragón <edgarrm358@gmail.com>"]
 classifiers = [
@@ -116,6 +65,57 @@ docs = [
   "sphinx-autobuild",
   "sphinx-autodoc-typehints",
   "sphinx-copybutton",
+]
+
+[tool.black]
+line-length = 88
+
+[tool.isort]
+include_trailing_comma = true
+known_first_party = "citric"
+multi_line_output = 3 # Vertical Hanging Indent
+profile = "black"
+src_paths = "citric"
+use_parentheses = true
+
+[tool.pytest.ini_options]
+addopts = '-vvv'
+markers = [
+  "integration_test: Integration and end-to-end tests",
+  "version(ref): Mark a test that depends on a specific version of LimeSurvey",
+  "xfail_mysql: Mark a test as expected to fail on MySQL",
+]
+
+[tool.coverage.paths]
+source = ["src", "*/site-packages"]
+
+[tool.coverage.run]
+branch = true
+source = ["citric"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    '''if (t\.)?TYPE_CHECKING:''',
+]
+fail_under = 90
+omit = [
+  "src/citric/types.py",
+]
+show_missing = true
+
+[tool.mypy]
+enable_incomplete_feature = "Unpack"
+warn_unreachable = true
+warn_unused_configs = true
+warn_unused_ignores = true
+
+[[tool.mypy.overrides]]
+ignore_missing_imports = true
+module = [
+  "nox.*",
+  "nox_poetry.*",
+  "pytest.*",
 ]
 
 [tool.ruff]
