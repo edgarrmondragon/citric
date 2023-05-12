@@ -173,7 +173,7 @@ class LimeSurveyMockAdapter(BaseAdapter):
 
         return response
 
-    def send(  # noqa: PLR0913
+    def send(
         self,
         request: requests.PreparedRequest,
         stream: bool = False,  # noqa: FBT001, FBT002
