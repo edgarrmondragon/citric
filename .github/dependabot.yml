@@ -16,6 +16,8 @@ updates:
       - "dependencies"
     allow:
       - dependency-type: "development"
+    prefix: "chore(deps): "
+    prefix-development: "chore(deps-dev): "
   - package-ecosystem: pip
     directory: "/.github/workflows"
     schedule:
@@ -25,15 +27,18 @@ updates:
       - "edgarrmondragon"
     labels:
       - "dependencies"
+    prefix: "ci: "
   - package-ecosystem: github-actions
     directory: "/"
     schedule:
       interval: weekly
     reviewers:
       - "edgarrmondragon"
+    prefix: "ci: "
   - package-ecosystem: docker
     directory: "/"
     schedule:
       interval: "daily"
     reviewers:
       - "edgarrmondragon"
+    prefix: "ci: "
