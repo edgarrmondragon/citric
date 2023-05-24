@@ -69,14 +69,6 @@ docs = [
 [tool.black]
 line-length = 88
 
-[tool.isort]
-include_trailing_comma = true
-known_first_party = "citric"
-multi_line_output = 3 # Vertical Hanging Indent
-profile = "black"
-src_paths = "citric"
-use_parentheses = true
-
 [tool.pytest.ini_options]
 addopts = '-vvv'
 markers = [
@@ -169,6 +161,7 @@ mark-parentheses = false
 
 [tool.ruff.isort]
 known-first-party = ["citric"]
+required-imports = ["from __future__ import annotations"]
 
 [tool.ruff.mccabe]
 max-complexity = 5
