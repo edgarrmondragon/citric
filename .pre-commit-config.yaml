@@ -70,14 +70,6 @@ repos:
   - id: pycln
     args: [--all]
 
-- repo: https://github.com/nbQA-dev/nbQA
-  rev: 1.7.0
-  hooks:
-  - id: nbqa-ruff
-    additional_dependencies: [ruff==0.0.270]
-    args: ["--fix"]
-  - id: nbqa-black
-
 - repo: https://github.com/tox-dev/pyproject-fmt
   rev: "0.11.2"
   hooks:
