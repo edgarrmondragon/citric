@@ -117,6 +117,9 @@ module = [
   "pytest.*",
 ]
 
+[tool.codespell]
+skip = ".mypy_cache,.nox,.ruff_cache,build,docs/index.md,poetry.lock"
+
 [tool.ruff]
 ignore = [
   "ANN101", # missing-type-self
