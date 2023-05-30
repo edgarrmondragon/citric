@@ -43,9 +43,6 @@ def tests(session: Session) -> None:
     if GH_ACTIONS_ENV_VAR in os.environ:
         deps.append("pytest-github-actions-annotate-failures")
 
-    if session.python == PY312:
-        env["PIP_NO_BINARY"] = "coverage"
-
     session.install(".", env=env)
     session.install(*deps, env=env)
     args = session.posargs or ["-m", "not integration_test"]
