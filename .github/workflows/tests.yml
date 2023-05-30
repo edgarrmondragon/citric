@@ -52,83 +52,71 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.9", "3.10", "3.11"]
-        os: ["ubuntu-22.04", "windows-2022", "macos-12"]
+        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11", "pypy3.7", "pypy3.8", "pypy3.9"]
+        os: ["ubuntu-latest"]
         session: ["tests"]
         include:
         - python-version: "3.12"
-          os: "ubuntu-22.04"
+          os: "ubuntu-latest"
           session: "tests"
           experimental: true
 
         - python-version: "3.12"
-          os: "ubuntu-22.04"
+          os: "ubuntu-latest"
           session: "tests"
           experimental: true
           nightly: true
 
-        - python-version: "3.7"
-          os: "ubuntu-22.04"
+        - python-version: "3.11"
+          os: "windows-latest"
           session: "tests"
 
-        - python-version: "3.8"
-          os: "ubuntu-22.04"
-          session: "tests"
-
-        - python-version: "pypy3.7"
-          os: "ubuntu-22.04"
-          session: "tests"
-
-        - python-version: "pypy3.8"
-          os: "ubuntu-22.04"
-          session: "tests"
-
-        - python-version: "pypy3.9"
-          os: "ubuntu-22.04"
+        - python-version: "3.11"
+          os: "macos-latest"
           session: "tests"
 
         # Test on the LTS version of LimeSurvey
         - python-version: "3.11"
-          os: "ubuntu-22.04"
+          os: "ubuntu-latest"
           session: "integration"
           image_tag: "5-apache"
           database: postgres
 
         - python-version: "3.11"
-          os: "ubuntu-22.04"
+          os: "ubuntu-latest"
           session: "integration"
           image_tag: "6-apache"
           database: postgres
 
         - python-version: "3.11"
-          os: "ubuntu-22.04"
+          os: "ubuntu-latest"
           session: "integration"
           image_tag: "6-apache"
           experimental: true
           database: mysql
 
         - python-version: "3.11"
-          os: "ubuntu-22.04"
+          os: "ubuntu-latest"
           session: "integration"
           limesurvey_version: "develop"
           database: postgres
           experimental: true
 
         - python-version: "3.11"
-          os: "ubuntu-22.04"
+          os: "ubuntu-latest"
           session: "integration"
           limesurvey_version: "master"
           database: postgres
           experimental: true
 
         - python-version: "pypy3.9"
-          os: "ubuntu-22.04"
+          os: "ubuntu-latest"
           session: "integration"
           image_tag: "6-apache"
           database: postgres
 
         - python-version: "3.11"
-          os: "ubuntu-22.04"
+          os: "ubuntu-latest"
           session: "xdoctest"
 
     steps:
