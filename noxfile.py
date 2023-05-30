@@ -19,7 +19,6 @@ except ImportError:
 
 GH_ACTIONS_ENV_VAR = "GITHUB_ACTIONS"
 FORCE_COLOR = "FORCE_COLOR"
-PY312 = "3.12"
 TEST_DEPS = ["coverage[toml]", "faker", "pytest"]
 
 package = "citric"
