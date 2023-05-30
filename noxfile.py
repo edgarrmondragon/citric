@@ -19,7 +19,6 @@ except ImportError:
 
 GH_ACTIONS_ENV_VAR = "GITHUB_ACTIONS"
 FORCE_COLOR = "FORCE_COLOR"
-PY312 = "3.12"
 TEST_DEPS = ["coverage[toml]", "faker", "pytest"]
 
 package = "citric"
@@ -42,9 +41,6 @@ def tests(session: Session) -> None:
 
     if GH_ACTIONS_ENV_VAR in os.environ:
         deps.append("pytest-github-actions-annotate-failures")
-
-    if session.python == PY312:
-        env["PIP_NO_BINARY"] = "coverage"
 
     session.install(".", env=env)
     session.install(*deps, env=env)
