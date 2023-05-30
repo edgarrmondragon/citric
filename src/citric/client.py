@@ -156,6 +156,8 @@ class Client:
     def get_fieldmap(self, survey_id: int) -> dict:
         """Get fieldmap for a survey.
 
+        Calls :rpc_method:`get_fieldmap`.
+
         Args:
             survey_id: ID of survey to get fieldmap for.
 
@@ -168,6 +170,8 @@ class Client:
 
     def activate_survey(self, survey_id: int) -> types.OperationStatus:
         """Activate a survey.
+
+        Calls :rpc_method:`activate_survey`.
 
         Args:
             survey_id: ID of survey to be activated.
@@ -188,6 +192,8 @@ class Client:
 
         New participant tokens may be later added.
 
+        Calls :rpc_method:`activate_tokens`.
+
         Args:
             survey_id: ID of survey to be activated.
             attributes: Optional list of participant attributes numbers to be activated.
@@ -201,6 +207,8 @@ class Client:
 
     def add_language(self, survey_id: int, language: str) -> types.OperationStatus:
         """Add a survey language.
+
+        Calls :rpc_method:`add_language`.
 
         Args:
             survey_id: ID of the Survey for which a language will be added.
@@ -222,6 +230,8 @@ class Client:
         create_tokens: bool = True,
     ) -> list[dict[str, t.Any]]:
         """Add participants to a survey.
+
+        Calls :rpc_method:`add_participants`.
 
         Args:
             survey_id: Survey to add participants to.
@@ -255,6 +265,8 @@ class Client:
         url_description: str = "",
     ) -> int:
         """Add a quota to a LimeSurvey survey.
+
+        Calls :rpc_method:`add_quota`.
 
         Args:
             survey_id: ID of the survey to add the quota to.
@@ -294,6 +306,8 @@ class Client:
     ) -> int:
         """Add a new empty survey.
 
+        Calls :rpc_method:`add_survey`.
+
         Args:
             survey_id: The desired ID of the Survey to add.
             title: Title of the new Survey.
@@ -319,6 +333,8 @@ class Client:
         participant_ids: t.Sequence[int],
     ) -> list[dict[str, t.Any]]:
         """Add participants to a survey.
+
+        Calls :rpc_method:`delete_participants`.
 
         Args:
             survey_id: Survey to delete participants to.
@@ -394,6 +410,8 @@ class Client:
     def add_group(self, survey_id: int, title: str, description: str = "") -> int:
         """Add a new empty question group to a survey.
 
+        Calls :rpc_method:`add_group`.
+
         Args:
             survey_id: ID of the Survey to add the group.
             title: Name of the group.
@@ -467,6 +485,8 @@ class Client:
     def update_response(self, survey_id: int, response_data: dict[str, t.Any]) -> bool:
         """Update a response.
 
+        Calls :rpc_method:`update_response`.
+
         Args:
             survey_id: Survey to update the response in.
             response_data: Response data to update.
@@ -482,6 +502,8 @@ class Client:
 
     def copy_survey(self, survey_id: int, name: str) -> dict[str, t.Any]:
         """Copy a survey.
+
+        Calls :rpc_method:`copy_survey`.
 
         Args:
             survey_id: ID of the source survey.
@@ -501,6 +523,8 @@ class Client:
         update: bool = False,
     ) -> types.CPDBParticipantImportResult:
         """Import CPDB participants.
+
+        Calls :rpc_method:`cpd_importParticipants`.
 
         Args:
             participants: CPDB participant data.
@@ -548,6 +572,8 @@ class Client:
     def delete_quota(self, quota_id: int) -> types.OperationStatus:
         """Delete a LimeSurvey quota.
 
+        Calls :rpc_method:`delete_quota`.
+
         Args:
             quota_id: ID of the quota to delete.
 
@@ -580,6 +606,8 @@ class Client:
     def delete_question(self, question_id: int) -> int:
         """Delete a survey.
 
+        Calls :rpc_method:`delete_question`.
+
         Args:
             question_id: ID of Question to delete.
 
@@ -593,6 +621,8 @@ class Client:
 
     def delete_survey(self, survey_id: int) -> types.OperationStatus:
         """Delete a survey.
+
+        Calls :rpc_method:`delete_survey`.
 
         Args:
             survey_id: Survey to delete.
@@ -619,6 +649,8 @@ class Client:
         fields: t.Sequence[str] | None = None,
     ) -> bytes:
         """Export responses to a file-like object.
+
+        Calls :rpc_method:`export_responses`.
 
         Args:
             survey_id: Survey to add the response to.
@@ -732,6 +764,8 @@ class Client:
     ) -> bytes:
         """Export survey statistics.
 
+        Calls :rpc_method:`export_statistics`.
+
         Args:
             survey_id: ID of the Survey.
             file_format: Type of documents the exported statistics should be.
@@ -801,6 +835,8 @@ class Client:
     ) -> dict[str, int]:
         """Export survey submission timeline.
 
+        Calls :rpc_method:`export_timeline`.
+
         Args:
             survey_id: ID of the Survey.
             period: Granularity level for aggregation submission counts.
@@ -829,6 +865,8 @@ class Client:
         language: str | None = None,
     ) -> types.GroupProperties:
         """Get the properties of a group of a survey.
+
+        Calls :rpc_method:`get_group_properties`.
 
         Args:
             group_id: ID of the group to get properties of.
@@ -871,6 +909,8 @@ class Client:
     ) -> dict[str, t.Any]:
         """Get properties a single survey participant.
 
+        Calls :rpc_method:`get_participant_properties`.
+
         Args:
             survey_id: Survey to get participants properties.
             query: Mapping of properties to query participants, or the token id
@@ -893,6 +933,8 @@ class Client:
     ) -> types.QuestionProperties:
         """Get properties of a question in a survey.
 
+        Calls :rpc_method:`get_question_properties`.
+
         Args:
             question_id: ID of the question to get properties.
             settings: Properties to get, default to all.
@@ -912,6 +954,8 @@ class Client:
         language: str | None = None,
     ) -> types.QuotaProperties:
         """Get properties of a LimeSurvey quota.
+
+        Calls :rpc_method:`get_quota_properties`.
 
         Args:
             quota_id: ID of the quota to get properties for.
@@ -933,6 +977,8 @@ class Client:
     ) -> list[int]:
         """Find response IDs given a survey ID and a token.
 
+        Calls :rpc_method:`get_response_ids`.
+
         Args:
             survey_id: Survey to get responses from.
             token: Participant for which to get response IDs.
@@ -946,6 +992,8 @@ class Client:
 
     def get_available_site_settings(self) -> list[str]:
         """Get all available site settings.
+
+        Calls :rpc_method:`get_available_site_settings`.
 
         Returns:
             A list of all the available site settings.
@@ -1025,6 +1073,8 @@ class Client:
     def get_summary(self, survey_id: int) -> dict[str, int]:
         """Get survey summary.
 
+        Calls :rpc_method:`get_summary`.
+
         Args:
             survey_id: ID of the survey to get summary of.
 
@@ -1041,6 +1091,8 @@ class Client:
         properties: t.Sequence[str] | None = None,
     ) -> types.SurveyProperties:
         """Get properties of a survey.
+
+        Calls :rpc_method:`get_survey_properties`.
 
         Args:
             survey_id: Survey to get properties.
@@ -1059,6 +1111,8 @@ class Client:
         token: str | None = None,
     ) -> dict[str, dict[str, t.Any]]:
         """Get a dictionary of files uploaded in a survey response.
+
+        Calls :rpc_method:`get_uploaded_files`.
 
         Args:
             survey_id: Survey for which to download files.
@@ -1144,6 +1198,8 @@ class Client:
 
         TODO: Check support for custom name and description.
 
+        Calls :rpc_method:`import_group`.
+
         Args:
             file: File object.
             survey_id: The ID of the Survey that the question will belong to.
@@ -1173,6 +1229,8 @@ class Client:
 
         TODO: Check support for additional fields like custom title, text, etc.
 
+        Calls :rpc_method:`import_question`.
+
         Args:
             file: File object.
             survey_id: The ID of the Survey that the question will belong to.
@@ -1201,6 +1259,8 @@ class Client:
         """Import survey from a file.
 
         Create a new survey from an exported LSS, CSV, TXT or LSA file.
+
+        Calls :rpc_method:`import_survey`.
 
         Args:
             file: File object.
@@ -1236,6 +1296,8 @@ class Client:
     ) -> list[dict[str, t.Any]]:
         """Get participants in a survey.
 
+        Calls :rpc_method:`list_participants`.
+
         Args:
             survey_id: Survey to get participants from.
             start: Retrieve participants starting from this index (zero-indexed).
@@ -1263,6 +1325,8 @@ class Client:
     def list_users(self) -> list[dict[str, t.Any]]:
         """Get LimeSurvey users.
 
+        Calls :rpc_method:`list_users`.
+
         Returns:
             List of users.
 
@@ -1276,6 +1340,8 @@ class Client:
         language: str | None = None,
     ) -> list[dict[str, t.Any]]:
         """Get the IDs and all attributes of all question groups in a Survey.
+
+        Calls :rpc_method:`list_groups`.
 
         Args:
             survey_id: ID of the Survey containing the groups.
@@ -1296,6 +1362,8 @@ class Client:
     ) -> list[types.QuestionsListElement]:
         """Get questions in a survey, in a specific group or all.
 
+        Calls :rpc_method:`list_questions`.
+
         Args:
             survey_id: Survey.
             group_id: Question group.
@@ -1311,6 +1379,8 @@ class Client:
     def list_quotas(self, survey_id: int) -> list[types.QuotaListElement]:
         """Get all quotas for a LimeSurvey survey.
 
+        Calls :rpc_method:`list_quotas`.
+
         Args:
             survey_id: ID of the survey to get quotas for.
 
@@ -1324,6 +1394,8 @@ class Client:
 
     def list_surveys(self, username: str | None = None) -> list[dict[str, t.Any]]:
         """Get all surveys or only those owned by a user.
+
+        Calls :rpc_method:`list_surveys`.
 
         Args:
             username: Owner of the surveys to retrieve.
@@ -1341,6 +1413,8 @@ class Client:
     ) -> list[dict[str, t.Any]]:
         """Get all survey groups or only those owned by a user.
 
+        Calls :rpc_method:`list_survey_groups`.
+
         Args:
             username: Owner of the survey groups to retrieve.
 
@@ -1357,6 +1431,8 @@ class Client:
         **properties: Unpack[types.GroupProperties],
     ) -> dict[str, bool]:
         """Set properties of a group.
+
+        Calls :rpc_method:`set_group_properties`.
 
         Args:
             group_id: ID of the group.
@@ -1377,6 +1453,8 @@ class Client:
     ) -> dict[str, t.Any]:
         """Set properties of a survey language.
 
+        Calls :rpc_method:`set_language_properties`.
+
         Args:
             survey_id: ID of the survey for which to set the language properties.
             language: Language code.
@@ -1396,6 +1474,8 @@ class Client:
         **token_data: t.Any,
     ) -> dict[str, t.Any]:
         """Set properties of a participant. Only one particpant can be updated.
+
+        Calls :rpc_method:`set_participant_properties`.
 
         Args:
             survey_id: ID of the survey to which the participant belongs.
@@ -1461,6 +1541,8 @@ class Client:
     ) -> dict[str, bool]:
         """Set properties of a survey.
 
+        Calls :rpc_method:`set_survey_properties`.
+
         Args:
             survey_id: ID of the survey to set the properties of.
             properties: Properties to set.
@@ -1480,6 +1562,8 @@ class Client:
         file: t.BinaryIO,
     ) -> types.FileUploadResult:
         """Upload a file to a LimeSurvey survey.
+
+        Calls :rpc_method:`upload_file`.
 
         Args:
             survey_id: ID of the survey to upload the file to.
