@@ -53,7 +53,7 @@ html_title = "Citric, a Python client for LimeSurvey"
 extlinks = {
     "rpc_method": (
         "https://api.limesurvey.org/classes/remotecontrol_handle.html#method_%s",
-        "RPC method `%s`",
+        "RPC method %s",
     ),
     "ls_manual": (
         "https://manual.limesurvey.org/%s",
