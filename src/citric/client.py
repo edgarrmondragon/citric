@@ -1302,7 +1302,7 @@ class Client:
             survey_id: Survey to get participants from.
             start: Retrieve participants starting from this index (zero-indexed).
             limit: Maximum number of participants to retrieve.
-            unused: Retrieve partipants with unused tokens.
+            unused: Retrieve participants with unused tokens.
             attributes: Extra participant attributes to include in the result.
             conditions: Dictionary of conditions to limit the list.
 
@@ -1473,7 +1473,7 @@ class Client:
         token_query_properties: t.Mapping[str, t.Any] | int,
         **token_data: t.Any,
     ) -> dict[str, t.Any]:
-        """Set properties of a participant. Only one particpant can be updated.
+        """Set properties of a participant. Only one participant can be updated.
 
         Calls :rpc_method:`set_participant_properties`.
 
