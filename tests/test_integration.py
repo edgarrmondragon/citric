@@ -4,8 +4,9 @@ from __future__ import annotations
 
 import csv
 import io
+import typing as t
+import uuid
 from pathlib import Path
-from typing import TYPE_CHECKING
 from urllib.parse import quote
 
 import pytest
@@ -13,9 +14,10 @@ import pytest
 import citric
 from citric import enums
 from citric.exceptions import LimeSurveyStatusError
+from citric.objects import Participant
 
-if TYPE_CHECKING:
-    from typing import Any, Generator
+if t.TYPE_CHECKING:
+    from faker import Faker
 
 NEW_SURVEY_NAME = "New Survey"
 
@@ -25,7 +27,7 @@ def client(
     integration_url: str,
     integration_username: str,
     integration_password: str,
-) -> Generator[citric.Client, None, None]:
+) -> t.Generator[citric.Client, None, None]:
     """RemoteControl2 API client."""
     client = citric.Client(
         integration_url,
@@ -45,7 +47,7 @@ def client(
 
 
 @pytest.fixture
-def survey_id(client: citric.Client) -> Generator[int, None, None]:
+def survey_id(client: citric.Client) -> t.Generator[int, None, None]:
     """Import a survey from a file and return its ID."""
     with Path("./examples/survey.lss").open("rb") as f:
         survey_id = client.import_survey(f, survey_id=98765)
@@ -198,7 +200,9 @@ def test_question(client: citric.Client, survey_id: int):
 
 
 @pytest.mark.integration_test
+@pytest.mark.version("6-apache")
 @pytest.mark.version("develop")
+@pytest.mark.version("master")
 def test_quota(client: citric.Client, survey_id: int):
     """Test quota methods."""
     with pytest.raises(LimeSurveyStatusError, match="No quotas found"):
@@ -260,32 +264,32 @@ def test_activate_tokens(client: citric.Client, survey_id: int):
 
 
 @pytest.mark.integration_test
-def test_participants(client: citric.Client, survey_id: int):
+def test_participants(faker: Faker, client: citric.Client, survey_id: int):
     """Test participants methods."""
     client.activate_survey(survey_id)
     client.activate_tokens(survey_id, [1, 2])
 
     data = [
         {
-            "email": "john@example.com",
-            "firstname": "John",
-            "lastname": "Doe",
+            "email": faker.email(),
+            "firstname": faker.first_name(),
+            "lastname": faker.last_name(),
             "token": "1",
             "attribute_1": "Dog person",
             "attribute_2": "Night owl",
         },
         {
-            "email": "jane@example.com",
-            "firstname": "Jane",
-            "lastname": "Doe",
+            "email": faker.email(),
+            "firstname": faker.first_name(),
+            "lastname": faker.last_name(),
             "token": "2",
             "attribute_1": "Cat person",
             "attribute_2": "Early bird",
         },
         {
-            "email": "jane@example.com",
-            "firstname": "Jane",
-            "lastname": "Doe",
+            "email": faker.email(),
+            "firstname": faker.first_name(),
+            "lastname": faker.last_name(),
             "token": "2",
             "attribute_1": "Cat person",
             "attribute_2": "Night owl",
@@ -331,15 +335,18 @@ def test_participants(client: citric.Client, survey_id: int):
         assert properties["attribute_2"] == d["attribute_2"]
 
     # Update participant properties
+    new_firstname = faker.first_name()
+    new_attribute_1 = "Hamster person"
+
     response = client.set_participant_properties(
         survey_id,
         added[0]["tid"],
-        firstname="Johnny",
-        attribute_1="Hamster person",
+        firstname=new_firstname,
+        attribute_1=new_attribute_1,
     )
-    assert response["firstname"] == "Johnny"
-    assert response["lastname"] == "Doe"
-    assert response["attribute_1"] == "Hamster person"
+    assert response["firstname"] == new_firstname
+    assert response["lastname"] == added[0]["lastname"]
+    assert response["attribute_1"] == new_attribute_1
 
     # Delete participants
     deleted = client.delete_participants(survey_id, [added[0]["tid"]])
@@ -358,7 +365,7 @@ def test_responses(client: citric.Client, survey_id: int):
     assert client.add_response(survey_id, single_response) == 1
 
     # Add multiple responses to a survey
-    data: list[dict[str, Any]]
+    data: list[dict[str, t.Any]]
     data = [
         {"G01Q01": "Long text 2", "G01Q02": "5", "token": "T00001"},
         {"G01Q01": "Long text 3", "G01Q02": None, "token": "T00002"},
@@ -481,7 +488,9 @@ def test_file_upload_invalid_extension(
 
 
 @pytest.mark.integration_test
+@pytest.mark.version("6-apache")
 @pytest.mark.version("develop")
+@pytest.mark.version("master")
 def test_get_available_site_settings(client: citric.Client):
     """Test getting available site settings."""
     assert client.get_available_site_settings()
@@ -494,3 +503,51 @@ def test_site_settings(client: citric.Client):
     assert client.get_default_language() == "en"
     assert client.get_default_theme() == "fruity"
     assert client.get_site_name() == "Citric - Test"
+
+
+@pytest.mark.integration_test
+def test_cpdb(faker: Faker, client: citric.Client):
+    """Test the CPDB methods."""
+    participants = [
+        Participant(
+            email=faker.email(),
+            firstname=faker.first_name(),
+            lastname=faker.last_name(),
+            participant_id=uuid.uuid4(),
+            attributes={
+                "favorite_color": "red",
+            },
+        ),
+        Participant(
+            email=faker.email(),
+            firstname=faker.first_name(),
+            lastname=faker.last_name(),
+            participant_id=uuid.uuid4(),
+        ),
+    ]
+    assert client.import_cpdb_participants(participants) == {
+        "ImportCount": 2,
+        "UpdateCount": 0,
+    }
+
+    more_participants = [
+        Participant(
+            email=participants[0].email,
+            firstname=participants[0].firstname,
+            lastname=participants[0].lastname,
+            participant_id=participants[0].participant_id,
+            attributes={
+                "favorite_color": "blue",
+            },
+        ),
+        Participant(
+            email=faker.email(),
+            firstname=faker.first_name(),
+            lastname=faker.last_name(),
+            participant_id=uuid.uuid4(),
+        ),
+    ]
+    assert client.import_cpdb_participants(more_participants, update=True) == {
+        "ImportCount": 1,
+        "UpdateCount": 1,
+    }

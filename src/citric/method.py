@@ -2,18 +2,15 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Generic, TypeVar
+import typing as t
 
-if TYPE_CHECKING:
-    from typing import Any, Callable
-
-T = TypeVar("T")
+T = t.TypeVar("T")
 
 
-class Method(Generic[T]):
+class Method(t.Generic[T]):
     """RPC method."""
 
-    def __init__(self, caller: Callable[[str], T], name: str) -> None:
+    def __init__(self, caller: t.Callable[[str], T], name: str) -> None:
         """Instantiate an RPC method."""
         self.__caller = caller
         self.__name = name
@@ -33,7 +30,7 @@ class Method(Generic[T]):
         """
         return Method(self.__caller, f"{self.__name}.{name}")
 
-    def __call__(self, *params: Any) -> T:
+    def __call__(self, *params: t.Any) -> T:
         """Call RPC method.
 
         Args:

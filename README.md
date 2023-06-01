@@ -15,6 +15,9 @@
   <a href="https://citric.readthedocs.io/en/latest/?badge=latest">
     <img alt="Documentation Status" src="https://readthedocs.org/projects/citric/badge/?version=latest"/>
   </a>
+  <a href="https://github.com/charliermarsh/ruff">
+    <img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/charliermarsh/ruff/main/assets/badge/v2.json" alt="Ruff" style="max-width:100%;">
+  </a>
   <a href="https://codecov.io/gh/edgarrmondragon/citric">
     <img alt="codecov" src="https://codecov.io/gh/edgarrmondragon/citric/branch/main/graph/badge.svg"/>
   </a>
@@ -61,6 +64,7 @@ Python.
 - Best effort to implement all the RPC methods in the [`Client` class](https://citric.readthedocs.io/en/latest/_api/citric/client/index.html#citric.client.Client). See the [API coverage page](https://citric.readthedocs.io/en/latest/rpc_coverage.html) for details.
 - Easily export survey data to CSV files, [Pandas DataFrames](https://citric.readthedocs.io/en/latest/how-to.html#export-responses-to-a-pandas-dataframe) and [DuckDB databases](https://citric.readthedocs.io/en/latest/how-to.html#export-responses-to-a-duckdb-database-and-analyze-with-sql).
 - Easily [download survey files](https://citric.readthedocs.io/en/latest/how-to.html#get-files-uploaded-to-a-survey-and-move-them-to-s3) (e.g. images, audio, etc.) to a local directory.
+- Tested against LimeSurvey 6.0.0+ and 5.0.0+ LTS versions.
 
 ## Installation
 

@@ -4,16 +4,13 @@ from __future__ import annotations
 
 import json
 import os
-from typing import TYPE_CHECKING
+import typing as t
 
 import pytest
 import requests
 from requests.adapters import BaseAdapter
 
 from citric.session import Session
-
-if TYPE_CHECKING:
-    from typing import Any, Mapping
 
 
 def _add_integration_skip(
@@ -146,12 +143,12 @@ class LimeSurveyMockAdapter(BaseAdapter):
     def _handle_json_response(
         self,
         method: str,
-        params: list[Any],
+        params: list[t.Any],
         request_id: int,
     ) -> requests.Response:
         response = requests.Response()
         response.status_code = 200
-        output: dict[str, Any] = {"result": None, "error": None, "id": request_id}
+        output: dict[str, t.Any] = {"result": None, "error": None, "id": request_id}
 
         if method in self.api_error_methods:
             output["error"] = "API Error!"
@@ -176,14 +173,14 @@ class LimeSurveyMockAdapter(BaseAdapter):
 
         return response
 
-    def send(  # noqa: PLR0913
+    def send(
         self,
         request: requests.PreparedRequest,
         stream: bool = False,  # noqa: FBT001, FBT002
         timeout: float | tuple[float, float] | tuple[float, None] | None = None,
         verify: bool | str = True,  # noqa: FBT002
-        cert: Any | None = None,
-        proxies: Mapping[str, str] | None = None,
+        cert: t.Any | None = None,
+        proxies: t.Mapping[str, str] | None = None,
     ):
         """Send a mocked request."""
         request_data = json.loads(request.body or "{}")
@@ -247,3 +244,9 @@ def session(
     yield session
 
     session.close()
+
+
+@pytest.fixture(scope="session", autouse=True)
+def faker_seed() -> int:
+    """Set faker seed."""
+    return 12345

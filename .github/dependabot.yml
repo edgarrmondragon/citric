@@ -9,7 +9,6 @@ updates:
     directory: "/"
     schedule:
       interval: daily
-      time: "14:38"
       timezone: "America/Mexico_City"
     reviewers:
       - "edgarrmondragon"
@@ -17,25 +16,33 @@ updates:
       - "dependencies"
     allow:
       - dependency-type: "development"
+    commit-message:
+      prefix: "chore(deps): "
+      prefix-development: "chore(deps-dev): "
   - package-ecosystem: pip
     directory: "/.github/workflows"
     schedule:
       interval: daily
-      time: "14:38"
       timezone: "America/Mexico_City"
     reviewers:
       - "edgarrmondragon"
     labels:
       - "dependencies"
+    commit-message:
+      prefix: "ci: "
   - package-ecosystem: github-actions
     directory: "/"
     schedule:
       interval: weekly
     reviewers:
       - "edgarrmondragon"
+    commit-message:
+      prefix: "ci: "
   - package-ecosystem: docker
     directory: "/"
     schedule:
       interval: "daily"
     reviewers:
       - "edgarrmondragon"
+    commit-message:
+      prefix: "ci: "

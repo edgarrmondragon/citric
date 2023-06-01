@@ -2,14 +2,15 @@ version: '3'
 
 services:
   limesurvey:
-    image: martialblog/limesurvey:${LS_IMAGE_TAG:-5-apache}
+    image: martialblog/limesurvey:${LS_IMAGE_TAG:-6-apache}
     volumes:
       - "surveys:/var/www/html/upload/surveys"
+      - "apache:/var/log/apache2"
       - "./tests/resources/config.php:/var/www/html/application/config/config.php"
     depends_on:
       - db
     ports:
-      - "${LS_PORT}:8080"
+      - "${LS_PORT:-8001}:8080"
     environment:
       DB_TYPE: pgsql
       DB_HOST: db
@@ -17,12 +18,15 @@ services:
       DB_NAME: limesurvey
       DB_USERNAME: limesurvey
       DB_PASSWORD: secret
-      ADMIN_USER: ${LS_USER}
+      ADMIN_USER: ${LS_USER:-iamadmin}
       ADMIN_NAME: Lime Administrator
-      ADMIN_PASSWORD: ${LS_PASSWORD}
+      ADMIN_PASSWORD: ${LS_PASSWORD:-secret}
+      EMAIL_SMTPHOST: ${LS_SMTP_HOST:-mailhog:1025}
+      EMAIL_SMTPUSER: ${LS_SMTP_USER:-citric@example.com}
+      EMAIL_SMTPPASSWORD: ${LS_SMTP_PASSWORD:-secret}
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/index.php/admin"]
-      interval: 1m
+      interval: 30s
       timeout: 10s
       retries: 3
       start_period: 15s
@@ -37,7 +41,7 @@ services:
       - "limedb:/var/lib/postgresql/data"
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "limesurvey"]
-      interval: 1m30s
+      interval: 30s
       timeout: 30s
       retries: 3
 
@@ -52,7 +56,14 @@ services:
     profiles:
       - web
 
+  mailhog:
+    image: mailhog/mailhog
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+
 volumes:
+  apache:
   limedb:
   surveys:
   object_storage:

@@ -4,6 +4,10 @@ on:
   release:
     types: [published]
 
+permissions:
+  contents: write
+  id-token: write
+
 jobs:
   release:
     name: Publish to PyPI
@@ -11,21 +15,25 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3.4.0
+      uses: actions/checkout@v3.5.2
 
     - name: Set up Python
-      uses: actions/setup-python@v4.5.0
+      uses: actions/setup-python@v4.6.1
       with:
         python-version: "3.10"
 
     - name: Upgrade pip
+      env:
+        PIP_CONSTRAINT: .github/workflows/constraints.txt
       run: |
-        pip install --constraint=.github/workflows/constraints.txt pip
+        pip install pip
         pip --version
 
     - name: Install Poetry
+      env:
+        PIP_CONSTRAINT: .github/workflows/constraints.txt
       run: |
-        pipx install --pip-args=--constraint=.github/workflows/constraints.txt poetry
+        pipx install poetry
         poetry --version
 
     - name: Check version
@@ -46,7 +54,4 @@ jobs:
         file_glob: true
 
     - name: Publish
-      uses: pypa/gh-action-pypi-publish@v1.8.1
-      with:
-        user: __token__
-        password: ${{ secrets.PYPI_TOKEN }}
+      uses: pypa/gh-action-pypi-publish@v1.8.6

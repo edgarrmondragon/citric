@@ -23,17 +23,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@v3.4.0
+      uses: actions/checkout@v3.5.2
 
     - name: Batch changes
       uses: miniscruff/changie-action@v1.0.1
       with:
         version: ${{ github.event.inputs.changie-version }}
-        args: >
-          "batch"
-          "${{ github.event.inputs.next-version }}"
-          "${{ github.event.inputs.prerelease && format('-p {0}', github.event.inputs.prerelease) || '--remove-prereleases' }}"
-          "${{ github.event.inputs.metadata && format('-m {0}', github.event.inputs.metadata) }}"
+        args: "\
+          batch
+          ${{ github.event.inputs.next-version }}
+          ${{ github.event.inputs.prerelease && format('-p {0}', github.event.inputs.prerelease) || '--remove-prereleases' }}
+          ${{ github.event.inputs.metadata && format('-m {0}', github.event.inputs.metadata) }}"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -66,7 +66,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Create Pull Request
-      uses: peter-evans/create-pull-request@v4.2.4
+      uses: peter-evans/create-pull-request@v5.0.1
       with:
         title: "chore: Release ${{ steps.latest.outputs.output }}"
         branch: release/${{ steps.latest.outputs.output }}

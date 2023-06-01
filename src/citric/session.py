@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 import logging
 import random
-from typing import TYPE_CHECKING, Any, TypeVar
+import typing as t
 
 import requests
 
@@ -18,7 +18,7 @@ from citric.exceptions import (
 )
 from citric.method import Method
 
-if TYPE_CHECKING:
+if t.TYPE_CHECKING:
     from types import TracebackType
 
     from citric.types import Result, RPCResponse
@@ -26,7 +26,7 @@ if TYPE_CHECKING:
 __all__ = ["Session"]
 
 GET_SESSION_KEY = "get_session_key"
-_T = TypeVar("_T", bound="Session")
+_T = t.TypeVar("_T", bound="Session")
 
 logger = logging.getLogger(__name__)
 
@@ -69,6 +69,16 @@ class Session:
             (``"Authdb"``).
         json_encoder: A `JSON encoder class <JSONEncoder>` to use for encoding RPC
             parameters.
+
+    .. versionchanged:: 0.0.4
+       Replaced the ``requests_session_factory`` parameter with ``requests_session``.
+
+    .. versionadded:: 0.0.6
+       Support Auth plugins with the ``auth_plugin`` parameter.
+
+    .. versionadded:: 0.5.0
+       The ``json_encoder`` parameter.
+
 
     .. _requests.Session:
         https://requests.readthedocs.io/en/latest/api/#request-sessions
@@ -121,7 +131,7 @@ class Session:
         """Magic method dispatcher."""
         return Method(self.rpc, name)
 
-    def rpc(self, method: str, *params: Any) -> Result:
+    def rpc(self, method: str, *params: t.Any) -> Result:
         """Execute RPC method on LimeSurvey, with optional token authentication.
 
         Any method, except for `get_session_key`.
@@ -142,7 +152,7 @@ class Session:
     def _invoke(
         self,
         method: str,
-        *params: Any,
+        *params: t.Any,
     ) -> Result:
         """Execute a LimeSurvey RPC with a JSON payload.
 
@@ -159,7 +169,7 @@ class Session:
         Returns:
             An RPC result.
         """
-        request_id = random.randint(1, 999_999)
+        request_id = random.randint(1, 999_999)  # noqa: S311
 
         payload = {
             "method": method,
