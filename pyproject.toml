@@ -79,6 +79,9 @@ markers = [
   "xfail_mysql: Mark a test as expected to fail on MySQL",
 ]
 
+[tool.codespell]
+skip = ".mypy_cache,.nox,.ruff_cache,build,docs/index.md,poetry.lock"
+
 [tool.coverage.paths]
 source = ["src", "*/site-packages"]
 
