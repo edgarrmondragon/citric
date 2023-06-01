@@ -66,6 +66,11 @@ changelog = "https://github.com/edgarrmondragon/citric/blob/main/CHANGELOG.md"
 [tool.black]
 line-length = 88
 
+[tool.poetry]
+exclude = []
+include = []
+packages = []
+
 [tool.pytest.ini_options]
 addopts = '-vvv'
 markers = [
