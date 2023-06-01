@@ -27,6 +27,8 @@ kinds:
   auto: patch
 - label: Refactored
   auto: patch
+- label: Documentation
+  auto: patch
 replacements:
 - path: pyproject.toml
   find: ^version = ".*"$
