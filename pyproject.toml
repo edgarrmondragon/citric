@@ -53,7 +53,7 @@ docs = [
   "sphinx-autoapi >= 2.1.0, < 3.0.0",
   "sphinx-autobuild >= 2021.3.14",
   "sphinx-autodoc-typehints >= 1.22, < 2",
-  "sphinx-copybutton >= 0.5.1, < 1"
+  "sphinx-copybutton >= 0.5.1, < 1",
 ]
 
 [project.urls]
