@@ -32,7 +32,7 @@ jobs:
         args: "\
           batch
           ${{ github.event.inputs.next-version }}
-          ${{ github.event.inputs.prerelease && format('-p {0}', github.event.inputs.prerelease) || '--remove-prereleases' }}
+          ${{ github.event.inputs.prerelease && format('-p {0}', github.event.inputs.prerelease) }}
           ${{ github.event.inputs.metadata && format('-m {0}', github.event.inputs.metadata) }}"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
