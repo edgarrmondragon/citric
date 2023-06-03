@@ -49,6 +49,7 @@ jobs:
       LS_PORT: "8080"
       NOXSESSION: "${{ matrix.session }}"
       NOXPYTHON: "${{ matrix.python-version }}"
+      NOXFORCEPYTHON: "${{ matrix.python-version }}"
     strategy:
       fail-fast: false
       matrix:
