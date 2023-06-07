@@ -23,7 +23,7 @@ TEST_DEPS = ["coverage[toml]", "faker", "pytest"]
 
 package = "citric"
 
-python_versions = ["3.12", "3.11", "3.10", "3.9", "3.8", "3.7"]
+python_versions = ["3.11", "3.10", "3.9", "3.8", "3.7"]
 pypy_versions = ["pypy3.7", "pypy3.8", "pypy3.9"]
 all_python_versions = python_versions + pypy_versions
 
