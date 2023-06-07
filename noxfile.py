@@ -98,7 +98,7 @@ def xdoctest(session: Session) -> None:
     session.run("python", "-m", "xdoctest", *args)
 
 
-@session(python=main_cpython_version)
+@session()
 def coverage(session: Session) -> None:
     """Upload coverage data."""
     args = session.posargs or ["report"]
@@ -111,7 +111,7 @@ def coverage(session: Session) -> None:
     session.run("coverage", *args)
 
 
-@session(name="docs-build", python=main_cpython_version)
+@session(name="docs-build")
 def docs_build(session: Session) -> None:
     """Build the documentation."""
     args = session.posargs or ["docs", "build"]
@@ -127,7 +127,7 @@ def docs_build(session: Session) -> None:
     session.run("sphinx-build", *args)
 
 
-@session(name="docs-serve", python=main_cpython_version)
+@session(name="docs-serve")
 def docs_serve(session: Session) -> None:
     """Build the documentation."""
     args = session.posargs or [
