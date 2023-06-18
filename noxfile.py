@@ -24,7 +24,7 @@ TEST_DEPS = ["coverage[toml]", "faker", "pytest"]
 package = "citric"
 
 python_versions = ["3.11", "3.10", "3.9", "3.8", "3.7"]
-pypy_versions = ["pypy3.7", "pypy3.8", "pypy3.9"]
+pypy_versions = ["pypy3.7", "pypy3.8", "pypy3.9", "pypy3.10"]
 all_python_versions = python_versions + pypy_versions
 
 main_cpython_version = "3.11"
@@ -42,7 +42,7 @@ def tests(session: Session) -> None:
     if GH_ACTIONS_ENV_VAR in os.environ:
         deps.append("pytest-github-actions-annotate-failures")
 
-    if session.python == "3.13":
+    if session.python in ("3.13", "pypy3.10"):
         env["PIP_NO_BINARY"] = "coverage"
 
     session.install(".", env=env)
