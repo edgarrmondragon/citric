@@ -69,49 +69,6 @@ docs = [
 [tool.black]
 line-length = 88
 
-[tool.pytest.ini_options]
-addopts = '-vvv'
-markers = [
-  "integration_test: Integration and end-to-end tests",
-  "version(ref): Mark a test that depends on a specific version of LimeSurvey",
-  "xfail_mysql: Mark a test as expected to fail on MySQL",
-]
-
-[tool.coverage.paths]
-source = ["src", "*/site-packages"]
-
-[tool.coverage.run]
-branch = true
-source = ["citric"]
-
-[tool.coverage.report]
-exclude_lines = [
-    "pragma: no cover",
-    '''if (t\.)?TYPE_CHECKING:''',
-]
-fail_under = 90
-omit = [
-  "src/citric/types.py",
-]
-show_missing = true
-
-[tool.mypy]
-enable_incomplete_feature = "Unpack"
-warn_unreachable = true
-warn_unused_configs = true
-warn_unused_ignores = true
-
-[[tool.mypy.overrides]]
-ignore_missing_imports = true
-module = [
-  "nox.*",
-  "nox_poetry.*",
-  "pytest.*",
-]
-
-[tool.codespell]
-skip = ".mypy_cache,.nox,.ruff_cache,build,docs/index.md,poetry.lock"
-
 [tool.ruff]
 ignore = [
   "ANN101", # missing-type-self
@@ -171,6 +128,49 @@ convention = "google"
 
 [tool.ruff.pylint]
 max-args = 10
+
+[tool.pytest.ini_options]
+addopts = '-vvv'
+markers = [
+  "integration_test: Integration and end-to-end tests",
+  "version(ref): Mark a test that depends on a specific version of LimeSurvey",
+  "xfail_mysql: Mark a test as expected to fail on MySQL",
+]
+
+[tool.coverage.paths]
+source = ["src", "*/site-packages"]
+
+[tool.coverage.run]
+branch = true
+source = ["citric"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    '''if (t\.)?TYPE_CHECKING:''',
+]
+fail_under = 90
+omit = [
+  "src/citric/types.py",
+]
+show_missing = true
+
+[tool.mypy]
+enable_incomplete_feature = "Unpack"
+warn_unreachable = true
+warn_unused_configs = true
+warn_unused_ignores = true
+
+[[tool.mypy.overrides]]
+ignore_missing_imports = true
+module = [
+  "nox.*",
+  "nox_poetry.*",
+  "pytest.*",
+]
+
+[tool.codespell]
+skip = ".mypy_cache,.nox,.ruff_cache,build,docs/index.md,poetry.lock"
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
