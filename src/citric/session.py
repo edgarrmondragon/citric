@@ -112,6 +112,7 @@ class Session:
         """Create a LimeSurvey RPC session."""
         self.url = url
         self._session = requests_session or requests.session()
+        self._session.headers["User-Agent"] = self.USER_AGENT
         self._session.headers.update(self._headers)
         self._encoder = json_encoder or json.JSONEncoder
 
@@ -188,7 +189,6 @@ class Session:
             data=json.dumps(payload, cls=self._encoder),
             headers={
                 "content-type": "application/json",
-                "user-agent": self.USER_AGENT,
             },
         )
         res.raise_for_status()
