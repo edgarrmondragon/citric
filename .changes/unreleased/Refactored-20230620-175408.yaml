@@ -1,5 +1,0 @@
-kind: Refactored
-body: Add a `USER_AGENT` attribute to the `Session` class
-time: 2023-06-20T17:54:08.587899-06:00
-custom:
-  Issue: "894"
