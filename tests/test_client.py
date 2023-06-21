@@ -37,7 +37,7 @@ else:
 class MockSession(Session):
     """Mock RPC session with some hardcoded methods for testing."""
 
-    settings = {
+    settings: t.ClassVar[dict[str, t.Any]] = {
         "defaulttheme": "mock-theme",
         "sitename": "mock-site",
         "defaultlang": "mock-lang",

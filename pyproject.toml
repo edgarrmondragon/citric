@@ -72,7 +72,8 @@ line-length = 88
 [tool.ruff]
 ignore = [
   "ANN101", # missing-type-self
-  "DJ", # flake8-django
+  "DJ",     # flake8-django
+  "FIX002", # line-contains-todo
 ]
 line-length = 88
 select = ["ALL"]

@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import logging
 import random
+import sys
 import typing as t
 
 import requests
@@ -17,6 +18,11 @@ from citric.exceptions import (
     RPCInterfaceNotEnabledError,
 )
 from citric.method import Method
+
+if sys.version_info >= (3, 8):
+    from importlib import metadata
+else:
+    import importlib_metadata as metadata
 
 if t.TYPE_CHECKING:
     from types import TracebackType
@@ -87,11 +93,11 @@ class Session:
     .. _JSONEncoder: https://docs.python.org/3/library/json.html#json.JSONEncoder
     """
 
-    _headers = {
-        "user-agent": "citric-client",
-    }
+    USER_AGENT = f"citric/{metadata.version('citric')}"
 
-    __attrs__ = ["url", "key"]
+    # TODO(edgarrmondragon): Remove this.
+    # https://github.com/edgarrmondragon/citric/issues/893
+    _headers: t.ClassVar[dict[str, t.Any]] = {}
 
     def __init__(
         self,
@@ -182,6 +188,7 @@ class Session:
             data=json.dumps(payload, cls=self._encoder),
             headers={
                 "content-type": "application/json",
+                "user-agent": self.USER_AGENT,
             },
         )
         res.raise_for_status()
