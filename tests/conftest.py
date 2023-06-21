@@ -128,14 +128,14 @@ def integration_password(request: pytest.FixtureRequest) -> str:
 class LimeSurveyMockAdapter(BaseAdapter):
     """Requests adapter that mocks LSRC2 API calls."""
 
-    api_error_methods = {"__api_error"}
-    status_error_methods = {"__status_error"}
-    http_error_methods = {"__http_error"}
-    ok_methods = {"__ok", "release_session_key"}
-    status_ok_methods = {"__status_ok", "activate_tokens", "delete_survey"}
+    api_error_methods = ("__api_error",)
+    status_error_methods = ("__status_error",)
+    http_error_methods = ("__http_error",)
+    ok_methods = ("__ok", "release_session_key")
+    status_ok_methods = ("__status_ok", "activate_tokens", "delete_survey")
 
     session_key = "123456"
-    status_ok = {"status": "OK"}
+    status_ok: t.ClassVar[dict[str, t.Any]] = {"status": "OK"}
     rpc_interface = "json"
 
     ldap_session_key = "ldap-key"

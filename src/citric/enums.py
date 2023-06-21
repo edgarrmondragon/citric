@@ -5,14 +5,20 @@ from __future__ import annotations
 import enum
 
 
-class ImportGroupType(str, enum.Enum):
+class StringEnum(str, enum.Enum):
+    """Enum with string values."""
+
+    __slots__ = ()
+
+
+class ImportGroupType(StringEnum):
     """Group file type."""
 
     LSG = "lsg"
     CSV = "csv"
 
 
-class ImportSurveyType(str, enum.Enum):
+class ImportSurveyType(StringEnum):
     """Survey file type."""
 
     LSS = "lss"
@@ -21,7 +27,7 @@ class ImportSurveyType(str, enum.Enum):
     LSA = "lsa"
 
 
-class NewSurveyType(str, enum.Enum):
+class NewSurveyType(StringEnum):
     """New survey type."""
 
     ALL_ON_ONE_PAGE = "A"
@@ -29,7 +35,7 @@ class NewSurveyType(str, enum.Enum):
     SINGLE_QUESTIONS = "S"
 
 
-class StatisticsExportFormat(str, enum.Enum):
+class StatisticsExportFormat(StringEnum):
     """Statistics export type."""
 
     PDF = "pdf"
@@ -37,7 +43,7 @@ class StatisticsExportFormat(str, enum.Enum):
     HTML = "html"
 
 
-class ResponsesExportFormat(str, enum.Enum):
+class ResponsesExportFormat(StringEnum):
     """Responses export type."""
 
     PDF = "pdf"
@@ -47,7 +53,7 @@ class ResponsesExportFormat(str, enum.Enum):
     JSON = "json"
 
 
-class SurveyCompletionStatus(str, enum.Enum):
+class SurveyCompletionStatus(StringEnum):
     """Survey completion status values."""
 
     COMPLETE = "complete"
@@ -55,7 +61,7 @@ class SurveyCompletionStatus(str, enum.Enum):
     ALL = "all"
 
 
-class HeadingType(str, enum.Enum):
+class HeadingType(StringEnum):
     """Types of heading in responses export."""
 
     CODE = "code"
@@ -63,21 +69,21 @@ class HeadingType(str, enum.Enum):
     ABBREVIATED = "abbreviated"
 
 
-class ResponseType(str, enum.Enum):
+class ResponseType(StringEnum):
     """Types of responses in export."""
 
     LONG = "long"
     SHORT = "short"
 
 
-class TimelineAggregationPeriod(str, enum.Enum):
+class TimelineAggregationPeriod(StringEnum):
     """Timeline aggregation level."""
 
     HOUR = "hour"
     DAY = "day"
 
 
-class QuotaAction(str, enum.Enum):
+class QuotaAction(StringEnum):
     """Quota action."""
 
     TERMINATE = "terminate"

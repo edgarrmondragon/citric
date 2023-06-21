@@ -177,17 +177,17 @@ class QuestionsListElement(TypedDict):
         same_script: The question same script.
     """
 
-    id: int  # noqa: A003
+    id: int
     qid: int
     parent_qid: int
     gid: int
     sid: int
 
     question: str
-    help: str  # noqa: A003
+    help: str
     language: str
 
-    type: str  # noqa: A003
+    type: str
     title: str
     preg: str
     other: YesNo
@@ -240,7 +240,7 @@ class QuestionProperties(TypedDict, total=False):
     gid: int
     sid: int
 
-    type: str  # noqa: A003
+    type: str
     title: str
     preg: str
     other: YesNo
@@ -275,7 +275,7 @@ class QuotaListElement(TypedDict):
         autoload_url: Whether the quota autoload URL is active.
     """
 
-    id: int  # noqa: A003
+    id: int
     name: str
     action: int
     limit: int
@@ -296,7 +296,7 @@ class QuotaProperties(TypedDict, total=False):
         autoload_url: Whether the quota autoload URL is active.
     """
 
-    id: int  # noqa: A003
+    id: int
     sid: int
     name: str
     qlimit: int
@@ -314,7 +314,7 @@ class RPCResponse(TypedDict):
         error: The error message of the RPC call.
     """
 
-    id: int  # noqa: A003
+    id: int
     result: Result
     error: str | None
 
@@ -412,7 +412,7 @@ class SurveyProperties(TypedDict, total=False):
     startdate: str | None
     anonymized: YesNo
     faxto: str
-    format: enums.NewSurveyType  # noqa: A003
+    format: enums.NewSurveyType
     savetiming: YesNo
     template: str
     datesstamp: YesNo
