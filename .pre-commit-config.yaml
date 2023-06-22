@@ -1,7 +1,7 @@
 ci:
   autofix_commit_msg: '[pre-commit.ci] auto fixes'
   autofix_prs: true
-  autoupdate_schedule: weekly
+  autoupdate_schedule: monthly
   autoupdate_commit_msg: 'chore(deps): pre-commit autoupdate'
 
 repos:
@@ -27,7 +27,7 @@ repos:
   rev: v0.0.274
   hooks:
   - id: ruff
-    args: [--fix, --exit-non-zero-on-fix]
+    args: [--fix, --exit-non-zero-on-fix, --show-fixes]
 
 - repo: https://github.com/psf/black
   rev: 23.3.0
@@ -50,7 +50,7 @@ repos:
     - darglint==1.8.1
 
 - repo: https://github.com/pre-commit/mirrors-mypy
-  rev: v1.3.0
+  rev: v1.4.0
   hooks:
   - id: mypy
     additional_dependencies:
