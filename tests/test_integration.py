@@ -213,15 +213,15 @@ def test_quota(client: citric.Client, survey_id: int):
     # List quotas
     quotas = client.list_quotas(survey_id)
     assert len(quotas) == 1
-    assert quotas[0]["id"] == quota_id
+    assert int(quotas[0]["id"]) == quota_id
 
     # Get quota properties
     props = client.get_quota_properties(quota_id)
-    assert props["id"] == quota_id
+    assert int(props["id"]) == quota_id
     assert props["name"] == "Test Quota"
-    assert props["qlimit"] == 100
-    assert props["active"] == 1
-    assert props["action"] == enums.QuotaAction.TERMINATE.integer_value
+    assert int(props["qlimit"]) == 100
+    assert int(props["active"]) == 1
+    assert int(props["action"]) == enums.QuotaAction.TERMINATE.integer_value
 
     # Set quota properties
     response = client.set_quota_properties(quota_id, qlimit=150)
