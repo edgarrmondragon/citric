@@ -63,9 +63,9 @@ def test_fieldmap(client: citric.Client, survey_id: int):
     fieldmap = client.get_fieldmap(survey_id)
     for key, value in fieldmap.items():
         assert key == value["fieldname"]
-
-        if value["qid"] and "_" not in key:
-            assert key == "{sid}X{gid}X{qid}".format(**value)
+        assert (
+            key == "{sid}X{gid}X{qid}".format(**value) or not value["qid"] or "_" in key
+        )
 
 
 @pytest.mark.integration_test

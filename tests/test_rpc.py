@@ -21,6 +21,11 @@ from citric.session import Session
 
 from .conftest import LimeSurveyMockAdapter
 
+if sys.version_info < (3, 11):
+    SET_PROPERTY_MESSAGE_REGEX = "can't set attribute"
+else:
+    SET_PROPERTY_MESSAGE_REGEX = "property .* of 'Session' object has no setter"
+
 
 class RPCOffAdapter(LimeSurveyMockAdapter):
     """Mock adapter with RPC interface turned off."""
@@ -101,15 +106,10 @@ def test_closed_session(
     assert session.closed
     assert session.key is None
 
-    if sys.version_info < (3, 11):
-        message_regex = "can't set attribute"
-    else:
-        message_regex = "property .* of 'Session' object has no setter"
-
-    with pytest.raises(AttributeError, match=message_regex):
+    with pytest.raises(AttributeError, match=SET_PROPERTY_MESSAGE_REGEX):
         session.key = "123456"  # type: ignore[misc]
 
-    with pytest.raises(AttributeError, match=message_regex):
+    with pytest.raises(AttributeError, match=SET_PROPERTY_MESSAGE_REGEX):
         session.closed = False  # type: ignore[misc]
 
 
@@ -159,9 +159,7 @@ def test_custom_json_encoder(
         """Custom JSON encoder."""
 
         def default(self, o: object) -> object:
-            if isinstance(o, NotSerializable):
-                return o.value
-            return super().default(o)
+            return o.value if isinstance(o, NotSerializable) else super().default(o)
 
     session = Session(
         url,
