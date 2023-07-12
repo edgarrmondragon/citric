@@ -8,7 +8,7 @@ updates:
   - package-ecosystem: "pip"
     directory: "/"
     schedule:
-      interval: daily
+      interval: weekly
       timezone: "America/Mexico_City"
     reviewers:
       - "edgarrmondragon"
@@ -22,7 +22,7 @@ updates:
   - package-ecosystem: pip
     directory: "/.github/workflows"
     schedule:
-      interval: daily
+      interval: monthly
       timezone: "America/Mexico_City"
     reviewers:
       - "edgarrmondragon"
@@ -33,7 +33,7 @@ updates:
   - package-ecosystem: github-actions
     directory: "/"
     schedule:
-      interval: weekly
+      interval: monthly
     reviewers:
       - "edgarrmondragon"
     commit-message:
@@ -41,7 +41,7 @@ updates:
   - package-ecosystem: docker
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: weekly
     reviewers:
       - "edgarrmondragon"
     commit-message:

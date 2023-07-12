@@ -1,0 +1,5 @@
+kind: Documentation
+body: Deduplicate `citric.Client`
+time: 2023-06-21T18:17:18.419825-06:00
+custom:
+  Issue: "898"

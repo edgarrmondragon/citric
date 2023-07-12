@@ -1,5 +1,6 @@
 # LimeSurvey
 LimeSurvey/
+*.tar.gz
 
 # VSCode
 .vscode/

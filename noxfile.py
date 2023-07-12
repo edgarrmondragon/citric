@@ -23,8 +23,8 @@ TEST_DEPS = ["coverage[toml]", "faker", "pytest"]
 
 package = "citric"
 
-python_versions = ["3.12", "3.11", "3.10", "3.9", "3.8", "3.7"]
-pypy_versions = ["pypy3.7", "pypy3.8", "pypy3.9"]
+python_versions = ["3.11", "3.10", "3.9", "3.8", "3.7"]
+pypy_versions = ["pypy3.7", "pypy3.8", "pypy3.9", "pypy3.10"]
 all_python_versions = python_versions + pypy_versions
 
 main_cpython_version = "3.11"
@@ -41,6 +41,9 @@ def tests(session: Session) -> None:
 
     if GH_ACTIONS_ENV_VAR in os.environ:
         deps.append("pytest-github-actions-annotate-failures")
+
+    if session.python in ("3.13", "pypy3.10"):
+        env["PIP_NO_BINARY"] = "coverage"
 
     session.install(".", env=env)
     session.install(*deps, env=env)
@@ -95,7 +98,7 @@ def xdoctest(session: Session) -> None:
     session.run("python", "-m", "xdoctest", *args)
 
 
-@session(python=main_cpython_version)
+@session()
 def coverage(session: Session) -> None:
     """Upload coverage data."""
     args = session.posargs or ["report"]
@@ -108,7 +111,7 @@ def coverage(session: Session) -> None:
     session.run("coverage", *args)
 
 
-@session(name="docs-build", python=main_cpython_version)
+@session(name="docs-build")
 def docs_build(session: Session) -> None:
     """Build the documentation."""
     args = session.posargs or ["docs", "build"]
@@ -124,7 +127,7 @@ def docs_build(session: Session) -> None:
     session.run("sphinx-build", *args)
 
 
-@session(name="docs-serve", python=main_cpython_version)
+@session(name="docs-serve")
 def docs_serve(session: Session) -> None:
     """Build the documentation."""
     args = session.posargs or [

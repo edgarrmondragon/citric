@@ -3,20 +3,26 @@
 # Citric
 
 <div>
-  <a href="https://github.com/edgarrmondragon/citric/actions?workflow=Tests">
-    <img alt="Tests" src="https://github.com/edgarrmondragon/citric/workflows/Tests/badge.svg"/>
-  </a>
-  <a href="https://results.pre-commit.ci/latest/github/edgarrmondragon/citric/main">
-    <img alt="pre-commit.ci status" src="https://results.pre-commit.ci/badge/github/edgarrmondragon/citric/main.svg"/>
-  </a>
   <a href="https://github.com/edgarrmondragon/citric/blob/main/LICENSE">
     <img alt="License" src="https://img.shields.io/github/license/edgarrmondragon/citric"/>
   </a>
+  <a href="https://github.com/astral-sh/ruff">
+    <img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/charliermarsh/ruff/main/assets/badge/v2.json" alt="Ruff" style="max-width:100%;">
+  </a>
+  <a href="https://github.com/wntrblm/nox">
+    <img alt="Nox" src="https://img.shields.io/badge/%F0%9F%A6%8A-Nox-D85E00.svg"/>
+  </a>
+  <a href="https://python-poetry.org/">
+    <img alt="Poetry" src="https://img.shields.io/endpoint?url=https://python-poetry.org/badge/v0.json"/>
+  </a>
+</div>
+
+<div>
+  <a href="https://results.pre-commit.ci/latest/github/edgarrmondragon/citric/main">
+    <img alt="pre-commit.ci status" src="https://results.pre-commit.ci/badge/github/edgarrmondragon/citric/main.svg"/>
+  </a>
   <a href="https://citric.readthedocs.io/en/latest/?badge=latest">
     <img alt="Documentation Status" src="https://readthedocs.org/projects/citric/badge/?version=latest"/>
-  </a>
-  <a href="https://github.com/charliermarsh/ruff">
-    <img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/charliermarsh/ruff/main/assets/badge/v2.json" alt="Ruff" style="max-width:100%;">
   </a>
   <a href="https://codecov.io/gh/edgarrmondragon/citric">
     <img alt="codecov" src="https://codecov.io/gh/edgarrmondragon/citric/branch/main/graph/badge.svg"/>
@@ -35,22 +41,6 @@
   </a>
   <a href="https://pypi.org/project/citric">
     <img alt="PyPI - Downloads" src="https://img.shields.io/pypi/dm/citric?color=blue"/>
-  </a>
-  <a href="https://pypi.org/project/citric">
-    <img alt="PyPI - Format" src="https://img.shields.io/pypi/format/citric"/>
-  </a>
-</div>
-
-<div>
-  <a href="https://github.com/edgarrmondragon/citric/search?l=python">
-    <img alt="GitHub languages" src="https://img.shields.io/github/languages/top/edgarrmondragon/citric">
-  </a>
-  <img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/edgarrmondragon/citric">
-  <a href="https://github.com/edgarrmondragon/citric/stargazers">
-    <img alt="GitHub stars" src="https://img.shields.io/github/stars/edgarrmondragon/citric">
-  </a>
-  <a href="https://github.com/edgarrmondragon/citric/commits/main">
-    <img alt="Github last-commit" src="https://img.shields.io/github/last-commit/edgarrmondragon/citric"/>
   </a>
 </div>
 
