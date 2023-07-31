@@ -38,7 +38,7 @@ return array(
         'RPCInterface' => 'json',
         'sitename' => 'Citric - Test',
         'defaultlang' => 'en',
-        'defaulttheme' => 'fruity_twentythree',
+        'defaulttheme' => 'vanilla',
         'emailsmtphost' => $email_smtphost,
         'emailsmtpuser' => $email_smtpuser,
         'emailsmtppassword' => $email_smtppassword,
