@@ -501,7 +501,7 @@ def test_site_settings(client: citric.Client):
     """Test getting site settings."""
     assert client.get_available_languages() is None
     assert client.get_default_language() == "en"
-    assert client.get_default_theme() == "fruity"
+    assert client.get_default_theme() == "vanilla"
     assert client.get_site_name() == "Citric - Test"
 
 
