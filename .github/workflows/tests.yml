@@ -226,6 +226,41 @@ jobs:
         name: coverage-data
         path: ".coverage.*"
 
+  types:
+    name: Type checking
+    runs-on: ubuntu-latest
+    env:
+      NOXSESSION: mypy
+      NOXFORCEPYTHON: ${{ matrix.python-version }}
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11", "3.12"]
+    steps:
+    - name: Check out the repository
+      uses: actions/checkout@v3.5.3
+
+    - name: Setup Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4.7.0
+      with:
+        python-version: ${{ matrix.python-version }}
+        architecture: x64
+        allow-prereleases: true
+
+    - name: Install tools
+      env:
+        PIP_CONSTRAINT: .github/workflows/constraints.txt
+      run: |
+        pip install pip
+        pipx install poetry
+        pipx install nox
+        pipx inject nox nox-poetry
+        pipx list
+
+    - name: Run Nox
+      run: |
+        nox
+
   coverage:
     name: Coverage
     runs-on: ubuntu-latest

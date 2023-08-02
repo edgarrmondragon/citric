@@ -111,6 +111,22 @@ def coverage(session: Session) -> None:
     session.run("coverage", *args)
 
 
+@session(python=python_versions, tags=["lint"])
+def mypy(session: Session) -> None:
+    """Type-check using mypy."""
+    args = session.posargs or locations
+    session.install(
+        ".",
+        "faker",
+        "mypy",
+        "pytest",
+        "sphinx",
+        "types-requests",
+        "typing-extensions",
+    )
+    session.run("mypy", *args)
+
+
 @session(name="docs-build")
 def docs_build(session: Session) -> None:
     """Build the documentation."""

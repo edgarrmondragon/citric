@@ -19,8 +19,6 @@ if t.TYPE_CHECKING:
     from os import PathLike
     from types import TracebackType
 
-    from typing_extensions import Unpack
-
     from citric import types
     from citric.objects import Participant
 
@@ -29,8 +27,10 @@ if t.TYPE_CHECKING:
     else:
         from typing_extensions import Literal
 
-
-_T = t.TypeVar("_T", bound="Client")
+    if sys.version_info >= (3, 11):
+        from typing import Self, Unpack  # noqa: ICN003
+    else:
+        from typing_extensions import Self, Unpack
 
 
 @dataclass
@@ -135,7 +135,7 @@ class Client:
         """Close client session."""
         self.__session.close()
 
-    def __enter__(self: _T) -> _T:
+    def __enter__(self: Self) -> Self:
         """Create client context."""
         return self
 
