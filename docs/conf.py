@@ -3,11 +3,7 @@
 from __future__ import annotations
 
 import sys
-import typing as t
 from pathlib import Path
-
-if t.TYPE_CHECKING:
-    from sphinx.application import Sphinx
 
 sys.path.append(str(Path("./_ext").resolve()))
 
@@ -91,39 +87,3 @@ def linkcode_resolve(domain: str, info: dict) -> str | None:
         return None
     filename = info["module"].replace(".", "/")
     return f"https://github.com/edgarrmondragon/citric/tree/main/src/{filename}.py"
-
-
-def skip_member_filter(
-    app: Sphinx,  # noqa: ARG001
-    what: str,  # noqa: ARG001
-    name: str,
-    obj: t.Any,  # noqa: ARG001, ANN401
-    skip: bool,  # noqa: FBT001
-    options: t.Any,  # noqa: ARG001, ANN401
-) -> bool | None:
-    """Filter autoapi members.
-
-    Args:
-        app: Sphinx application object.
-        what: The type of the object which the docstring belongs to.
-        name: The fully qualified name of the object.
-        obj: The object itself.
-        skip: Whether AutoAPI will skip this member if the handler does not override
-            the decision.
-        options: The options given to the directive.
-
-    Returns:
-        Whether to skip the member.
-    """
-    if name == "citric.client.Client":
-        skip = True
-    return skip
-
-
-def setup(sphinx: Sphinx) -> None:
-    """Setup function.
-
-    Args:
-        sphinx: Sphinx application object.
-    """
-    sphinx.connect("autoapi-skip-member", skip_member_filter)
