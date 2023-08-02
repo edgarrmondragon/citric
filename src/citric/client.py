@@ -133,7 +133,7 @@ class Client:
 
     def close(self) -> None:
         """Close client session."""
-        self.__session.close()
+        self.session.close()
 
     def __enter__(self: Self) -> Self:
         """Create client context."""
@@ -166,7 +166,7 @@ class Client:
 
         .. versionadded:: 0.3.0
         """
-        return self.__session.get_fieldmap(survey_id)
+        return self.session.get_fieldmap(survey_id)
 
     def activate_survey(self, survey_id: int) -> types.OperationStatus:
         """Activate a survey.
@@ -181,7 +181,7 @@ class Client:
 
         .. versionadded:: 0.0.1
         """
-        return self.__session.activate_survey(survey_id)
+        return self.session.activate_survey(survey_id)
 
     def activate_tokens(
         self,
@@ -203,7 +203,7 @@ class Client:
 
         .. versionadded:: 0.0.1
         """
-        return self.__session.activate_tokens(survey_id, attributes or [])
+        return self.session.activate_tokens(survey_id, attributes or [])
 
     def add_language(self, survey_id: int, language: str) -> types.OperationStatus:
         """Add a survey language.
@@ -220,7 +220,7 @@ class Client:
 
         .. versionadded:: 0.0.10
         """
-        return self.__session.add_language(survey_id, language)
+        return self.session.add_language(survey_id, language)
 
     def add_participants(
         self,
@@ -245,7 +245,7 @@ class Client:
         .. versionchanged:: 0.4.0
            Use keyword-only arguments.
         """
-        return self.__session.add_participants(
+        return self.session.add_participants(
             survey_id,
             participant_data,
             create_tokens,
@@ -320,7 +320,7 @@ class Client:
 
         .. versionadded:: 0.0.10
         """
-        return self.__session.add_survey(
+        return self.session.add_survey(
             survey_id,
             title,
             language,
@@ -345,7 +345,7 @@ class Client:
 
         .. versionadded:: 0.0.1
         """
-        return self.__session.delete_participants(
+        return self.session.delete_participants(
             survey_id,
             participant_ids,
         )
@@ -422,7 +422,7 @@ class Client:
 
         .. versionadded:: 0.0.8
         """
-        return self.__session.add_group(survey_id, title, description)
+        return self.session.add_group(survey_id, title, description)
 
     def _add_response(
         self,
@@ -439,7 +439,7 @@ class Client:
         Returns:
             ID of the new response.
         """
-        return int(self.__session.add_response(survey_id, response_data))
+        return int(self.session.add_response(survey_id, response_data))
 
     def add_response(self, survey_id: int, response_data: t.Mapping[str, t.Any]) -> int:
         """Add a single response to a survey.
@@ -498,7 +498,7 @@ class Client:
         """
         questions = self._get_question_mapping(survey_id)
         data = self._map_response_keys(response_data, questions)
-        return self.__session.update_response(survey_id, data)
+        return self.session.update_response(survey_id, data)
 
     def copy_survey(self, survey_id: int, name: str) -> dict[str, t.Any]:
         """Copy a survey.
@@ -514,7 +514,7 @@ class Client:
 
         .. versionadded:: 0.0.10
         """
-        return self.__session.copy_survey(survey_id, name)
+        return self.session.copy_survey(survey_id, name)
 
     def import_cpdb_participants(
         self,
@@ -552,7 +552,7 @@ class Client:
 
         .. versionadded:: 0.0.10
         """
-        return self.__session.delete_group(survey_id, group_id)
+        return self.session.delete_group(survey_id, group_id)
 
     def delete_language(self, survey_id: int, language: str) -> types.OperationStatus:
         """Delete a language from a survey.
@@ -567,7 +567,7 @@ class Client:
         .. versionadded:: 0.0.12
         .. minlimesurvey:: 5.3.4
         """
-        return self.__session.delete_language(survey_id, language)
+        return self.session.delete_language(survey_id, language)
 
     def delete_quota(self, quota_id: int) -> types.OperationStatus:
         """Delete a LimeSurvey quota.
@@ -601,7 +601,7 @@ class Client:
 
         .. versionadded:: 0.0.2
         """
-        return self.__session.delete_response(survey_id, response_id)
+        return self.session.delete_response(survey_id, response_id)
 
     def delete_question(self, question_id: int) -> int:
         """Delete a survey.
@@ -617,7 +617,7 @@ class Client:
         .. versionadded:: 0.1.0
         .. minlimesurvey:: 5.3.19
         """
-        return self.__session.delete_question(question_id)
+        return self.session.delete_question(question_id)
 
     def delete_survey(self, survey_id: int) -> types.OperationStatus:
         """Delete a survey.
@@ -632,7 +632,7 @@ class Client:
 
         .. versionadded:: 0.0.1
         """
-        return self.__session.delete_survey(survey_id)
+        return self.session.delete_survey(survey_id)
 
     def export_responses(  # noqa: PLR0913
         self,
@@ -674,7 +674,7 @@ class Client:
         """
         if token is None:
             return base64.b64decode(
-                self.__session.export_responses(
+                self.session.export_responses(
                     survey_id,
                     enums.ResponsesExportFormat(file_format),
                     language,
@@ -688,7 +688,7 @@ class Client:
             )
 
         return base64.b64decode(
-            self.__session.export_responses_by_token(
+            self.session.export_responses_by_token(
                 survey_id,
                 enums.ResponsesExportFormat(file_format),
                 token,
@@ -878,7 +878,7 @@ class Client:
 
         .. versionadded:: 0.0.10
         """
-        return self.__session.get_group_properties(group_id, settings, language)
+        return self.session.get_group_properties(group_id, settings, language)
 
     def get_language_properties(
         self,
@@ -899,7 +899,7 @@ class Client:
 
         .. versionadded:: 0.0.10
         """
-        return self.__session.get_language_properties(survey_id, settings, language)
+        return self.session.get_language_properties(survey_id, settings, language)
 
     def get_participant_properties(
         self,
@@ -922,7 +922,7 @@ class Client:
 
         .. versionadded:: 0.0.1
         """
-        return self.__session.get_participant_properties(survey_id, query, properties)
+        return self.session.get_participant_properties(survey_id, query, properties)
 
     def get_question_properties(
         self,
@@ -945,7 +945,7 @@ class Client:
 
         .. versionadded:: 0.0.10
         """
-        return self.__session.get_question_properties(question_id, settings, language)
+        return self.session.get_question_properties(question_id, settings, language)
 
     def get_quota_properties(
         self,
@@ -988,7 +988,7 @@ class Client:
 
         .. versionadded:: 0.0.1
         """
-        return self.__session.get_response_ids(survey_id, token)
+        return self.session.get_response_ids(survey_id, token)
 
     def get_available_site_settings(self) -> list[str]:
         """Get all available site settings.
@@ -1016,7 +1016,7 @@ class Client:
 
         .. versionadded:: 0.0.1
         """
-        return self.__session.get_site_settings(setting_name)
+        return self.session.get_site_settings(setting_name)
 
     def get_default_theme(self) -> str:
         """Get the global default theme.
@@ -1103,7 +1103,7 @@ class Client:
 
         .. versionadded:: 0.0.1
         """
-        return self.__session.get_survey_properties(survey_id, properties)
+        return self.session.get_survey_properties(survey_id, properties)
 
     def get_uploaded_files(
         self,
@@ -1123,7 +1123,7 @@ class Client:
 
         .. versionadded:: 0.0.5
         """
-        return self.__session.get_uploaded_files(survey_id, token)
+        return self.session.get_uploaded_files(survey_id, token)
 
     def get_uploaded_file_objects(
         self,
@@ -1211,7 +1211,7 @@ class Client:
         .. versionadded:: 0.0.10
         """
         contents = base64.b64encode(file.read()).decode()
-        return self.__session.import_group(
+        return self.session.import_group(
             survey_id,
             contents,
             enums.ImportGroupType(file_type),
@@ -1242,7 +1242,7 @@ class Client:
         .. versionadded:: 0.0.8
         """
         contents = base64.b64encode(file.read()).decode()
-        return self.__session.import_question(
+        return self.session.import_question(
             survey_id,
             group_id,
             contents,
@@ -1277,7 +1277,7 @@ class Client:
            Accept a binary file object instead of a path.
         """
         contents = base64.b64encode(file.read()).decode()
-        return self.__session.import_survey(
+        return self.session.import_survey(
             contents,
             enums.ImportSurveyType(file_type),
             survey_name,
@@ -1313,7 +1313,7 @@ class Client:
         .. versionchanged:: 0.4.0
            Use keyword-only arguments.
         """
-        return self.__session.list_participants(
+        return self.session.list_participants(
             survey_id,
             start,
             limit,
@@ -1332,7 +1332,7 @@ class Client:
 
         .. versionadded:: 0.0.3
         """
-        return self.__session.list_users()
+        return self.session.list_users()
 
     def list_groups(
         self,
@@ -1352,7 +1352,7 @@ class Client:
 
         .. versionadded:: 0.0.10
         """
-        return self.__session.list_groups(survey_id, language)
+        return self.session.list_groups(survey_id, language)
 
     def list_questions(
         self,
@@ -1374,7 +1374,7 @@ class Client:
 
         .. versionadded:: 0.0.1
         """
-        return self.__session.list_questions(survey_id, group_id, language)
+        return self.session.list_questions(survey_id, group_id, language)
 
     def list_quotas(self, survey_id: int) -> list[types.QuotaListElement]:
         """Get all quotas for a LimeSurvey survey.
@@ -1405,7 +1405,7 @@ class Client:
 
         .. versionadded:: 0.0.1
         """
-        return self.__session.list_surveys(username)
+        return self.session.list_surveys(username)
 
     def list_survey_groups(
         self,
@@ -1423,7 +1423,7 @@ class Client:
 
         .. versionadded:: 0.0.2
         """
-        return self.__session.list_survey_groups(username)
+        return self.session.list_survey_groups(username)
 
     def set_group_properties(
         self,
