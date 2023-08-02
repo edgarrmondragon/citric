@@ -29,10 +29,14 @@ if t.TYPE_CHECKING:
 
     from citric.types import Result, RPCResponse
 
+    if sys.version_info >= (3, 11):
+        from typing import Self  # noqa: ICN003
+    else:
+        from typing_extensions import Self
+
 __all__ = ["Session"]
 
 GET_SESSION_KEY = "get_session_key"
-_T = t.TypeVar("_T", bound="Session")
 
 logger = logging.getLogger(__name__)
 
@@ -227,7 +231,7 @@ class Session:
         self.__key = None
         self.__closed = True
 
-    def __enter__(self: _T) -> _T:
+    def __enter__(self: Self) -> Self:
         """Context manager for RPC session.
 
         Returns:
