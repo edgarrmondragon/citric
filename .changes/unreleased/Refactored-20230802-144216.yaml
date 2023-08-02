@@ -1,5 +1,0 @@
-kind: Refactored
-body: Use latest `typing` features where possible
-time: 2023-08-02T14:42:16.425782-06:00
-custom:
-  Issue: "918"
