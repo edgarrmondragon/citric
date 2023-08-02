@@ -51,9 +51,9 @@ Python.
 ## Features
 
 - Supports the full RPC API via the [`Session` class](https://citric.readthedocs.io/en/latest/_api/citric/session/index.html#citric.session.Session).
-- Best effort to implement all the RPC methods in the [`Client` class](https://citric.readthedocs.io/en/latest/_api/citric/client/index.html#citric.client.Client). See the [API coverage page](https://citric.readthedocs.io/en/latest/rpc_coverage.html) for details.
-- Easily export survey data to CSV files, [Pandas DataFrames](https://citric.readthedocs.io/en/latest/how-to.html#export-responses-to-a-pandas-dataframe) and [DuckDB databases](https://citric.readthedocs.io/en/latest/how-to.html#export-responses-to-a-duckdb-database-and-analyze-with-sql).
-- Easily [download survey files](https://citric.readthedocs.io/en/latest/how-to.html#get-files-uploaded-to-a-survey-and-move-them-to-s3) (e.g. images, audio, etc.) to a local directory.
+- Best effort to implement all the RPC methods in the [`Client` class](https://citric.readthedocs.io/en/stable/_api/citric/index.html#citric.Client). See the [API coverage page](https://citric.readthedocs.io/en/stable/rpc_coverage.html) for details.
+- Easily export survey data to CSV files, [Pandas DataFrames](https://citric.readthedocs.io/en/stable/how-to.html#export-responses-to-a-pandas-dataframe) and [DuckDB databases](https://citric.readthedocs.io/en/stable/how-to.html#export-responses-to-a-duckdb-database-and-analyze-with-sql).
+- Easily [download survey files](https://citric.readthedocs.io/en/stable/how-to.html#get-files-uploaded-to-a-survey-and-move-them-to-s3) (e.g. images, audio, etc.) to a local directory.
 - Tested against LimeSurvey 6.0.0+ and 5.0.0+ LTS versions.
 
 ## Installation
@@ -82,7 +82,7 @@ Code samples and API documentation are available at [citric.readthedocs.io](http
 
 ## Contributing
 
-If you'd like to contribute to this project, please see the [contributing guide](https://citric.readthedocs.io/en/latest/contributing/getting-started.html).
+If you'd like to contribute to this project, please see the [contributing guide](https://citric.readthedocs.io/en/stable/contributing/getting-started.html).
 
 ## Credits
 
