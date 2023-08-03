@@ -37,6 +37,7 @@ jobs:
         pipx inject nox nox-poetry
         pipx list
 
+    # Check API against the latest commit on the base branch
     - name: Run Nox
       run: |
-        nox -- ${{ github.base_ref }}
+        nox -- ${{ github.event.pull_request.base.sha }}
