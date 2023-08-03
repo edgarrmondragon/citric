@@ -36,7 +36,7 @@ if t.TYPE_CHECKING:
 
 __all__ = ["Session"]
 
-GET_SESSION_KEY_NAME = "get_session_key"
+GET_SESSION_KEY = "get_session_key"
 
 logger = logging.getLogger(__name__)
 
@@ -97,8 +97,6 @@ class Session:
     .. _JSONEncoder: https://docs.python.org/3/library/json.html#json.JSONEncoder
     """
 
-    USER_AGENT = f"citric/{metadata.version('citric')}"
-
     # TODO(edgarrmondragon): Remove this.
     # https://github.com/edgarrmondragon/citric/issues/893
     _headers: t.ClassVar[dict[str, t.Any]] = {}
@@ -116,7 +114,7 @@ class Session:
         """Create a LimeSurvey RPC session."""
         self.url = url
         self._session = requests_session or requests.session()
-        self._session.headers["User-Agent"] = self.USER_AGENT
+        self._session.headers["User-Agent"] = f"citric/{metadata.version('citric')}"
         self._session.headers.update(self._headers)
         self._encoder = json_encoder or json.JSONEncoder
 
@@ -154,7 +152,7 @@ class Session:
         Returns:
             An RPC result.
         """
-        if method == GET_SESSION_KEY_NAME or method.startswith("system."):
+        if method == GET_SESSION_KEY or method.startswith("system."):
             return self._invoke(method, *params)
 
         # Methods requiring authentication
