@@ -169,13 +169,14 @@ def docs_serve(session: Session) -> None:
 @session(name="api")
 def api_changes(session: Session) -> None:
     """Check for API changes."""
-    against = session.posargs[0] if session.posargs else "HEAD"
-
-    session.run(
+    args = [
         "griffe",
         "check",
         "citric",
         "-s=src",
-        f"-a={against}",
-        external=True,
-    )
+    ]
+
+    if session.posargs:
+        args.append(f"-a={session.posargs[0]}")
+
+    session.run(*args, external=True)

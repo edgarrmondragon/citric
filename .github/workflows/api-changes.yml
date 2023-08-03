@@ -5,6 +5,7 @@ on:
     paths:
     - src/**
     - .github/workflows/api-changes.yml
+    - CHANGELOG.md
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
