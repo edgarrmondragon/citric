@@ -36,7 +36,7 @@ if t.TYPE_CHECKING:
 
 __all__ = ["Session"]
 
-GET_SESSION_KEY = "get_session_key"
+GET_SESSION_KEY_NAME = "get_session_key"
 
 logger = logging.getLogger(__name__)
 
@@ -154,7 +154,7 @@ class Session:
         Returns:
             An RPC result.
         """
-        if method == GET_SESSION_KEY or method.startswith("system."):
+        if method == GET_SESSION_KEY_NAME or method.startswith("system."):
             return self._invoke(method, *params)
 
         # Methods requiring authentication

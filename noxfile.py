@@ -164,3 +164,18 @@ def docs_serve(session: Session) -> None:
         shutil.rmtree(build_dir)
 
     session.run("sphinx-autobuild", *args)
+
+
+@session(name="api")
+def api_changes(session: Session) -> None:
+    """Check for API changes."""
+    against = session.posargs[0] if session.posargs else "HEAD"
+
+    session.run(
+        "griffe",
+        "check",
+        "citric",
+        "-s=src",
+        f"-a={against}",
+        external=True,
+    )
