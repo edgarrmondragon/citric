@@ -37,7 +37,13 @@ jobs:
         pipx inject nox nox-poetry
         pipx list
 
+    - name: Set REF
+      id: set-ref
+      if: always() && !startsWith(github.head_ref, 'release/')
+      run: |
+        echo "ref=${{ github.event.pull_request.base.sha }}" >> $GITHUB_OUTPUT
+
     # Check API against the latest commit on the base branch
     - name: Run Nox
       run: |
-        nox -- ${{ github.event.pull_request.base.sha }}
+        nox -- ${{ steps.set-ref.outputs.ref }}
