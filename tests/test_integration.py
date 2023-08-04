@@ -110,6 +110,14 @@ def test_language(client: citric.Client, survey_id: int):
 @pytest.mark.integration_test
 def test_survey(client: citric.Client):
     """Test survey methods."""
+    # Try to get a survey that doesn't exist
+    with pytest.raises(LimeSurveyStatusError, match="Error: Invalid survey"):
+        client.get_survey_properties(99999)
+
+    # Try to delete a survey that doesn't exist
+    with pytest.raises(LimeSurveyStatusError, match="No permission"):
+        client.delete_survey(99999)
+
     # Add a new survey
     survey_id = client.add_survey(
         5555,
@@ -166,6 +174,9 @@ def test_group(client: citric.Client, survey_id: int):
 
     new_props = client.get_group_properties(group_id, settings=["group_order"])
     assert int(new_props["group_order"]) == 1
+
+    with pytest.raises(LimeSurveyStatusError, match="Error: Invalid group ID"):
+        client.set_group_properties(99999, group_order=1)
 
 
 @pytest.mark.integration_test
@@ -503,6 +514,13 @@ def test_site_settings(client: citric.Client):
     assert client.get_default_language() == "en"
     assert client.get_default_theme() == "vanilla"
     assert client.get_site_name() == "Citric - Test"
+
+
+@pytest.mark.integration_test
+def test_missing_setting(client: citric.Client):
+    """Test getting site settings."""
+    with pytest.raises(LimeSurveyStatusError, match="Invalid setting"):
+        assert client._get_site_setting("not_a_valid_setting")
 
 
 @pytest.mark.integration_test
