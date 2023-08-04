@@ -8,9 +8,12 @@ import typing as t
 
 import pytest
 import requests
+from dotenv import load_dotenv
 from requests.adapters import BaseAdapter
 
 from citric.session import Session
+
+load_dotenv()
 
 
 def _add_integration_skip(
