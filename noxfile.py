@@ -120,6 +120,7 @@ def mypy(session: Session) -> None:
         "faker",
         "mypy",
         "pytest",
+        "python-dotenv",
         "sphinx",
         "types-requests",
         "typing-extensions",
