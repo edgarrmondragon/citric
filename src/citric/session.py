@@ -97,6 +97,8 @@ class Session:
     .. _JSONEncoder: https://docs.python.org/3/library/json.html#json.JSONEncoder
     """
 
+    USER_AGENT = f"citric/{metadata.version('citric')}"
+
     # TODO(edgarrmondragon): Remove this.
     # https://github.com/edgarrmondragon/citric/issues/893
     _headers: t.ClassVar[dict[str, t.Any]] = {}
@@ -114,7 +116,7 @@ class Session:
         """Create a LimeSurvey RPC session."""
         self.url = url
         self._session = requests_session or requests.session()
-        self._session.headers["User-Agent"] = f"citric/{metadata.version('citric')}"
+        self._session.headers["User-Agent"] = self.USER_AGENT
         self._session.headers.update(self._headers)
         self._encoder = json_encoder or json.JSONEncoder
 
