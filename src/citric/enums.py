@@ -101,3 +101,15 @@ class QuotaAction(StringEnum):
             self.CONFIRM_TERMINATE: 2,
         }
         return mapping[self]
+
+
+class EmailSendStrategy(enum.IntEnum):
+    """Email send flag."""
+
+    PENDING = 1
+    RESEND = 2
+
+    @classmethod
+    def to_flag(cls: type[EmailSendStrategy], value: int) -> bool:
+        """Return the flag for this email send enum."""
+        return value == cls.PENDING

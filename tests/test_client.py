@@ -153,6 +153,14 @@ class MockSession(Session):
             },
         }
 
+    def invite_participants(  # noqa: D102
+        self,
+        survey_id: int,
+        token_ids: list[int] | None,
+        strategy: str,
+    ):
+        return "OK"
+
 
 class MockClient(Client):
     """A mock LimeSurvey client."""
@@ -558,3 +566,9 @@ def test_set_survey_properties(client: MockClient, faker: Faker):
         1,
         **props,
     ) == client.session.set_survey_properties(1, props)
+
+
+def test_invite_participants_unknown_status(client: MockClient):
+    """Test invite_participants client method."""
+    with pytest.raises(RuntimeError, match="Could not determine invitation status"):
+        client.invite_participants(1)

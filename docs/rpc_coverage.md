@@ -41,7 +41,7 @@ Full list of methods is available at [the Remote Control documentation](https://
 | `import_group`                 | [Yes](citric.Client.import_group)                | Import a group and add to a survey (RPC function)                                 |
 | `import_question`              | [Yes](citric.Client.import_question)             | Import question (RPC function)                                                    |
 | `import_survey`                | [Yes](citric.Client.import_survey)               | Import survey in a known format (RPC function)                                    |
-| `invite_participants`          | No                                               | Invite participants in a survey (RPC function)                                    |
+| `invite_participants`          | [Yes](citric.Client.invite_participants)         | Invite participants in a survey (RPC function)                                    |
 | `list_groups`                  | [Yes](citric.Client.list_groups)                 | Get survey groups (RPC function)                                                  |
 | `list_participants`            | [Yes](citric.Client.list_participants)           | Return the IDs and properties of survey participants (RPC function)               |
 | `list_questions`               | [Yes](citric.Client.list_questions)              | Return the ids and info of (sub-)questions of a survey/group (RPC function)       |

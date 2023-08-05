@@ -57,6 +57,37 @@ def survey_id(client: citric.Client) -> t.Generator[int, None, None]:
     client.delete_survey(survey_id)
 
 
+@pytest.fixture
+def participants(faker: Faker) -> list[dict[str, t.Any]]:
+    """Create participants for a survey."""
+    return [
+        {
+            "email": faker.email(),
+            "firstname": faker.first_name(),
+            "lastname": faker.last_name(),
+            "token": "1",
+            "attribute_1": "Dog person",
+            "attribute_2": "Night owl",
+        },
+        {
+            "email": faker.email(),
+            "firstname": faker.first_name(),
+            "lastname": faker.last_name(),
+            "token": "2",
+            "attribute_1": "Cat person",
+            "attribute_2": "Early bird",
+        },
+        {
+            "email": faker.email(),
+            "firstname": faker.first_name(),
+            "lastname": faker.last_name(),
+            "token": "2",
+            "attribute_1": "Cat person",
+            "attribute_2": "Night owl",
+        },
+    ]
+
+
 @pytest.mark.integration_test
 def test_fieldmap(client: citric.Client, survey_id: int):
     """Test fieldmap."""
@@ -275,61 +306,39 @@ def test_activate_tokens(client: citric.Client, survey_id: int):
 
 
 @pytest.mark.integration_test
-def test_participants(faker: Faker, client: citric.Client, survey_id: int):
+def test_participants(
+    faker: Faker,
+    client: citric.Client,
+    survey_id: int,
+    participants: list[dict[str, str]],
+):
     """Test participants methods."""
     client.activate_survey(survey_id)
     client.activate_tokens(survey_id, [1, 2])
 
-    data = [
-        {
-            "email": faker.email(),
-            "firstname": faker.first_name(),
-            "lastname": faker.last_name(),
-            "token": "1",
-            "attribute_1": "Dog person",
-            "attribute_2": "Night owl",
-        },
-        {
-            "email": faker.email(),
-            "firstname": faker.first_name(),
-            "lastname": faker.last_name(),
-            "token": "2",
-            "attribute_1": "Cat person",
-            "attribute_2": "Early bird",
-        },
-        {
-            "email": faker.email(),
-            "firstname": faker.first_name(),
-            "lastname": faker.last_name(),
-            "token": "2",
-            "attribute_1": "Cat person",
-            "attribute_2": "Night owl",
-        },
-    ]
-
     # Add participants
     added = client.add_participants(
         survey_id,
-        participant_data=data,
+        participant_data=participants,
         create_tokens=False,
     )
-    for p, d in zip(added, data):
+    for p, d in zip(added, participants):
         assert p["email"] == d["email"]
         assert p["firstname"] == d["firstname"]
         assert p["lastname"] == d["lastname"]
         assert p["attribute_1"] == d["attribute_1"]
         assert p["attribute_2"] == d["attribute_2"]
 
-    participants = client.list_participants(
+    participants_list = client.list_participants(
         survey_id,
         attributes=["attribute_1", "attribute_2"],
     )
 
     # Confirm that the participants are deduplicated based on token
-    assert len(participants) == 2
+    assert len(participants_list) == 2
 
     # Check added participant properties
-    for p, d in zip(participants, data[:2]):
+    for p, d in zip(participants_list, participants[:2]):
         assert p["participant_info"]["email"] == d["email"]
         assert p["participant_info"]["firstname"] == d["firstname"]
         assert p["participant_info"]["lastname"] == d["lastname"]
@@ -337,7 +346,7 @@ def test_participants(faker: Faker, client: citric.Client, survey_id: int):
         assert p["attribute_2"] == d["attribute_2"]
 
     # Get participant properties
-    for p, d in zip(added, data[:2]):
+    for p, d in zip(added, participants[:2]):
         properties = client.get_participant_properties(survey_id, p["tid"])
         assert properties["email"] == d["email"]
         assert properties["firstname"] == d["firstname"]
@@ -363,6 +372,37 @@ def test_participants(faker: Faker, client: citric.Client, survey_id: int):
     deleted = client.delete_participants(survey_id, [added[0]["tid"]])
     assert deleted == {added[0]["tid"]: "Deleted"}
     assert len(client.list_participants(survey_id)) == 1
+
+
+@pytest.mark.integration_test
+def test_invite_participants(
+    client: citric.Client,
+    survey_id: int,
+    participants: list[dict[str, str]],
+):
+    """Test inviting participants to a survey."""
+    client.activate_survey(survey_id)
+    client.activate_tokens(survey_id, [1, 2])
+
+    # Add participants
+    client.add_participants(
+        survey_id,
+        participant_data=participants,
+        create_tokens=False,
+    )
+
+    pending = enums.EmailSendStrategy.PENDING
+    resend = enums.EmailSendStrategy.RESEND
+
+    with pytest.raises(LimeSurveyStatusError, match="Error: No candidate tokens"):
+        client.invite_participants(survey_id, strategy=resend)
+
+    assert client.invite_participants(survey_id, strategy=pending) == 0
+
+    with pytest.raises(LimeSurveyStatusError, match="Error: No candidate tokens"):
+        client.invite_participants(survey_id, strategy=pending)
+
+    assert client.invite_participants(survey_id, strategy=resend) == -2
 
 
 @pytest.mark.integration_test
