@@ -1,0 +1,5 @@
+kind: Added
+body: Implement `invite_participants` in client
+time: 2023-08-04T22:45:19.067838-06:00
+custom:
+  Issue: "793"
