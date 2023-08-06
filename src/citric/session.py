@@ -71,14 +71,14 @@ class Session:
         url: LimeSurvey Remote Control endpoint.
         username: LimeSurvey user name.
         password: LimeSurvey password.
-        requests_session: A `requests.Session`_ object.
+        requests_session: A :external+requests:py:class:`requests.Session` object.
         auth_plugin: Name of the :ls_manual:`plugin <Authentication_plugins>` to use for
             authentication. For example,
             :ls_manual:`AuthLDAP <Authentication_plugins#LDAP>`. Defaults to using the
             :ls_manual:`internal database <Authentication_plugins#Internal_database>`
             (``"Authdb"``).
-        json_encoder: A `JSON encoder class <JSONEncoder>` to use for encoding RPC
-            parameters.
+        json_encoder: A :external:py:class:`json.JSONEncoder` subclass to use for
+            encoding RPC parameters.
 
     .. versionchanged:: 0.0.4
        Replaced the ``requests_session_factory`` parameter with ``requests_session``.
@@ -90,11 +90,8 @@ class Session:
        The ``json_encoder`` parameter.
 
 
-    .. _requests.Session:
-        https://requests.readthedocs.io/en/latest/api/#request-sessions
     .. _key: #citric.session.Session.key
     .. _closure: #citric.session.Session.close
-    .. _JSONEncoder: https://docs.python.org/3/library/json.html#json.JSONEncoder
     """
 
     USER_AGENT = f"citric/{metadata.version('citric')}"
