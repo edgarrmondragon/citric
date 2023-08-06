@@ -85,10 +85,7 @@ class UploadedFile:
     """:class:`~citric.client.FileMetadata` object."""
 
     content: io.BytesIO
-    """File content as `io.BytesIO`_.
-
-    .. _io.BytesIO:
-        https://docs.python.org/3/library/io.html#io.BytesIO
+    """File content as :external+python:py:class:`io.BytesIO`.
     """
 
 
@@ -101,7 +98,7 @@ class Client:
         url: LimeSurvey Remote Control endpoint.
         username: LimeSurvey user name.
         password: LimeSurvey password.
-        requests_session: A `requests.Session`_ object.
+        requests_session: A :external+requests:py:class:`requests.Session` object.
         auth_plugin: Name of the :ls_manual:`plugin <Authentication_plugins>` to use for
             authentication. For example,
             :ls_manual:`AuthLDAP <Authentication_plugins#LDAP>`. Defaults to using the
@@ -110,9 +107,6 @@ class Client:
 
     .. versionadded:: 0.0.6
        Support Auth plugins with the ``auth_plugin`` parameter.
-
-    .. _requests.Session:
-        https://requests.readthedocs.io/en/latest/api/#request-sessions
     """
 
     session_class = Session
