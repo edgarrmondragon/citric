@@ -85,7 +85,7 @@ class UploadedFile:
     """:class:`~citric.client.FileMetadata` object."""
 
     content: io.BytesIO
-    """File content as :external:py:class:`io.BytesIO`.
+    """File content as :external+python:py:class:`io.BytesIO`.
     """
 
 

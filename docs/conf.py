@@ -52,6 +52,7 @@ html_theme_options = {
 html_title = "Citric, a Python client for LimeSurvey"
 
 intersphinx_mapping = {
+    "python": ("https://docs.python.org/3/", None),
     "requests": ("https://requests.readthedocs.io/en/latest/", None),
     "requests-cache": ("https://requests-cache.readthedocs.io/en/stable/", None),
 }

@@ -77,7 +77,7 @@ class Session:
             :ls_manual:`AuthLDAP <Authentication_plugins#LDAP>`. Defaults to using the
             :ls_manual:`internal database <Authentication_plugins#Internal_database>`
             (``"Authdb"``).
-        json_encoder: A :external:py:class:`json.JSONEncoder` subclass to use for
+        json_encoder: A :external+python:py:class:`json.JSONEncoder` subclass to use for
             encoding RPC parameters.
 
     .. versionchanged:: 0.0.4
