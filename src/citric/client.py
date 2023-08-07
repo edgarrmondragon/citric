@@ -85,7 +85,7 @@ class UploadedFile:
     """:class:`~citric.client.FileMetadata` object."""
 
     content: io.BytesIO
-    """File content as :external+python:py:class:`io.BytesIO`.
+    """File content as :py:class:`io.BytesIO <io.BytesIO>`.
     """
 
 
@@ -98,7 +98,7 @@ class Client:
         url: LimeSurvey Remote Control endpoint.
         username: LimeSurvey user name.
         password: LimeSurvey password.
-        requests_session: A :external+requests:py:class:`requests.Session` object.
+        requests_session: A :py:class:`requests.Session <requests.Session>` object.
         auth_plugin: Name of the :ls_manual:`plugin <Authentication_plugins>` to use for
             authentication. For example,
             :ls_manual:`AuthLDAP <Authentication_plugins#LDAP>`. Defaults to using the

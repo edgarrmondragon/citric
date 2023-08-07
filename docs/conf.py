@@ -16,11 +16,11 @@ extensions = [
     "sphinx.ext.intersphinx",
     "sphinx.ext.linkcode",
     "sphinx.ext.napoleon",
-    "sphinx_autodoc_typehints",
     "autoapi.extension",
     "myst_parser",
     "sphinx_copybutton",
     "limesurvey_future",
+    "hoverxref.extension",
 ]
 
 autodoc_typehints = "description"
@@ -51,10 +51,28 @@ html_theme_options = {
 }
 html_title = "Citric, a Python client for LimeSurvey"
 
+hoverxref_default_type = "tooltip"
+
 intersphinx_mapping = {
-    "python": ("https://docs.python.org/3/", None),
     "requests": ("https://requests.readthedocs.io/en/latest/", None),
     "requests-cache": ("https://requests-cache.readthedocs.io/en/stable/", None),
+    "python": ("https://docs.python.org/3/", None),
+}
+
+hoverxref_intersphinx = [
+    "requests",
+    "python",
+]
+
+hoverxref_domains = [
+    "py",
+]
+
+hoverxref_role_types = {
+    "hoverxref": "tooltip",
+    "ref": "modal",
+    "mod": "modal",
+    "class": "modal",
 }
 
 extlinks = {

@@ -71,13 +71,13 @@ class Session:
         url: LimeSurvey Remote Control endpoint.
         username: LimeSurvey user name.
         password: LimeSurvey password.
-        requests_session: A :external+requests:py:class:`requests.Session` object.
+        requests_session: A :py:class:`requests.Session <requests.Session>` object.
         auth_plugin: Name of the :ls_manual:`plugin <Authentication_plugins>` to use for
             authentication. For example,
             :ls_manual:`AuthLDAP <Authentication_plugins#LDAP>`. Defaults to using the
             :ls_manual:`internal database <Authentication_plugins#Internal_database>`
             (``"Authdb"``).
-        json_encoder: A :external+python:py:class:`json.JSONEncoder` subclass to use for
+        json_encoder: A :py:class:`json.Encoder <json.JSONEncoder>` subclass to use for
             encoding RPC parameters.
 
     .. versionchanged:: 0.0.4
