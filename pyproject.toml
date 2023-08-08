@@ -92,6 +92,7 @@ target-version = "py37"
   "D100",   # undocumented-public-module
   "INP001", # implicit-namespace-package
   "I002",   # missing-required-import
+  "E402",   # module-import-not-at-top-of-file
 ]
 "src/*" = [
   "PD", # pandas-vet
