@@ -17,14 +17,14 @@ repos:
   - id: trailing-whitespace
 
 - repo: https://github.com/python-jsonschema/check-jsonschema
-  rev: 0.24.0
+  rev: 0.24.1
   hooks:
   - id: check-dependabot
   - id: check-github-workflows
   - id: check-readthedocs
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.0.283
+  rev: v0.0.284
   hooks:
   - id: ruff
     args: [--fix, --exit-non-zero-on-fix, --show-fixes]
@@ -50,7 +50,7 @@ repos:
     - darglint==1.8.1
 
 - repo: https://github.com/pre-commit/mirrors-mypy
-  rev: v1.4.1
+  rev: v1.5.0
   hooks:
   - id: mypy
     additional_dependencies:
@@ -65,12 +65,12 @@ repos:
   - id: validate_manifest
 
 - repo: https://github.com/hadialqattan/pycln
-  rev: v2.2.1
+  rev: v2.2.2
   hooks:
   - id: pycln
     args: [--all]
 
 - repo: https://github.com/tox-dev/pyproject-fmt
-  rev: "0.13.0"
+  rev: "0.13.1"
   hooks:
   - id: pyproject-fmt
