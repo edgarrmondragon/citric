@@ -3,20 +3,16 @@ cli:
   version: 1.5.1
 merge:
   required_statuses:
-    - Coverage
-    - integration 3.10 / integration with 5-apache / postgres / ubuntu-22.04
-    - mypy 3.8 / ubuntu-22.04
-    - mypy 3.9 / ubuntu-22.04
-    - mypy 3.10 / ubuntu-22.04
-    - mypy 3.11 / ubuntu-22.04
-    - safety 3.10 / ubuntu-22.04
-    - tests 3.8 / ubuntu-22.04
-    - tests 3.9 / ubuntu-22.04
-    - tests 3.10 / macos-12
-    - tests 3.10 / ubuntu-22.04
-    - tests 3.10 / windows-2022
-    - tests 3.11 / ubuntu-22.04
-    - xdoctest 3.10 / ubuntu-22.04
+    - Type checking (3.11)
+    - integration 3.11 / integration with 5-apache / postgres / ubuntu-latest
+    - integration 3.11 / integration with 6-apache / postgres / ubuntu-latest
+    - tests 3.8 / ubuntu-latest
+    - tests 3.9 / ubuntu-latest
+    - tests 3.10 / ubuntu-latest
+    - tests 3.11 / ubuntu-latest
+    - tests 3.11 / macos-latest
+    - tests 3.11 / windows-latest
+    - xdoctest 3.11 / ubuntu-latest
 actions:
   disabled:
     - trunk-announce
