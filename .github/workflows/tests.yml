@@ -247,10 +247,30 @@ jobs:
         color: ${{ steps.nox.outcome == 'success' && 'green' || 'red' }}
         path: .github/badges/integration-${{ matrix.image_tag || matrix.limesurvey_version }}.svg
 
-    - uses: pre-commit-ci/lite-action@v1.0.1
+    - name: Upload badges
       if: always() && steps.badge.outcome == 'success'
+      uses: actions/upload-artifact@v3.1.2
       with:
-        msg: Update integration status badge
+        name: badges
+        path: .github/badges
+
+  badges:
+    name: Update badges
+    runs-on: ubuntu-latest
+    needs: tests
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v3.5.3
+
+      - name: Download badges
+        uses: actions/download-artifact@v3.0.2
+        with:
+          name: badges
+
+      - name: Commit and push changes
+        uses: EndBug/add-and-commit@v7
+        with:
+          add: ".github/badges"
 
   types:
     name: Type checking
