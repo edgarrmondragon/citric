@@ -239,12 +239,18 @@ jobs:
     - name: Update integration status badge
       # if: always() && matrix.session == 'integration' && github.event_name == 'push' && github.ref == 'refs/heads/main'
       if: always() && matrix.session == 'integration'
+      id: badge
       uses: emibcn/badge-action@v2.0.2
       with:
         label: LimeSurvey Integration (${{ matrix.image_tag || matrix.limesurvey_version }})
         status: ${{ steps.nox.outcome }}
         color: ${{ steps.nox.outcome == 'success' && 'green' || 'red' }}
         path: .github/badges/integration-${{ matrix.image_tag || matrix.limesurvey_version }}.svg
+
+    - uses: pre-commit-ci/lite-action@v1.0.1
+      if: always() && steps.badge.outcome == 'success'
+      with:
+        msg: Update integration status badge
 
   types:
     name: Type checking
