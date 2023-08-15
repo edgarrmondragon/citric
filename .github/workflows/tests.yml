@@ -273,6 +273,7 @@ jobs:
         uses: actions/download-artifact@v3.0.2
         with:
           name: badges
+          path: .github/badges
 
       - name: Commit and push changes
         uses: EndBug/add-and-commit@v7
