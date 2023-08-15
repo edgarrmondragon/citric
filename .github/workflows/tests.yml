@@ -244,8 +244,7 @@ jobs:
         path: ".coverage.*"
 
     - name: Update integration status badge
-      # if: always() && matrix.session == 'integration' && github.event_name == 'push' && github.ref == 'refs/heads/main'
-      if: always() && matrix.session == 'integration'
+      if: always() && matrix.session == 'integration' && github.event_name == 'push' && github.ref == 'refs/heads/main'
       id: badge
       uses: emibcn/badge-action@v2.0.2
       with:
@@ -263,6 +262,7 @@ jobs:
 
   badges:
     name: Update badges
+    if: always() && github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     needs: tests
     steps:
