@@ -100,6 +100,13 @@ jobs:
           session: "integration"
           image_tag: "6-apache"
           database: postgres
+          experimental: true
+
+        - python-version: "3.11"
+          os: "ubuntu-latest"
+          session: "integration"
+          image_tag: "6.2.1-230807-apache"
+          database: postgres
 
         - python-version: "3.11"
           os: "ubuntu-latest"
@@ -214,6 +221,7 @@ jobs:
         docker compose config
 
     - name: Run Nox
+      id: nox
       env:
         BACKEND: ${{ matrix.database }}
         LS_URL: http://localhost:${{ env.LS_PORT }}/index.php/admin/remotecontrol
@@ -227,6 +235,16 @@ jobs:
       with:
         name: coverage-data
         path: ".coverage.*"
+
+    - name: Update integration status badge
+      # if: always() && matrix.session == 'integration' && github.event_name == 'push' && github.ref == 'refs/heads/main'
+      if: always() && matrix.session == 'integration'
+      uses: emibcn/badge-action@v2.0.2
+      with:
+        label: LimeSurvey Integration (${{ matrix.image_tag || matrix.limesurvey_version }})
+        status: ${{ steps.nox.outcome }}
+        color: ${{ steps.nox.outcome == 'success' && 'green' || 'red' }}
+        path: .github/badges/integration-${{ matrix.image_tag || matrix.limesurvey_version }}.svg
 
   types:
     name: Type checking
