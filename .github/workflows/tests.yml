@@ -249,7 +249,7 @@ jobs:
       run: >
         echo '{
           "schemaVersion": 1,
-          "label": "LimeSurvey Integration (${{ matrix.image_tag || matrix.ref }}, ${{ matrix.database }})",
+          "label": "${{ matrix.image_tag || matrix.ref }}, ${{ matrix.database }}",
           "message": "${{ steps.nox.outcome }}",
           "color": "${{ steps.nox.outcome == 'success' && 'green' || 'red' }}"
         }' > badge-integration-${{ matrix.python-version }}-${{ matrix.image_tag || matrix.ref }}-${{ matrix.database }}.json
