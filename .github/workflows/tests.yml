@@ -252,7 +252,7 @@ jobs:
           "label": "LimeSurvey Integration (${{ matrix.image_tag || matrix.ref }}, ${{ matrix.database }})",
           "message": "${{ steps.nox.outcome }}",
           "color": "${{ steps.nox.outcome == 'success' && 'green' || 'red' }}"
-        }' > badge-integration-${{ matrix.image_tag || matrix.ref }}-${{ matrix.database }}.json
+        }' > badge-integration-${{ matrix.python-version }}-${{ matrix.image_tag || matrix.ref }}-${{ matrix.database }}.json
 
     - name: Deploy integration status badge
       uses: exuanbo/actions-deploy-gist@v1
@@ -260,7 +260,7 @@ jobs:
       with:
         token: ${{ secrets.GIST_TOKEN }}
         gist_id: 02f3c72747cc609788c75c3cd32b4e97
-        file_path: badge-integration-${{ matrix.image_tag || matrix.ref }}-${{ matrix.database }}.json
+        file_path: badge-integration-${{ matrix.python-version }}-${{ matrix.image_tag || matrix.ref }}-${{ matrix.database }}.json
 
   types:
     name: Type checking
