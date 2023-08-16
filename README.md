@@ -56,6 +56,17 @@ Python.
 - Easily [download survey files](https://citric.readthedocs.io/en/stable/how-to.html#get-files-uploaded-to-a-survey-and-move-them-to-s3) (e.g. images, audio, etc.) to a local directory.
 - Tested against LimeSurvey 6.0.0+ and 5.0.0+ LTS versions.
 
+### Integration tests
+
+| LimeSurvey version        | Status |
+| ------------------------- | ------ |
+| Latest 6 (PostgreSQL)     | ![Status of 6+ integration tests, postgres](https://img.shields.io/endpoint?url=https%3A%2F%2Fgist.githubusercontent.com%2Fedgarrmondragon%2F02f3c72747cc609788c75c3cd32b4e97%2Fraw%2Fbadge-integration-3.11-6-apache-postgres.json) |
+| Latest 6 (MySQL)          | ![Status of 6+ integration tests, mysql](https://img.shields.io/endpoint?url=https%3A%2F%2Fgist.githubusercontent.com%2Fedgarrmondragon%2F02f3c72747cc609788c75c3cd32b4e97%2Fraw%2Fbadge-integration-3.11-6-apache-mysql.json) |
+| 6.2.1+230807 (PostgreSQL) | ![Status of 6+ integration tests, postgres](https://img.shields.io/endpoint?url=https%3A%2F%2Fgist.githubusercontent.com%2Fedgarrmondragon%2F02f3c72747cc609788c75c3cd32b4e97%2Fraw%2Fbadge-integration-3.11-6.2.1-230807-apache-postgres.json) |
+| Latest 5 (PostgreSQL)     | ![Status of 5+ integration tests, postgres](https://img.shields.io/endpoint?url=https%3A%2F%2Fgist.githubusercontent.com%2Fedgarrmondragon%2F02f3c72747cc609788c75c3cd32b4e97%2Fraw%2Fbadge-integration-3.11-5-apache-postgres.json) |
+| `master` (PostgreSQL)     | ![Status of master branch integration tests, postgres](https://img.shields.io/endpoint?url=https%3A%2F%2Fgist.githubusercontent.com%2Fedgarrmondragon%2F02f3c72747cc609788c75c3cd32b4e97%2Fraw%2Fbadge-integration-3.11-master-postgres.json) |
+| `develop` (PostgreSQL)    | ![Status of develop branch integration tests, postgres](https://img.shields.io/endpoint?url=https%3A%2F%2Fgist.githubusercontent.com%2Fedgarrmondragon%2F02f3c72747cc609788c75c3cd32b4e97%2Fraw%2Fbadge-integration-3.11-develop-postgres.json) |
+
 ## Installation
 
 ```console
