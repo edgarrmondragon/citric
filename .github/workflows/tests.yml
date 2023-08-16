@@ -39,7 +39,7 @@ jobs:
     name: "\
       ${{ matrix.session }}
       ${{ matrix.python-version }}\
-      ${{ matrix.session == 'integration' && format(' / integration with {0}', matrix.image_tag || matrix.limesurvey_version) || '' }}\
+      ${{ matrix.session == 'integration' && format(' / integration with {0}', matrix.image_tag || matrix.ref) || '' }}\
       ${{ matrix.session == 'integration' && format(' / {0}', matrix.database) || '' }}
       / ${{ matrix.os }}"
     runs-on: ${{ matrix.os }}
@@ -93,24 +93,36 @@ jobs:
           os: "ubuntu-latest"
           session: "integration"
           image_tag: "5-apache"
+          limesurvey_version: "5-apache"
           database: postgres
 
         - python-version: "3.11"
           os: "ubuntu-latest"
           session: "integration"
           image_tag: "6-apache"
+          limesurvey_version: "6-apache"
           database: postgres
-
-        - python-version: "3.11"
-          os: "ubuntu-latest"
-          session: "integration"
-          image_tag: "6-apache"
           experimental: true
-          database: mysql
 
         - python-version: "3.11"
           os: "ubuntu-latest"
           session: "integration"
+          image_tag: "6.2.1-230807-apache"
+          limesurvey_version: "6-apache"
+          database: postgres
+
+        - python-version: "3.11"
+          os: "ubuntu-latest"
+          session: "integration"
+          image_tag: "6-apache"
+          limesurvey_version: "6-apache"
+          database: mysql
+          experimental: true
+
+        - python-version: "3.11"
+          os: "ubuntu-latest"
+          session: "integration"
+          ref: develop
           limesurvey_version: "develop"
           database: postgres
           experimental: true
@@ -118,6 +130,7 @@ jobs:
         - python-version: "3.11"
           os: "ubuntu-latest"
           session: "integration"
+          ref: master
           limesurvey_version: "master"
           database: postgres
           experimental: true
@@ -126,6 +139,7 @@ jobs:
           os: "ubuntu-latest"
           session: "integration"
           image_tag: "6-apache"
+          limesurvey_version: "6-apache"
           database: postgres
 
         - python-version: "3.11"
@@ -182,9 +196,9 @@ jobs:
         nox --version
 
     - name: Download LimeSurvey archive
-      if: ${{ matrix.session == 'integration' && matrix.limesurvey_version }}
+      if: ${{ matrix.session == 'integration' && matrix.ref }}
       run: |
-        wget https://github.com/LimeSurvey/LimeSurvey/archive/${{ matrix.limesurvey_version }}.tar.gz -O ls.tar.gz -nv
+        wget https://github.com/LimeSurvey/LimeSurvey/archive/${{ matrix.ref }}.tar.gz -O ls.tar.gz -nv
         echo "LS_CHECKSUM=$(sha256sum ls.tar.gz | cut -d' ' -f1)" >> $GITHUB_ENV
 
     - name: Set up Docker Buildx
@@ -203,10 +217,10 @@ jobs:
         LS_IMAGE_TAG: ${{ matrix.image_tag }}
         LS_DOCKERFILE_CONTEXT: https://github.com/martialblog/docker-limesurvey.git#master:5.0/apache
         LS_DOCKERFILE: Dockerfile
-        LS_VERSION: ${{ matrix.limesurvey_version }}
+        LS_VERSION: ${{ matrix.ref  }}
         COMPOSE_FILE: "\
           docker-compose.yml\
-          ${{ matrix.limesurvey_version && ':docker-compose.ref.yml' }}\
+          ${{ matrix.ref && ':docker-compose.ref.yml' }}\
           ${{ matrix.database == 'mysql' && ':docker-compose.mysql.yml' || '' }}"
       run: |
         docker compose up -d --wait --quiet-pull
@@ -214,10 +228,11 @@ jobs:
         docker compose config
 
     - name: Run Nox
+      id: nox
       env:
         BACKEND: ${{ matrix.database }}
         LS_URL: http://localhost:${{ env.LS_PORT }}/index.php/admin/remotecontrol
-        LS_VERSION: ${{ matrix.image_tag || matrix.limesurvey_version }}
+        LS_VERSION: ${{ matrix.limesurvey_version }}
       run: |
         nox
 
@@ -227,6 +242,43 @@ jobs:
       with:
         name: coverage-data
         path: ".coverage.*"
+
+    - name: Update integration status badge
+      if: always() && matrix.session == 'integration' && github.event_name == 'push' && github.ref == 'refs/heads/main'
+      id: badge
+      uses: emibcn/badge-action@v2.0.2
+      with:
+        label: LimeSurvey Integration (${{ matrix.image_tag || matrix.ref }}, ${{ matrix.database }})
+        status: ${{ steps.nox.outcome }}
+        color: ${{ steps.nox.outcome == 'success' && 'green' || 'red' }}
+        path: .github/badges/integration-${{ matrix.image_tag || matrix.ref }}-${{ matrix.database }}.svg
+
+    - name: Upload badges
+      if: always() && steps.badge.outcome == 'success'
+      uses: actions/upload-artifact@v3.1.2
+      with:
+        name: badges
+        path: .github/badges
+
+  badges:
+    name: Update badges
+    if: always() && github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    needs: tests
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v3.5.3
+
+      - name: Download badges
+        uses: actions/download-artifact@v3.0.2
+        with:
+          name: badges
+          path: .github/badges
+
+      - name: Commit and push changes
+        uses: EndBug/add-and-commit@v7
+        with:
+          add: ".github/badges"
 
   types:
     name: Type checking
