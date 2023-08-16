@@ -244,7 +244,7 @@ jobs:
         path: ".coverage.*"
 
     - name: Update integration status badge
-      if: always() && matrix.session == 'integration' && github.event_name == 'push' && github.ref == 'refs/heads/main'
+      if: always() && matrix.session == 'integration'
       id: badge
       run: >
         echo '{
