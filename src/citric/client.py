@@ -34,6 +34,13 @@ if t.TYPE_CHECKING:
     else:
         from typing_extensions import Self, Unpack
 
+__all__ = [
+    "QuestionReference",
+    "FileMetadata",
+    "UploadedFile",
+    "Client",
+]
+
 EMAILS_SENT_STATUS_PATTERN = re.compile(r"(-?\d+) left to send")
 
 

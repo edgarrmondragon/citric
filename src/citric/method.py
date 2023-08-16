@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import typing as t
 
+__all__ = ["Method"]
+
 T = t.TypeVar("T")
 
 
