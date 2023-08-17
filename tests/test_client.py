@@ -177,7 +177,7 @@ def assert_client_session_call(
     """Assert client makes RPC call with the right arguments.
 
     Args:
-        client: LSRPC2 API client.
+        client: LSRC2 API client.
         method: RPC method name.
         args: RPC method arguments.
         kwargs: Client keyword arguments.
