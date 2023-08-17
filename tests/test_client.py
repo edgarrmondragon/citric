@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import base64
 import datetime
-import random
 import sys
 import typing as t
 from pathlib import Path
@@ -15,6 +14,15 @@ from citric.client import Client
 from citric.enums import ImportGroupType, ImportSurveyType, NewSurveyType
 from citric.session import Session
 
+if sys.version_info >= (3, 9):
+    from random import randbytes
+else:
+    from random import getrandbits
+
+    def randbytes(n: int) -> bytes:  # noqa: D103
+        return getrandbits(n * 8).to_bytes(n, "little")
+
+
 if t.TYPE_CHECKING:
     from _pytest._py.path import LocalPath
     from faker import Faker
@@ -22,16 +30,6 @@ if t.TYPE_CHECKING:
     from citric import types
 
 NEW_SURVEY_NAME = "New Survey"
-
-
-def _get_random_bytes(n: int) -> bytes:
-    return random.getrandbits(n * 8).to_bytes(n, "little")
-
-
-if sys.version_info >= (3, 9):
-    randbytes = random.randbytes
-else:
-    randbytes = _get_random_bytes
 
 
 class MockSession(Session):
@@ -177,7 +175,7 @@ def assert_client_session_call(
     """Assert client makes RPC call with the right arguments.
 
     Args:
-        client: LSRPC2 API client.
+        client: LSRC2 API client.
         method: RPC method name.
         args: RPC method arguments.
         kwargs: Client keyword arguments.

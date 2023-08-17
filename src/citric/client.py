@@ -24,11 +24,6 @@ if t.TYPE_CHECKING:
     from citric import types
     from citric.objects import Participant
 
-    if sys.version_info >= (3, 8):
-        from typing import Literal  # noqa: ICN003
-    else:
-        from typing_extensions import Literal
-
     if sys.version_info >= (3, 11):
         from typing import Self, Unpack  # noqa: ICN003
     else:
@@ -834,7 +829,7 @@ class Client:
     def export_timeline(
         self,
         survey_id: int,
-        period: Literal["day", "hour"] | enums.TimelineAggregationPeriod,
+        period: t.Literal["day", "hour"] | enums.TimelineAggregationPeriod,
         start: datetime.datetime,
         end: datetime.datetime | None = None,
     ) -> dict[str, int]:

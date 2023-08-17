@@ -2,18 +2,13 @@
 
 from __future__ import annotations
 
-import sys
+from importlib import metadata
 
 from citric.client import Client
-
-if sys.version_info >= (3, 8):
-    from importlib import metadata
-else:
-    import importlib_metadata as metadata
 
 __version__ = metadata.version(__package__)
 """Package version"""
 
-del annotations, metadata, sys
+del annotations, metadata
 
 __all__ = ["Client"]

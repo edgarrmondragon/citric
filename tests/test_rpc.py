@@ -21,10 +21,10 @@ from citric.session import Session
 
 from .conftest import LimeSurveyMockAdapter
 
-if sys.version_info < (3, 11):
-    SET_PROPERTY_MESSAGE_REGEX = "can't set attribute"
-else:
+if sys.version_info >= (3, 11):
     SET_PROPERTY_MESSAGE_REGEX = "property .* of 'Session' object has no setter"
+else:
+    SET_PROPERTY_MESSAGE_REGEX = "can't set attribute"
 
 
 class RPCOffAdapter(LimeSurveyMockAdapter):
