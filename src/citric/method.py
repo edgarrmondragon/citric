@@ -17,7 +17,7 @@ class Method(t.Generic[T]):
         self.__caller = caller
         self.__name = name
 
-    def __getattr__(self, name: str) -> Method:
+    def __getattr__(self, name: str) -> Method[T]:
         """Get nested method.
 
         Args:

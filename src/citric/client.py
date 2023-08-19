@@ -153,7 +153,7 @@ class Client:
         """Low-level RPC session."""
         return self.__session
 
-    def get_fieldmap(self, survey_id: int) -> dict:
+    def get_fieldmap(self, survey_id: int) -> dict[str, t.Any]:
         """Get fieldmap for a survey.
 
         Calls :rpc_method:`get_fieldmap`.
@@ -704,7 +704,7 @@ class Client:
 
     def save_responses(  # noqa: PLR0913
         self,
-        filename: PathLike,
+        filename: PathLike[str],
         survey_id: int,
         *,
         token: str | None = None,
@@ -792,7 +792,7 @@ class Client:
 
     def save_statistics(
         self,
-        filename: PathLike,
+        filename: PathLike[str],
         survey_id: int,
         *,
         file_format: str = "pdf",
@@ -1143,8 +1143,8 @@ class Client:
         """
         files_data = self.get_uploaded_files(survey_id, token)
         for file in files_data:
-            metadata: dict = files_data[file]["meta"]
-            question: dict = metadata.pop("question")
+            metadata: dict[str, t.Any] = files_data[file]["meta"]
+            question: dict[str, t.Any] = metadata.pop("question")
             content = base64.b64decode(files_data[file]["content"])
 
             yield UploadedFile(
@@ -1583,7 +1583,7 @@ class Client:
         self,
         survey_id: int,
         field: str,
-        path: PathLike,
+        path: PathLike[str],
         *,
         filename: str | None = None,
     ) -> types.FileUploadResult:

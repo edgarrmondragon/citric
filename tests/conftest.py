@@ -204,7 +204,7 @@ class LimeSurveyMockAdapter(BaseAdapter):
 
         return self._handle_json_response(method, params, request_id)
 
-    def close(self):
+    def close(self) -> None:
         """Clean up adapter specific items."""
 
 
