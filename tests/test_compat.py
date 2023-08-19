@@ -8,7 +8,7 @@ from citric._compat import FutureVersionWarning, future
 
 
 @future("4.0.0")
-def my_function():
+def my_function() -> None:
     """A simple function."""
 
 

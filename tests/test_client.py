@@ -29,6 +29,8 @@ if t.TYPE_CHECKING:
 
     from citric import types
 
+NEW_GROUP_ID = 300
+NEW_QUESTION_ID = 400
 NEW_SURVEY_NAME = "New Survey"
 
 
@@ -56,9 +58,9 @@ class MockSession(Session):
         file_type: str = "lsq",
         new_name: str | None = None,
         new_description: str | None = None,
-    ) -> bytes:
+    ) -> int:
         """Mock result from importing a group file."""
-        return base64.b64decode(content.encode())
+        return NEW_GROUP_ID
 
     def import_question(
         self,
@@ -70,9 +72,9 @@ class MockSession(Session):
         new_title: str | None = None,
         new_text: str | None = None,
         new_help: str | None = None,
-    ) -> bytes:
+    ) -> int:
         """Mock result from importing a question file."""
-        return base64.b64decode(content.encode())
+        return NEW_QUESTION_ID
 
     def import_survey(
         self,
@@ -426,7 +428,7 @@ def test_import_group(client: MockClient, tmp_path: Path):
         f.write(random_bytes)
 
     with Path(filepath).open("rb") as f:
-        assert client.import_group(f, 100, ImportGroupType.LSG) == random_bytes
+        assert client.import_group(f, 100, ImportGroupType.LSG) == NEW_GROUP_ID
 
 
 def test_import_question(client: MockClient, tmp_path: Path):
@@ -439,7 +441,7 @@ def test_import_question(client: MockClient, tmp_path: Path):
         f.write(random_bytes)
 
     with Path(filepath).open("rb") as f:
-        assert client.import_question(f, 100, 1) == random_bytes
+        assert client.import_question(f, 100, 1) == NEW_QUESTION_ID
 
 
 def test_import_survey(client: MockClient, tmp_path: Path):

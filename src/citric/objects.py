@@ -28,7 +28,7 @@ class Participant:
     blacklisted: bool = False
     attributes: dict[str, t.Any] = field(default_factory=dict)
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, t.Any]:
         """Convert to dictionary.
 
         Returns:
