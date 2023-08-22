@@ -65,7 +65,6 @@ docs = [
   "sphinx",
   "sphinx-autoapi",
   "sphinx-autobuild",
-  "sphinx-autodoc-typehints",
   "sphinx-copybutton",
   "sphinx-hoverxref",
 ]
