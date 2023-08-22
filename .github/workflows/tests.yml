@@ -143,6 +143,7 @@ jobs:
           os: "ubuntu-latest"
           session: "integration"
           ref: 5.x
+          context: https://github.com/martialblog/docker-limesurvey.git#master:5.0/apache
           limesurvey_version: "5.x"
           database: postgres
 
@@ -150,6 +151,7 @@ jobs:
           os: "ubuntu-latest"
           session: "integration"
           ref: develop
+          context: https://github.com/martialblog/docker-limesurvey.git#master:6.0/apache
           limesurvey_version: "develop"
           database: postgres
           experimental: true
@@ -158,6 +160,7 @@ jobs:
           os: "ubuntu-latest"
           session: "integration"
           ref: master
+          context: https://github.com/martialblog/docker-limesurvey.git#master:6.0/apache
           limesurvey_version: "master"
           database: postgres
           experimental: true
@@ -231,7 +234,7 @@ jobs:
       if: ${{ matrix.session == 'integration' }}
       env:
         LS_IMAGE_TAG: ${{ matrix.image_tag }}
-        LS_DOCKERFILE_CONTEXT: https://github.com/martialblog/docker-limesurvey.git#master:5.0/apache
+        LS_DOCKERFILE_CONTEXT: ${{ matrix.context }}
         LS_DOCKERFILE: Dockerfile
         LS_VERSION: ${{ matrix.ref  }}
         COMPOSE_FILE: "\
