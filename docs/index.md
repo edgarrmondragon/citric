@@ -50,6 +50,7 @@ Python API reference <_api/index>
 :caption: Contributing
 :hidden:
 
+contributing/code-of-conduct
 contributing/getting-started
 contributing/environment
 contributing/testing
