@@ -146,6 +146,7 @@ jobs:
           context: https://github.com/martialblog/docker-limesurvey.git#master:5.0/apache
           limesurvey_version: "5.x"
           database: postgres
+          experimental: true
 
         - python-version: "3.11"
           os: "ubuntu-latest"
