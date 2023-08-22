@@ -1630,7 +1630,7 @@ class Client:
                 determined.
             RuntimeError: If an unexpected error occurs.
 
-        .. versionadded:: NEXT_VERSION
+        .. versionadded:: 1.0.0
         """
         email_flag = enums.EmailSendStrategy.to_flag(strategy)
         try:
