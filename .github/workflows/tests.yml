@@ -39,7 +39,7 @@ jobs:
     name: "\
       ${{ matrix.session }}
       ${{ matrix.python-version }}\
-      ${{ matrix.session == 'integration' && format(' / integration with {0}', matrix.image_tag || matrix.ref) || '' }}\
+      ${{ matrix.session == 'integration' && format(' / {0}', matrix.image_tag || matrix.ref) || '' }}\
       ${{ matrix.session == 'integration' && format(' / {0}', matrix.database) || '' }}
       / ${{ matrix.os }}"
     runs-on: ${{ matrix.os }}
@@ -66,6 +66,10 @@ jobs:
         os: ["ubuntu-latest"]
         session: ["tests"]
         include:
+        - python-version: "3.11"
+          os: "ubuntu-latest"
+          session: "xdoctest"
+
         - python-version: "3.12"
           os: "ubuntu-latest"
           session: "tests"
@@ -108,6 +112,15 @@ jobs:
           image_tag: "6.2.1-230807-apache"
           limesurvey_version: "6-apache"
           database: postgres
+          experimental: true
+
+        - python-version: "3.11"
+          os: "ubuntu-latest"
+          session: "integration"
+          image_tag: "6.2.2-230814-apache"
+          limesurvey_version: "6-apache"
+          database: postgres
+          experimental: true
 
         - python-version: "3.11"
           os: "ubuntu-latest"
@@ -116,6 +129,22 @@ jobs:
           limesurvey_version: "6-apache"
           database: mysql
           experimental: true
+
+        - python-version: "pypy3.9"
+          os: "ubuntu-latest"
+          session: "integration"
+          image_tag: "6-apache"
+          limesurvey_version: "6-apache"
+          database: postgres
+          experimental: true
+
+        # Test Limesurvey/LimeSurvey branches
+        - python-version: "3.11"
+          os: "ubuntu-latest"
+          session: "integration"
+          ref: 5.x
+          limesurvey_version: "5.x"
+          database: postgres
 
         - python-version: "3.11"
           os: "ubuntu-latest"
@@ -132,17 +161,6 @@ jobs:
           limesurvey_version: "master"
           database: postgres
           experimental: true
-
-        - python-version: "pypy3.9"
-          os: "ubuntu-latest"
-          session: "integration"
-          image_tag: "6-apache"
-          limesurvey_version: "6-apache"
-          database: postgres
-
-        - python-version: "3.11"
-          os: "ubuntu-latest"
-          session: "xdoctest"
 
     steps:
     - name: Check out the repository

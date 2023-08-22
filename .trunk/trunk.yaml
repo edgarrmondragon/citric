@@ -4,8 +4,8 @@ cli:
 merge:
   required_statuses:
     - Type checking (3.11)
-    - integration 3.11 / integration with 5-apache / postgres / ubuntu-latest
-    - integration 3.11 / integration with 6-apache / postgres / ubuntu-latest
+    - integration 3.11 / 5-apache / postgres / ubuntu-latest
+    - integration 3.11 / 6-apache / postgres / ubuntu-latest
     - tests 3.8 / ubuntu-latest
     - tests 3.9 / ubuntu-latest
     - tests 3.10 / ubuntu-latest
