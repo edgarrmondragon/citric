@@ -1,5 +1,0 @@
-kind: Changed
-body: Drop support for Python 3.7
-time: 2023-06-29T20:25:40.318839-06:00
-custom:
-  Issue: "617"
