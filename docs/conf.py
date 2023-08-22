@@ -48,6 +48,9 @@ html_extra_path = [
 html_theme = "furo"
 html_theme_options = {
     "navigation_with_keys": True,
+    "source_repository": "https://github.com/edgarrmondragon/citric/",
+    "source_branch": "main",
+    "source_directory": "docs/",
 }
 html_title = "Citric, a Python client for LimeSurvey"
 
