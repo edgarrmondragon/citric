@@ -72,7 +72,7 @@ hoverxref_role_types = {
     "hoverxref": "tooltip",
     "ref": "modal",
     "mod": "modal",
-    "class": "modal",
+    "class": "tooltip",
 }
 
 extlinks = {
