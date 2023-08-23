@@ -88,6 +88,12 @@ def participants(faker: Faker) -> list[dict[str, t.Any]]:
     ]
 
 
+@pytest.fixture
+def server_version(client: citric.Client) -> tuple[int, ...]:
+    """Get the server version."""
+    return tuple(int(part) for part in client.get_server_version().split("."))
+
+
 @pytest.mark.integration_test
 def test_fieldmap(client: citric.Client, survey_id: int):
     """Test fieldmap."""
@@ -242,11 +248,11 @@ def test_question(client: citric.Client, survey_id: int):
 
 
 @pytest.mark.integration_test
-@pytest.mark.version("6-apache")
-@pytest.mark.version("develop")
-@pytest.mark.version("master")
-def test_quota(client: citric.Client, survey_id: int):
+def test_quota(client: citric.Client, server_version: tuple[int, ...], survey_id: int):
     """Test quota methods."""
+    if server_version < (6, 0, 0):
+        pytest.skip("Quotas are not supported in this version")
+
     with pytest.raises(LimeSurveyStatusError, match="No quotas found"):
         client.list_quotas(survey_id)
 
