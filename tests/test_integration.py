@@ -10,6 +10,7 @@ from pathlib import Path
 from urllib.parse import quote
 
 import pytest
+import requests
 
 import citric
 from citric import enums
@@ -262,9 +263,12 @@ def test_quota(
     """Test quota methods."""
     if server_version < (6, 0, 0):
         request.node.add_marker(
-            pytest.xfail(
-                "Quota RPC methods are not supported in "
-                f"LimeSurvey {_join_version(server_version)}",
+            pytest.mark.xfail(
+                reason=(
+                    "Quota RPC methods are not supported in "
+                    f"LimeSurvey {_join_version(server_version)}"
+                ),
+                raises=requests.exceptions.HTTPError,
             ),
         )
 
@@ -568,9 +572,12 @@ def test_get_available_site_settings(
     """Test getting available site settings."""
     if server_version < (6, 0, 0):
         request.node.add_marker(
-            pytest.xfail(
-                "RPC method `get_available_site_settings` is not supported in "
-                f"LimeSurvey {_join_version(server_version)}",
+            pytest.mark.xfail(
+                reason=(
+                    "RPC method `get_available_site_settings` is not supported in "
+                    f"LimeSurvey {_join_version(server_version)}"
+                ),
+                raises=requests.exceptions.HTTPError,
             ),
         )
     assert client.get_available_site_settings()
