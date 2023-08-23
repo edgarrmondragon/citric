@@ -89,7 +89,7 @@ jobs:
     - name: Check version
       run: |
         version=$(poetry version | awk '{print $2}')
-        tag=$(echo "${{ github.ref || github.event.inputs.tag }}" | awk '{split($0,p,"/"); print p[3]}')
+        tag=$(echo "${{ github.event.inputs.tag || github.ref }}" | awk '{split($0,p,"/"); print p[3]}')
         if [ $version != $tag ]; then echo "Release tag and package version do not match!"; exit 1; fi;
 
     - name: Download artifacts
@@ -102,7 +102,7 @@ jobs:
       uses: svenstaro/upload-release-action@v2
       with:
         file: dist/*.whl
-        tag: ${{ github.ref || github.event.inputs.tag }}
+        tag: ${{ github.event.inputs.tag || github.ref }}
         overwrite: true
         file_glob: true
 
