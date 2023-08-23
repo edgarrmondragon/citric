@@ -1,0 +1,5 @@
+kind: Added
+body: Add `Client.get_server_version`
+time: 2023-08-23T12:13:34.216336-06:00
+custom:
+  Issue: "944"
