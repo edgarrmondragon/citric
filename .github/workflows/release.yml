@@ -3,7 +3,12 @@ name: Release
 on:
   release:
     types: [published]
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: 'Whether to publish to PyPI'
+        required: true
+        default: 'false'
 
 permissions:
   contents: write
@@ -53,7 +58,7 @@ jobs:
   publish:
     name: Publish to PyPI
     runs-on: ubuntu-latest
-    if: github.event_name == 'release'
+    if: github.event_name == 'release' || github.event.inputs.publish == 'true'
     needs: [build]
     steps:
     - name: Checkout code
@@ -88,6 +93,7 @@ jobs:
       uses: actions/download-artifact@v3.0.2
       with:
         name: dist
+        path: dist
 
     - name: Upload wheel to release
       uses: svenstaro/upload-release-action@v2
