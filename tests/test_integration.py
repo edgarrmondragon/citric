@@ -10,6 +10,7 @@ from pathlib import Path
 from urllib.parse import quote
 
 import pytest
+import requests
 
 import citric
 from citric import enums
@@ -20,6 +21,11 @@ if t.TYPE_CHECKING:
     from faker import Faker
 
 NEW_SURVEY_NAME = "New Survey"
+
+
+def _join_version(version: t.Sequence[int]) -> str:
+    """Join a version tuple into a string."""
+    return ".".join(str(part) for part in version)
 
 
 @pytest.fixture(scope="module")
@@ -86,6 +92,12 @@ def participants(faker: Faker) -> list[dict[str, t.Any]]:
             "attribute_2": "Night owl",
         },
     ]
+
+
+@pytest.fixture
+def server_version(client: citric.Client) -> tuple[int, ...]:
+    """Get the server version."""
+    return tuple(int(part) for part in client.get_server_version().split("."))
 
 
 @pytest.mark.integration_test
@@ -242,11 +254,24 @@ def test_question(client: citric.Client, survey_id: int):
 
 
 @pytest.mark.integration_test
-@pytest.mark.version("6-apache")
-@pytest.mark.version("develop")
-@pytest.mark.version("master")
-def test_quota(client: citric.Client, survey_id: int):
+def test_quota(
+    request: pytest.FixtureRequest,
+    client: citric.Client,
+    server_version: tuple[int, ...],
+    survey_id: int,
+):
     """Test quota methods."""
+    if server_version < (6, 0, 0):
+        request.node.add_marker(
+            pytest.mark.xfail(
+                reason=(
+                    "Quota RPC methods are not supported in "
+                    f"LimeSurvey {_join_version(server_version)}"
+                ),
+                raises=requests.exceptions.HTTPError,
+            ),
+        )
+
     with pytest.raises(LimeSurveyStatusError, match="No quotas found"):
         client.list_quotas(survey_id)
 
@@ -539,11 +564,22 @@ def test_file_upload_invalid_extension(
 
 
 @pytest.mark.integration_test
-@pytest.mark.version("6-apache")
-@pytest.mark.version("develop")
-@pytest.mark.version("master")
-def test_get_available_site_settings(client: citric.Client):
+def test_get_available_site_settings(
+    request: pytest.FixtureRequest,
+    client: citric.Client,
+    server_version: tuple[int, ...],
+):
     """Test getting available site settings."""
+    if server_version < (6, 0, 0):
+        request.node.add_marker(
+            pytest.mark.xfail(
+                reason=(
+                    "RPC method `get_available_site_settings` is not supported in "
+                    f"LimeSurvey {_join_version(server_version)}"
+                ),
+                raises=requests.exceptions.HTTPError,
+            ),
+        )
     assert client.get_available_site_settings()
 
 

@@ -81,13 +81,19 @@ $ pip install citric
 ```python
 from citric import Client
 
-with Client(
+# Connect to your LimeSurvey instance
+client =  Client(
     "https://mylimesite.limequery.com/admin/remotecontrol",
     "myusername",
     "mypassword",
-) as client:
-    for survey in client.list_surveys():
-        print(survey["surveyls_title"])
+)
+
+# Print the LimeSurvey version
+print(client.get_server_version())
+
+# Print the title of all surveys
+for survey in client.list_surveys():
+    print(survey["surveyls_title"])
 ```
 
 ## Documentation

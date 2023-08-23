@@ -1070,6 +1070,18 @@ class Client:
 
         return langs.split(" ") if langs else None
 
+    def get_server_version(self) -> str:
+        """Get the server version.
+
+        Calls :rpc_method:`get_site_settings("versionnumber") <get_site_settings>`.
+
+        Returns:
+            The LimeSurvey server version.
+
+        .. versionadded:: NEXT_VERSION
+        """
+        return self._get_site_setting("versionnumber")
+
     def get_summary(self, survey_id: int) -> dict[str, int]:
         """Get survey summary.
 
