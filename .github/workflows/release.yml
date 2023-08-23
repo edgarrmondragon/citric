@@ -48,10 +48,6 @@ jobs:
     - name: Build
       run: poetry build
 
-    # - uses: sigstore/gh-action-sigstore-python@v2.0.1
-    #   with:
-    #     inputs: dist/*
-
     - name: Upload artifacts
       uses: actions/upload-artifact@v3.1.2
       with:
@@ -98,6 +94,14 @@ jobs:
         name: dist
         path: dist
 
+    - name: Publish
+      uses: pypa/gh-action-pypi-publish@v1.8.8
+
+    # Move this up when PyPI supports signing
+    - uses: sigstore/gh-action-sigstore-python@v2.0.1
+      with:
+        inputs: dist/*
+
     - name: Upload wheel to release
       uses: svenstaro/upload-release-action@v2
       with:
@@ -105,6 +109,3 @@ jobs:
         tag: ${{ github.event.inputs.tag || github.ref }}
         overwrite: true
         file_glob: true
-
-    - name: Publish
-      uses: pypa/gh-action-pypi-publish@v1.8.8
