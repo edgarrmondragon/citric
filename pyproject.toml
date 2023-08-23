@@ -145,7 +145,6 @@ max-args = 10
 addopts = '-vvv'
 markers = [
   "integration_test: Integration and end-to-end tests",
-  "version(ref): Mark a test that depends on a specific version of LimeSurvey",
   "xfail_mysql: Mark a test as expected to fail on MySQL",
 ]
 
