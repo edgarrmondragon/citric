@@ -244,7 +244,7 @@ jobs:
         LS_IMAGE_TAG: ${{ matrix.image_tag }}
         LS_DOCKERFILE_CONTEXT: ${{ matrix.context }}
         LS_DOCKERFILE: Dockerfile
-        LS_VERSION: ${{ matrix.ref  }}
+        LS_VERSION: ${{ matrix.ref }}
         COMPOSE_FILE: "\
           docker-compose.yml\
           ${{ matrix.ref && ':docker-compose.ref.yml' }}\
@@ -259,7 +259,6 @@ jobs:
       env:
         BACKEND: ${{ matrix.database }}
         LS_URL: http://localhost:${{ env.LS_PORT }}/index.php/admin/remotecontrol
-        LS_VERSION: ${{ matrix.limesurvey_version }}
       run: |
         nox
 

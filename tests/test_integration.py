@@ -22,6 +22,11 @@ if t.TYPE_CHECKING:
 NEW_SURVEY_NAME = "New Survey"
 
 
+def _join_version(version: t.Sequence[int]) -> str:
+    """Join a version tuple into a string."""
+    return ".".join(str(part) for part in version)
+
+
 @pytest.fixture(scope="module")
 def client(
     integration_url: str,
@@ -251,7 +256,10 @@ def test_question(client: citric.Client, survey_id: int):
 def test_quota(client: citric.Client, server_version: tuple[int, ...], survey_id: int):
     """Test quota methods."""
     if server_version < (6, 0, 0):
-        pytest.skip("Quotas are not supported in this version")
+        pytest.skip(
+            "Quota RPC methods are not supported in "
+            f"LimeSurvey {_join_version(server_version)}",
+        )
 
     with pytest.raises(LimeSurveyStatusError, match="No quotas found"):
         client.list_quotas(survey_id)
@@ -545,11 +553,16 @@ def test_file_upload_invalid_extension(
 
 
 @pytest.mark.integration_test
-@pytest.mark.version("6-apache")
-@pytest.mark.version("develop")
-@pytest.mark.version("master")
-def test_get_available_site_settings(client: citric.Client):
+def test_get_available_site_settings(
+    client: citric.Client,
+    server_version: tuple[int, ...],
+):
     """Test getting available site settings."""
+    if server_version < (6, 0, 0):
+        pytest.skip(
+            "RPC method `get_available_site_settings` is not supported in "
+            f"LimeSurvey {_join_version(server_version)}",
+        )
     assert client.get_available_site_settings()
 
 

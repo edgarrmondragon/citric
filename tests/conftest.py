@@ -66,25 +66,6 @@ def pytest_addoption(parser: pytest.Parser):
         default=_from_env_var("LS_PASSWORD"),
     )
 
-    parser.addoption(
-        "--limesurvey-version",
-        action="store",
-        help="Tests that check unreleased features of this version should pass.",
-        default=_from_env_var("LS_VERSION"),
-    )
-
-
-def pytest_runtest_setup(item: pytest.Item):
-    """Run before each test."""
-    versions = [mark.args[0] for mark in item.iter_markers(name="version")]
-    if versions and item.config.getoption("--limesurvey-version") not in versions:
-        xfail_unreleased = pytest.mark.xfail(
-            reason=f"This test requires a version of LimeSurvey in '{versions}'",
-            raises=requests.exceptions.HTTPError,
-            strict=True,
-        )
-        item.add_marker(xfail_unreleased)
-
 
 def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item]):
     """Modify test collection."""
