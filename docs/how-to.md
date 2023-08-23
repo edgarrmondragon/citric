@@ -47,6 +47,8 @@ from citric import Client
 survey_id = 123456
 
 client = citric.Client(...)
+
+# Export responses to CSV and read into a Pandas DataFrame
 df = pd.read_csv(
     io.BytesIO(client.export_responses(survey_id, file_format="csv")),
     delimiter=";",
@@ -87,7 +89,7 @@ and reduce the load on your server in read-intensive applications, you can use
 import requests_cache
 
 cached_session = requests_cache.CachedSession(
-    expire_after=3600,
+    expire_after=60,
     allowable_methods=["POST"],
 )
 
@@ -99,7 +101,7 @@ client = Client(
 )
 
 # Get all surveys from user "iamadmin".
-# This will hit the cache as long as the session key is valid.
+# All responses will be cached for 1 minute.
 surveys = client.list_surveys("iamadmin")
 ```
 
@@ -136,6 +138,7 @@ client = Client(
 
 survey_id = 12345
 
+# Get all uploaded files and upload them to S3
 for file in client.get_uploaded_file_objects(survey_id):
     s3.upload_fileobj(
         file.content,
