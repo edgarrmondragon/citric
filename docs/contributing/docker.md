@@ -30,7 +30,6 @@ export BACKEND=postgres
 export LS_URL=http://localhost:8001/index.php/admin/remotecontrol
 export LS_USER=iamadmin
 export LS_PASSWORD=secret
-export LS_VERSION=6-apache
 ```
 
 Then you can run the tests with Nox:
