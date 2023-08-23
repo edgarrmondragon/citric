@@ -9,6 +9,9 @@ on:
         description: 'Whether to publish to PyPI'
         required: true
         default: 'false'
+      tag:
+        description: 'Tag to use for release'
+        required: false
 
 permissions:
   contents: write
@@ -86,7 +89,7 @@ jobs:
     - name: Check version
       run: |
         version=$(poetry version | awk '{print $2}')
-        tag=$(echo "${{ github.ref }}" | awk '{split($0,p,"/"); print p[3]}')
+        tag=$(echo "${{ github.ref || github.event.inputs.tag }}" | awk '{split($0,p,"/"); print p[3]}')
         if [ $version != $tag ]; then echo "Release tag and package version do not match!"; exit 1; fi;
 
     - name: Download artifacts
@@ -99,7 +102,7 @@ jobs:
       uses: svenstaro/upload-release-action@v2
       with:
         file: dist/*.whl
-        tag: ${{ github.ref }}
+        tag: ${{ github.ref || github.event.inputs.tag }}
         overwrite: true
         file_glob: true
 
