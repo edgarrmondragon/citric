@@ -54,7 +54,7 @@ Python.
 - Best effort to implement all the RPC methods in the [`Client` class](https://citric.readthedocs.io/en/stable/_api/citric/index.html#citric.Client). See the [API coverage page](https://citric.readthedocs.io/en/stable/rpc_coverage.html) for details.
 - Easily export survey data to CSV files, [Pandas DataFrames](https://citric.readthedocs.io/en/stable/how-to.html#export-responses-to-a-pandas-dataframe) and [DuckDB databases](https://citric.readthedocs.io/en/stable/how-to.html#export-responses-to-a-duckdb-database-and-analyze-with-sql).
 - Easily [download survey files](https://citric.readthedocs.io/en/stable/how-to.html#get-files-uploaded-to-a-survey-and-move-them-to-s3) (e.g. images, audio, etc.) to a local directory.
-- Tested against LimeSurvey 6.0.0+ and 5.0.0+ LTS versions.
+- Tested against LimeSurvey 6.0.0+ and 5.0.0+ versions.
 
 ### Integration tests
 
@@ -91,7 +91,7 @@ client =  Client(
 # Print the LimeSurvey version
 print(client.get_server_version())
 
-# Print the title of all surveys
+# Print every survey's title
 for survey in client.list_surveys():
     print(survey["surveyls_title"])
 ```
