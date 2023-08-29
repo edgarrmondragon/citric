@@ -1,3 +1,4 @@
+Found markers
 <div align="center">
 
 # Citric
@@ -58,9 +59,7 @@ Python.
 
 ### Integration tests
 
-<!-- [START AUTO UPDATE] -->
-<!-- Please keep comment here to allow auto-update -->
-
+<!-- start integration status -->
 | LimeSurvey version   | Database   | Status                                                                                                                                                                                                                                                      |
 |----------------------|------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | Latest 6             | PostgreSQL | ![Status of 6+ integration tests, postgres](https://img.shields.io/endpoint?url=https%3A%2F%2Fgist.githubusercontent.com%2Fedgarrmondragon%2F02f3c72747cc609788c75c3cd32b4e97%2Fraw%2Fbadge-integration-3.11-6-apache-postgres.json)                        |
@@ -75,8 +74,7 @@ Python.
 | `master` branch      | PostgreSQL | ![Status of master branch integration tests, postgres](https://img.shields.io/endpoint?url=https%3A%2F%2Fgist.githubusercontent.com%2Fedgarrmondragon%2F02f3c72747cc609788c75c3cd32b4e97%2Fraw%2Fbadge-integration-3.11-master-postgres.json)               |
 | `develop` branch     | PostgreSQL | ![Status of develop branch integration tests, postgres](https://img.shields.io/endpoint?url=https%3A%2F%2Fgist.githubusercontent.com%2Fedgarrmondragon%2F02f3c72747cc609788c75c3cd32b4e97%2Fraw%2Fbadge-integration-3.11-develop-postgres.json)             |
 | `5.x` branch         | PostgreSQL | ![Status of 5.x branch integration tests, postgres](https://img.shields.io/endpoint?url=https%3A%2F%2Fgist.githubusercontent.com%2Fedgarrmondragon%2F02f3c72747cc609788c75c3cd32b4e97%2Fraw%2Fbadge-integration-3.11-5.x-postgres.json)                     |
-
-<!-- [END AUTO UPDATE] -->
+<!-- end integration status -->
 
 ## Installation
 
