@@ -34,21 +34,15 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
 
+env:
+  FORCE_COLOR: "1"
+
 jobs:
   tests:
-    name: "\
-      ${{ matrix.session }}
-      ${{ matrix.python-version }}\
-      ${{ matrix.session == 'integration' && format(' / {0}', matrix.image_tag || matrix.ref) || '' }}\
-      ${{ matrix.session == 'integration' && format(' / {0}', matrix.database) || '' }}
-      / ${{ matrix.os }}"
+    name: "${{ matrix.session }} ${{ matrix.python-version }} / ${{ matrix.os }}"
     runs-on: ${{ matrix.os }}
     continue-on-error: ${{ matrix.experimental || false }}
     env:
-      FORCE_COLOR: "1"
-      LS_USER: "citric_ci"
-      LS_PASSWORD: "notverysecret"
-      LS_PORT: "8080"
       NOXSESSION: "${{ matrix.session }}"
       NOXFORCEPYTHON: "${{ matrix.python-version }}"
     strategy:
@@ -88,97 +82,6 @@ jobs:
         - python-version: "3.11"
           os: "macos-latest"
           session: "tests"
-
-        # Test on the LTS version of LimeSurvey
-        - python-version: "3.11"
-          os: "ubuntu-latest"
-          session: "integration"
-          image_tag: "5-apache"
-          limesurvey_version: "5-apache"
-          database: postgres
-          experimental: true
-
-        - python-version: "3.11"
-          os: "ubuntu-latest"
-          session: "integration"
-          image_tag: "5.6.34-230816-apache"
-          limesurvey_version: "5-apache"
-          database: postgres
-
-        - python-version: "3.11"
-          os: "ubuntu-latest"
-          session: "integration"
-          image_tag: "6-apache"
-          limesurvey_version: "6-apache"
-          database: postgres
-          experimental: true
-
-        - python-version: "3.11"
-          os: "ubuntu-latest"
-          session: "integration"
-          image_tag: "6.2.1-230807-apache"
-          limesurvey_version: "6-apache"
-          database: postgres
-
-        - python-version: "3.11"
-          os: "ubuntu-latest"
-          session: "integration"
-          image_tag: "6.2.2-230814-apache"
-          limesurvey_version: "6-apache"
-          database: postgres
-          experimental: true
-
-        - python-version: "3.11"
-          os: "ubuntu-latest"
-          session: "integration"
-          image_tag: "6.2.3-230821-apache"
-          limesurvey_version: "6-apache"
-          database: postgres
-          experimental: true
-
-        - python-version: "3.11"
-          os: "ubuntu-latest"
-          session: "integration"
-          image_tag: "6-apache"
-          limesurvey_version: "6-apache"
-          database: mysql
-          experimental: true
-
-        - python-version: "pypy3.9"
-          os: "ubuntu-latest"
-          session: "integration"
-          image_tag: "6-apache"
-          limesurvey_version: "6-apache"
-          database: postgres
-          experimental: true
-
-        # Test Limesurvey/LimeSurvey branches
-        - python-version: "3.11"
-          os: "ubuntu-latest"
-          session: "integration"
-          ref: 5.x
-          context: https://github.com/martialblog/docker-limesurvey.git#master:5.0/apache
-          limesurvey_version: "5.x"
-          database: postgres
-          experimental: true
-
-        - python-version: "3.11"
-          os: "ubuntu-latest"
-          session: "integration"
-          ref: develop
-          context: https://github.com/martialblog/docker-limesurvey.git#master:6.0/apache
-          limesurvey_version: "develop"
-          database: postgres
-          experimental: true
-
-        - python-version: "3.11"
-          os: "ubuntu-latest"
-          session: "integration"
-          ref: master
-          context: https://github.com/martialblog/docker-limesurvey.git#master:6.0/apache
-          limesurvey_version: "master"
-          database: postgres
-          experimental: true
 
     steps:
     - name: Check out the repository
@@ -229,24 +132,130 @@ jobs:
         pipx inject nox nox-poetry
         nox --version
 
+    - name: Run Nox
+      id: nox
+      run: |
+        nox
+
+    - name: Upload coverage data
+      if: always() && matrix.session == 'tests'
+      uses: actions/upload-artifact@v3.1.2
+      with:
+        name: coverage-data
+        path: ".coverage.*"
+
+  docker_tags:
+    runs-on: ubuntu-latest
+    outputs:
+      tags: ${{ steps.tags.outputs.tags }}
+    steps:
+    - name: Check out the repository
+      uses: actions/checkout@v3.5.3
+
+    - name: Output tags
+      id: tags
+      run: |
+        echo "tags=$(cat .limesurvey-docker-tags.json)" >> $GITHUB_OUTPUT
+
+  integration:
+    name: "integration ${{ matrix.python-version }} / ${{ matrix.image_tag || matrix.ref }} / ${{ matrix.database }}"
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    needs: docker_tags
+    env:
+      LS_USER: citric_ci
+      LS_PASSWORD: notverysecret
+      LS_PORT: "8080"
+      NOXSESSION: integration
+      NOXPYTHON: "${{ matrix.python-version }}"
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11"]
+        database: [postgres]
+        image_tag: ${{ fromJson(needs.docker_tags.outputs.tags) }}
+        include:
+        # Test on other Python versions and database engines
+        - python-version: "3.11"
+          image_tag: "6-apache"
+          database: mysql
+
+        - python-version: "pypy3.9"
+          image_tag: "6-apache"
+          database: postgres
+
+        # Test Limesurvey/LimeSurvey branches
+        - python-version: "3.11"
+          ref: 5.x
+          context: https://github.com/martialblog/docker-limesurvey.git#master:5.0/apache
+          database: postgres
+
+        - python-version: "3.11"
+          ref: develop
+          context: https://github.com/martialblog/docker-limesurvey.git#master:6.0/apache
+          database: postgres
+
+        - python-version: "3.11"
+          ref: master
+          context: https://github.com/martialblog/docker-limesurvey.git#master:6.0/apache
+          database: postgres
+
+    steps:
+    - name: Check out the repository
+      uses: actions/checkout@v3.5.3
+
+    - name: Setup Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4.7.0
+      with:
+        python-version: ${{ matrix.python-version }}
+        architecture: x64
+
+    - name: Upgrade pip
+      env:
+        PIP_CONSTRAINT: .github/workflows/constraints.txt
+      run: |
+        pip install pip
+        pip --version
+
+    - name: Upgrade pip in virtual environments
+      shell: python
+      run: |
+        import os
+        import pip
+
+        with open(os.environ["GITHUB_ENV"], mode="a") as io:
+            print(f"VIRTUALENV_PIP={pip.__version__}", file=io)
+
+    - name: Install Poetry
+      env:
+        PIP_CONSTRAINT: .github/workflows/constraints.txt
+      run: |
+        pipx install poetry --verbose
+        poetry --version
+
+    - name: Install Nox
+      env:
+        PIP_CONSTRAINT: .github/workflows/constraints.txt
+      run: |
+        pipx install nox
+        pipx inject nox nox-poetry
+        nox --version
+
     - name: Download LimeSurvey archive
-      if: ${{ matrix.session == 'integration' && matrix.ref }}
+      if: ${{ matrix.ref }}
       run: |
         wget https://github.com/LimeSurvey/LimeSurvey/archive/${{ matrix.ref }}.tar.gz -O ls.tar.gz -nv
         echo "LS_CHECKSUM=$(sha256sum ls.tar.gz | cut -d' ' -f1)" >> $GITHUB_ENV
 
     - name: Set up Docker Buildx
-      if: ${{ matrix.session == 'integration' }}
       uses: docker/setup-buildx-action@v2.9.1
 
     - name: Get Docker
-      if: ${{ matrix.session == 'integration' }}
       uses: actions-hub/docker/cli@v1.0.3
       env:
         SKIP_LOGIN: true
 
     - name: Start services
-      if: ${{ matrix.session == 'integration' }}
       env:
         LS_IMAGE_TAG: ${{ matrix.image_tag }}
         LS_DOCKERFILE_CONTEXT: ${{ matrix.context }}
@@ -262,7 +271,7 @@ jobs:
         docker compose config
 
     - name: Run Nox
-      id: nox
+      id: nox-integration
       env:
         BACKEND: ${{ matrix.database }}
         LS_URL: http://localhost:${{ env.LS_PORT }}/index.php/admin/remotecontrol
@@ -270,21 +279,19 @@ jobs:
         nox
 
     - name: Upload coverage data
-      if: always() && (matrix.session == 'tests' || matrix.session == 'integration')
       uses: actions/upload-artifact@v3.1.2
       with:
         name: coverage-data
         path: ".coverage.*"
 
     - name: Update integration status badge
-      if: always() && matrix.session == 'integration'
       id: badge
       run: >
         echo '{
           "schemaVersion": 1,
           "label": "${{ matrix.image_tag || matrix.ref }}, ${{ matrix.database }}",
-          "message": "${{ steps.nox.outcome }}",
-          "color": "${{ steps.nox.outcome == 'success' && 'green' || 'red' }}"
+          "message": "${{ steps.nox-integration.outcome }}",
+          "color": "${{ steps.nox-integration.outcome == 'success' && 'green' || 'red' }}"
         }' > badge-integration-${{ matrix.python-version }}-${{ matrix.image_tag || matrix.ref }}-${{ matrix.database }}.json
 
     - name: Deploy integration status badge
@@ -333,7 +340,7 @@ jobs:
   coverage:
     name: Coverage
     runs-on: ubuntu-latest
-    needs: tests
+    needs: [tests, integration]
     env:
       NOXSESSION: coverage
     steps:

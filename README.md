@@ -58,6 +58,9 @@ Python.
 
 ### Integration tests
 
+<!-- [START AUTO UPDATE] -->
+<!-- Please keep comment here to allow auto-update -->
+
 | LimeSurvey version | Database   | Status |
 | -------------------| ---------- | ------ |
 | Latest 6           | PostgreSQL | ![Status of 6+ integration tests, postgres](https://img.shields.io/endpoint?url=https%3A%2F%2Fgist.githubusercontent.com%2Fedgarrmondragon%2F02f3c72747cc609788c75c3cd32b4e97%2Fraw%2Fbadge-integration-3.11-6-apache-postgres.json) |
@@ -66,10 +69,14 @@ Python.
 | 6.2.2+230814       | PostgreSQL | ![Status of 6.2.2+230814 integration tests, postgres](https://img.shields.io/endpoint?url=https%3A%2F%2Fgist.githubusercontent.com%2Fedgarrmondragon%2F02f3c72747cc609788c75c3cd32b4e97%2Fraw%2Fbadge-integration-3.11-6.2.2-230814-apache-postgres.json) |
 | 6.2.3+230821       | PostgreSQL | ![Status of 6.2.3+230821 integration tests, postgres](https://img.shields.io/endpoint?url=https%3A%2F%2Fgist.githubusercontent.com%2Fedgarrmondragon%2F02f3c72747cc609788c75c3cd32b4e97%2Fraw%2Fbadge-integration-3.11-6.2.3-230821-apache-postgres.json) |
 | Latest 5           | PostgreSQL | ![Status of 5+ integration tests, postgres](https://img.shields.io/endpoint?url=https%3A%2F%2Fgist.githubusercontent.com%2Fedgarrmondragon%2F02f3c72747cc609788c75c3cd32b4e97%2Fraw%2Fbadge-integration-3.11-5-apache-postgres.json) |
-| 5.6.34+230816      | PostgreSQL | ![Status of 5.6.34-230816 integration tests, postgres](https://img.shields.io/endpoint?url=https%3A%2F%2Fgist.githubusercontent.com%2Fedgarrmondragon%2F02f3c72747cc609788c75c3cd32b4e97%2Fraw%2Fbadge-integration-3.11-5.6.34-230816-apache-postgres.json) |
+| 5.6.32+230731      | PostgreSQL | ![Status of 5.6.34+230816 integration tests, postgres](https://img.shields.io/endpoint?url=https%3A%2F%2Fgist.githubusercontent.com%2Fedgarrmondragon%2F02f3c72747cc609788c75c3cd32b4e97%2Fraw%2Fbadge-integration-3.11-5.6.32-230731-apache-postgres.json) |
+| 5.6.33+230808      | PostgreSQL | ![Status of 5.6.33+230808 integration tests, postgres](https://img.shields.io/endpoint?url=https%3A%2F%2Fgist.githubusercontent.com%2Fedgarrmondragon%2F02f3c72747cc609788c75c3cd32b4e97%2Fraw%2Fbadge-integration-3.11-5.6.33-230808-apache-postgres.json) |
+| 5.6.34+230816      | PostgreSQL | ![Status of 5.6.34+230816 integration tests, postgres](https://img.shields.io/endpoint?url=https%3A%2F%2Fgist.githubusercontent.com%2Fedgarrmondragon%2F02f3c72747cc609788c75c3cd32b4e97%2Fraw%2Fbadge-integration-3.11-5.6.34-230816-apache-postgres.json) |
 | `master` branch    | PostgreSQL | ![Status of master branch integration tests, postgres](https://img.shields.io/endpoint?url=https%3A%2F%2Fgist.githubusercontent.com%2Fedgarrmondragon%2F02f3c72747cc609788c75c3cd32b4e97%2Fraw%2Fbadge-integration-3.11-master-postgres.json) |
 | `develop` branch   | PostgreSQL | ![Status of develop branch integration tests, postgres](https://img.shields.io/endpoint?url=https%3A%2F%2Fgist.githubusercontent.com%2Fedgarrmondragon%2F02f3c72747cc609788c75c3cd32b4e97%2Fraw%2Fbadge-integration-3.11-develop-postgres.json) |
 | `5.x` branch       | PostgreSQL | ![Status of 5.x branch integration tests, postgres](https://img.shields.io/endpoint?url=https%3A%2F%2Fgist.githubusercontent.com%2Fedgarrmondragon%2F02f3c72747cc609788c75c3cd32b4e97%2Fraw%2Fbadge-integration-3.11-5.x-postgres.json) |
+
+<!-- [END AUTO UPDATE] -->
 
 ## Installation
 

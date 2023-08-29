@@ -123,6 +123,7 @@ def mypy(session: Session) -> None:
         "python-dotenv",
         "sphinx",
         "types-requests",
+        "types-tabulate",
         "typing-extensions",
     )
     session.run("mypy", *args)
@@ -181,3 +182,17 @@ def api_changes(session: Session) -> None:
         args.append(f"-a={session.posargs[0]}")
 
     session.run(*args, external=True)
+
+
+@session()
+def tags(session: Session) -> None:
+    """Print tags."""
+    session.install("requests", "requests-cache")
+    session.run("python", "scripts/docker_tags.py")
+
+
+@session(name="status")
+def integration_status(session: Session) -> None:
+    """Print tags."""
+    session.install("tabulate")
+    session.run("python", "scripts/integration_results.py")
