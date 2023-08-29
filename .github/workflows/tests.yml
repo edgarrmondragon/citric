@@ -12,6 +12,7 @@ on:
     - .github/workflows/tests.yml
     - .github/workflows/constraints.txt
     - trunk.yaml
+    - .limesurvey-docker-tags.json
   push:
     branches:
     - 'main'
@@ -25,6 +26,7 @@ on:
     - .github/workflows/tests.yml
     - .github/workflows/constraints.txt
     - trunk.yaml
+    - .limesurvey-docker-tags.json
   schedule:
   - cron: "44 */3 * * *"
   workflow_dispatch:

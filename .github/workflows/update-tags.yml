@@ -56,12 +56,19 @@ jobs:
         path: README.md
         content: ${{ steps.nox-status.outputs.table }}
 
+    - uses: tibdex/github-app-token@v1
+      id: generate-token
+      with:
+        app_id: ${{ secrets.APP_ID }}
+        private_key: ${{ secrets.APP_PRIVATE_KEY }}
+
     - name: Create Pull Request
       uses: peter-evans/create-pull-request@v5.0.2
       with:
-        title: "chore: Update LimeSurvey Docker tags"
-        branch: chore/update-limesurvey-docker-tags
-        commit-message: "chore: Update LimeSurvey Docker tags"
+        token: ${{ steps.generate-token.outputs.token }}
+        title: "test: Update LimeSurvey Docker tags"
+        branch: test/update-limesurvey-docker-tags
+        commit-message: "test: Update LimeSurvey Docker tags"
         body: "Update LimeSurvey tags from Docker Hub"
         reviewers: |
           edgarrmondragon
