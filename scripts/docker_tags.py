@@ -57,7 +57,7 @@ def filter_tags(tags: t.Iterable[dict]) -> t.Generator[str, None, None]:
 def main() -> None:
     """Print tags."""
     tags = filter_tags(sort_tags(get_tags()))
-    print(json.dumps(list(tags), indent=2, sort_keys=True))  # noqa: T201
+    print(json.dumps(list(tags)))  # noqa: T201
 
 
 if __name__ == "__main__":
