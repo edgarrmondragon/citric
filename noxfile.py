@@ -204,7 +204,7 @@ def integration_status(session: Session) -> None:
         "scripts/gen_integration_results_table.py",
         silent=True,
     )
-    Path("v").write_text(output)
+    Path("status.temp.md").write_text(output)
 
     session.notify("update-readme")
 

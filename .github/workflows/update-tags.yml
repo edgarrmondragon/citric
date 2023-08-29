@@ -8,9 +8,8 @@ on:
 
 jobs:
   update_tags:
+    name: Update tags file and README
     runs-on: ubuntu-latest
-    outputs:
-      tags: ${{ steps.nox-tags.outputs.tags }}
     steps:
     - name: Check out the repository
       uses: actions/checkout@v3.5.3
