@@ -131,6 +131,14 @@ jobs:
         - python-version: "3.11"
           os: "ubuntu-latest"
           session: "integration"
+          image_tag: "6.2.3-230821-apache"
+          limesurvey_version: "6-apache"
+          database: postgres
+          experimental: true
+
+        - python-version: "3.11"
+          os: "ubuntu-latest"
+          session: "integration"
           image_tag: "6-apache"
           limesurvey_version: "6-apache"
           database: mysql
