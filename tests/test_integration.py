@@ -11,6 +11,7 @@ from urllib.parse import quote
 
 import pytest
 import requests
+import semver
 
 import citric
 from citric import enums
@@ -95,9 +96,9 @@ def participants(faker: Faker) -> list[dict[str, t.Any]]:
 
 
 @pytest.fixture
-def server_version(client: citric.Client) -> tuple[int, ...]:
+def server_version(client: citric.Client) -> semver.Version:
     """Get the server version."""
-    return tuple(int(part) for part in client.get_server_version().split("."))
+    return semver.Version.parse(client.get_server_version())
 
 
 @pytest.mark.integration_test
@@ -257,7 +258,7 @@ def test_question(client: citric.Client, survey_id: int):
 def test_quota(
     request: pytest.FixtureRequest,
     client: citric.Client,
-    server_version: tuple[int, ...],
+    server_version: semver.Version,
     survey_id: int,
 ):
     """Test quota methods."""
@@ -567,7 +568,7 @@ def test_file_upload_invalid_extension(
 def test_get_available_site_settings(
     request: pytest.FixtureRequest,
     client: citric.Client,
-    server_version: tuple[int, ...],
+    server_version: semver.Version,
 ):
     """Test getting available site settings."""
     if server_version < (6, 0, 0):
