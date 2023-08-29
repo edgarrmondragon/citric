@@ -48,15 +48,18 @@ jobs:
       env:
         NOXSESSION: status
       run: |
-        echo "table=$(nox)" >> $GITHUB_OUTPUT
+        TABLE=$(nox)
+        echo "TABLE<<EOF" >> $GITHUB_ENV
+        echo "$TABLE" >> $GITHUB_ENV
+        echo "EOF" >> $GITHUB_ENV
 
-    - uses: wow-actions/update-file@v1
+    - uses: wow-actions/update-file@v1.2.0
       with:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         path: README.md
-        content: ${{ steps.nox-status.outputs.table }}
+        content: ${{ env.TABLE }}
 
-    - uses: tibdex/github-app-token@v1
+    - uses: tibdex/github-app-token@v1.8.0
       id: generate-token
       with:
         app_id: ${{ secrets.APP_ID }}
