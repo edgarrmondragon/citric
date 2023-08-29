@@ -11,6 +11,7 @@ from urllib.parse import quote
 
 import pytest
 import requests
+import semver
 
 import citric
 from citric import enums
@@ -21,11 +22,6 @@ if t.TYPE_CHECKING:
     from faker import Faker
 
 NEW_SURVEY_NAME = "New Survey"
-
-
-def _join_version(version: t.Sequence[int]) -> str:
-    """Join a version tuple into a string."""
-    return ".".join(str(part) for part in version)
 
 
 @pytest.fixture(scope="module")
@@ -95,9 +91,9 @@ def participants(faker: Faker) -> list[dict[str, t.Any]]:
 
 
 @pytest.fixture
-def server_version(client: citric.Client) -> tuple[int, ...]:
+def server_version(client: citric.Client) -> semver.Version:
     """Get the server version."""
-    return tuple(int(part) for part in client.get_server_version().split("."))
+    return semver.Version.parse(client.get_server_version())
 
 
 @pytest.mark.integration_test
@@ -257,7 +253,7 @@ def test_question(client: citric.Client, survey_id: int):
 def test_quota(
     request: pytest.FixtureRequest,
     client: citric.Client,
-    server_version: tuple[int, ...],
+    server_version: semver.Version,
     survey_id: int,
 ):
     """Test quota methods."""
@@ -265,8 +261,8 @@ def test_quota(
         request.node.add_marker(
             pytest.mark.xfail(
                 reason=(
-                    "Quota RPC methods are not supported in "
-                    f"LimeSurvey {_join_version(server_version)}"
+                    "Quota RPC methods are not supported in LimeSurvey "
+                    f"{server_version} < 6.0.0"
                 ),
                 raises=requests.exceptions.HTTPError,
             ),
@@ -567,7 +563,7 @@ def test_file_upload_invalid_extension(
 def test_get_available_site_settings(
     request: pytest.FixtureRequest,
     client: citric.Client,
-    server_version: tuple[int, ...],
+    server_version: semver.Version,
 ):
     """Test getting available site settings."""
     if server_version < (6, 0, 0):
@@ -575,7 +571,7 @@ def test_get_available_site_settings(
             pytest.mark.xfail(
                 reason=(
                     "RPC method `get_available_site_settings` is not supported in "
-                    f"LimeSurvey {_join_version(server_version)}"
+                    f"LimeSurvey {server_version} < 6.0.0"
                 ),
                 raises=requests.exceptions.HTTPError,
             ),

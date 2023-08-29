@@ -17,14 +17,14 @@ repos:
   - id: trailing-whitespace
 
 - repo: https://github.com/python-jsonschema/check-jsonschema
-  rev: 0.25.0
+  rev: 0.26.3
   hooks:
   - id: check-dependabot
   - id: check-github-workflows
   - id: check-readthedocs
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.0.285
+  rev: v0.0.286
   hooks:
   - id: ruff
     args: [--fix, --exit-non-zero-on-fix, --show-fixes]
@@ -56,6 +56,7 @@ repos:
     additional_dependencies:
     - types-docutils
     - types-requests
+    - types-tabulate
     - typing-extensions
     language_version: python3.11
 

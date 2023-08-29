@@ -1,3 +1,6 @@
+# Requests cache
+docker_tags.sqlite
+
 # LimeSurvey
 LimeSurvey/
 *.tar.gz
