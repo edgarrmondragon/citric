@@ -36,28 +36,12 @@ jobs:
         pipx inject nox nox-poetry
         nox --version
 
-    - name: Update tags
-      id: nox-tags
-      env:
-        NOXSESSION: tags
-      run: |
-        nox > .limesurvey-docker-tags.json
-
     - name: Generate Integration Status Table
       id: nox-status
       env:
-        NOXSESSION: status
+        NOXSESSION: generate-tags
       run: |
-        TABLE=$(nox)
-        echo "TABLE<<EOF" >> $GITHUB_ENV
-        echo "$TABLE" >> $GITHUB_ENV
-        echo "EOF" >> $GITHUB_ENV
-
-    - uses: wow-actions/update-file@v1.2.0
-      with:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        path: README.md
-        content: ${{ env.TABLE }}
+        nox
 
     - uses: tibdex/github-app-token@v1.8.0
       id: generate-token

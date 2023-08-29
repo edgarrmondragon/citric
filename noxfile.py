@@ -185,15 +185,33 @@ def api_changes(session: Session) -> None:
     session.run(*args, external=True)
 
 
-@session()
+@session(name="generate-tags", tags=["status"])
 def tags(session: Session) -> None:
     """Print tags."""
     session.install("requests", "requests-cache")
-    session.run("python", "scripts/docker_tags.py")
+    output = session.run("python", "scripts/docker_tags.py", silent=True)
+    Path(".limesurvey-docker-tags.json").write_text(output)
+
+    session.notify("generate-table")
 
 
-@session(name="status")
+@session(name="generate-table", tags=["status"])
 def integration_status(session: Session) -> None:
     """Print tags."""
     session.install("tabulate")
-    session.run("python", "scripts/integration_results.py")
+    output = session.run(
+        "python",
+        "scripts/gen_integration_results_table.py",
+        silent=True,
+    )
+    Path("v").write_text(output)
+
+    session.notify("update-readme")
+
+
+@session(name="update-readme", tags=["status"])
+def update_readme_table(session: Session) -> None:
+    """Print tags."""
+    session.install("tabulate")
+    output = session.run("python", "scripts/update_integration_status.py", silent=True)
+    Path("README.md").write_text(output)
