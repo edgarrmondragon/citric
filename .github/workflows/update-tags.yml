@@ -55,3 +55,16 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         path: README.md
         content: ${{ steps.nox-status.outputs.table }}
+
+    - name: Create Pull Request
+      uses: peter-evans/create-pull-request@v5.0.2
+      with:
+        title: "chore: Update LimeSurvey Docker tags"
+        branch: chore/update-limesurvey-docker-tags
+        commit-message: "chore: Update LimeSurvey Docker tags"
+        body: "Update LimeSurvey tags from Docker Hub"
+        reviewers: |
+          edgarrmondragon
+        assignees: |
+          edgarrmondragon
+        delete-branch: true

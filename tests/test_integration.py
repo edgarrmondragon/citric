@@ -24,11 +24,6 @@ if t.TYPE_CHECKING:
 NEW_SURVEY_NAME = "New Survey"
 
 
-def _join_version(version: t.Sequence[int]) -> str:
-    """Join a version tuple into a string."""
-    return ".".join(str(part) for part in version)
-
-
 @pytest.fixture(scope="module")
 def client(
     integration_url: str,
@@ -266,8 +261,8 @@ def test_quota(
         request.node.add_marker(
             pytest.mark.xfail(
                 reason=(
-                    "Quota RPC methods are not supported in "
-                    f"LimeSurvey {_join_version(server_version)}"
+                    "Quota RPC methods are not supported in LimeSurvey "
+                    f"{server_version} < 6.0.0"
                 ),
                 raises=requests.exceptions.HTTPError,
             ),
@@ -576,7 +571,7 @@ def test_get_available_site_settings(
             pytest.mark.xfail(
                 reason=(
                     "RPC method `get_available_site_settings` is not supported in "
-                    f"LimeSurvey {_join_version(server_version)}"
+                    f"LimeSurvey {server_version} < 6.0.0"
                 ),
                 raises=requests.exceptions.HTTPError,
             ),
