@@ -36,6 +36,9 @@ replacements:
 - path: src/citric/client.py
   find: "NEXT_VERSION"
   replace: "{{.VersionNoPrefix}}"
+- path: .github/ISSUE_TEMPLATE/BUG.yml
+  find: "^      placeholder: \".*\"$"
+  replace: "      placeholder: \"{{.VersionNoPrefix}}\""
 custom:
 - key: Issue
   type: int
