@@ -1279,8 +1279,7 @@ class Client:
            for exported files. If you get errors when importing a survey, try importing
            it manually in the LimeSurvey web interface. If it works, try exporting it
            from the web interface and importing the new file. If it still doesn't work,
-           please report an issue in
-           https://github.com/edgarrmondragon/citric/issues/new/choose.
+           you might need to import it with a different version of LimeSurvey.
 
         Args:
             file: File object.
