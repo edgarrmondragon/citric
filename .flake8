@@ -2,3 +2,6 @@
 select = DAR
 docstring-convention = google
 max-line-length = 88
+
+[darglint]
+strictness = short

@@ -20,6 +20,7 @@ on:
     paths:
     - src/**
     - tests/**
+    - docker-compose*.yml
     - noxfile.py
     - poetry.lock
     - pyproject.toml
@@ -267,9 +268,9 @@ jobs:
         LS_DOCKERFILE: Dockerfile
         LS_VERSION: ${{ matrix.ref }}
         COMPOSE_FILE: "\
-          docker-compose.yml\
-          ${{ matrix.ref && ':docker-compose.ref.yml' }}\
-          ${{ matrix.database == 'mysql' && ':docker-compose.mysql.yml' || '' }}"
+          docker/docker-compose.yml\
+          ${{ matrix.ref && ':docker/docker-compose.ref.yml' }}\
+          ${{ matrix.database == 'mysql' && ':docker/docker-compose.mysql.yml' || '' }}"
       run: |
         docker compose up -d --wait --quiet-pull
         docker compose ps -a

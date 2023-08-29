@@ -1,2 +1,1 @@
 tests/resources/* linguist-vendored
-*.Dockerfile linguist-vendored

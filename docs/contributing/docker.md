@@ -43,7 +43,7 @@ You can use the `--force-python` option to run the tests on a different
 Python version from the default one (`3.11`).
 ```
 
-### Run integraton tests on a specific LimeSurvey version
+### Run integration tests on a specific LimeSurvey version
 
 ```shell
 export LS_IMAGE_TAG='6.0.7+230515-apache'
@@ -53,7 +53,7 @@ docker-compose -d
 nox -rs integration
 ```
 
-### Run integraton tests against an unreleased LimeSurvey version
+### Run integration tests against an unreleased LimeSurvey version
 
 ```shell
 export DOCKER_BUILDKIT=0
