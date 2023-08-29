@@ -1,7 +1,5 @@
 [flake8]
 select = DAR
-docstring-convention = google
+docstring_style=google
 max-line-length = 88
-
-[darglint]
 strictness = short
