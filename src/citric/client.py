@@ -1275,11 +1275,11 @@ class Client:
         Calls :rpc_method:`import_survey`.
 
         .. warning::
-           Different versions of LimeSurvey seem to have slightly different schemas
-           for the exported files. If you get errors when importing a survey, try
-           importing it manually in the LimeSurvey web interface. If it works, try
-           exporting it from the web interface and importing the new file. If it still
-           doesn't work, please report an issue in
+           Different versions of LimeSurvey seem to expect slightly different structures
+           for exported files. If you get errors when importing a survey, try importing
+           it manually in the LimeSurvey web interface. If it works, try exporting it
+           from the web interface and importing the new file. If it still doesn't work,
+           please report an issue in
            https://github.com/edgarrmondragon/citric/issues/new/choose.
 
         Args:
