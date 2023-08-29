@@ -121,6 +121,7 @@ def mypy(session: Session) -> None:
         "mypy",
         "pytest",
         "python-dotenv",
+        "semver",
         "sphinx",
         "types-requests",
         "types-tabulate",
