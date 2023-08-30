@@ -50,7 +50,7 @@ def tests(session: Session) -> None:
     args = session.posargs or ["-m", "not integration_test"]
 
     try:
-        session.run("coverage", "run", "--parallel", "-m", "pytest", *args)
+        session.run("coverage", "run", "-m", "pytest", *args)
     finally:
         if session.interactive:
             session.notify("coverage", posargs=[])
@@ -69,7 +69,6 @@ def integration(session: Session) -> None:
     args = [
         "coverage",
         "run",
-        "--parallel",
         "-m",
         "pytest",
         "-m",
