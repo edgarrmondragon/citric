@@ -52,6 +52,7 @@ faker = ">=19"
 mypy = ">=1.5"
 pytest = ">=7.3.1"
 pytest-github-actions-annotate-failures = ">=0.1.7"
+pytest-xdist = {version=">=3.3.1", extras=["psutil"]}
 python-dotenv = ">=1"
 requests-cache = {version = "^1.1.0", python = ">=3.8,<4.0"}
 safety = ">=2.1.1"
@@ -146,7 +147,7 @@ convention = "google"
 max-args = 10
 
 [tool.pytest.ini_options]
-addopts = '-vvv'
+addopts = '-vvv -n auto'
 markers = [
   "integration_test: Integration and end-to-end tests",
   "xfail_mysql: Mark a test as expected to fail on MySQL",
