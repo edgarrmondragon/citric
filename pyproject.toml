@@ -146,7 +146,7 @@ convention = "google"
 max-args = 10
 
 [tool.pytest.ini_options]
-addopts = '-vvv'
+addopts = ["-vvv", "-W error"]
 markers = [
   "integration_test: Integration and end-to-end tests",
   "xfail_mysql: Mark a test as expected to fail on MySQL",
