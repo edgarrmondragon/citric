@@ -95,7 +95,7 @@ jobs:
         path: dist
 
     - name: Publish
-      uses: pypa/gh-action-pypi-publish@v1.8.8
+      uses: pypa/gh-action-pypi-publish@v1.8.10
 
     # Move this up when PyPI supports signing
     - uses: sigstore/gh-action-sigstore-python@v2.0.1
