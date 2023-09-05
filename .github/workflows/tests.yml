@@ -316,7 +316,7 @@ jobs:
       with:
         token: ${{ secrets.GIST_TOKEN }}
         gist_id: 02f3c72747cc609788c75c3cd32b4e97
-        file_path: badge-integration-${{ matrix.python-version }}-${{ matrix.image_tag || matrix.ref }}-${{ matrix.database }}.json
+        file_path: ${{ steps.badge-filename.outputs.filename }}
 
   types:
     name: Type checking
