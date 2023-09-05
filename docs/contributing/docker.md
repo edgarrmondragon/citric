@@ -57,7 +57,7 @@ nox -rs integration
 
 ```shell
 export DOCKER_BUILDKIT=0
-export LS_VERSION=f148781ec57fd1a02e5faa26a7465d78c9ab5dfe
+export LS_ARCHIVE_URL=https://github.com/LimeSurvey/LimeSurvey/archive/f148781ec57fd1a02e5faa26a7465d78c9ab5dfe.tar.gz
 export LS_CHECKSUM=64aec410738b55c51045ac15373e2bc376e67cd6e20938d759c4596837ef6154
 
 docker compose \
@@ -68,25 +68,23 @@ docker compose \
 nox -rs integration
 ```
 
-Where `LS_VERSION` is the commit SHA at the point of interest and `LS_CHECKSUM`
-is the SHA256 checksum of the `.tar.gz` archive of the project at that commit.
+Where `LS_ARCHIVE_URL` is the [GitHub source code archive URL](https://docs.github.com/en/repositories/working-with-files/using-files/downloading-source-code-archives#source-code-archive-urls), which can reference a tag, a branch, or a commit. `LS_CHECKSUM`
+is the SHA256 checksum of the `.tar.gz` archive of the project at that ref.
 
 ````{tip}
 You can obtain the checksum by running:
 
 ```shell
-wget https://github.com/LimeSurvey/LimeSurvey/archive/${LS_VERSION}.tar.gz
-sha256sum ${LS_VERSION}.tar.gz
+wget $LS_ARCHIVE_URL -O limesurvey.tar.gz
+shasum -a 256 limesurvey.tar.gz
 ```
 ````
 
-To test against such a version in CI, add the following to the job matrix:
+To test against such a version in CI, add the following to the test matrix in the `integration` job:
 
 ```yaml
 - python-version: "3.11"
-  os: "ubuntu-latest"
-  session: "integration"
-  limesurvey_version: "f148781ec57fd1a02e5faa26a7465d78c9ab5dfe"
+  ref: "f148781ec57fd1a02e5faa26a7465d78c9ab5dfe"
+  context: https://github.com/martialblog/docker-limesurvey.git#master:6.0/apache
   database: postgres
-  experimental: true
 ```

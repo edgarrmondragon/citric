@@ -192,17 +192,17 @@ jobs:
 
         # Test Limesurvey/LimeSurvey branches
         - python-version: "3.11"
-          ref: 5.x
+          ref: refs/heads/5.x
           context: https://github.com/martialblog/docker-limesurvey.git#master:5.0/apache
           database: postgres
 
         - python-version: "3.11"
-          ref: develop
+          ref: refs/heads/develop
           context: https://github.com/martialblog/docker-limesurvey.git#master:6.0/apache
           database: postgres
 
         - python-version: "3.11"
-          ref: master
+          ref: refs/heads/master
           context: https://github.com/martialblog/docker-limesurvey.git#master:6.0/apache
           database: postgres
 
@@ -251,7 +251,7 @@ jobs:
       if: ${{ matrix.ref }}
       run: |
         wget https://github.com/LimeSurvey/LimeSurvey/archive/${{ matrix.ref }}.tar.gz -O ls.tar.gz -nv
-        echo "LS_CHECKSUM=$(sha256sum ls.tar.gz | cut -d' ' -f1)" >> $GITHUB_ENV
+        echo "LS_CHECKSUM=$(shasum -a 256 ls.tar.gz | cut -d' ' -f1)" >> $GITHUB_ENV
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2.10.0
@@ -266,7 +266,7 @@ jobs:
         LS_IMAGE_TAG: ${{ matrix.image_tag }}
         LS_DOCKERFILE_CONTEXT: ${{ matrix.context }}
         LS_DOCKERFILE: Dockerfile
-        LS_VERSION: ${{ matrix.ref }}
+        LS_ARCHIVE_URL: "https://github.com/LimeSurvey/LimeSurvey/archive/${{ matrix.ref }}.tar.gz"
         COMPOSE_FILE: "\
           docker-compose.yml\
           ${{ matrix.ref && ':docker-compose.ref.yml' }}\
@@ -291,6 +291,14 @@ jobs:
         name: coverage-data
         path: ".coverage.*"
 
+    - name: Generate badge filename
+      if: always()
+      id: badge-filename
+      run: |
+        REF=${{ matrix.image_tag || matrix.ref }}
+        CLEAN_REF=${REF//\//-}
+        echo "filename=badge-integration-${{ matrix.python-version }}-${CLEAN_REF}-${{ matrix.database }}.json" >> $GITHUB_OUTPUT
+
     - name: Update integration status badge
       if: always()
       id: badge
@@ -300,7 +308,7 @@ jobs:
           "label": "${{ matrix.image_tag || matrix.ref }}, ${{ matrix.database }}",
           "message": "${{ steps.nox-integration.outcome }}",
           "color": "${{ steps.nox-integration.outcome == 'success' && 'green' || 'red' }}"
-        }' > badge-integration-${{ matrix.python-version }}-${{ matrix.image_tag || matrix.ref }}-${{ matrix.database }}.json
+        }' > ${{ steps.badge-filename.outputs.filename }}
 
     - name: Deploy integration status badge
       uses: exuanbo/actions-deploy-gist@v1
@@ -308,7 +316,7 @@ jobs:
       with:
         token: ${{ secrets.GIST_TOKEN }}
         gist_id: 02f3c72747cc609788c75c3cd32b4e97
-        file_path: badge-integration-${{ matrix.python-version }}-${{ matrix.image_tag || matrix.ref }}-${{ matrix.database }}.json
+        file_path: ${{ steps.badge-filename.outputs.filename }}
 
   types:
     name: Type checking

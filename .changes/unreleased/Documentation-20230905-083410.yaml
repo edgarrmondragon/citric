@@ -1,0 +1,5 @@
+kind: Documentation
+body: Fix GitHub archive URLs in integration test docs
+time: 2023-09-05T08:34:10.769144-06:00
+custom:
+  Issue: "964"

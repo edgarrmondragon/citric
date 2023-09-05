@@ -79,17 +79,17 @@ def main() -> None:
         (
             "`master` branch",
             "PostgreSQL",
-            image("master branch", "postgres", "3.11", "master"),
+            image("master branch", "postgres", "3.11", "refs-heads-master"),
         ),
         (
             "`develop` branch",
             "PostgreSQL",
-            image("develop branch", "postgres", "3.11", "develop"),
+            image("develop branch", "postgres", "3.11", "refs-heads-develop"),
         ),
         (
             "`5.x` branch",
             "PostgreSQL",
-            image("5.x branch", "postgres", "3.11", "5.x"),
+            image("5.x branch", "postgres", "3.11", "refs-heads-5.x"),
         ),
     ]
 
