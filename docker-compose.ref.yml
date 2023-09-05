@@ -5,5 +5,5 @@ services:
       context: ${LS_DOCKERFILE_CONTEXT:-https://github.com/martialblog/docker-limesurvey.git#master:6.0/apache}
       dockerfile: ${LS_DOCKERFILE:-Dockerfile}
       args:
-        version: ${LS_VERSION}
+        archive_url: ${LS_ARCHIVE_URL}
         sha256_checksum: ${LS_CHECKSUM}
