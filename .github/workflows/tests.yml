@@ -192,7 +192,7 @@ jobs:
           image_tag: "6-apache"
           database: postgres
 
-        # Test Limesurvey/LimeSurvey branches
+        # Test Limesurvey/LimeSurvey branches and tags
         - python-version: "3.11"
           ref: refs/heads/5.x
           context: https://github.com/martialblog/docker-limesurvey.git#master:5.0/apache
@@ -206,6 +206,16 @@ jobs:
         - python-version: "3.11"
           ref: refs/heads/master
           context: https://github.com/martialblog/docker-limesurvey.git#master:6.0/apache
+          database: postgres
+
+        - python-version: "3.11"
+          ref: refs/tags/6.2.5+230828
+          context: https://github.com/martialblog/docker-limesurvey.git#master:6.0/apache
+          database: postgres
+
+        - python-version: "3.11"
+          ref: refs/tags/5.6.36+230830
+          context: https://github.com/martialblog/docker-limesurvey.git#master:5.0/apache
           database: postgres
 
     steps:
