@@ -401,7 +401,7 @@ jobs:
       with:
         name: coverage-${{ matrix.flag }}
 
-    - name: Combine coverage data and display human readable report 
+    - name: Combine coverage data and display human readable report
       run: |
         nox
 
