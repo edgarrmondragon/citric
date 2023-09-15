@@ -46,6 +46,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     continue-on-error: ${{ matrix.experimental || false }}
     env:
+      COVERAGE_FILE: ".coverage.unit"
       NOXSESSION: "${{ matrix.session }}"
       NOXFORCEPYTHON: "${{ matrix.python-version }}"
     strategy:
@@ -144,7 +145,7 @@ jobs:
       if: always() && matrix.session == 'tests'
       uses: actions/upload-artifact@v3.1.2
       with:
-        name: coverage-data
+        name: coverage-unit
         path: ".coverage.*"
 
   docker_tags:
@@ -167,6 +168,7 @@ jobs:
     continue-on-error: true
     needs: docker_tags
     env:
+      COVERAGE_FILE: ".coverage.integration"
       LS_USER: citric_ci
       LS_PASSWORD: notverysecret
       LS_PORT: "8080"
@@ -288,7 +290,7 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v3.1.2
       with:
-        name: coverage-data
+        name: coverage-integration
         path: ".coverage.*"
 
     - name: Generate badge filename
@@ -359,6 +361,10 @@ jobs:
     needs: [tests, integration]
     env:
       NOXSESSION: coverage
+    strategy:
+      matrix:
+        flag: ["unit", "integration"]
+      fail-fast: false
     steps:
     - name: Check out the repository
       uses: actions/checkout@v3.6.0
@@ -393,9 +399,10 @@ jobs:
     - name: Download coverage data
       uses: actions/download-artifact@v3.0.2
       with:
-        name: coverage-data
+        name: coverage-${{ matrix.flag }}
 
     - name: Combine coverage data and display human readable report
+      continue-on-error: true
       run: |
         nox
 
@@ -404,7 +411,9 @@ jobs:
         nox -- xml
 
     - name: Upload coverage report
-      uses: codecov/codecov-action@v3.1.4
+      uses: codecov/codecov-action@v4.0.0-beta.2
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
+        files: ./coverage.xml
         fail_ci_if_error: true
+        flags: ${{ matrix.flag }}
