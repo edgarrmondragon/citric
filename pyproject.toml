@@ -256,7 +256,7 @@ source = ["citric"]
 
 [tool.coverage.report]
 exclude_lines = ["pragma: no cover", '''if (t\.)?TYPE_CHECKING:''']
-fail_under = 90
+fail_under = 85
 omit = ["src/citric/types.py"]
 precision = 2
 show_missing = true

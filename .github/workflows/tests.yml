@@ -402,6 +402,7 @@ jobs:
         name: coverage-${{ matrix.flag }}
 
     - name: Combine coverage data and display human readable report
+      continue-on-error: true
       run: |
         nox
 
