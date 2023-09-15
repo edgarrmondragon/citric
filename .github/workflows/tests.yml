@@ -404,7 +404,7 @@ jobs:
         nox -- xml
 
     - name: Upload coverage report
-      uses: codecov/codecov-action@v3.1.4
+      uses: codecov/codecov-action@v4.0.0-beta.2
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         fail_ci_if_error: true
