@@ -180,6 +180,9 @@ select = [
 ]
 src = ["src", "tests", "docs"]
 target-version = "py38"
+unfixable = [
+  "ERA"  # Don't remove commented out code
+]
 
 [tool.ruff.per-file-ignores]
 "docs/notebooks/*" = [

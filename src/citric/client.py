@@ -91,7 +91,7 @@ class UploadedFile:
     """
 
 
-class Client:
+class Client:  # noqa: PLR0904
     """LimeSurvey Remote Control client.
 
     Offers explicit wrappers for RPC methods and simplifies common workflows.
