@@ -257,16 +257,16 @@ def test_quota(
     survey_id: int,
 ):
     """Test quota methods."""
-    if server_version < (6, 0, 0):
-        request.node.add_marker(
-            pytest.mark.xfail(
-                reason=(
-                    "Quota RPC methods are not supported in LimeSurvey "
-                    f"{server_version} < 6.0.0"
-                ),
-                raises=requests.exceptions.HTTPError,
+    request.node.add_marker(
+        pytest.mark.xfail(
+            server_version < (6, 0, 0),
+            reason=(
+                "Quota RPC methods are not supported in LimeSurvey "
+                f"{server_version} < 6.0.0"
             ),
-        )
+            raises=requests.exceptions.HTTPError,
+        ),
+    )
 
     with pytest.raises(LimeSurveyStatusError, match="No quotas found"):
         client.list_quotas(survey_id)
@@ -566,16 +566,16 @@ def test_get_available_site_settings(
     server_version: semver.Version,
 ):
     """Test getting available site settings."""
-    if server_version < (6, 0, 0):
-        request.node.add_marker(
-            pytest.mark.xfail(
-                reason=(
-                    "RPC method `get_available_site_settings` is not supported in "
-                    f"LimeSurvey {server_version} < 6.0.0"
-                ),
-                raises=requests.exceptions.HTTPError,
+    request.node.add_marker(
+        pytest.mark.xfail(
+            server_version < (6, 0, 0),
+            reason=(
+                "RPC method `get_available_site_settings` is not supported in "
+                f"LimeSurvey {server_version} < 6.0.0"
             ),
-        )
+            raises=requests.exceptions.HTTPError,
+        ),
+    )
     assert client.get_available_site_settings()
 
 
