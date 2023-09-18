@@ -19,6 +19,9 @@ updates:
     commit-message:
       prefix: "chore(deps): "
       prefix-development: "chore(deps-dev): "
+    groups:
+      development-dependencies:
+        - dependency-type: "development"
   - package-ecosystem: pip
     directory: "/.github/workflows"
     schedule:
@@ -30,6 +33,11 @@ updates:
       - "dependencies"
     commit-message:
       prefix: "ci: "
+    groups:
+      ci-dependencies:
+        update-types:
+          - "patch"
+          - "minor"
   - package-ecosystem: github-actions
     directory: "/"
     schedule:
@@ -46,3 +54,8 @@ updates:
       - "edgarrmondragon"
     commit-message:
       prefix: "ci: "
+    groups:
+      ci-dependencies:
+        update-types:
+          - "patch"
+          - "minor"
