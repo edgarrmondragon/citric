@@ -21,7 +21,7 @@ updates:
       prefix-development: "chore(deps-dev): "
     groups:
       development-dependencies:
-        - dependency-type: "development"
+        dependency-type: "development"
   - package-ecosystem: pip
     directory: "/.github/workflows"
     schedule:
