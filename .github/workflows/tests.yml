@@ -256,7 +256,7 @@ jobs:
         echo "LS_CHECKSUM=$(shasum -a 256 ls.tar.gz | cut -d' ' -f1)" >> $GITHUB_ENV
 
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2.10.0
+      uses: docker/setup-buildx-action@v3.0.0
 
     - name: Get Docker
       uses: actions-hub/docker/cli@v1.0.3
