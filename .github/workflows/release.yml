@@ -24,7 +24,7 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3.6.0
+      uses: actions/checkout@v4.0.0
 
     - name: Set up Python
       uses: actions/setup-python@v4.7.0
@@ -61,7 +61,7 @@ jobs:
     needs: [build]
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3.6.0
+      uses: actions/checkout@v4.0.0
 
     - name: Set up Python
       uses: actions/setup-python@v4.7.0

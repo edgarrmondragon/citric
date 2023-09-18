@@ -89,7 +89,7 @@ jobs:
 
     steps:
     - name: Check out the repository
-      uses: actions/checkout@v3.6.0
+      uses: actions/checkout@v4.0.0
 
     - name: Setup Python ${{ matrix.python-version }}
       if: "${{ !matrix.nightly }}"
@@ -155,7 +155,7 @@ jobs:
       tags: ${{ steps.tags.outputs.tags }}
     steps:
     - name: Check out the repository
-      uses: actions/checkout@v3.6.0
+      uses: actions/checkout@v4.0.0
 
     - name: Output tags
       id: tags
@@ -210,7 +210,7 @@ jobs:
 
     steps:
     - name: Check out the repository
-      uses: actions/checkout@v3.6.0
+      uses: actions/checkout@v4.0.0
 
     - name: Setup Python ${{ matrix.python-version }}
       uses: actions/setup-python@v4.7.0
@@ -332,7 +332,7 @@ jobs:
         python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
     steps:
     - name: Check out the repository
-      uses: actions/checkout@v3.6.0
+      uses: actions/checkout@v4.0.0
 
     - name: Setup Python ${{ matrix.python-version }}
       uses: actions/setup-python@v4.7.0
@@ -367,7 +367,7 @@ jobs:
       fail-fast: false
     steps:
     - name: Check out the repository
-      uses: actions/checkout@v3.6.0
+      uses: actions/checkout@v4.0.0
 
     - name: Set up Python
       uses: actions/setup-python@v4.7.0
