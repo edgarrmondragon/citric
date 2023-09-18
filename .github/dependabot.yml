@@ -46,6 +46,11 @@ updates:
       - "edgarrmondragon"
     commit-message:
       prefix: "ci: "
+    groups:
+      ci-dependencies:
+        update-types:
+          - "patch"
+          - "minor"
   - package-ecosystem: docker
     directory: "/"
     schedule:
