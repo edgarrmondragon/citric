@@ -24,23 +24,6 @@ if t.TYPE_CHECKING:
 NEW_SURVEY_NAME = "New Survey"
 
 
-def _xfail_due_to_version(
-    request: pytest.FixtureRequest,
-    server_version: semver.Version,
-    check_version: tuple[int, ...],
-    reason: str,
-    **kwargs: t.Any,
-) -> None:
-    if server_version < check_version:
-        request.node.add_marker(
-            pytest.mark.xfail(
-                reason=reason,
-                raises=requests.exceptions.HTTPError,
-                **kwargs,
-            ),
-        )
-
-
 @pytest.fixture(scope="module")
 def client(
     integration_url: str,
@@ -274,12 +257,16 @@ def test_quota(
     survey_id: int,
 ):
     """Test quota methods."""
-    _xfail_due_to_version(
-        request,
-        server_version,
-        (6, 0, 0),
-        f"Quota RPC methods are not supported in LimeSurvey {server_version} < 6.0.0",
-    )
+    if server_version < (6, 0, 0):
+        request.node.add_marker(
+            pytest.mark.xfail(
+                reason=(
+                    "Quota RPC methods are not supported in LimeSurvey "
+                    f"{server_version} < 6.0.0"
+                ),
+                raises=requests.exceptions.HTTPError,
+            ),
+        )
 
     with pytest.raises(LimeSurveyStatusError, match="No quotas found"):
         client.list_quotas(survey_id)
@@ -579,15 +566,16 @@ def test_get_available_site_settings(
     server_version: semver.Version,
 ):
     """Test getting available site settings."""
-    _xfail_due_to_version(
-        request,
-        server_version,
-        (6, 0, 0),
-        (
-            "RPC method `get_available_site_settings` is not supported in LimeSurvey "
-            f"{server_version} < 6.0.0"
-        ),
-    )
+    if server_version < (6, 0, 0):
+        request.node.add_marker(
+            pytest.mark.xfail(
+                reason=(
+                    "RPC method `get_available_site_settings` is not supported in "
+                    f"LimeSurvey {server_version} < 6.0.0"
+                ),
+                raises=requests.exceptions.HTTPError,
+            ),
+        )
     assert client.get_available_site_settings()
 
 
