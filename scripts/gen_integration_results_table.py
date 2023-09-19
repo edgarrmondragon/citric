@@ -11,8 +11,8 @@ from tabulate import tabulate
 FILENAME = ".limesurvey-docker-tags.json"
 ALT_TEMPLATE = "Status of {git_tag} integration tests, {database}"
 GIST_TEMPLATE = (
-    "https://img.shields.io/endpoint?url=https%3A%2F%2Fgist.githubusercontent.com"
-    "%2Fedgarrmondragon%2F02f3c72747cc609788c75c3cd32b4e97%2Fraw%2F"
+    "https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com"
+    "%2Fedgarrmondragon%2Fcitric%2Fci%2Fbadges-in-repo%2Fassets%2Fbadge%2F"
     "badge-integration-{python}-{docker_tag}-{database}.json"
 )
 
