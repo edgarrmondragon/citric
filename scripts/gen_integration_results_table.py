@@ -31,7 +31,7 @@ def image(
     """Return image."""
     alt = ALT_TEMPLATE.format(git_tag=git_tag, database=database)
     url = GIST_TEMPLATE.format(
-        branch=quote(branch),
+        branch=quote(branch, safe=""),
         python=python,
         docker_tag=docker_tag,
         database=database,
