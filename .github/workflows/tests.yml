@@ -312,13 +312,31 @@ jobs:
           "color": "${{ steps.nox-integration.outcome == 'success' && 'green' || 'red' }}"
         }' > ${{ steps.badge-filename.outputs.filename }}
 
-    - name: Deploy integration status badge
-      uses: exuanbo/actions-deploy-gist@v1
-      if: always() && steps.badge.outcome == 'success'
+    - name: Upload integration status badge
+      if: always()
+      uses: actions/upload-artifact@v3.1.2
       with:
-        token: ${{ secrets.GIST_TOKEN }}
-        gist_id: 02f3c72747cc609788c75c3cd32b4e97
-        file_path: ${{ steps.badge-filename.outputs.filename }}
+        name: badges
+        path: ${{ steps.badge-filename.outputs.filename }}
+
+  badges:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    needs: integration
+    if: always() && github.event_name == 'pull_request' || contains(github.event.pull_request.labels.*.name, 'Update badges')
+    steps:
+    - name: Check out the repository
+      uses: actions/checkout@v3.6.0
+
+    - name: Download integration status badges
+      uses: actions/download-artifact@v3.0.2
+      with:
+        name: badges
+        path: assets/badge
+
+    - uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        file_pattern: assets/badges/*.json
 
   types:
     name: Type checking
