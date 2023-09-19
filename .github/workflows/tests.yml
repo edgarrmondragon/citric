@@ -323,7 +323,7 @@ jobs:
     runs-on: ubuntu-latest
     continue-on-error: true
     needs: integration
-    if: always() && github.event_name == 'pull_request' || contains(github.event.pull_request.labels.*.name, 'Update badges')
+    if: always() && github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'Update badges')
     steps:
     - name: Check out the repository
       uses: actions/checkout@v3.6.0
@@ -336,7 +336,7 @@ jobs:
 
     - uses: stefanzweifel/git-auto-commit-action@v4
       with:
-        file_pattern: assets/badges/*.json
+        file_pattern: assets/badge/*.json
 
   types:
     name: Type checking
