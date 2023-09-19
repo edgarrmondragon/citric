@@ -299,7 +299,7 @@ jobs:
       run: |
         REF=${{ matrix.image_tag || matrix.ref }}
         CLEAN_REF=${REF//\//-}
-        echo "filename=badge-integration-${{ matrix.python-version }}-${CLEAN_REF}-${{ matrix.database }}.json" >> $GITHUB_OUTPUT
+        echo "filename=assets/badge/badge-integration-${{ matrix.python-version }}-${CLEAN_REF}-${{ matrix.database }}.json" >> $GITHUB_OUTPUT
 
     - name: Update integration status badge
       if: always()
