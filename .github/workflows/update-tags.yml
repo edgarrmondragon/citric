@@ -42,7 +42,7 @@ jobs:
       run: |
         nox
 
-    - uses: tibdex/github-app-token@v1.8.0
+    - uses: tibdex/github-app-token@v2
       id: generate-token
       with:
         app_id: ${{ secrets.APP_ID }}
@@ -61,3 +61,5 @@ jobs:
         assignees: |
           edgarrmondragon
         delete-branch: true
+        labels: |
+          Update badges
