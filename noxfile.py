@@ -42,7 +42,7 @@ def tests(session: Session) -> None:
     if GH_ACTIONS_ENV_VAR in os.environ:
         deps.append("pytest-github-actions-annotate-failures")
 
-    if session.python in ("3.13", "pypy3.10"):
+    if session.python in ("3.13",):
         env["PIP_NO_BINARY"] = "coverage"
 
     session.install(".", env=env)
