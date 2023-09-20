@@ -36,3 +36,29 @@ def test_get_surveys(rest_client: RESTClient, survey_id: int) -> None:
     """Test getting surveys."""
     surveys = rest_client.get_surveys()
     assert surveys[0]["sid"] == survey_id
+
+
+@pytest.mark.integration_test
+def test_get_survey_details(rest_client: RESTClient, survey_id: int) -> None:
+    """Test getting surveys."""
+    survey = rest_client.get_survey_details(survey_id=survey_id)
+    assert survey["sid"] == survey_id
+
+
+@pytest.mark.integration_test
+def test_patch_survey_details(rest_client: RESTClient, survey_id: int) -> None:
+    """Test getting surveys."""
+    original = rest_client.get_survey_details(survey_id=survey_id)
+    anonymized = original["anonymized"]
+    token_length = original["tokenLength"]
+
+    result = rest_client.update_survey_details(
+        survey_id=survey_id,
+        anonymized=not anonymized,
+        tokenLength=token_length + 10,
+    )
+    assert result is True
+
+    updated = rest_client.get_survey_details(survey_id=survey_id)
+    assert updated["anonymized"] is (not anonymized)
+    assert updated["tokenLength"] == token_length + 10

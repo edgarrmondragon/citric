@@ -89,3 +89,46 @@ class RESTClient:
         response = self._session.get(url=f"{self.url}/rest/v1/survey")
         response.raise_for_status()
         return response.json()["surveys"]
+
+    def get_survey_details(self, survey_id: int) -> dict[str, t.Any]:
+        """Get survey details.
+
+        Args:
+            survey_id: Survey ID.
+
+        Returns:
+            Survey details.
+        """
+        response = self._session.get(f"{self.url}/rest/v1/survey-detail/{survey_id}")
+        response.raise_for_status()
+        return response.json()["survey"]
+
+    def update_survey_details(
+        self,
+        survey_id: int,
+        **data: t.Any,
+    ) -> bool:
+        """Update survey details.
+
+        Args:
+            survey_id: Survey ID.
+            data: Survey details.
+
+        Returns:
+            Updated survey details.
+        """
+        response = self._session.patch(
+            f"{self.url}/rest/v1/survey-detail/{survey_id}",
+            json={
+                "patch": [
+                    {
+                        "entity": "survey",
+                        "op": "update",
+                        "id": survey_id,
+                        "props": data,
+                    },
+                ],
+            },
+        )
+        response.raise_for_status()
+        return response.json()

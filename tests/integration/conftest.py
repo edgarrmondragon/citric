@@ -43,7 +43,7 @@ def survey_id(client: citric.Client) -> t.Generator[int, None, None]:
     client.delete_survey(survey_id)
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def server_version(client: citric.Client) -> semver.Version:
     """Get the server version."""
     return semver.Version.parse(client.get_server_version())
