@@ -55,6 +55,7 @@ Python.
 - Easily export survey data to CSV files, [Pandas DataFrames](https://citric.readthedocs.io/en/stable/how-to.html#export-responses-to-a-pandas-dataframe) and [DuckDB databases](https://citric.readthedocs.io/en/stable/how-to.html#export-responses-to-a-duckdb-database-and-analyze-with-sql).
 - Easily [download survey files](https://citric.readthedocs.io/en/stable/how-to.html#get-files-uploaded-to-a-survey-and-move-them-to-s3) (e.g. images, audio, etc.) to a local directory.
 - Tested against LimeSurvey 6.0.0+ and 5.0.0+ versions.
+- Experimental support for the new [REST API](https://manual.limesurvey.org/REST_API).
 
 ### Integration tests
 

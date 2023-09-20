@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import contextlib
 import csv
 import io
 import json
@@ -13,7 +12,6 @@ from urllib.parse import quote
 
 import pytest
 import requests
-import semver
 
 import citric
 from citric import enums
@@ -21,39 +19,10 @@ from citric.exceptions import LimeSurveyStatusError
 from citric.objects import Participant
 
 if t.TYPE_CHECKING:
+    import semver
     from faker import Faker
 
 NEW_SURVEY_NAME = "New Survey"
-
-
-@pytest.fixture(scope="module")
-def client(
-    integration_url: str,
-    integration_username: str,
-    integration_password: str,
-) -> t.Generator[citric.Client, None, None]:
-    """RemoteControl2 API client."""
-    with citric.Client(
-        integration_url,
-        integration_username,
-        integration_password,
-    ) as client:
-        yield client
-
-        with contextlib.suppress(LimeSurveyStatusError):
-            for survey in client.list_surveys(integration_username):
-                client.delete_survey(survey["sid"])
-
-
-@pytest.fixture
-def survey_id(client: citric.Client) -> t.Generator[int, None, None]:
-    """Import a survey from a file and return its ID."""
-    with Path("./examples/survey.lss").open("rb") as f:
-        survey_id = client.import_survey(f, survey_id=98765)
-
-    yield survey_id
-
-    client.delete_survey(survey_id)
 
 
 @pytest.fixture
@@ -85,12 +54,6 @@ def participants(faker: Faker) -> list[dict[str, t.Any]]:
             "attribute_2": "Night owl",
         },
     ]
-
-
-@pytest.fixture
-def server_version(client: citric.Client) -> semver.Version:
-    """Get the server version."""
-    return semver.Version.parse(client.get_server_version())
 
 
 @pytest.mark.integration_test

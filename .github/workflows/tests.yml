@@ -299,7 +299,7 @@ jobs:
       id: nox-integration
       env:
         BACKEND: ${{ matrix.database }}
-        LS_URL: http://localhost:${{ env.LS_PORT }}/index.php/admin/remotecontrol
+        LS_URL: http://localhost:${{ env.LS_PORT }}
       run: |
         nox
 
