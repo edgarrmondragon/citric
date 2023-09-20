@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
   "label": "6.2.4-230825-apache, postgres",
-  "message": "success",
-  "color": "green"
+  "message": "cancelled",
+  "color": "red"
 }
