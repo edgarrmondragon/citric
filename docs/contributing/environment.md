@@ -13,7 +13,13 @@ Ready to contribute? Here's how to set up `citric` for local development.
    git clone https://github.com/edgarrmondragon/citric.git
    ```
 
-1. Install [`poetry`][poetry] and the project dependencies:
+1. Install [`poetry`][poetry] and the `poetry-dynamic-versioning` plugin:
+
+   ```shell
+   poetry self add "poetry-dynamic-versioning[plugin]"
+   ```
+
+1. Install the project dependencies:
 
    ```shell
    poetry install
@@ -27,8 +33,7 @@ Ready to contribute? Here's how to set up `citric` for local development.
     nox -l
     ```
 
-1. To check that your changes pass the project style checks, use
-[`pre-commit`][pre-commit]:
+1. To check that your changes pass the project style checks, use [`pre-commit`][pre-commit]:
 
    ```shell
    pre-commit install
@@ -52,8 +57,7 @@ Ready to contribute? Here's how to set up `citric` for local development.
 
 1. Submit a pull request through the GitHub website.
 
-1. (Optional) Add a changelog entry using [`changie`][changie]. You'll need to install
-the Change CLI in order to add a changelog entry:
+1. (Optional) Add a changelog entry using [`changie`][changie]. You'll need to install the Change CLI in order to add a changelog entry:
 
    ```shell
    changie new

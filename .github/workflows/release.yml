@@ -1,8 +1,9 @@
 name: Release
 
 on:
-  release:
-    types: [published]
+  push:
+    tags:
+      - '*'
   workflow_dispatch:
     inputs:
       publish:
@@ -25,6 +26,8 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4.0.0
+      with:
+        fetch-tags: true
 
     - name: Set up Python
       uses: actions/setup-python@v4.7.0
@@ -43,7 +46,9 @@ jobs:
         PIP_CONSTRAINT: .github/workflows/constraints.txt
       run: |
         pipx install poetry
+        pipx inject poetry poetry-dynamic-versioning[plugin]
         poetry --version
+        poetry self show plugins
 
     - name: Build
       run: poetry build
@@ -57,7 +62,7 @@ jobs:
   publish:
     name: Publish to PyPI
     runs-on: ubuntu-latest
-    if: github.event_name == 'release' || github.event.inputs.publish == 'true'
+    if: github.event_name == 'push' || github.event.inputs.publish == 'true'
     needs: [build]
     steps:
     - name: Checkout code
