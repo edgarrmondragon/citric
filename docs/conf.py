@@ -5,10 +5,15 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
+import citric
+
 sys.path.append(str(Path("./_ext").resolve()))
+
 
 project = "citric"
 author = "Edgar Ramírez Mondragón"
+version = citric.__version__
+release = citric.__version__
 project_copyright = f"2020, {author}"
 extensions = [
     "sphinx.ext.autodoc",

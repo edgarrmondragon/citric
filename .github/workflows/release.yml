@@ -1,8 +1,9 @@
 name: Release
 
 on:
-  release:
-    types: [published]
+  push:
+    tags:
+      - '*'
   workflow_dispatch:
     inputs:
       publish:
@@ -57,7 +58,7 @@ jobs:
   publish:
     name: Publish to PyPI
     runs-on: ubuntu-latest
-    if: github.event_name == 'release' || github.event.inputs.publish == 'true'
+    if: github.event_name == 'push' || github.event.inputs.publish == 'true'
     needs: [build]
     steps:
     - name: Checkout code

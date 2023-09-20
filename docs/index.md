@@ -8,6 +8,8 @@
 
 # Citric
 
+Release v{sub-ref}`version`.
+
 ```{include} ../README.md
 :start-line: 4
 ```
