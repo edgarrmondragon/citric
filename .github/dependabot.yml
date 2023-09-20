@@ -8,14 +8,12 @@ updates:
   - package-ecosystem: "pip"
     directory: "/"
     schedule:
-      interval: weekly
+      interval: monthly
       timezone: "America/Mexico_City"
     reviewers:
       - "edgarrmondragon"
     labels:
       - "dependencies"
-    allow:
-      - dependency-type: "development"
     commit-message:
       prefix: "chore(deps): "
       prefix-development: "chore(deps-dev): "
@@ -54,7 +52,7 @@ updates:
   - package-ecosystem: docker
     directory: "/"
     schedule:
-      interval: weekly
+      interval: monthly
     reviewers:
       - "edgarrmondragon"
     commit-message:
