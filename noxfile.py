@@ -19,7 +19,15 @@ except ImportError:
 
 GH_ACTIONS_ENV_VAR = "GITHUB_ACTIONS"
 FORCE_COLOR = "FORCE_COLOR"
-TEST_DEPS = ["coverage[toml]", "faker", "pytest", "python-dotenv", "semver"]
+TEST_DEPS = [
+    "coverage[toml]",
+    "faker",
+    "pytest",
+    "pytest-httpserver",
+    "python-dotenv",
+    "semver",
+    "tinydb",
+]
 
 package = "citric"
 
