@@ -13,8 +13,17 @@ from werkzeug.wrappers import Response
 from citric._rest import RESTClient
 
 if t.TYPE_CHECKING:
+    import sys
+
     from pytest_httpserver import HTTPServer
     from werkzeug.wrappers import Request
+
+    if sys.version_info >= (3, 10):
+        from typing import TypeAlias  # noqa: ICN003
+    else:
+        from typing_extensions import TypeAlias
+
+    APIHandler: TypeAlias = t.Callable[[Request], Response]
 
 
 @pytest.fixture(scope="module")
@@ -60,7 +69,7 @@ def backend() -> tinydb.database.Table:
 
 
 @pytest.fixture
-def api_handler(backend: tinydb.TinyDB) -> t.Callable[[Request], Response]:
+def api_handler(backend: tinydb.TinyDB) -> APIHandler:
     """API handler."""
     content_type = "application/json"
 
@@ -121,7 +130,7 @@ def test_get_surveys(
     backend: tinydb.TinyDB,
     rest_client: RESTClient,
     httpserver: HTTPServer,
-    api_handler: t.Callable[[Request], Response],
+    api_handler: APIHandler,
 ):
     """Test getting surveys."""
     httpserver.expect_request(
@@ -136,7 +145,7 @@ def test_get_survey_details(
     backend: tinydb.TinyDB,
     rest_client: RESTClient,
     httpserver: HTTPServer,
-    api_handler: t.Callable[[Request], Response],
+    api_handler: APIHandler,
 ):
     """Test getting survey details."""
     httpserver.expect_request(
@@ -152,7 +161,7 @@ def test_update_survey_details(
     backend: tinydb.TinyDB,
     rest_client: RESTClient,
     httpserver: HTTPServer,
-    api_handler: t.Callable[[Request], Response],
+    api_handler: APIHandler,
 ):
     """Test updating survey details."""
     httpserver.expect_request(
