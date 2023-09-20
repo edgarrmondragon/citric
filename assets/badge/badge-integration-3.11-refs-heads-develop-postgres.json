@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
   "label": "refs/heads/develop, postgres",
-  "message": "skipped",
-  "color": "red"
+  "message": "success",
+  "color": "green"
 }
