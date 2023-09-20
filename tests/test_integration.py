@@ -2,8 +2,10 @@
 
 from __future__ import annotations
 
+import contextlib
 import csv
 import io
+import json
 import typing as t
 import uuid
 from pathlib import Path
@@ -37,8 +39,10 @@ def client(
         integration_password,
     ) as client:
         yield client
-        for survey in client.list_surveys(integration_username):
-            client.delete_survey(survey["sid"])
+
+        with contextlib.suppress(LimeSurveyStatusError):
+            for survey in client.list_surveys(integration_username):
+                client.delete_survey(survey["sid"])
 
 
 @pytest.fixture
@@ -158,6 +162,10 @@ def test_survey(client: citric.Client):
         enums.NewSurveyType.GROUP_BY_GROUP,
     )
 
+    # Copy a survey
+    copied = client.copy_survey(survey_id, NEW_SURVEY_NAME)
+    assert copied["status"] == "OK"
+
     # Get survey properties
     survey_props = client.get_survey_properties(survey_id)
     assert survey_props["language"] == "es"
@@ -209,6 +217,11 @@ def test_group(client: citric.Client, survey_id: int):
 
     with pytest.raises(LimeSurveyStatusError, match="Error: Invalid group ID"):
         client.set_group_properties(99999, group_order=1)
+
+    # Delete group
+    client.delete_group(survey_id, group_id)
+    with pytest.raises(LimeSurveyStatusError, match="Error: Invalid group ID"):
+        client.get_group_properties(survey_id)
 
 
 @pytest.mark.integration_test
@@ -420,7 +433,7 @@ def test_invite_participants(
 
 
 @pytest.mark.integration_test
-def test_responses(client: citric.Client, survey_id: int):
+def test_responses(client: citric.Client, survey_id: int, tmp_path: Path):
     """Test adding and exporting responses."""
     client.activate_survey(survey_id)
     client.activate_tokens(survey_id)
@@ -466,6 +479,21 @@ def test_responses(client: citric.Client, survey_id: int):
 
     # Export existing response works
     client.export_responses(survey_id, token="T00000")
+
+    # Save responses to a file
+    filepath = tmp_path / "responses.json"
+    client.save_responses(
+        filepath,
+        survey_id,
+    )
+    with filepath.open("r") as f:
+        responses = json.load(f)
+
+    assert len(responses["responses"]) == 3
+
+    # Get response IDs for a token
+    response_ids = client.get_response_ids(survey_id, token="T00000")
+    assert response_ids == [1]
 
     # Delete a response and then fail to export it or update it
     client.delete_response(survey_id, 1)
@@ -634,3 +662,15 @@ def test_cpdb(faker: Faker, client: citric.Client):
         "ImportCount": 1,
         "UpdateCount": 1,
     }
+
+
+@pytest.mark.integration_test
+def test_users(client: citric.Client):
+    """Test user methods."""
+    assert len(client.list_users()) == 1
+
+
+@pytest.mark.integration_test
+def test_survey_groups(client: citric.Client):
+    """Test survey group methods."""
+    assert len(client.list_survey_groups()) == 1
