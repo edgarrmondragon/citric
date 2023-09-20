@@ -25,9 +25,7 @@ jobs:
         PIP_CONSTRAINT: .github/workflows/constraints.txt
       run: |
         pipx install poetry --verbose
-        pipx inject poetry poetry-dynamic-versioning[plugin]
         poetry --version
-        poetry self show plugins
 
     - name: Install Nox
       env:

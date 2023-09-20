@@ -91,6 +91,8 @@ jobs:
     steps:
     - name: Check out the repository
       uses: actions/checkout@v4.0.0
+      with:
+        fetch-tags: true
 
     - name: Setup Python ${{ matrix.python-version }}
       if: "${{ !matrix.nightly }}"
@@ -230,6 +232,8 @@ jobs:
     steps:
     - name: Check out the repository
       uses: actions/checkout@v4.0.0
+      with:
+        fetch-tags: true
 
     - name: Setup Python ${{ matrix.python-version }}
       uses: actions/setup-python@v4.7.0
@@ -373,6 +377,8 @@ jobs:
     steps:
     - name: Check out the repository
       uses: actions/checkout@v4.0.0
+      with:
+        fetch-tags: true
 
     - name: Setup Python ${{ matrix.python-version }}
       uses: actions/setup-python@v4.7.0
