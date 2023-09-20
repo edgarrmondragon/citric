@@ -144,7 +144,7 @@ jobs:
 
     - name: Upload coverage data
       if: always() && matrix.session == 'tests'
-      uses: actions/upload-artifact@v3.1.2
+      uses: actions/upload-artifact@v3.1.3
       with:
         name: coverage-unit
         path: ".coverage.*"
@@ -289,7 +289,7 @@ jobs:
 
     - name: Upload coverage data
       if: always()
-      uses: actions/upload-artifact@v3.1.2
+      uses: actions/upload-artifact@v3.1.3
       with:
         name: coverage-integration
         path: ".coverage.*"
@@ -315,7 +315,7 @@ jobs:
 
     - name: Upload integration status badge
       if: always()
-      uses: actions/upload-artifact@v3.1.2
+      uses: actions/upload-artifact@v3.1.3
       with:
         name: badges
         path: ${{ steps.badge-filename.outputs.filename }}
