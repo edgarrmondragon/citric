@@ -5,6 +5,15 @@ from importlib import metadata
 
 import requests
 
+if t.TYPE_CHECKING:
+    import sys
+    from types import TracebackType
+
+    if sys.version_info >= (3, 11):
+        from typing import Self  # noqa: ICN003
+    else:
+        from typing_extensions import Self
+
 
 class RESTClient:
     """LimeSurvey REST API client.
@@ -65,6 +74,11 @@ class RESTClient:
         response.raise_for_status()
         return response.json()
 
+    def close(self) -> None:
+        """Delete the session."""
+        response = self._session.delete(f"{self.url}/rest/v1/session")
+        response.raise_for_status()
+
     def _auth(self, request: requests.PreparedRequest) -> requests.PreparedRequest:
         """Authenticate with the REST API.
 
@@ -79,6 +93,29 @@ class RESTClient:
         """
         request.headers["Authorization"] = f"Bearer {self.__session_id}"
         return request
+
+    def __enter__(self: Self) -> Self:
+        """Context manager for REST session.
+
+        Returns:
+            LimeSurvey REST client.
+        """
+        return self
+
+    def __exit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_value: BaseException | None,
+        traceback: TracebackType | None,
+    ) -> None:
+        """Safely exit a REST session.
+
+        Args:
+            exc_type: Exception class.
+            exc_value: Exception instance.
+            traceback: Error traceback.
+        """
+        self.close()
 
     def get_surveys(self) -> list[dict[str, t.Any]]:
         """Get all surveys.

@@ -18,17 +18,18 @@ def rest_client(
     integration_username: str,
     integration_password: str,
     server_version: semver.Version,
-) -> RESTClient:
+) -> t.Generator[RESTClient, None, None]:
     """LimeSurvey REST API client."""
     if server_version < (6, 0, 0):
         pytest.xfail(
             f"The REST API is not supported in LimeSurvey {server_version} < 6.0.0",
         )
-    return RESTClient(
+    with RESTClient(
         integration_url,
         integration_username,
         integration_password,
-    )
+    ) as client:
+        yield client
 
 
 @pytest.mark.integration_test

@@ -113,7 +113,7 @@ def rest_client(
     username: str,
     password: str,
     httpserver: HTTPServer,
-) -> RESTClient:
+) -> t.Generator[RESTClient, None, None]:
     """LimeSurvey REST API client."""
     httpserver.expect_request(
         "/rest/v1/session",
@@ -123,7 +123,10 @@ def rest_client(
             "password": password,
         },
     ).respond_with_json('"my-session-id"')
-    return RESTClient(httpserver.url_for("").rstrip("/"), username, password)
+    httpserver.expect_request("/rest/v1/session", method="DELETE").respond_with_data("")
+
+    with RESTClient(httpserver.url_for("").rstrip("/"), username, password) as client:
+        yield client
 
 
 def test_get_surveys(
