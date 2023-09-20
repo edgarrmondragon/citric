@@ -31,21 +31,14 @@ def client(
     integration_password: str,
 ) -> t.Generator[citric.Client, None, None]:
     """RemoteControl2 API client."""
-    client = citric.Client(
+    with citric.Client(
         integration_url,
         integration_username,
         integration_password,
-    )
-
-    yield client
-
-    try:
+    ) as client:
+        yield client
         for survey in client.list_surveys(integration_username):
             client.delete_survey(survey["sid"])
-    except LimeSurveyStatusError:
-        pass
-    finally:
-        client.close()
 
 
 @pytest.fixture
