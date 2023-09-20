@@ -147,7 +147,9 @@ def skip_member_filter(
     Returns:
         Whether to skip the member.
     """
-    if name == "citric.rest.client":
+    if name == "citric.rest.client" or name.startswith(
+        ("citric.client", "citric.session", "citric.method"),
+    ):
         skip = True
     return skip
 
