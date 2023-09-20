@@ -5,25 +5,25 @@ For the full JSON-RPC reference, see the [RemoteControl 2 API docs][rc2api].
 ## Automatically close the session with a context manager
 
 ```python
-from citric import Client
+from citric import RPC
 
 LS_URL = "http://localhost:8001/index.php/admin/remotecontrol"
 
-with Client(LS_URL, "iamadmin", "secret") as client:
+with RPC(LS_URL, "iamadmin", "secret") as client:
     # Do stuff with the client
     ...
 ```
 
-Otherwise, you can manually close the session with {meth}`client.close() <citric.client.Client.close>`.
+Otherwise, you can manually close the session with {meth}`client.close() <citric.client.RPC.close>`.
 
 ## Get surveys and questions
 
 ```python
-from citric import Client
+from citric import RPC
 
 LS_URL = "http://localhost:8001/index.php/admin/remotecontrol"
 
-client = Client(LS_URL, "iamadmin", "secret")
+client = RPC(LS_URL, "iamadmin", "secret")
 
 # Get all surveys from user "iamadmin"
 surveys = client.list_surveys("iamadmin")
@@ -40,13 +40,13 @@ for s in surveys:
 ## Export responses to a `pandas` dataframe
 
 ```python
+import citric
 import io
 import pandas as pd
-from citric import Client
 
 survey_id = 123456
 
-client = citric.Client(...)
+client = citric.RPC(...)
 
 # Export responses to CSV and read into a Pandas DataFrame
 df = pd.read_csv(
@@ -63,7 +63,7 @@ df = pd.read_csv(
 import citric
 import duckdb
 
-client = citric.Client(...)
+client = citric.RPC(...)
 
 with open("responses.csv", "wb") as file:
     file.write(client.export_responses(<your survey ID>, file_format="csv"))
@@ -93,7 +93,7 @@ cached_session = requests_cache.CachedSession(
     allowable_methods=["POST"],
 )
 
-client = Client(
+client = RPC(
     LS_URL,
     "iamadmin",
     "secret",
@@ -112,7 +112,7 @@ By default, this client uses the internal database for authentication but
 `auth_plugin` argument.
 
 ```python
-client = Client(
+client = RPC(
     LS_URL,
     "iamadmin",
     "secret",
@@ -126,11 +126,11 @@ Common plugins are `Authdb` (default), `AuthLDAP` and `Authwebserver`.
 
 ```python
 import boto3
-from citric import Client
+from citric import RPC
 
 s3 = boto3.client("s3")
 
-client = Client(
+client = RPC(
     "https://mylimeserver.com/index.php/admin/remotecontrol",
     "iamadmin",
     "secret",
@@ -147,14 +147,14 @@ for file in client.get_uploaded_file_objects(survey_id):
     )
 ```
 
-## Use the raw `Client.session` for low-level interaction
+## Use the raw `RPC.session` for low-level interaction
 
 This library doesn't (yet) implement all RPC methods, so if you're in dire need of using a method not currently supported, you can use the `session` attribute to invoke the underlying RPC interface without having to pass a session key explicitly:
 
 ```python
-client = Client(LS_URL, "iamadmin", "secret")
+client = RPC(LS_URL, "iamadmin", "secret")
 
-# Call the copy_survey method, not available in Client
+# Call the copy_survey method, not available in RPC
 new_survey_id = client.session.copy_survey(35239, "copied_survey")
 ```
 

@@ -1,48 +1,27 @@
-"""RPC methods."""
+"""Deprecated module for the RPC session."""
 
 from __future__ import annotations
 
 import typing as t
+import warnings
 
-__all__ = ["Method"]
+from citric._compat import CitricDeprecationWarning
 
-T = t.TypeVar("T")
+if t.TYPE_CHECKING:
+    from citric.rpc.method import Method  # noqa: F401
 
 
-class Method(t.Generic[T]):
-    """RPC method."""
+def __getattr__(name: str) -> t.Any:  # noqa: ANN401
+    """Return the element from the citric.rpc.session module."""
+    if not name.startswith("_"):
+        warnings.warn(
+            f"citric.method.{name} is deprecated, use citric.rpc.method.{name} instead",  # noqa: E501
+            CitricDeprecationWarning,
+            stacklevel=2,
+        )
+        from citric.rpc import session
 
-    def __init__(self, caller: t.Callable[[str], T], name: str) -> None:
-        """Instantiate an RPC method."""
-        self.__caller = caller
-        self.__name = name
+        return getattr(session, name)
 
-    def __getattr__(self, name: str) -> Method[T]:
-        """Get nested method.
-
-        Args:
-            name: Method name.
-
-        Returns:
-            A new instance of Method for the nested call.
-
-        >>> method = Method(print, "some_method")
-        >>> method.nested("x", "y")
-        some_method.nested x y
-        """
-        return Method(self.__caller, f"{self.__name}.{name}")
-
-    def __call__(self, *params: t.Any) -> T:
-        """Call RPC method.
-
-        Args:
-            params: RPC method parameters.
-
-        Returns:
-            An RPC result.
-
-        >>> method = Method(print, "some_method")
-        >>> method(1, "a")
-        some_method 1 a
-        """
-        return self.__caller(self.__name, *params)
+    message = f"module {__name__!r} has no attribute {name!r}"
+    raise AttributeError(message)

@@ -49,6 +49,13 @@ Python API reference <_api/index>
 ```
 
 ```{toctree}
+:maxdepth: 2
+:hidden:
+
+Deprecations <deprecations>
+```
+
+```{toctree}
 :caption: Contributing
 :hidden:
 

@@ -245,7 +245,11 @@ convention = "google"
 max-args = 10
 
 [tool.pytest.ini_options]
-addopts = ["-vvv", "-W error"]
+addopts = ["-vvv"]
+filterwarnings = [
+  "error",
+  "always::citric._compat.CitricDeprecationWarning",
+]
 markers = [
   "integration_test: Integration and end-to-end tests",
   "xfail_mysql: Mark a test as expected to fail on MySQL",
