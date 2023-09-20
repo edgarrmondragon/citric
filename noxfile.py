@@ -53,6 +53,9 @@ def tests(session: Session) -> None:
     if session.python in ("3.13",):
         env["PIP_NO_BINARY"] = "coverage"
 
+    if session.python.startswith("pypy"):
+        env["PIP_NO_BINARY"] = "MarkupSafe"
+
     session.install(".", env=env)
     session.install(*deps, env=env)
     args = session.posargs or ["-m", "not integration_test"]

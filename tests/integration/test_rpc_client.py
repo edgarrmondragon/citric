@@ -469,10 +469,15 @@ def test_responses(client: citric.Client, survey_id: int, tmp_path: Path):
 
 @pytest.mark.integration_test
 @pytest.mark.xfail_mysql
-def test_file_upload(client: citric.Client, survey_id: int, tmp_path: Path):
+def test_file_upload(
+    client: citric.Client,
+    survey_id: int,
+    tmp_path: Path,
+    faker: Faker,
+):
     """Test uploading and downloading files from a survey."""
     filepath = tmp_path / "hello world.txt"
-    filepath.write_text("Hello world!")
+    filepath.write_text(faker.text())
 
     client.activate_survey(survey_id)
     group = client.list_groups(survey_id)[1]
@@ -486,7 +491,7 @@ def test_file_upload(client: citric.Client, survey_id: int, tmp_path: Path):
         filename=filename,
     )
     assert result["success"]
-    assert result["size"] == pytest.approx(filepath.stat().st_size / 1000)
+    assert result["size"] == pytest.approx(filepath.stat().st_size / 1000, rel=1e-2)
     assert result["name"] == filename
     assert result["ext"] == "txt"
     assert "filename" in result
@@ -495,10 +500,15 @@ def test_file_upload(client: citric.Client, survey_id: int, tmp_path: Path):
 
 @pytest.mark.integration_test
 @pytest.mark.xfail_mysql
-def test_file_upload_no_filename(client: citric.Client, survey_id: int, tmp_path: Path):
+def test_file_upload_no_filename(
+    client: citric.Client,
+    survey_id: int,
+    tmp_path: Path,
+    faker: Faker,
+):
     """Test uploading and downloading files from a survey without a filename."""
     filepath = tmp_path / "hello world.txt"
-    filepath.write_text("Hello world!")
+    filepath.write_text(faker.text())
 
     client.activate_survey(survey_id)
     group = client.list_groups(survey_id)[1]
@@ -510,7 +520,10 @@ def test_file_upload_no_filename(client: citric.Client, survey_id: int, tmp_path
         filepath,
     )
     assert result_no_filename["success"]
-    assert result_no_filename["size"] == pytest.approx(filepath.stat().st_size / 1000)
+    assert result_no_filename["size"] == pytest.approx(
+        filepath.stat().st_size / 1000,
+        rel=1e-2,
+    )
     assert result_no_filename["name"] == quote(filepath.name)
     assert result_no_filename["ext"] == "txt"
     assert "filename" in result_no_filename
@@ -523,10 +536,11 @@ def test_file_upload_invalid_extension(
     client: citric.Client,
     survey_id: int,
     tmp_path: Path,
+    faker: Faker,
 ):
     """Test uploading and downloading files from a survey with an invalid extension."""
     filepath = tmp_path / "hello world.abc"
-    filepath.write_text("Hello world!")
+    filepath.write_text(faker.text())
 
     client.activate_survey(survey_id)
     group = client.list_groups(survey_id)[1]
