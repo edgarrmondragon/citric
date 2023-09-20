@@ -1106,13 +1106,13 @@ files = [
 
 [[package]]
 name = "sphinx"
-version = "7.2.4"
+version = "7.2.6"
 description = "Python documentation generator"
 optional = true
 python-versions = ">=3.9"
 files = [
-    {file = "sphinx-7.2.4-py3-none-any.whl", hash = "sha256:9b3aa23254ffc5be468646810543e491653bf5a67f3f23e4ccd4e515b0bd0b9c"},
-    {file = "sphinx-7.2.4.tar.gz", hash = "sha256:1aeec862bf1edff4374012ac38082e0d1daa066c9e327841a846401164797988"},
+    {file = "sphinx-7.2.6-py3-none-any.whl", hash = "sha256:1e09160a40b956dc623c910118fa636da93bd3ca0b9876a7b3df90f07d691560"},
+    {file = "sphinx-7.2.6.tar.gz", hash = "sha256:9a5160e1ea90688d5963ba09a2dcd8bdd526620edbb65c328728f1b2228d5ab5"},
 ]
 
 [package.dependencies]
