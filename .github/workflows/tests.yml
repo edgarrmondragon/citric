@@ -174,7 +174,7 @@ jobs:
       LS_PASSWORD: notverysecret
       LS_PORT: "8080"
       NOXSESSION: integration
-      NOXPYTHON: "${{ matrix.python-version }}"
+      NOXFORCEPYTHON: "${{ matrix.python-version }}"
     strategy:
       fail-fast: false
       matrix:
