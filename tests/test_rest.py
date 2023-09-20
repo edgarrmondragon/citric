@@ -62,6 +62,7 @@ def backend() -> tinydb.database.Table:
 @pytest.fixture
 def api_handler(backend: tinydb.TinyDB) -> t.Callable[[Request], Response]:
     """API handler."""
+    content_type = "application/json"
 
     def handler(request: Request) -> Response:
         if request.path.endswith("/rest/v1/survey"):
@@ -69,7 +70,7 @@ def api_handler(backend: tinydb.TinyDB) -> t.Callable[[Request], Response]:
             if request.method == "GET":
                 return Response(
                     json.dumps({"surveys": surveys.all()}),
-                    content_type="application/json",
+                    content_type=content_type,
                 )
 
         if "/rest/v1/survey-detail" in request.path:
@@ -78,30 +79,24 @@ def api_handler(backend: tinydb.TinyDB) -> t.Callable[[Request], Response]:
             if request.method == "GET":
                 return Response(
                     json.dumps({"survey": surveys.get(doc_id=survey_id)}),
-                    content_type="application/json",
+                    content_type=content_type,
                 )
 
             if request.method == "PATCH":
                 surveys.update_multiple(
                     [
                         (patch["props"], tinydb.where("sid") == patch["id"])
-                        for patch in request.json["patch"]
+                        for patch in request.json["patch"]  # type: ignore[index]
                     ],
                 )
                 return Response(
                     json.dumps(True),  # noqa: FBT003
-                    content_type="application/json",
+                    content_type=content_type,
                 )
 
         return Response(status=400)
 
     return handler
-
-
-def test_db(backend: tinydb.TinyDB):
-    """Test DB."""
-    surveys = backend.table("surveys")
-    assert surveys.get(doc_id=12345)["sid"] == 12345
 
 
 @pytest.fixture
@@ -173,5 +168,7 @@ def test_update_survey_details(
     assert result is True
 
     surveys = backend.table("surveys")
-    assert surveys.get(doc_id=12345)["anonymized"] is True
-    assert surveys.get(doc_id=12345)["tokenLength"] == 10
+    survey = surveys.get(doc_id=12345)
+    assert isinstance(survey, Document)
+    assert survey["anonymized"] is True
+    assert survey["tokenLength"] == 10
