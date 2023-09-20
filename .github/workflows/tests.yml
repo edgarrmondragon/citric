@@ -91,6 +91,8 @@ jobs:
     steps:
     - name: Check out the repository
       uses: actions/checkout@v4.0.0
+      with:
+        fetch-tags: true
 
     - name: Setup Python ${{ matrix.python-version }}
       if: "${{ !matrix.nightly }}"
@@ -127,7 +129,9 @@ jobs:
         PIP_CONSTRAINT: .github/workflows/constraints.txt
       run: |
         pipx install poetry --verbose
+        pipx inject poetry poetry-dynamic-versioning[plugin]
         poetry --version
+        poetry self show plugins
 
     - name: Install Nox
       env:
@@ -228,6 +232,8 @@ jobs:
     steps:
     - name: Check out the repository
       uses: actions/checkout@v4.0.0
+      with:
+        fetch-tags: true
 
     - name: Setup Python ${{ matrix.python-version }}
       uses: actions/setup-python@v4.7.0
@@ -256,7 +262,9 @@ jobs:
         PIP_CONSTRAINT: .github/workflows/constraints.txt
       run: |
         pipx install poetry --verbose
+        pipx inject poetry poetry-dynamic-versioning[plugin]
         poetry --version
+        poetry self show plugins
 
     - name: Install Nox
       env:
@@ -369,6 +377,8 @@ jobs:
     steps:
     - name: Check out the repository
       uses: actions/checkout@v4.0.0
+      with:
+        fetch-tags: true
 
     - name: Setup Python ${{ matrix.python-version }}
       uses: actions/setup-python@v4.7.0
@@ -383,6 +393,7 @@ jobs:
       run: |
         pip install pip
         pipx install poetry
+        pipx inject poetry poetry-dynamic-versioning[plugin]
         pipx install nox
         pipx inject nox nox-poetry
         pipx list
@@ -422,7 +433,9 @@ jobs:
         PIP_CONSTRAINT: .github/workflows/constraints.txt
       run: |
         pipx install poetry
+        pipx inject poetry poetry-dynamic-versioning[plugin]
         poetry --version
+        poetry self show plugins
 
     - name: Install Nox
       env:
