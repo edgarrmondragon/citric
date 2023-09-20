@@ -12,8 +12,7 @@ class RESTClient:
     Upon creation, retrieves a session ID that's used for authentication.
 
     .. warning::
-       The REST API is still in development and not yet stable, so the client is
-       subject to changes.
+       The REST API is still in early development, so the client is subject to changes.
 
     Args:
         url: LimeSurvey server URL. For example, ``http://www.yourdomain.com/rest/v1.``.
