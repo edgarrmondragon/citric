@@ -6,7 +6,7 @@ import typing as t
 
 import pytest
 
-from citric._rest import RESTClient
+from citric.rest import RESTClient
 
 if t.TYPE_CHECKING:
     import semver

@@ -1,3 +1,5 @@
+"""REST API client implementation."""
+
 from __future__ import annotations
 
 import typing as t
@@ -30,7 +32,6 @@ class RESTClient:
         requests_session: A :py:class:`requests.Session <requests.Session>` object.
 
     .. versionadded:: NEXT_VERSION
-       Support the REST API.
     """
 
     USER_AGENT = f"citric/{metadata.version('citric')}"
