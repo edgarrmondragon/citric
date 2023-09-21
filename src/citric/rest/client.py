@@ -95,6 +95,34 @@ class RESTClient:
         request.headers["Authorization"] = f"Bearer {self.__session_id}"
         return request
 
+    def make_request(
+        self,
+        method: str,
+        path: str,
+        *,
+        params: t.Mapping[str, t.Any] | None = None,
+        json: t.Any | None = None,  # noqa: ANN401
+    ) -> requests.Response:
+        """Make a request to the REST API.
+
+        Args:
+            method: HTTP method.
+            path: URL path.
+            params: Query parameters.
+            json: JSON data.
+
+        Returns:
+            Response.
+        """
+        response = self._session.request(
+            method=method,
+            url=f"{self.url}{path}",
+            params=params,
+            json=json,
+        )
+        response.raise_for_status()
+        return response
+
     def __enter__(self: Self) -> Self:
         """Context manager for REST session.
 
@@ -124,8 +152,7 @@ class RESTClient:
         Returns:
             List of surveys.
         """
-        response = self._session.get(url=f"{self.url}/rest/v1/survey")
-        response.raise_for_status()
+        response = self.make_request("GET", "/rest/v1/survey")
         return response.json()["surveys"]
 
     def get_survey_details(self, survey_id: int) -> dict[str, t.Any]:
@@ -137,8 +164,7 @@ class RESTClient:
         Returns:
             Survey details.
         """
-        response = self._session.get(f"{self.url}/rest/v1/survey-detail/{survey_id}")
-        response.raise_for_status()
+        response = self.make_request("GET", f"/rest/v1/survey-detail/{survey_id}")
         return response.json()["survey"]
 
     def update_survey_details(
@@ -155,8 +181,9 @@ class RESTClient:
         Returns:
             Updated survey details.
         """
-        response = self._session.patch(
-            f"{self.url}/rest/v1/survey-detail/{survey_id}",
+        response = self.make_request(
+            "PATCH",
+            f"/rest/v1/survey-detail/{survey_id}",
             json={
                 "patch": [
                     {
@@ -168,5 +195,4 @@ class RESTClient:
                 ],
             },
         )
-        response.raise_for_status()
         return response.json()
