@@ -26,11 +26,13 @@ repos:
   - id: check-readthedocs
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: 6fcbf19c7cf351a8dc3517a0fed3ebfa05610de2
+  rev: v0.0.291
   hooks:
-  - id: ruff-format
   - id: ruff
     args: [--fix, --exit-non-zero-on-fix, --show-fixes]
+  - id: ruff
+    name: Ruff format
+    entry: ruff format
 
 - repo: https://github.com/psf/black
   rev: 23.9.1
