@@ -90,7 +90,7 @@ jobs:
 
     steps:
     - name: Check out the repository
-      uses: actions/checkout@v4.0.0
+      uses: actions/checkout@v4.1.0
       with:
         fetch-tags: true
 
@@ -160,7 +160,7 @@ jobs:
       tags: ${{ steps.tags.outputs.tags }}
     steps:
     - name: Check out the repository
-      uses: actions/checkout@v4.0.0
+      uses: actions/checkout@v4.1.0
 
     - name: Output tags
       id: tags
@@ -231,7 +231,7 @@ jobs:
 
     steps:
     - name: Check out the repository
-      uses: actions/checkout@v4.0.0
+      uses: actions/checkout@v4.1.0
       with:
         fetch-tags: true
 
@@ -351,7 +351,7 @@ jobs:
     if: always() && github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'Update badges')
     steps:
     - name: Check out the repository
-      uses: actions/checkout@v4.0.0
+      uses: actions/checkout@v4.1.0
 
     - name: Download integration status badges
       uses: actions/download-artifact@v3.0.2
@@ -376,7 +376,7 @@ jobs:
         python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
     steps:
     - name: Check out the repository
-      uses: actions/checkout@v4.0.0
+      uses: actions/checkout@v4.1.0
       with:
         fetch-tags: true
 
@@ -414,7 +414,7 @@ jobs:
       fail-fast: false
     steps:
     - name: Check out the repository
-      uses: actions/checkout@v4.0.0
+      uses: actions/checkout@v4.1.0
 
     - name: Set up Python
       uses: actions/setup-python@v4.7.0
