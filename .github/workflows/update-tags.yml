@@ -19,7 +19,6 @@ jobs:
       with:
         python-version: "3.12"
         architecture: x64
-        allow-prereleases: true
 
     - name: Install Poetry
       env:

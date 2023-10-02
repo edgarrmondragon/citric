@@ -27,7 +27,6 @@ jobs:
       uses: actions/setup-python@v4.7.0
       with:
         python-version: 3.12
-        allow-prereleases: true
 
     - name: Install tools
       env:
