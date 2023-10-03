@@ -19,6 +19,7 @@ GIST_TEMPLATE = (
     "badge-integration-{python}-{docker_tag}-{database}.json"
 )
 DEFAULT_BRANCH = os.environ.get("GITHUB_REF_NAME", "main")
+DEFAULT_PYTHON = os.environ.get("PYTHON_VERSION", "3.12")
 
 
 def image(
@@ -62,15 +63,25 @@ def main() -> None:
         (
             "Latest 6",
             "PostgreSQL",
-            image("6+", args.branch, "postgres", "3.11", "6-apache"),
+            image("6+", args.branch, "postgres", DEFAULT_PYTHON, "6-apache"),
         ),
-        ("Latest 6", "MySQL", image("6+", args.branch, "mysql", "3.11", "6-apache")),
+        (
+            "Latest 6",
+            "MySQL",
+            image("6+", args.branch, "mysql", DEFAULT_PYTHON, "6-apache"),
+        ),
     ]
     ls_6_tags.extend(
         (
             label(tag),
             "PostgreSQL",
-            image(label(tag), args.branch, "postgres", "3.11", tag.replace("+", "-")),
+            image(
+                label(tag),
+                args.branch,
+                "postgres",
+                DEFAULT_PYTHON,
+                tag.replace("+", "-"),
+            ),
         )
         for tag in tags
         if tag.startswith("6") and tag != "6-apache"
@@ -80,14 +91,20 @@ def main() -> None:
         (
             "Latest 5",
             "PostgreSQL",
-            image("5+", args.branch, "postgres", "3.11", "5-apache"),
+            image("5+", args.branch, "postgres", DEFAULT_PYTHON, "5-apache"),
         ),
     ]
     ls_5_tags.extend(
         (
             label(tag),
             "PostgreSQL",
-            image(label(tag), args.branch, "postgres", "3.11", tag.replace("+", "-")),
+            image(
+                label(tag),
+                args.branch,
+                "postgres",
+                DEFAULT_PYTHON,
+                tag.replace("+", "-"),
+            ),
         )
         for tag in tags
         if tag.startswith("5") and tag != "5-apache"
@@ -101,7 +118,7 @@ def main() -> None:
                 "master branch",
                 args.branch,
                 "postgres",
-                "3.11",
+                DEFAULT_PYTHON,
                 "refs-heads-master",
             ),
         ),
@@ -112,14 +129,20 @@ def main() -> None:
                 "develop branch",
                 args.branch,
                 "postgres",
-                "3.11",
+                DEFAULT_PYTHON,
                 "refs-heads-develop",
             ),
         ),
         (
             "`5.x` branch",
             "PostgreSQL",
-            image("5.x branch", args.branch, "postgres", "3.11", "refs-heads-5.x"),
+            image(
+                "5.x branch",
+                args.branch,
+                "postgres",
+                DEFAULT_PYTHON,
+                "refs-heads-5.x",
+            ),
         ),
     ]
 

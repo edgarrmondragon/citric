@@ -23,11 +23,11 @@ TEST_DEPS = ["coverage[toml]", "faker", "pytest", "python-dotenv", "semver"]
 
 package = "citric"
 
-python_versions = ["3.11", "3.10", "3.9", "3.8"]
+python_versions = ["3.12", "3.11", "3.10", "3.9", "3.8"]
 pypy_versions = ["pypy3.9", "pypy3.10"]
 all_python_versions = python_versions + pypy_versions
 
-main_cpython_version = "3.11"
+main_cpython_version = "3.12"
 main_pypy_version = "pypy3.9"
 
 locations = "src", "tests", "noxfile.py", "docs/conf.py"

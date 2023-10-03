@@ -32,7 +32,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v4.7.0
       with:
-        python-version: "3.10"
+        python-version: "3.12"
 
     - name: Upgrade pip
       env:
@@ -71,7 +71,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v4.7.0
       with:
-        python-version: "3.10"
+        python-version: "3.12"
 
     - name: Upgrade pip
       env:

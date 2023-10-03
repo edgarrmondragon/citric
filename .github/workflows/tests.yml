@@ -64,7 +64,7 @@ jobs:
         os: ["ubuntu-latest"]
         session: ["tests"]
         include:
-        - python-version: "3.11"
+        - python-version: "3.12"
           os: "ubuntu-latest"
           session: "xdoctest"
 
@@ -80,11 +80,11 @@ jobs:
         #   experimental: true
         #   nightly: true
 
-        - python-version: "3.11"
+        - python-version: "3.12"
           os: "windows-latest"
           session: "tests"
 
-        - python-version: "3.11"
+        - python-version: "3.12"
           os: "macos-latest"
           session: "tests"
 
@@ -182,14 +182,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.11"]
+        python-version: ["3.12"]
         database: [postgres]
         ref: [""]
         context: [""]
         image_tag: ${{ fromJson(needs.docker_tags.outputs.tags) }}
         include:
         # Test on other Python versions and database engines
-        - python-version: "3.11"
+        - python-version: "3.12"
           image_tag: "6-apache"
           database: mysql
 
@@ -205,6 +205,10 @@ jobs:
           image_tag: "6-apache"
           database: postgres
 
+        - python-version: "3.11"
+          image_tag: "6-apache"
+          database: postgres
+
         - python-version: "pypy3.9"
           image_tag: "6-apache"
           database: postgres
@@ -214,17 +218,17 @@ jobs:
           database: postgres
 
         # Test Limesurvey/LimeSurvey branches
-        - python-version: "3.11"
+        - python-version: "3.12"
           ref: refs/heads/5.x
           context: https://github.com/martialblog/docker-limesurvey.git#master:5.0/apache
           database: postgres
 
-        - python-version: "3.11"
+        - python-version: "3.12"
           ref: refs/heads/develop
           context: https://github.com/martialblog/docker-limesurvey.git#master:6.0/apache
           database: postgres
 
-        - python-version: "3.11"
+        - python-version: "3.12"
           ref: refs/heads/master
           context: https://github.com/martialblog/docker-limesurvey.git#master:6.0/apache
           database: postgres
@@ -385,7 +389,6 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
         architecture: x64
-        allow-prereleases: true
 
     - name: Install tools
       env:
@@ -419,7 +422,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v4.7.0
       with:
-        python-version: "3.11"
+        python-version: "3.12"
 
     - name: Upgrade pip
       env:
