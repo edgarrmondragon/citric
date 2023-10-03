@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
   "label": "5.6.38-230919-apache, postgres",
-  "message": "skipped",
-  "color": "red"
+  "message": "success",
+  "color": "green"
 }
