@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
   "label": "6-apache, mysql",
-  "message": "success",
-  "color": "green"
+  "message": "skipped",
+  "color": "red"
 }

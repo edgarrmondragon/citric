@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
   "label": "refs/heads/5.x, postgres",
-  "message": "success",
-  "color": "green"
+  "message": "skipped",
+  "color": "red"
 }
