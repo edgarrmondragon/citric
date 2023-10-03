@@ -74,11 +74,11 @@ jobs:
           experimental: true
           nightly: true
 
-        # - python-version: "3.13"
-        #   os: "ubuntu-latest"
-        #   session: "tests"
-        #   experimental: true
-        #   nightly: true
+        - python-version: "3.13"
+          os: "ubuntu-latest"
+          session: "tests"
+          experimental: true
+          nightly: true
 
         - python-version: "3.12"
           os: "windows-latest"
