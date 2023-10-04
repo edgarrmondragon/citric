@@ -263,7 +263,7 @@ def test_quota(
     survey_id: int,
 ):
     """Test quota methods."""
-    request.node.add_marker(
+    request.applymarker(
         pytest.mark.xfail(
             server_version < (6, 0, 0),
             reason=(
@@ -587,7 +587,7 @@ def test_get_available_site_settings(
     server_version: semver.Version,
 ):
     """Test getting available site settings."""
-    request.node.add_marker(
+    request.applymarker(
         pytest.mark.xfail(
             server_version < (6, 0, 0),
             reason=(
