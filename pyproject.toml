@@ -38,11 +38,11 @@ requests = ">=2.23.0"
 
 # Docs
 furo = { version = ">=2023.3.27", optional = true, python = ">=3.9" }
-myst-parser = { version = ">=2,<3", optional = true, python = ">=3.9" }
-sphinx = { version = ">=7.2.2,<8", optional = true, python = ">=3.9" }
-sphinx-autoapi = { version = ">=2.1.0,<3", optional = true, python = ">=3.9" }
+myst-parser = { version = ">=2", optional = true, python = ">=3.9" }
+sphinx = { version = ">=7.2.2", optional = true, python = ">=3.9" }
+sphinx-autoapi = { version = ">=3", optional = true, python = ">=3.9" }
 sphinx-autobuild = { version = ">=2021.3.14", optional = true, python = ">=3.9" }
-sphinx-copybutton = { version = ">=0.5.1,<1", optional = true, python = ">=3.9" }
+sphinx-copybutton = { version = ">=0.5.1", optional = true, python = ">=3.9" }
 sphinx-hoverxref = { version = ">=1.3.0", optional = true, python = ">=3.9" }
 
 [tool.poetry.group.dev.dependencies]
@@ -79,6 +79,7 @@ docs = [
 line-length = 88
 
 [tool.ruff]
+explicit-preview-rules = false
 ignore = [
   "ANN101", # missing-type-self
   "DJ",     # flake8-django
@@ -90,39 +91,6 @@ preview = true
 select = [
   "F",       # Pyflakes
   "E",       # pycodestyle (error)
-  "E111",    # indentation-with-invalid-multiple
-  "E112",    # no-indented-bloc
-  "E113",    # unexpected-indentation
-  "E114",    # indentation-with-invalid-multiple-comment
-  "E115",    # no-indented-block-comment
-  "E116",    # unexpected-indentation-comment
-  "E117",    # over-indented
-  "E201",    # whitespace-after-open-bracket
-  "E202",    # whitespace-before-close-bracket
-  "E203",    # whitespace-before-punctuation
-  "E211",    # whitespace-before-parameters
-  "E221",    # multiple-spaces-before-operator
-  "E222",    # multiple-spaces-after-operator
-  "E223",    # tab-before-operator
-  "E224",    # tab-after-operator
-  "E225",    # missing-whitespace-around-operator
-  "E226",    # missing-whitespace-around-arithmetic-operator
-  "E227",    # missing-whitespace-around-bitwise-or-shift-operator
-  "E228",    # missing-whitespace-around-modulo-operator
-  "E231",    # missing-whitespace
-  "E241",    # multiple-spaces-after-comma
-  "E242",    # tab-after-comma
-  "E251",    # unexpected-spaces-around-keyword-parameter-equals
-  "E252",    # missing-whitespace-around-parameter-equals
-  "E261",    # too-few-spaces-before-inline-comment
-  "E262",    # no-space-after-inline-comment
-  "E265",    # no-space-after-block-comment
-  "E266",    # multiple-leading-hashes-for-block-comment
-  "E271",    # multiple-spaces-after-keyword
-  "E272",    # multiple-spaces-before-keyword
-  "E273",    # tab-after-keyword
-  "E274",    # tab-before-keyword
-  "E275",    # missing-whitespace-after-keyword
   "W",       # pycodestyle (warning)
   "C90",     # mccabe
   "I",       # isort
@@ -165,25 +133,20 @@ select = [
   "PD",      # pandas-vet
   "PGH",     # pygrep-hooks
   "PLC",     # pylint
-  "PLC1901", # compare-to-empty-string
   "PLE",     # pylint
   "PLR",     # pylint
-  "PLR6301", # no-self-use
   "PLW",     # pylint
-  "PLW1641", # eq-without-hash
-  "PLW3201", # bad-dunder-method-name
   "TRY",     # tryceratops
   "FLY",     # flynt
   "PERF",    # perflint
-  "FURB113", # repeated-append
-  "FURB131", # delete-full-slice
-  "FURB132", # check-and-remove-from-set
+  "FURB",    # repeated-append
+  "LOG",     # flake8-logging
   "RUF",     # Ruff-specific rules
 ]
 src = ["src", "tests", "docs"]
 target-version = "py38"
 unfixable = [
-  "ERA"  # Don't remove commented out code
+  "ERA", # Don't remove commented out code
 ]
 
 [tool.ruff.per-file-ignores]
@@ -207,6 +170,10 @@ unfixable = [
   "SLF001",  # private-member-access
   "PLR6301", # no-self-use
 ]
+
+[tool.ruff.format]
+# Enable preview style formatting.
+preview = true
 
 [tool.ruff.flake8-quotes]
 docstring-quotes = "double"

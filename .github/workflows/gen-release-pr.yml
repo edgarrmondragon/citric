@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@v4.0.0
+      uses: actions/checkout@v4.1.0
 
     - name: Batch changes
       uses: miniscruff/changie-action@v2.0.0
@@ -78,9 +78,19 @@ jobs:
         title: "chore: Release ${{ steps.latest.outputs.output }}"
         branch: release/${{ steps.latest.outputs.output }}
         commit-message: "chore: Release ${{ steps.latest.outputs.output }}"
-        body: "Prepare release for `${{ steps.latest.outputs.output }}`"
+        body: |
+          Prepare release for `${{ steps.latest.outputs.output }}`.
+
+          Checklist:
+
+          - [ ] Check that the right version is set in all the files.
+          - [ ] Groom the changelog for wording or missing entries.
+          - [ ] Check that the integration tests table is up to date.
+
+          [Release Draft](${{ steps.draft-release.outputs.url }})
         reviewers: |
           edgarrmondragon
         assignees: |
           edgarrmondragon
         delete-branch: true
+        labels: Release
