@@ -340,62 +340,17 @@ jobs:
         name: coverage-integration
         path: ".coverage.*"
 
-    - name: Generate badge filename
-      if: always()
-      id: badge-filename
-      run: |
-        REF=${{ matrix.image_tag || matrix.ref }}
-        CLEAN_REF=${REF//\//-}
-        echo "filename=assets/badge/badge-integration-${{ matrix.python-version }}-${CLEAN_REF}-${{ matrix.database }}.json" >> $GITHUB_OUTPUT
-
-    - name: Update integration status badge
-      if: always()
-      id: badge
-      run: >
-        echo '{
-          "schemaVersion": 1,
-          "label": "${{ matrix.image_tag || matrix.ref }}, ${{ matrix.database }}",
-          "message": "${{ steps.nox-integration.outcome }}",
-          "color": "${{ steps.nox-integration.outcome == 'success' && 'green' || 'red' }}"
-        }' > ${{ steps.badge-filename.outputs.filename }}
-
-    - name: Upload integration status badge
-      if: always()
-      uses: actions/upload-artifact@v3.1.3
-      with:
-        name: badges
-        path: ${{ steps.badge-filename.outputs.filename }}
-
-  badges:
-    runs-on: ubuntu-latest
-    continue-on-error: true
-    needs: integration
-    if: always() && github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'Update badges')
-    steps:
-    - name: Check out the repository
-      uses: actions/checkout@v4.1.0
-
-    - name: Download integration status badges
-      uses: actions/download-artifact@v3.0.2
-      with:
-        name: badges
-        path: assets/badge
-
-    - uses: stefanzweifel/git-auto-commit-action@v4
-      with:
-        commit_message: "chore: Update badges"
-        file_pattern: assets/badge/*.json
-
   types:
     name: Type checking
     runs-on: ubuntu-latest
+    needs: python_versions
     env:
       NOXSESSION: mypy
       NOXFORCEPYTHON: ${{ matrix.python-version }}
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
+        python-version: ${{ fromJson(needs.python_versions.outputs.versions) }}
     steps:
     - name: Check out the repository
       uses: actions/checkout@v4.1.0
