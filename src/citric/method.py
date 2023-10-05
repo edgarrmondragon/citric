@@ -15,7 +15,7 @@ def __getattr__(name: str) -> t.Any:  # noqa: ANN401
     """Return the element from the citric.rpc.session module."""
     if not name.startswith("_"):
         warnings.warn(
-            f"citric.method.{name} is deprecated, use citric.rpc.method.{name} instead",  # noqa: E501
+            f"citric.method.{name} is deprecated, use citric.rpc.method.{name} instead",
             CitricDeprecationWarning,
             stacklevel=2,
         )
