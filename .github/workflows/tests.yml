@@ -176,11 +176,15 @@ jobs:
     - name: Check out the repository
       uses: actions/checkout@v4.1.0
 
-    - name: Output versions
+    - name: Test against all versions
       if: always()
+      run: |
+        echo '["3.8", "3.9", "3.10", "3.11", "3.12"]' > python-versions.json
+
+    - name: Output versions
       id: versions
       run: |
-        echo "versions='["3.8", "3.9", "3.10", "3.11", "3.12"]'" >> $GITHUB_OUTPUT
+        echo "versions=$(cat python-versions.json)" >> $GITHUB_OUTPUT
 
   integration:
     name: "integration ${{ matrix.python-version }} / ${{ matrix.image_tag || matrix.ref }} / ${{ matrix.database }}"
