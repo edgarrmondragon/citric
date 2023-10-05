@@ -131,7 +131,7 @@ jobs:
         path: ".coverage.*"
 
   docker_tags:
-    name: Get Docker tags from file
+    name: Get Docker tags
     runs-on: ubuntu-latest
     outputs:
       tags: ${{ steps.tags.outputs.tags }}
