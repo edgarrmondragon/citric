@@ -32,7 +32,12 @@ on:
   schedule:
   - cron: "44 */3 * * *"
   workflow_dispatch:
-    inputs: {}
+    inputs:
+      update_coverage:
+        description: "Update coverage"
+        required: true
+        default: false
+        type: boolean
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
@@ -162,6 +167,11 @@ jobs:
     - name: Check out the repository
       uses: actions/checkout@v4.1.0
 
+    - name: Test against latest tags
+      if: ${{ !contains(github.event.pull_request.labels.*.name, 'Release') && !inputs.update_coverage }}
+      run: |
+        echo '["6-apache", "5-apache"]' > .limesurvey-docker-tags.json
+
     - name: Output tags
       id: tags
       run: |
@@ -177,9 +187,14 @@ jobs:
       uses: actions/checkout@v4.1.0
 
     - name: Test against all versions
-      if: always()
+      if: ${{ contains(github.event.pull_request.labels.*.name, 'Release') || inputs.update_coverage }}
       run: |
         echo '["3.8", "3.9", "3.10", "3.11", "3.12"]' > python-versions.json
+
+    - name: Test against latest version
+      if: ${{ !contains(github.event.pull_request.labels.*.name, 'Release') && !inputs.update_coverage }}
+      run: |
+        echo '["3.12"]' > python-versions.json
 
     - name: Output versions
       id: versions
