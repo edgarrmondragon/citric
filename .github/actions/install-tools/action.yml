@@ -1,52 +1,51 @@
 name: Install tools
+description: Install tools for Python projects
 
-on:
-  workflow_call:
-    inputs:
-      constraints:
-        default: ".github/workflows/constraints.txt"
-        description: "Path to pip constraints file"
-        required: true
-        type: string
-      os:
-        default: "ubuntu-latest"
-        description: "Operating system"
-        required: true
-        type: string
+inputs:
+  constraints:
+    default: ".github/workflows/constraints.txt"
+    description: "Path to pip constraints file"
+    required: true
+  os:
+    default: "ubuntu-latest"
+    description: "Operating system"
+    required: true
 
-jobs:
-  install:
-    runs-on: ${{ inputs.os }}
-    steps:
-    - name: Upgrade pip
-      env:
-        PIP_CONSTRAINT: ${{ inputs.constraints }}
-      run: |
-        pip install pip
-        pip --version
+runs:
+  using: "composite"
+  steps:
+  - name: Upgrade pip
+    shell: bash
+    env:
+      PIP_CONSTRAINT: ${{ inputs.constraints }}
+    run: |
+      pip install pip
+      pip --version
 
-    - name: Upgrade pip in virtual environments
-      shell: python
-      run: |
-        import os
-        import pip
+  - name: Upgrade pip in virtual environments
+    shell: python
+    run: |
+      import os
+      import pip
 
-        with open(os.environ["GITHUB_ENV"], mode="a") as io:
-            print(f"VIRTUALENV_PIP={pip.__version__}", file=io)
+      with open(os.environ["GITHUB_ENV"], mode="a") as io:
+          print(f"VIRTUALENV_PIP={pip.__version__}", file=io)
 
-    - name: Install Poetry
-      env:
-        PIP_CONSTRAINT: ${{ inputs.constraints }}
-      run: |
-        pipx install poetry --verbose
-        pipx inject poetry poetry-dynamic-versioning[plugin]
-        poetry --version
-        poetry self show plugins
+  - name: Install Poetry
+    shell: bash
+    env:
+      PIP_CONSTRAINT: ${{ inputs.constraints }}
+    run: |
+      pipx install poetry --verbose
+      pipx inject poetry poetry-dynamic-versioning[plugin]
+      poetry --version
+      poetry self show plugins
 
-    - name: Install Nox
-      env:
-        PIP_CONSTRAINT: ${{ inputs.constraints }}
-      run: |
-        pipx install nox
-        pipx inject nox nox-poetry
-        nox --version
+  - name: Install Nox
+    shell: bash
+    env:
+      PIP_CONSTRAINT: ${{ inputs.constraints }}
+    run: |
+      pipx install nox
+      pipx inject nox nox-poetry
+      nox --version

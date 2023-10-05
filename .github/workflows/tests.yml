@@ -117,8 +117,6 @@ jobs:
 
     - name: Install tools
       uses: ./.github/actions/install-tools
-      with:
-        os: ${{ matrix.os }}
 
     - name: Run Nox
       id: nox
