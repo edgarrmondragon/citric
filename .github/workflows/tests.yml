@@ -116,7 +116,9 @@ jobs:
         python-version: "${{ matrix.python-version }}-dev"
 
     - name: Install tools
-      uses: ./.github/workflows/install-tools.yml
+      uses: ./.github/actions/install-tools
+      with:
+        os: ${{ matrix.os }}
 
     - name: Run Nox
       id: nox
@@ -149,7 +151,7 @@ jobs:
         cache-dependency-path: poetry.lock
 
     - name: Install tools
-      uses: ./.github/workflows/install-tools.yml
+      uses: ./.github/actions/install-tools
 
     - name: Test against required tags
       if: ${{ contains(github.event.pull_request.labels.*.name, 'Release') || inputs.update_coverage }}
@@ -255,7 +257,7 @@ jobs:
         cache-dependency-path: poetry.lock
 
     - name: Install tools
-      uses: ./.github/workflows/install-tools.yml
+      uses: ./.github/actions/install-tools
 
     - name: Download LimeSurvey archive
       if: ${{ matrix.ref }}
@@ -359,7 +361,7 @@ jobs:
         python-version: "3.12"
 
     - name: Install tools
-      uses: ./.github/workflows/install-tools.yml
+      uses: ./.github/actions/install-tools
 
     - name: Download coverage data
       uses: actions/download-artifact@v3.0.2
