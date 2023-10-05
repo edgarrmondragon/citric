@@ -37,6 +37,7 @@ __all__ = [
     "UploadedFile",
 ]
 
+T = t.TypeVar("T", bound=Session)
 EMAILS_SENT_STATUS_PATTERN = re.compile(r"(-?\d+) left to send")
 
 
@@ -92,7 +93,7 @@ class UploadedFile:
     """
 
 
-class Client:  # noqa: PLR0904
+class Client(t.Generic[T]):  # noqa: PLR0904
     """LimeSurvey Remote Control client.
 
     Offers explicit wrappers for RPC methods and simplifies common workflows.
@@ -112,7 +113,7 @@ class Client:  # noqa: PLR0904
        Support Auth plugins with the ``auth_plugin`` parameter.
     """
 
-    session_class = Session
+    session_class: type[T] = Session
 
     def __init__(
         self,
@@ -149,7 +150,7 @@ class Client:  # noqa: PLR0904
         self.close()
 
     @property
-    def session(self) -> Session:
+    def session(self) -> T:
         """Low-level RPC session."""
         return self.__session
 

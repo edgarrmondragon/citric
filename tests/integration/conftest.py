@@ -11,6 +11,7 @@ import semver
 
 import citric
 from citric.exceptions import LimeSurveyStatusError
+from citric.session import Session
 
 
 @pytest.fixture(scope="session")
@@ -20,7 +21,7 @@ def client(
     integration_password: str,
 ) -> t.Generator[citric.Client, None, None]:
     """RemoteControl2 API client."""
-    with citric.Client(
+    with citric.Client[Session](
         f"{integration_url}/index.php/admin/remotecontrol",
         integration_username,
         integration_password,
