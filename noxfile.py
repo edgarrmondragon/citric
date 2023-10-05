@@ -188,10 +188,7 @@ def api_changes(session: Session) -> None:
 def tags(session: Session) -> None:
     """Print tags."""
     session.install("requests", "requests-cache")
-    output = session.run("python", "scripts/docker_tags.py", silent=True)
-    Path(".limesurvey-docker-tags.json").write_text(output)
-
-    session.notify("generate-table")
+    session.run("python", "scripts/docker_tags.py")
 
 
 @session(name="generate-table", tags=["status"])

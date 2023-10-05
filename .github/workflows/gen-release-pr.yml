@@ -84,3 +84,4 @@ jobs:
         assignees: |
           edgarrmondragon
         delete-branch: true
+        labels: Release

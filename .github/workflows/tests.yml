@@ -115,38 +115,8 @@ jobs:
       with:
         python-version: "${{ matrix.python-version }}-dev"
 
-    - name: Upgrade pip
-      env:
-        PIP_CONSTRAINT: .github/workflows/constraints.txt
-      run: |
-        pip install pip
-        pip --version
-
-    - name: Upgrade pip in virtual environments
-      shell: python
-      run: |
-        import os
-        import pip
-
-        with open(os.environ["GITHUB_ENV"], mode="a") as io:
-            print(f"VIRTUALENV_PIP={pip.__version__}", file=io)
-
-    - name: Install Poetry
-      env:
-        PIP_CONSTRAINT: .github/workflows/constraints.txt
-      run: |
-        pipx install poetry --verbose
-        pipx inject poetry poetry-dynamic-versioning[plugin]
-        poetry --version
-        poetry self show plugins
-
-    - name: Install Nox
-      env:
-        PIP_CONSTRAINT: .github/workflows/constraints.txt
-      run: |
-        pipx install nox
-        pipx inject nox nox-poetry
-        nox --version
+    - name: Install tools
+      uses: ./.github/workflows/install-tools.yml
 
     - name: Run Nox
       id: nox
@@ -169,15 +139,32 @@ jobs:
     - name: Check out the repository
       uses: actions/checkout@v4.1.0
 
+    - name: Setup Python
+      uses: actions/setup-python@v4.7.0
+      with:
+        python-version: 3.12
+        architecture: x64
+        allow-prereleases: true
+        cache: pip
+        cache-dependency-path: poetry.lock
+
+    - name: Install tools
+      uses: ./.github/workflows/install-tools.yml
+
+    - name: Test against required tags
+      if: ${{ contains(github.event.pull_request.labels.*.name, 'Release') || inputs.update_coverage }}
+      run: |
+        nox -s generate-tags > limesurvey-docker-tags.json
+
     - name: Test against latest tags
       if: ${{ !contains(github.event.pull_request.labels.*.name, 'Release') && !inputs.update_coverage }}
       run: |
-        echo '["6-apache", "5-apache"]' > .limesurvey-docker-tags.json
+        echo '["6-apache", "5-apache"]' > limesurvey-docker-tags.json
 
     - name: Output tags
       id: tags
       run: |
-        echo "tags=$(cat .limesurvey-docker-tags.json)" >> $GITHUB_OUTPUT
+        echo "tags=$(cat limesurvey-docker-tags.json)" >> $GITHUB_OUTPUT
 
   python_versions:
     name: Get Python versions
@@ -267,38 +254,8 @@ jobs:
         cache: pip
         cache-dependency-path: poetry.lock
 
-    - name: Upgrade pip
-      env:
-        PIP_CONSTRAINT: .github/workflows/constraints.txt
-      run: |
-        pip install pip
-        pip --version
-
-    - name: Upgrade pip in virtual environments
-      shell: python
-      run: |
-        import os
-        import pip
-
-        with open(os.environ["GITHUB_ENV"], mode="a") as io:
-            print(f"VIRTUALENV_PIP={pip.__version__}", file=io)
-
-    - name: Install Poetry
-      env:
-        PIP_CONSTRAINT: .github/workflows/constraints.txt
-      run: |
-        pipx install poetry --verbose
-        pipx inject poetry poetry-dynamic-versioning[plugin]
-        poetry --version
-        poetry self show plugins
-
-    - name: Install Nox
-      env:
-        PIP_CONSTRAINT: .github/workflows/constraints.txt
-      run: |
-        pipx install nox
-        pipx inject nox nox-poetry
-        nox --version
+    - name: Install tools
+      uses: ./.github/workflows/install-tools.yml
 
     - name: Download LimeSurvey archive
       if: ${{ matrix.ref }}
@@ -401,29 +358,8 @@ jobs:
       with:
         python-version: "3.12"
 
-    - name: Upgrade pip
-      env:
-        PIP_CONSTRAINT: .github/workflows/constraints.txt
-      run: |
-        pip install pip
-        pip --version
-
-    - name: Install Poetry
-      env:
-        PIP_CONSTRAINT: .github/workflows/constraints.txt
-      run: |
-        pipx install poetry
-        pipx inject poetry poetry-dynamic-versioning[plugin]
-        poetry --version
-        poetry self show plugins
-
-    - name: Install Nox
-      env:
-        PIP_CONSTRAINT: .github/workflows/constraints.txt
-      run: |
-        pipx install nox
-        pipx inject nox nox-poetry
-        nox --version
+    - name: Install tools
+      uses: ./.github/workflows/install-tools.yml
 
     - name: Download coverage data
       uses: actions/download-artifact@v3.0.2
