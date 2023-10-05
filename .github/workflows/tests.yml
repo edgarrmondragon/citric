@@ -106,6 +106,8 @@ jobs:
         python-version: ${{ matrix.python-version }}
         architecture: x64
         allow-prereleases: true
+        cache: pip
+        cache-dependency-path: poetry.lock
 
     - name: Setup Python ${{ matrix.python-version }} (nightly)
       if: "${{ matrix.nightly }}"
@@ -262,6 +264,8 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
         architecture: x64
+        cache: pip
+        cache-dependency-path: poetry.lock
 
     - name: Upgrade pip
       env:
