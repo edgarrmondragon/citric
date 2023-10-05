@@ -190,11 +190,35 @@ jobs:
       run: |
         echo "versions=$(cat python-versions.json)" >> $GITHUB_OUTPUT
 
+  databases:
+    name: Get database engines
+    runs-on: ubuntu-latest
+    outputs:
+      engines: ${{ steps.engines.outputs.engines }}
+    steps:
+    - name: Check out the repository
+      uses: actions/checkout@v4.1.0
+
+    - name: Test against all engines
+      if: ${{ contains(github.event.pull_request.labels.*.name, 'Release') || inputs.update_coverage }}
+      run: |
+        echo '["postgres", "mysql"]' > database-engines.json
+
+    - name: Test against PostgreSQL
+      if: ${{ !contains(github.event.pull_request.labels.*.name, 'Release') && !inputs.update_coverage }}
+      run: |
+        echo '["postgres"]' > database-engines.json
+
+    - name: Output engines
+      id: engines
+      run: |
+        echo "engines=$(cat database-engines.json)" >> $GITHUB_OUTPUT
+
   integration:
     name: "integration ${{ matrix.python-version }} / ${{ matrix.image_tag || matrix.ref }} / ${{ matrix.database }}"
     runs-on: ubuntu-latest
     continue-on-error: true
-    needs: [docker_tags, python_versions]
+    needs: [docker_tags, python_versions, databases]
     env:
       COVERAGE_FILE: ".coverage.integration"
       LS_USER: citric_ci
@@ -206,16 +230,12 @@ jobs:
       fail-fast: false
       matrix:
         python-version: ${{ fromJson(needs.python_versions.outputs.versions) }}
-        database: [postgres]
+        database: ${{ fromJson(needs.databases.outputs.engines) }}
         ref: [""]
         context: [""]
         image_tag: ${{ fromJson(needs.docker_tags.outputs.tags) }}
         include:
-        # Test on other Python versions and database engines
-        - python-version: "3.12"
-          image_tag: "6-apache"
-          database: mysql
-
+        # Test on other Python versions
         - python-version: "pypy3.9"
           image_tag: "6-apache"
           database: postgres

@@ -78,7 +78,16 @@ jobs:
         title: "chore: Release ${{ steps.latest.outputs.output }}"
         branch: release/${{ steps.latest.outputs.output }}
         commit-message: "chore: Release ${{ steps.latest.outputs.output }}"
-        body: "Prepare release for `${{ steps.latest.outputs.output }}`"
+        body: |
+          Prepare release for `${{ steps.latest.outputs.output }}`.
+
+          Checklist:
+
+          - [ ] Check that the right version is set in all the files.
+          - [ ] Groom the changelog for wording or missing entries.
+          - [ ] Check that the integration tests table is up to date.
+
+          [Release Draft](${{ steps.draft-release.outputs.url }})
         reviewers: |
           edgarrmondragon
         assignees: |

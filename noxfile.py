@@ -189,25 +189,3 @@ def tags(session: Session) -> None:
     """Print tags."""
     session.install("requests", "requests-cache")
     session.run("python", "scripts/docker_tags.py")
-
-
-@session(name="generate-table", tags=["status"])
-def integration_status(session: Session) -> None:
-    """Print tags."""
-    session.install("tabulate")
-    output = session.run(
-        "python",
-        "scripts/gen_integration_results_table.py",
-        silent=True,
-    )
-    Path("status.temp.md").write_text(output)
-
-    session.notify("update-readme")
-
-
-@session(name="update-readme", tags=["status"])
-def update_readme_table(session: Session) -> None:
-    """Print tags."""
-    session.install("tabulate")
-    output = session.run("python", "scripts/update_integration_status.py", silent=True)
-    Path("README.md").write_text(output)
