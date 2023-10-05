@@ -40,7 +40,7 @@ nox -rs integration
 
 ```{tip}
 You can use the `--force-python` option to run the tests on a different
-Python version from the default one (`3.11`).
+Python version from the default one (`3.12`).
 ```
 
 ### Run integration tests on a specific LimeSurvey version

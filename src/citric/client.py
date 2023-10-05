@@ -378,23 +378,11 @@ class Client:  # noqa: PLR0904
         Returns:
             A new dictionary with the keys mapped to the <SID>X<GID>X<QID> format.
 
-        >>> mapped_keys = Client._map_response_keys(
-        ...     {"Q1": "foo", "Q2": "bar", "BAZ": "qux"},
-        ...     {
-        ...         "Q1": {
-        ...             "title": "Q1",
-        ...             "qid": 9,
-        ...             "gid": 7,
-        ...             "sid": 123,
-        ...         },
-        ...         "Q2": {
-        ...             "title": "Q2",
-        ...             "qid": 10,
-        ...             "gid": 7,
-        ...             "sid": 123,
-        ...         },
-        ...     },
-        ... )
+        >>> keys = {"Q1": "foo", "Q2": "bar", "BAZ": "qux"}
+        >>> q1 = {"title": "Q1", "qid": 9, "gid": 7, "sid": 123}
+        >>> q2 = {"title": "Q2", "qid": 10, "gid": 7, "sid": 123}
+        >>> questions = {"Q1": q1, "Q2": q2}
+        >>> mapped_keys = Client._map_response_keys(keys, questions)
         >>> mapped_keys
         {'123X7X9': 'foo', '123X7X10': 'bar', 'BAZ': 'qux'}
         """

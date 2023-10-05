@@ -31,11 +31,11 @@ TEST_DEPS = [
 
 package = "citric"
 
-python_versions = ["3.11", "3.10", "3.9", "3.8"]
+python_versions = ["3.12", "3.11", "3.10", "3.9", "3.8"]
 pypy_versions = ["pypy3.9", "pypy3.10"]
 all_python_versions = python_versions + pypy_versions
 
-main_cpython_version = "3.11"
+main_cpython_version = "3.12"
 main_pypy_version = "pypy3.9"
 
 locations = "src", "tests", "noxfile.py", "docs/conf.py"
@@ -201,29 +201,4 @@ def api_changes(session: Session) -> None:
 def tags(session: Session) -> None:
     """Print tags."""
     session.install("requests", "requests-cache")
-    output = session.run("python", "scripts/docker_tags.py", silent=True)
-    Path(".limesurvey-docker-tags.json").write_text(output)
-
-    session.notify("generate-table")
-
-
-@session(name="generate-table", tags=["status"])
-def integration_status(session: Session) -> None:
-    """Print tags."""
-    session.install("tabulate")
-    output = session.run(
-        "python",
-        "scripts/gen_integration_results_table.py",
-        silent=True,
-    )
-    Path("status.temp.md").write_text(output)
-
-    session.notify("update-readme")
-
-
-@session(name="update-readme", tags=["status"])
-def update_readme_table(session: Session) -> None:
-    """Print tags."""
-    session.install("tabulate")
-    output = session.run("python", "scripts/update_integration_status.py", silent=True)
-    Path("README.md").write_text(output)
+    session.run("python", "scripts/docker_tags.py")

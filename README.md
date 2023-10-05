@@ -60,20 +60,14 @@ Python.
 ### Integration tests
 
 <!-- start integration status -->
-| LimeSurvey version   | Database   | Status                                                                                                                                                                                                                                             |
-|----------------------|------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Latest 6             | PostgreSQL | ![Status of 6+ integration tests, postgres](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fedgarrmondragon%2Fcitric%2Fmain%2Fassets%2Fbadge%2Fbadge-integration-3.11-6-apache-postgres.json)                        |
-| Latest 6             | MySQL      | ![Status of 6+ integration tests, mysql](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fedgarrmondragon%2Fcitric%2Fmain%2Fassets%2Fbadge%2Fbadge-integration-3.11-6-apache-mysql.json)                              |
-| 6.2.7+230918         | PostgreSQL | ![Status of 6.2.7+230918 integration tests, postgres](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fedgarrmondragon%2Fcitric%2Fmain%2Fassets%2Fbadge%2Fbadge-integration-3.11-6.2.7-230918-apache-postgres.json)   |
-| 6.2.6+230904         | PostgreSQL | ![Status of 6.2.6+230904 integration tests, postgres](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fedgarrmondragon%2Fcitric%2Fmain%2Fassets%2Fbadge%2Fbadge-integration-3.11-6.2.6-230904-apache-postgres.json)   |
-| 6.2.4+230825         | PostgreSQL | ![Status of 6.2.4+230825 integration tests, postgres](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fedgarrmondragon%2Fcitric%2Fmain%2Fassets%2Fbadge%2Fbadge-integration-3.11-6.2.4-230825-apache-postgres.json)   |
-| Latest 5             | PostgreSQL | ![Status of 5+ integration tests, postgres](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fedgarrmondragon%2Fcitric%2Fmain%2Fassets%2Fbadge%2Fbadge-integration-3.11-5-apache-postgres.json)                        |
-| 5.6.37+230905        | PostgreSQL | ![Status of 5.6.37+230905 integration tests, postgres](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fedgarrmondragon%2Fcitric%2Fmain%2Fassets%2Fbadge%2Fbadge-integration-3.11-5.6.37-230905-apache-postgres.json) |
-| 5.6.35+230822        | PostgreSQL | ![Status of 5.6.35+230822 integration tests, postgres](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fedgarrmondragon%2Fcitric%2Fmain%2Fassets%2Fbadge%2Fbadge-integration-3.11-5.6.35-230822-apache-postgres.json) |
-| 5.6.34+230816        | PostgreSQL | ![Status of 5.6.34+230816 integration tests, postgres](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fedgarrmondragon%2Fcitric%2Fmain%2Fassets%2Fbadge%2Fbadge-integration-3.11-5.6.34-230816-apache-postgres.json) |
-| `master` branch      | PostgreSQL | ![Status of master branch integration tests, postgres](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fedgarrmondragon%2Fcitric%2Fmain%2Fassets%2Fbadge%2Fbadge-integration-3.11-refs-heads-master-postgres.json)    |
-| `develop` branch     | PostgreSQL | ![Status of develop branch integration tests, postgres](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fedgarrmondragon%2Fcitric%2Fmain%2Fassets%2Fbadge%2Fbadge-integration-3.11-refs-heads-develop-postgres.json)  |
-| `5.x` branch         | PostgreSQL | ![Status of 5.x branch integration tests, postgres](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fedgarrmondragon%2Fcitric%2Fmain%2Fassets%2Fbadge%2Fbadge-integration-3.11-refs-heads-5.x-postgres.json)          |
+| | **PostgreSQL** | **MySQL** |
+| - |:--: | :-: |
+| 6.2.8  | ✅ | ✅ |
+| 6.2.7  | ✅ | ✅ |
+| 6.2.6  | ✅ | ✅ |
+| 5.6.38 | ✅ | ✅ |
+| 5.6.37 | ✅ | ✅ |
+| 5.6.35 | ✅ | ✅ |
 <!-- end integration status -->
 
 ## Installation
