@@ -39,6 +39,7 @@ how-to
 :hidden:
 
 RPC method coverage <rpc_coverage>
+REST endpoints coverage <rest_coverage>
 ```
 
 ```{toctree}
