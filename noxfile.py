@@ -51,7 +51,7 @@ def tests(session: Session) -> None:
         deps.append("pytest-github-actions-annotate-failures")
 
     if session.python in ("3.13",):
-        env["PIP_NO_BINARY"] = "coverage"
+        env["PIP_NO_BINARY"] = "coverage,MarkupSafe"
 
     if session.python.startswith("pypy"):
         env["PIP_NO_BINARY"] = "MarkupSafe"
