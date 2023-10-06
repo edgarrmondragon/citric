@@ -26,7 +26,7 @@ class RESTClient:
        The REST API is still in early development, so the client is subject to changes.
 
     Args:
-        url: LimeSurvey server URL. For example, ``http://www.yourdomain.com/rest/v1.``.
+        url: LimeSurvey server URL. For example, ``http://www.yourdomain.com/rest/v1``.
         username: LimeSurvey user name.
         password: LimeSurvey password.
         requests_session: A :py:class:`requests.Session <requests.Session>` object.
