@@ -23,6 +23,7 @@ TEST_DEPS = [
     "coverage[toml]",
     "faker",
     "pytest",
+    "pytest-asyncio",
     "pytest-httpserver",
     "python-dotenv",
     "semver",
@@ -56,7 +57,7 @@ def tests(session: Session) -> None:
     if session.python.startswith("pypy"):
         env["PIP_NO_BINARY"] = "MarkupSafe"
 
-    session.install(".", env=env)
+    session.install(".[async]", env=env)
     session.install(*deps, env=env)
     args = session.posargs or ["-m", "not integration_test"]
 
@@ -74,7 +75,7 @@ def integration(session: Session) -> None:
     if GH_ACTIONS_ENV_VAR in os.environ:
         deps.append("pytest-github-actions-annotate-failures")
 
-    session.install(".")
+    session.install(".[async]")
     session.install(*deps)
 
     args = [

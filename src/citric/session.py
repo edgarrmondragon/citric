@@ -6,10 +6,10 @@ import json
 import logging
 import random
 import typing as t
-from importlib import metadata
 
 import requests
 
+from citric._util import get_citric_user_agent
 from citric.exceptions import (
     InvalidJSONResponseError,
     LimeSurveyApiError,
@@ -90,7 +90,7 @@ class Session:
     .. _closure: #citric.session.Session.close
     """
 
-    USER_AGENT = f"citric/{metadata.version('citric')}"
+    USER_AGENT = get_citric_user_agent()
 
     # TODO(edgarrmondragon): Remove this.
     # https://github.com/edgarrmondragon/citric/issues/893

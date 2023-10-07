@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import typing as t
 
-import requests
+import httpx
 
 from citric._util import get_citric_user_agent
 
@@ -18,8 +18,8 @@ if t.TYPE_CHECKING:
         from typing_extensions import Self
 
 
-class RESTClient:
-    """LimeSurvey REST API client.
+class AsyncRESTClient:
+    """Async LimeSurvey REST API client.
 
     .. warning::
        The REST API is still in early development, so the client is subject to changes.
@@ -28,7 +28,7 @@ class RESTClient:
         url: LimeSurvey server URL. For example, ``http://www.yourdomain.com/rest/v1``.
         username: LimeSurvey user name.
         password: LimeSurvey password.
-        requests_session: A :py:class:`requests.Session <requests.Session>` object.
+        http_client: A :py:class:`httpx.AsyncClient <requests.Session>` object.
 
     .. versionadded:: NEXT_VERSION
     """
@@ -41,24 +41,24 @@ class RESTClient:
         username: str,
         password: str,
         *,
-        requests_session: requests.Session | None = None,
+        requests_session: httpx.AsyncClient | None = None,
     ) -> None:
         """Create a LimeSurvey REST session."""
         self.url = url
         self.username = username
         self.password = password
-        self._session = requests_session or requests.session()
+        self._session = requests_session or httpx.AsyncClient()
         self._session.headers["User-Agent"] = self.USER_AGENT
         self._session_id: str | None = None
 
-    def authenticate(self, username: str, password: str) -> None:
+    async def authenticate(self, username: str, password: str) -> None:
         """Authenticate with the REST API.
 
         Args:
             username: LimeSurvey user name.
             password: LimeSurvey password.
         """
-        response = self._session.post(
+        response = await self._session.post(
             url=f"{self.url}/rest/v1/session",
             json={
                 "username": username,
@@ -68,14 +68,14 @@ class RESTClient:
         response.raise_for_status()
         self._session_id = response.json()
 
-    def close(self) -> None:
+    async def close(self) -> None:
         """Delete the session."""
-        response = self._session.delete(f"{self.url}/rest/v1/session")
+        response = await self._session.delete(f"{self.url}/rest/v1/session")
         response.raise_for_status()
         self._session_id = None
         self._session.auth = None
 
-    def _auth(self, request: requests.PreparedRequest) -> requests.PreparedRequest:
+    def _auth(self, request: httpx.Request) -> httpx.Request:
         """Authenticate with the REST API.
 
         This is an auth callable for
@@ -90,14 +90,14 @@ class RESTClient:
         request.headers["Authorization"] = f"Bearer {self._session_id}"
         return request
 
-    def make_request(
+    async def make_request(
         self,
         method: str,
         path: str,
         *,
         params: t.Mapping[str, t.Any] | None = None,
         json: t.Any | None = None,  # noqa: ANN401
-    ) -> requests.Response:
+    ) -> httpx.Response:
         """Make a request to the REST API.
 
         Args:
@@ -109,7 +109,7 @@ class RESTClient:
         Returns:
             Response.
         """
-        response = self._session.request(
+        response = await self._session.request(
             method=method,
             url=f"{self.url}{path}",
             params=params,
@@ -118,20 +118,20 @@ class RESTClient:
         response.raise_for_status()
         return response
 
-    def __enter__(self: Self) -> Self:
+    async def __aenter__(self: Self) -> Self:
         """Context manager for REST session.
 
         Returns:
             LimeSurvey REST client.
         """
-        self.authenticate(
+        await self.authenticate(
             username=self.username,
             password=self.password,
         )
         self._session.auth = self._auth
         return self
 
-    def __exit__(
+    async def __aexit__(
         self,
         exc_type: type[BaseException] | None,
         exc_value: BaseException | None,
@@ -144,18 +144,18 @@ class RESTClient:
             exc_value: Exception instance.
             traceback: Error traceback.
         """
-        self.close()
+        await self.close()
 
-    def get_surveys(self) -> list[dict[str, t.Any]]:
+    async def get_surveys(self) -> list[dict[str, t.Any]]:
         """Get all surveys.
 
         Returns:
             List of surveys.
         """
-        response = self.make_request("GET", "/rest/v1/survey")
+        response = await self.make_request("GET", "/rest/v1/survey")
         return response.json()["surveys"]
 
-    def get_survey_details(self, survey_id: int) -> dict[str, t.Any]:
+    async def get_survey_details(self, survey_id: int) -> dict[str, t.Any]:
         """Get survey details.
 
         Args:
@@ -164,10 +164,10 @@ class RESTClient:
         Returns:
             Survey details.
         """
-        response = self.make_request("GET", f"/rest/v1/survey-detail/{survey_id}")
+        response = await self.make_request("GET", f"/rest/v1/survey-detail/{survey_id}")
         return response.json()["survey"]
 
-    def update_survey_details(
+    async def update_survey_details(
         self,
         survey_id: int,
         **data: t.Any,
@@ -181,7 +181,7 @@ class RESTClient:
         Returns:
             Updated survey details.
         """
-        response = self.make_request(
+        response = await self.make_request(
             "PATCH",
             f"/rest/v1/survey-detail/{survey_id}",
             json={
