@@ -217,7 +217,10 @@ markers = [
 ]
 
 [tool.coverage.paths]
-source = ["src", "*/site-packages"]
+package = [
+  "src/citric/",
+  "*/site-packages/citric/",
+]
 
 [tool.coverage.run]
 branch = true
