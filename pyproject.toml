@@ -226,6 +226,7 @@ package = [
 branch = true
 parallel = true
 source = ["citric"]
+relative_files = true
 
 [tool.coverage.report]
 exclude_lines = ["pragma: no cover", '''if (t\.)?TYPE_CHECKING:''']
