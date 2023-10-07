@@ -33,7 +33,7 @@ def sort_tags(tags: t.Iterable[dict]) -> list[dict]:
     """Sort tags."""
     return sorted(
         tags,
-        key=lambda tag: tag["last_updated"],
+        key=lambda tag: tag["name"],
         reverse=True,
     )
 
