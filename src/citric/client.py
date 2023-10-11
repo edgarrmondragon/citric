@@ -1066,7 +1066,7 @@ class Client:  # noqa: PLR0904
         Returns:
             The LimeSurvey server version.
 
-        .. versionadded:: NEXT_VERSION
+        .. versionadded:: 0.9.0
         """
         return self._get_site_setting("versionnumber")
 
