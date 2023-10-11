@@ -27,12 +27,12 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4.1.0
       with:
-        fetch-tags: true
+        fetch-depth: 0
 
     - name: Set up Python
       uses: actions/setup-python@v4.7.0
       with:
-        python-version: "3.12"
+        python-version: "3.11"
 
     - name: Upgrade pip
       env:
@@ -71,7 +71,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v4.7.0
       with:
-        python-version: "3.12"
+        python-version: "3.11"
 
     - name: Upgrade pip
       env:
