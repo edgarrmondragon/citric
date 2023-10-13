@@ -103,5 +103,5 @@ jobs:
         with:
           file: dist/**
           tag: ${{ needs.build.outputs.version }}
-          overwrite: true
+          overwrite: false
           file_glob: true
