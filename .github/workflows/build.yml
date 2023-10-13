@@ -101,7 +101,7 @@ jobs:
             ./dist/*.whl
       - uses: svenstaro/upload-release-action@v2
         with:
-          file: dist/*.whl
+          file: dist/**
           tag: ${{ github.event.inputs.tag || needs.build.outputs.version }}
           overwrite: true
           file_glob: true
