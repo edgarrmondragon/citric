@@ -293,6 +293,7 @@ jobs:
         architecture: x64
         cache: pip
         cache-dependency-path: poetry.lock
+        allow-prereleases: true
 
     - name: Install tools
       uses: ./.github/actions/install-tools
