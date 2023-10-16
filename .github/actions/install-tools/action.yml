@@ -19,7 +19,7 @@ runs:
     env:
       PIP_CONSTRAINT: ${{ inputs.constraints }}
     run: |
-      pip install pip
+      python -m pip install pip
       pip --version
 
   - name: Upgrade pip in virtual environments
