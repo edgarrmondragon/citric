@@ -73,17 +73,22 @@ jobs:
           os: "ubuntu-latest"
           session: "xdoctest"
 
-        - python-version: "3.12"
+        - python-version: "3.13"
           os: "ubuntu-latest"
           session: "tests"
           experimental: true
-          nightly: true
 
         - python-version: "3.13"
           os: "ubuntu-latest"
           session: "tests"
           experimental: true
           nightly: true
+
+        # - python-version: "3.14"
+        #   os: "ubuntu-latest"
+        #   session: "tests"
+        #   experimental: true
+        #   nightly: true
 
         - python-version: "3.12"
           os: "windows-latest"
@@ -107,7 +112,9 @@ jobs:
         architecture: x64
         allow-prereleases: true
         cache: pip
-        cache-dependency-path: poetry.lock
+        cache-dependency-path: |
+          poetry.lock
+          .github/workflows/constraints.txt
 
     - name: Setup Python ${{ matrix.python-version }} (nightly)
       if: "${{ matrix.nightly }}"
@@ -146,7 +153,9 @@ jobs:
         architecture: x64
         allow-prereleases: true
         cache: pip
-        cache-dependency-path: poetry.lock
+        cache-dependency-path: |
+          poetry.lock
+          .github/workflows/constraints.txt
 
     - name: Install tools
       uses: ./.github/actions/install-tools
@@ -292,8 +301,10 @@ jobs:
         python-version: ${{ matrix.python-version }}
         architecture: x64
         cache: pip
-        cache-dependency-path: poetry.lock
         allow-prereleases: true
+        cache-dependency-path: |
+          poetry.lock
+          .github/workflows/constraints.txt
 
     - name: Install tools
       uses: ./.github/actions/install-tools
