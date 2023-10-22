@@ -44,7 +44,7 @@ def filter_tags(tags: t.Iterable[dict]) -> t.Generator[str, None, None]:
     count_6 = 0
     for tag in tags:
         name = tag["name"]
-        if name in ("6-apache", "5-apache"):
+        if name in {"6-apache", "5-apache"}:
             yield name
         if re.match(PATTERN_5x, name) and count_5 < 3:  # noqa: PLR2004
             yield name
