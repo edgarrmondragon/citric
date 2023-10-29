@@ -74,14 +74,20 @@ docs = [
 line-length = 88
 
 [tool.ruff]
+include = ["*.py", "*.pyi", "**/pyproject.toml", "*.ipynb"]
+line-length = 88
+src = ["src", "tests", "docs"]
+target-version = "py38"
+
+[tool.ruff.lint]
 explicit-preview-rules = false
 ignore = [
   "ANN101", # missing-type-self
   "DJ",     # flake8-django
   "FIX002", # line-contains-todo
+  "COM812",  # missing-trailing-comma
+  "ISC001",  # single-line-implicit-string-concatenation
 ]
-include = ["*.py", "*.pyi", "**/pyproject.toml", "*.ipynb"]
-line-length = 88
 preview = true
 select = [
   "F",       # Pyflakes
@@ -138,8 +144,6 @@ select = [
   "LOG",     # flake8-logging
   "RUF",     # Ruff-specific rules
 ]
-src = ["src", "tests", "docs"]
-target-version = "py38"
 unfixable = [
   "ERA", # Don't remove commented out code
 ]
@@ -170,44 +174,48 @@ unfixable = [
 # Enable preview style formatting.
 preview = true
 
-[tool.ruff.flake8-quotes]
+[tool.ruff.lint.flake8-quotes]
 docstring-quotes = "double"
 inline-quotes = "double"
 multiline-quotes = "double"
 
-[tool.ruff.flake8-annotations]
+[tool.ruff.lint.flake8-annotations]
 allow-star-arg-any = true
 mypy-init-return = true
 suppress-dummy-args = true
 
-[tool.ruff.flake8-errmsg]
+[tool.ruff.lint.flake8-errmsg]
 max-string-length = 30
 
-[tool.ruff.flake8-import-conventions]
+[tool.ruff.lint.flake8-import-conventions]
 banned-from = ["typing"]
 
-[tool.ruff.flake8-import-conventions.extend-aliases]
+[tool.ruff.lint.flake8-import-conventions.extend-aliases]
 typing = "t"
 
-[tool.ruff.flake8-pytest-style]
+[tool.ruff.lint.flake8-pytest-style]
 fixture-parentheses = false
 mark-parentheses = false
 
-[tool.ruff.isort]
+[tool.ruff.lint.isort]
 known-first-party = ["citric"]
 required-imports = ["from __future__ import annotations"]
 
-[tool.ruff.mccabe]
+[tool.ruff.lint.mccabe]
 max-complexity = 5
 
-[tool.ruff.pydocstyle]
+[tool.ruff.lint.pydocstyle]
 convention = "google"
 
-[tool.ruff.pylint]
+[tool.ruff.lint.pylint]
 max-args = 10
 
 [tool.pytest.ini_options]
-addopts = ["-vvv", "-W error"]
+addopts = [
+  "-vvv",
+  "-W error",
+  "-W default::citric._compat.FutureVersionWarning",
+]
 markers = [
   "integration_test: Integration and end-to-end tests",
   "xfail_mysql: Mark a test as expected to fail on MySQL",

@@ -88,9 +88,9 @@ def participants(faker: Faker) -> list[dict[str, t.Any]]:
 
 
 @pytest.fixture
-def server_version(client: citric.Client) -> semver.Version:
+def server_version(client: citric.Client) -> semver.VersionInfo:
     """Get the server version."""
-    return semver.Version.parse(client.get_server_version())
+    return semver.VersionInfo.parse(client.get_server_version())
 
 
 @pytest.mark.integration_test
@@ -186,6 +186,36 @@ def test_survey(client: citric.Client):
 
 
 @pytest.mark.integration_test
+def test_copy_survey_destination_id(
+    request: pytest.FixtureRequest,
+    client: citric.Client,
+    survey_id: int,
+    server_version: semver.VersionInfo,
+):
+    """Test copying a survey with a destination survey ID."""
+    request.applymarker(
+        pytest.mark.xfail(
+            server_version < semver.VersionInfo.parse("6.4.0-dev"),
+            reason=(
+                "The destination_survey_id parameter is only supported in LimeSurvey "
+                f"{server_version} < 6.4.0"
+            ),
+        ),
+    )
+
+    # Copy a survey, specifying a new survey ID
+    copied = client.copy_survey(
+        survey_id,
+        NEW_SURVEY_NAME,
+        destination_survey_id=9797,
+    )
+
+    assert copied["status"] == "OK"
+    assert copied["newsid"] == 9797
+
+
+@pytest.mark.integration_test
+@pytest.mark.xfail_mysql
 def test_group(client: citric.Client, survey_id: int):
     """Test group methods."""
     # Import a group
@@ -259,7 +289,7 @@ def test_question(client: citric.Client, survey_id: int):
 def test_quota(
     request: pytest.FixtureRequest,
     client: citric.Client,
-    server_version: semver.Version,
+    server_version: semver.VersionInfo,
     survey_id: int,
 ):
     """Test quota methods."""
@@ -584,7 +614,7 @@ def test_file_upload_invalid_extension(
 def test_get_available_site_settings(
     request: pytest.FixtureRequest,
     client: citric.Client,
-    server_version: semver.Version,
+    server_version: semver.VersionInfo,
 ):
     """Test getting available site settings."""
     request.applymarker(

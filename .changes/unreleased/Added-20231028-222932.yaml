@@ -1,0 +1,5 @@
+kind: Added
+body: Support `DestSurveyID` parameter to RPC method `copy_survey`
+time: 2023-10-28T22:29:32.491728-06:00
+custom:
+  Issue: "1016"
