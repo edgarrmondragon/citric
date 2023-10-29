@@ -245,7 +245,13 @@ def test_add_survey(client: MockClient):
 
 def test_copy_survey(client: MockClient):
     """Test copy_survey client method."""
-    assert_client_session_call(client, "copy_survey", 1, NEW_SURVEY_NAME)
+    assert_client_session_call(
+        client,
+        "copy_survey",
+        1,
+        NEW_SURVEY_NAME,
+        destination_survey_id=None,
+    )
 
 
 def test_delete_group(client: MockClient):

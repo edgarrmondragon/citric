@@ -13,6 +13,7 @@ from pathlib import Path
 import requests
 
 from citric import enums
+from citric._compat import future_parameter
 from citric.exceptions import LimeSurveyStatusError
 from citric.session import Session
 
@@ -488,7 +489,14 @@ class Client:  # noqa: PLR0904
         data = self._map_response_keys(response_data, questions)
         return self.session.update_response(survey_id, data)
 
-    def copy_survey(self, survey_id: int, name: str) -> dict[str, t.Any]:
+    @future_parameter("6.4.0", "destination_survey_id")
+    def copy_survey(
+        self,
+        survey_id: int,
+        name: str,
+        *,
+        destination_survey_id: int | None = None,
+    ) -> dict[str, t.Any]:
         """Copy a survey.
 
         Calls :rpc_method:`copy_survey`.
@@ -496,13 +504,18 @@ class Client:  # noqa: PLR0904
         Args:
             survey_id: ID of the source survey.
             name: Name of the new survey.
+            destination_survey_id: ID of the new survey. If already used a, random one
+                will be generated.
 
         Returns:
             Dictionary of status message and the new survey ID.
 
         .. versionadded:: 0.0.10
+        .. versionchanged:: NEXT_VERSION
+           The ``destination_survey_id`` optional parameter was added.
+        .. futureparam:: 6.4.0 destination_survey_id
         """
-        return self.session.copy_survey(survey_id, name)
+        return self.session.copy_survey(survey_id, name, destination_survey_id)
 
     def import_cpdb_participants(
         self,
