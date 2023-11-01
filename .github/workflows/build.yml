@@ -21,11 +21,11 @@ jobs:
       version: ${{ steps.set_version.outputs.version }}
 
     steps:
-    - uses: actions/checkout@v4.1.0
+    - uses: actions/checkout@v4.1.1
       with:
         fetch-depth: 0
         ref: ${{ github.event.inputs.tag || github.ref }}
-    - uses: actions/setup-python@v4.7.0
+    - uses: actions/setup-python@v4.7.1
       with:
         python-version: "3.11"
     - name: Upgrade pip

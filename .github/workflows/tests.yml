@@ -100,13 +100,13 @@ jobs:
 
     steps:
     - name: Check out the repository
-      uses: actions/checkout@v4.1.0
+      uses: actions/checkout@v4.1.1
       with:
         fetch-tags: true
 
     - name: Setup Python ${{ matrix.python-version }}
       if: "${{ !matrix.nightly }}"
-      uses: actions/setup-python@v4.7.0
+      uses: actions/setup-python@v4.7.1
       with:
         python-version: ${{ matrix.python-version }}
         architecture: x64
@@ -144,10 +144,10 @@ jobs:
       tags: ${{ steps.tags.outputs.tags }}
     steps:
     - name: Check out the repository
-      uses: actions/checkout@v4.1.0
+      uses: actions/checkout@v4.1.1
 
     - name: Setup Python
-      uses: actions/setup-python@v4.7.0
+      uses: actions/setup-python@v4.7.1
       with:
         python-version: 3.12
         architecture: x64
@@ -182,7 +182,7 @@ jobs:
       versions: ${{ steps.versions.outputs.versions }}
     steps:
     - name: Check out the repository
-      uses: actions/checkout@v4.1.0
+      uses: actions/checkout@v4.1.1
 
     - name: Test against all versions
       if: ${{ contains(github.event.pull_request.labels.*.name, 'Release') || inputs.update_coverage }}
@@ -206,7 +206,7 @@ jobs:
       engines: ${{ steps.engines.outputs.engines }}
     steps:
     - name: Check out the repository
-      uses: actions/checkout@v4.1.0
+      uses: actions/checkout@v4.1.1
 
     - name: Test against all engines
       if: ${{ contains(github.event.pull_request.labels.*.name, 'Release') || inputs.update_coverage }}
@@ -291,12 +291,12 @@ jobs:
 
     steps:
     - name: Check out the repository
-      uses: actions/checkout@v4.1.0
+      uses: actions/checkout@v4.1.1
       with:
         fetch-tags: true
 
     - name: Setup Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4.7.0
+      uses: actions/setup-python@v4.7.1
       with:
         python-version: ${{ matrix.python-version }}
         architecture: x64
@@ -366,12 +366,12 @@ jobs:
         python-version: ${{ fromJson(needs.python_versions.outputs.versions) }}
     steps:
     - name: Check out the repository
-      uses: actions/checkout@v4.1.0
+      uses: actions/checkout@v4.1.1
       with:
         fetch-tags: true
 
     - name: Setup Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4.7.0
+      uses: actions/setup-python@v4.7.1
       with:
         python-version: ${{ matrix.python-version }}
         architecture: x64
@@ -403,10 +403,10 @@ jobs:
       fail-fast: false
     steps:
     - name: Check out the repository
-      uses: actions/checkout@v4.1.0
+      uses: actions/checkout@v4.1.1
 
     - name: Set up Python
-      uses: actions/setup-python@v4.7.0
+      uses: actions/setup-python@v4.7.1
       with:
         python-version: "3.12"
 
