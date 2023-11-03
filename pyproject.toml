@@ -8,7 +8,6 @@ classifiers = [
   "License :: OSI Approved :: MIT License",
   "Natural Language :: English",
   "Operating System :: OS Independent",
-  "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
   "Programming Language :: Python :: Implementation :: CPython",
   "Programming Language :: Python :: Implementation :: PyPy",
@@ -210,6 +209,9 @@ convention = "google"
 [tool.ruff.lint.pylint]
 max-args = 10
 
+[tool.codespell]
+skip = ".mypy_cache,.nox,.ruff_cache,build,docs/index.md,poetry.lock"
+
 [tool.pytest.ini_options]
 addopts = [
   "-vvv",
@@ -249,9 +251,6 @@ warn_unused_ignores = true
 [[tool.mypy.overrides]]
 ignore_missing_imports = true
 module = ["nox.*", "nox_poetry.*", "pytest.*"]
-
-[tool.codespell]
-skip = ".mypy_cache,.nox,.ruff_cache,build,docs/index.md,poetry.lock"
 
 [tool.poetry-dynamic-versioning]
 enable = true
