@@ -29,10 +29,12 @@ return array(
         ),
         'request' => array(
             'baseUrl' => '',
+            // Remove this once it's fixed upstream
+            // https://github.com/LimeSurvey/LimeSurvey/pull/3599
             'enableCsrfValidation' => true,
             'noCsrfValidationRoutes' => array(
                 'rest',
-                'admin\\/remotecontrol',
+                'admin/remotecontrol',
                 'plugins/unsecure',
             ),
         ),
