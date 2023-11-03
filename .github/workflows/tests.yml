@@ -290,7 +290,7 @@ jobs:
           database: postgres
 
         - python-version: "3.12"
-          ref: ccef498e164255cfd1fe81453f34a320afac572f
+          ref: cdcf12b8870a9c8bfcaaa579ef22e425802e101f
           context: https://github.com/martialblog/docker-limesurvey.git#master:6.0/apache
           database: postgres
 
