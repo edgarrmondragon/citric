@@ -6,7 +6,7 @@ import typing as t
 import warnings
 from functools import wraps
 
-__all__ = ["FutureVersionWarning", "future"]
+__all__ = ["FutureVersionWarning", "future", "future_parameter"]
 
 
 def _warning_message(next_version: str) -> tuple[str, ...]:

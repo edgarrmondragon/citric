@@ -29,6 +29,12 @@ return array(
         ),
         'request' => array(
             'baseUrl' => '',
+            'enableCsrfValidation' => true,
+            'noCsrfValidationRoutes' => array(
+                'rest',
+                'admin\\/remotecontrol',
+                'plugins/unsecure',
+            ),
         ),
     ),
     'config' => array(
