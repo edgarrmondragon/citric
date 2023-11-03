@@ -290,7 +290,7 @@ jobs:
           database: postgres
 
         - python-version: "3.12"
-          ref: 70b09896e023d919791b0b5bb8bc345eee1b98ac
+          ref: ccef498e164255cfd1fe81453f34a320afac572f
           context: https://github.com/martialblog/docker-limesurvey.git#master:6.0/apache
           database: postgres
 
@@ -327,11 +327,6 @@ jobs:
       uses: actions-hub/docker/cli@v1.0.3
       env:
         SKIP_LOGIN: true
-
-    - name: Cache Docker images.
-      uses: ScribeMD/docker-cache@0.3.6
-      with:
-        key: docker-${{ runner.os }}-${{ hashFiles('docker-compose.*.yml') }}
 
     - name: Start services
       env:
