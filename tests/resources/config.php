@@ -29,7 +29,7 @@ return array(
         ),
         'request' => array(
             'baseUrl' => '',
-            // Remove this once it's fixed upstream
+            // TODO: Remove 'noCsrfValidationRoutes' this once it's fixed upstream
             // https://github.com/LimeSurvey/LimeSurvey/pull/3599
             'enableCsrfValidation' => true,
             'noCsrfValidationRoutes' => array(
