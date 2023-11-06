@@ -8,7 +8,6 @@ on:
     - tests/**
     - docker-compose*.yml
     - noxfile.py
-    - poetry.lock
     - pyproject.toml
     - .github/workflows/tests.yml
     - .github/workflows/constraints.txt
@@ -23,7 +22,6 @@ on:
     - tests/**
     - docker-compose*.yml
     - noxfile.py
-    - poetry.lock
     - pyproject.toml
     - .github/workflows/tests.yml
     - .github/workflows/constraints.txt
@@ -118,10 +116,6 @@ jobs:
         python-version: ${{ matrix.python-version }}
         architecture: x64
         allow-prereleases: true
-        cache: pip
-        cache-dependency-path: |
-          poetry.lock
-          .github/workflows/constraints.txt
 
     - name: Setup Python ${{ matrix.python-version }} (nightly)
       if: "${{ matrix.nightly }}"
@@ -160,10 +154,6 @@ jobs:
         python-version: 3.12
         architecture: x64
         allow-prereleases: true
-        cache: pip
-        cache-dependency-path: |
-          poetry.lock
-          .github/workflows/constraints.txt
 
     - name: Install tools
       uses: ./.github/actions/install-tools
@@ -308,11 +298,7 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
         architecture: x64
-        cache: pip
         allow-prereleases: true
-        cache-dependency-path: |
-          poetry.lock
-          .github/workflows/constraints.txt
 
     - name: Install tools
       uses: ./.github/actions/install-tools
@@ -389,10 +375,8 @@ jobs:
         PIP_CONSTRAINT: .github/workflows/constraints.txt
       run: |
         pip install pip
-        pipx install poetry
-        pipx inject poetry poetry-dynamic-versioning[plugin]
+        pipx install hatch
         pipx install nox
-        pipx inject nox nox-poetry
         pipx list
 
     - name: Run Nox

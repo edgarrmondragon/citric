@@ -12,8 +12,8 @@
   <a href="https://github.com/wntrblm/nox">
     <img alt="Nox" src="https://img.shields.io/badge/%F0%9F%A6%8A-Nox-D85E00.svg"/>
   </a>
-  <a href="https://python-poetry.org/">
-    <img alt="Poetry" src="https://img.shields.io/endpoint?url=https://python-poetry.org/badge/v0.json"/>
+  <a href="https://github.com/pypa/hatch">
+    <img alt="Hatch project" src="https://img.shields.io/badge/%F0%9F%A5%9A-Hatch-4051b5.svg"/>
   </a>
 </div>
 

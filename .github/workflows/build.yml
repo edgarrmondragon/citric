@@ -34,22 +34,20 @@ jobs:
       run: |
         pip install pip
         pip --version
-    - name: Install Poetry
+    - name: Install Hatch
       env:
         PIP_CONSTRAINT: .github/workflows/constraints.txt
       run: |
-        pipx install poetry
-        pipx inject poetry poetry-dynamic-versioning[plugin]
-        poetry --version
-        poetry self show plugins
+        pipx install hatch
+        hatch --version
     - name: Build a binary wheel and a source tarball
       run: |
-        poetry build
+        hatch build
         ls -l dist
     - name: Set version
       id: set_version
       run: |
-        version=$(poetry version --short)
+        version=$(hatch version)
         echo "version=$version" >> "$GITHUB_OUTPUT"
     - uses: actions/upload-artifact@v3.1.3
       with:

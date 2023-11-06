@@ -13,33 +13,22 @@ Ready to contribute? Here's how to set up `citric` for local development.
    git clone https://github.com/edgarrmondragon/citric.git
    ```
 
-1. Install [`poetry`][poetry] and the `poetry-dynamic-versioning` plugin:
+2. Install [`hatch`][hatch]:
 
-   ```shell
-   poetry self add "poetry-dynamic-versioning[plugin]"
-   ```
-
-1. Install the project dependencies:
-
-   ```shell
-   poetry install
-   ```
-
-1. Install [`nox`][nox] (used for automation):
+3. Install [`nox`][nox] (used for automation):
 
     ```shell
     pipx install nox
-    pipx inject nox nox-poetry
     nox -l
     ```
 
-1. To check that your changes pass the project style checks, use [`pre-commit`][pre-commit]:
+4. To check that your changes pass the project style checks, use [`pre-commit`][pre-commit]:
 
    ```shell
    pre-commit install
    ```
 
-1. Create a branch for local development:
+5. Create a branch for local development:
 
    ```shell
    git checkout -b name-of-your-bugfix-or-feature
@@ -47,7 +36,7 @@ Ready to contribute? Here's how to set up `citric` for local development.
 
    Now you can make your changes locally.
 
-1. Commit your changes and push your branch to GitHub:
+6. Commit your changes and push your branch to GitHub:
 
    ```shell
    git add .
@@ -55,15 +44,15 @@ Ready to contribute? Here's how to set up `citric` for local development.
    git push origin name-of-your-bugfix-or-feature
    ```
 
-1. Submit a pull request through the GitHub website.
+7. Submit a pull request through the GitHub website.
 
-1. (Optional) Add a changelog entry using [`changie`][changie]. You'll need to install the Change CLI in order to add a changelog entry:
+8. (Optional) Add a changelog entry using [`changie`][changie]. You'll need to install the Change CLI in order to add a changelog entry:
 
    ```shell
    changie new
    ```
 
-[poetry]: https://python-poetry.org/docs/#installation
+[hatch]: https://hatch.pypa.io/latest/install/
 [nox]: https://nox.thea.codes/en/stable/
 [pre-commit]: https://pre-commit.com/
 [changie]: https://changie.dev/

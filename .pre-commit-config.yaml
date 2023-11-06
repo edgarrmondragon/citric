@@ -64,3 +64,10 @@ repos:
   rev: "1.5.1"
   hooks:
   - id: pyproject-fmt
+
+- repo: https://github.com/jazzband/pip-tools
+  rev: 7.3.0
+  hooks:
+  - id: pip-compile
+    files: ^pyproject\.toml$
+    args: ["--extra", "docs", "-o", "docs/requirements.txt"]
