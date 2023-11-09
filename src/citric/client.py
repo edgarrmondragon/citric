@@ -123,7 +123,6 @@ class Client:  # noqa: PLR0904
         requests_session: requests.Session | None = None,
         auth_plugin: str = "Authdb",
     ) -> None:
-        """Create a LimeSurvey Python API client."""
         self.__session = self.session_class(
             url,
             username,
@@ -169,20 +168,34 @@ class Client:  # noqa: PLR0904
         """
         return self.session.get_fieldmap(survey_id)
 
-    def activate_survey(self, survey_id: int) -> types.OperationStatus:
+    def activate_survey(
+        self,
+        survey_id: int,
+        *,
+        user_activation_settings: types.SurveyUserActivationSettings | None = None,
+    ) -> types.OperationStatus:
         """Activate a survey.
 
         Calls :rpc_method:`activate_survey`.
 
         Args:
             survey_id: ID of survey to be activated.
+            user_activation_settings: Optional user activation settings.
 
         Returns:
             Status and plugin feedback.
 
         .. versionadded:: 0.0.1
         """
-        return self.session.activate_survey(survey_id)
+        activation_settings = (
+            {
+                key: "Y" if value else "N"
+                for key, value in user_activation_settings.items()
+            }
+            if user_activation_settings
+            else None
+        )
+        return self.session.activate_survey(survey_id, activation_settings)
 
     def activate_tokens(
         self,

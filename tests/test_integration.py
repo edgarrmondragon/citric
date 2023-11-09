@@ -197,7 +197,7 @@ def test_copy_survey_destination_id(
         pytest.mark.xfail(
             server_version < semver.VersionInfo.parse("6.4.0-dev"),
             reason=(
-                "The destination_survey_id parameter is only supported in LimeSurvey "
+                "The destination_survey_id parameter is not supported in LimeSurvey "
                 f"{server_version} < 6.4.0"
             ),
         ),
@@ -346,6 +346,51 @@ def test_activate_survey(client: citric.Client, survey_id: int):
 
     properties_after = client.get_survey_properties(survey_id, ["active"])
     assert properties_after["active"] == "Y"
+
+
+@pytest.mark.integration_test
+def test_activate_survey_with_settings(
+    request: pytest.FixtureRequest,
+    client: citric.Client,
+    server_version: semver.VersionInfo,
+    survey_id: int,
+):
+    """Test whether the survey gets activated with the requested settings."""
+    min_version = (5, 6, 45) if server_version < (6, 0) else (6, 3, 5)
+    request.applymarker(
+        pytest.mark.xfail(
+            server_version < min_version,
+            reason=(
+                "The user_activation_settings parameter is not supported in LimeSurvey "
+                f"{server_version} < {'.'.join(str(v) for v in min_version)}"
+            ),
+        ),
+    )
+
+    properties_before = client.get_survey_properties(
+        survey_id,
+        ["active", "anonymized", "ipaddr"],
+    )
+    assert properties_before["active"] == "N"
+    assert properties_before["anonymized"] == "N"
+    assert properties_before["ipaddr"] == "I"
+
+    result = client.activate_survey(
+        survey_id,
+        user_activation_settings={
+            "anonymized": True,
+            "ipaddr": False,
+        },
+    )
+    assert result["status"] == "OK"
+
+    properties_after = client.get_survey_properties(
+        survey_id,
+        ["active", "anonymized", "ipaddr"],
+    )
+    assert properties_after["active"] == "Y"
+    assert properties_after["anonymized"] == "Y"
+    assert properties_after["ipaddr"] == "N"
 
 
 @pytest.mark.integration_test

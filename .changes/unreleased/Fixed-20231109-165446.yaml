@@ -1,0 +1,5 @@
+kind: Fixed
+body: Update `types.YesNo` to include inherited (`I`) values
+time: 2023-11-09T16:54:46.179939-06:00
+custom:
+  Issue: "1026"

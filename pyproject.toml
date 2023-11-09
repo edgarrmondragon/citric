@@ -83,11 +83,12 @@ target-version = "py38"
 [tool.ruff.lint]
 explicit-preview-rules = false
 ignore = [
-  "ANN101", # missing-type-self
-  "DJ",     # flake8-django
-  "FIX002", # line-contains-todo
+  "ANN101",  # missing-type-self
+  "DJ",      # flake8-django
+  "FIX002",  # line-contains-todo
   "COM812",  # missing-trailing-comma
   "ISC001",  # single-line-implicit-string-concatenation
+  "D107",    # undocumented-public-init
 ]
 preview = true
 select = [
