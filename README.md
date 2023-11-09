@@ -34,10 +34,10 @@
 
 <div>
   <a href="https://pypi.org/project/citric">
-    <img alt="PyPI version" src="https://img.shields.io/pypi/v/citric.svg?color=blue"/>
+    <img alt="PyPI version" src="https://img.shields.io/pypi/v/citric.svg?logo=pypi&logoColor=FFE873&color=blue"/>
   </a>
   <a href="https://pypi.org/project/citric">
-    <img alt="Python versions" src="https://img.shields.io/pypi/pyversions/citric.svg"/>
+    <img alt="Python versions" src="https://img.shields.io/pypi/pyversions/citric.svg?logo=python&logoColor=FFE873"/>
   </a>
   <a href="https://pypi.org/project/citric">
     <img alt="PyPI - Downloads" src="https://img.shields.io/pypi/dm/citric?color=blue"/>
