@@ -26,6 +26,7 @@ extensions = [
     "sphinx_copybutton",
     "limesurvey_future",
     "hoverxref.extension",
+    "notfound.extension",
 ]
 
 autodoc_typehints = "description"

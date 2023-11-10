@@ -1221,6 +1221,24 @@ doc = ["sphinx", "sphinx-autoapi", "sphinx-autobuild", "sphinx-notfound-page", "
 test = ["tox"]
 
 [[package]]
+name = "sphinx-notfound-page"
+version = "1.0.0"
+description = "Sphinx extension to build a 404 page with absolute URLs"
+optional = true
+python-versions = ">=3.8"
+files = [
+    {file = "sphinx_notfound_page-1.0.0-py3-none-any.whl", hash = "sha256:40a5741a6b07245a08fe55dbbd603ad6719e191b1419ab2e5337c706ebd16554"},
+    {file = "sphinx_notfound_page-1.0.0.tar.gz", hash = "sha256:14cd388956de5cdf8710ab4ff31776ef8d85759c4f46014ee30f368e83bd3a3b"},
+]
+
+[package.dependencies]
+sphinx = ">=5"
+
+[package.extras]
+doc = ["sphinx-autoapi", "sphinx-rtd-theme", "sphinx-tabs", "sphinxemoji"]
+test = ["tox"]
+
+[[package]]
 name = "sphinxcontrib-applehelp"
 version = "1.0.7"
 description = "sphinxcontrib-applehelp is a Sphinx extension which outputs Apple help books"
@@ -1489,9 +1507,9 @@ docs = ["furo", "jaraco.packaging (>=9.3)", "jaraco.tidelift (>=1.4)", "rst.link
 testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "pytest (>=6)", "pytest-black (>=0.3.7)", "pytest-checkdocs (>=2.4)", "pytest-cov", "pytest-enabler (>=2.2)", "pytest-ignore-flaky", "pytest-mypy (>=0.9.1)", "pytest-ruff"]
 
 [extras]
-docs = ["furo", "myst-parser", "sphinx", "sphinx-autoapi", "sphinx-autobuild", "sphinx-copybutton", "sphinx-hoverxref"]
+docs = ["furo", "myst-parser", "sphinx", "sphinx-autoapi", "sphinx-autobuild", "sphinx-copybutton", "sphinx-hoverxref", "sphinx-notfound-page"]
 
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8"
-content-hash = "4db34c045ba88c33ff8e3ea20b07e1ae276ca95767e8ab8d2462142850614a1d"
+content-hash = "52edf8cd7642def0352d931c19d524802075165c5c5b2dc8bb0de7c789165c64"
