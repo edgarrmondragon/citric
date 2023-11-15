@@ -359,7 +359,7 @@ def test_activate_survey_with_settings(
     min_version = (5, 6, 45) if server_version < (6, 0) else (6, 3, 5)
     request.applymarker(
         pytest.mark.xfail(
-            server_version < min_version,
+            server_version < min_version or server_version.prerelease is not None,
             reason=(
                 "The user_activation_settings parameter is not supported in LimeSurvey "
                 f"{server_version} < {'.'.join(str(v) for v in min_version)}"
