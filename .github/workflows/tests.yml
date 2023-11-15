@@ -84,12 +84,12 @@ jobs:
           experimental: true
           nightly: true
 
-        - python-version: "3.13"
-          os: "ubuntu-latest"
-          session: "tests"
-          experimental: true
-          nightly: true
-          nogil: true
+        # - python-version: "3.13"
+        #   os: "ubuntu-latest"
+        #   session: "tests"
+        #   experimental: true
+        #   nightly: true
+        #   nogil: true
 
         # - python-version: "3.14"
         #   os: "ubuntu-latest"

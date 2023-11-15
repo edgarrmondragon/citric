@@ -22,6 +22,7 @@ from citric.objects import Participant
 
 if t.TYPE_CHECKING:
     from faker import Faker
+    from pytest_subtests import SubTests
 
 NEW_SURVEY_NAME = "New Survey"
 
@@ -94,14 +95,17 @@ def server_version(client: citric.Client) -> semver.VersionInfo:
 
 
 @pytest.mark.integration_test
-def test_fieldmap(client: citric.Client, survey_id: int):
+def test_fieldmap(client: citric.Client, survey_id: int, subtests: SubTests):
     """Test fieldmap."""
     fieldmap = client.get_fieldmap(survey_id)
     for key, value in fieldmap.items():
-        assert key == value["fieldname"]
-        assert (
-            key == "{sid}X{gid}X{qid}".format(**value) or not value["qid"] or "_" in key
-        )
+        with subtests.test(msg="test field", field=key):
+            assert key == value["fieldname"]
+            assert (
+                key == "{sid}X{gid}X{qid}".format(**value)
+                or not value["qid"]
+                or "_" in key
+            )
 
 
 @pytest.mark.integration_test
@@ -416,6 +420,7 @@ def test_participants(
     client: citric.Client,
     survey_id: int,
     participants: list[dict[str, str]],
+    subtests: SubTests,
 ):
     """Test participants methods."""
     client.activate_survey(survey_id)
@@ -428,11 +433,12 @@ def test_participants(
         create_tokens=False,
     )
     for p, d in zip(added, participants):
-        assert p["email"] == d["email"]
-        assert p["firstname"] == d["firstname"]
-        assert p["lastname"] == d["lastname"]
-        assert p["attribute_1"] == d["attribute_1"]
-        assert p["attribute_2"] == d["attribute_2"]
+        with subtests.test(msg="test new participants properties", token=d["token"]):
+            assert p["email"] == d["email"]
+            assert p["firstname"] == d["firstname"]
+            assert p["lastname"] == d["lastname"]
+            assert p["attribute_1"] == d["attribute_1"]
+            assert p["attribute_2"] == d["attribute_2"]
 
     participants_list = client.list_participants(
         survey_id,
@@ -444,20 +450,22 @@ def test_participants(
 
     # Check added participant properties
     for p, d in zip(participants_list, participants[:2]):
-        assert p["participant_info"]["email"] == d["email"]
-        assert p["participant_info"]["firstname"] == d["firstname"]
-        assert p["participant_info"]["lastname"] == d["lastname"]
-        assert p["attribute_1"] == d["attribute_1"]
-        assert p["attribute_2"] == d["attribute_2"]
+        with subtests.test(msg="test new participants properties", token=p["tid"]):
+            assert p["participant_info"]["email"] == d["email"]
+            assert p["participant_info"]["firstname"] == d["firstname"]
+            assert p["participant_info"]["lastname"] == d["lastname"]
+            assert p["attribute_1"] == d["attribute_1"]
+            assert p["attribute_2"] == d["attribute_2"]
 
     # Get participant properties
     for p, d in zip(added, participants[:2]):
-        properties = client.get_participant_properties(survey_id, p["tid"])
-        assert properties["email"] == d["email"]
-        assert properties["firstname"] == d["firstname"]
-        assert properties["lastname"] == d["lastname"]
-        assert properties["attribute_1"] == d["attribute_1"]
-        assert properties["attribute_2"] == d["attribute_2"]
+        with subtests.test(msg="test updated participants properties", token=p["tid"]):
+            properties = client.get_participant_properties(survey_id, p["tid"])
+            assert properties["email"] == d["email"]
+            assert properties["firstname"] == d["firstname"]
+            assert properties["lastname"] == d["lastname"]
+            assert properties["attribute_1"] == d["attribute_1"]
+            assert properties["attribute_2"] == d["attribute_2"]
 
     # Update participant properties
     new_firstname = faker.first_name()
