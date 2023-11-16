@@ -8,7 +8,11 @@ from __future__ import annotations
 import citric
 import duckdb
 
-client = citric.Client(...)
+client = citric.Client(
+    "https://mylimeserver.com/index.php/admin/remotecontrol",
+    "iamadmin",
+    "secret",
+)
 
 with open("responses.csv", "wb") as file:
     file.write(client.export_responses(12345, file_format="csv"))

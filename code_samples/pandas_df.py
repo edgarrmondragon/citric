@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-# ruff: noqa: PD901
+# ruff: noqa: PD901, S106
 # start example
 import io
 
@@ -11,7 +11,11 @@ from citric import Client
 
 survey_id = 123456
 
-client = Client(...)
+client = Client(
+    "https://mylimeserver.com/index.php/admin/remotecontrol",
+    "iamadmin",
+    "secret",
+)
 
 # Export responses to CSV and read into a Pandas DataFrame
 df = pd.read_csv(
