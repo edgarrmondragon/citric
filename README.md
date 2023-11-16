@@ -44,9 +44,11 @@
   </a>
 </div>
 
-A client to the [LimeSurvey Remote Control API 2](https://manual.limesurvey.org/RemoteControl_2_API), written in modern
-Python.
+*A client to the [LimeSurvey Remote Control API 2](https://manual.limesurvey.org/RemoteControl_2_API), written in modern Python.*
+
 </div>
+
+<!-- begin-short -->
 
 ## Features
 
@@ -58,16 +60,14 @@ Python.
 
 ### Integration tests
 
-<!-- start integration status -->
-| | **PostgreSQL** | **MySQL** |
-| - |:--: | :-: |
-| 6.3.4  | ✅ | ✅ |
-| 6.3.3  | ✅ | ✅ |
-| 6.3.1  | ✅ | ✅ |
-| 5.6.44 | ✅ | ✅ |
-| 5.6.43 | ✅ | ✅ |
-| 5.6.42 | ✅ | ✅ |
-<!-- end integration status -->
+Integration tests are run against a LimeSurvey instance, and both PostgreSQL and MySQL backends, using Docker Compose. The following versions of LimeSurvey were tested for this release:
+
+- [6.3.4](https://github.com/LimeSurvey/LimeSurvey/releases/tag/6.3.4%2B231108)
+- [6.3.3](https://github.com/LimeSurvey/LimeSurvey/releases/tag/6.3.3%2B231106)
+- [6.3.1](https://github.com/LimeSurvey/LimeSurvey/releases/tag/6.3.1%2B231023)
+- [5.6.44](https://github.com/LimeSurvey/LimeSurvey/releases/tag/5.6.44%2B231107)
+- [5.6.43](https://github.com/LimeSurvey/LimeSurvey/releases/tag/5.6.43%2B231030)
+- [5.6.42](https://github.com/LimeSurvey/LimeSurvey/releases/tag/5.6.42%2B231024)
 
 ## Installation
 
@@ -94,6 +94,8 @@ print(client.get_server_version())
 for survey in client.list_surveys():
     print(survey["surveyls_title"])
 ```
+
+<!-- end-short -->
 
 ## Documentation
 
