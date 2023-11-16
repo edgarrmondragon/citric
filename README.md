@@ -61,12 +61,12 @@ Python.
 <!-- start integration status -->
 | | **PostgreSQL** | **MySQL** |
 | - |:--: | :-: |
+| 6.3.4  | ✅ | ✅ |
 | 6.3.3  | ✅ | ✅ |
 | 6.3.1  | ✅ | ✅ |
-| 6.3.0  | ✅ | ✅ |
+| 5.6.44 | ✅ | ✅ |
 | 5.6.43 | ✅ | ✅ |
 | 5.6.42 | ✅ | ✅ |
-| 5.6.41 | ✅ | ✅ |
 <!-- end integration status -->
 
 ## Installation

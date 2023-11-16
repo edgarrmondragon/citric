@@ -27,11 +27,12 @@ __all__ = [
     "RPCResponse",
     "SetQuotaPropertiesResult",
     "SurveyProperties",
+    "SurveyUserActivationSettings",
     "CPDBParticipantImportResult",
 ]
 
 Result: TypeAlias = t.Any
-YesNo: TypeAlias = t.Literal["Y", "N"]
+YesNo: TypeAlias = t.Literal["Y", "N", "I"]
 
 
 class FileUploadResult(t.TypedDict):
@@ -495,3 +496,23 @@ class CPDBParticipantImportResult(t.TypedDict):
 
     ImportCount: int
     UpdateCount: int
+
+
+class SurveyUserActivationSettings(t.TypedDict, total=False):
+    """User settings for survey activation.
+
+    Keys:
+        anonymized: Whether the survey is anonymized.
+        datestamp: Whether the survey records dates.
+        ipaddr: Whether the survey records IP addresses.
+        ipanonymize: Whether the survey anonymizes IP addresses.
+        refurl: Whether the survey records referrer URLs.
+        savetimings: Whether the survey saves response timings.
+    """
+
+    anonymized: bool
+    datestamp: bool
+    ipaddr: bool
+    ipanonymize: bool
+    refurl: bool
+    savetimings: bool
