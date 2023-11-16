@@ -1,4 +1,4 @@
-s# How-to Guide
+# How-to Guide
 
 For the full JSON-RPC reference, see the [RemoteControl 2 API docs][rc2api].
 
