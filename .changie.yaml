@@ -36,6 +36,9 @@ replacements:
 - path: .github/ISSUE_TEMPLATE/BUG.yml
   find: "^      placeholder: \".*\"$"
   replace: "      placeholder: \"{{.VersionNoPrefix}}\""
+- path: CITATION.cff
+  find: "^version: \".*\"$"
+  replace: "version: \"{{.VersionNoPrefix}}\""
 custom:
 - key: Issue
   type: int
