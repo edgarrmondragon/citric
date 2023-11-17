@@ -200,6 +200,7 @@ def test_copy_survey_destination_id(
                 "The destination_survey_id parameter is not supported in LimeSurvey "
                 f"{server_version} < 6.4.0"
             ),
+            strict=True,
         ),
     )
 
@@ -215,7 +216,7 @@ def test_copy_survey_destination_id(
 
 
 @pytest.mark.integration_test
-@pytest.mark.xfail_mysql
+@pytest.mark.xfail_mysql(strict=True)
 def test_group(client: citric.Client, survey_id: int):
     """Test group methods."""
     # Import a group
@@ -301,6 +302,7 @@ def test_quota(
                 f"{server_version} < 6.0.0"
             ),
             raises=requests.exceptions.HTTPError,
+            strict=True,
         ),
     )
 
@@ -359,11 +361,12 @@ def test_activate_survey_with_settings(
     min_version = (5, 6, 45) if server_version < (6, 0) else (6, 3, 5)
     request.applymarker(
         pytest.mark.xfail(
-            server_version < min_version or server_version.prerelease is not None,
+            server_version < min_version,
             reason=(
                 "The user_activation_settings parameter is not supported in LimeSurvey "
                 f"{server_version} < {'.'.join(str(v) for v in min_version)}"
             ),
+            strict=True,
         ),
     )
 
@@ -580,7 +583,7 @@ def test_responses(client: citric.Client, survey_id: int, tmp_path: Path):
 
 
 @pytest.mark.integration_test
-@pytest.mark.xfail_mysql
+@pytest.mark.xfail_mysql(strict=True)
 def test_file_upload(client: citric.Client, survey_id: int, tmp_path: Path):
     """Test uploading and downloading files from a survey."""
     filepath = tmp_path / "hello world.txt"
@@ -606,7 +609,7 @@ def test_file_upload(client: citric.Client, survey_id: int, tmp_path: Path):
 
 
 @pytest.mark.integration_test
-@pytest.mark.xfail_mysql
+@pytest.mark.xfail_mysql(strict=True)
 def test_file_upload_no_filename(client: citric.Client, survey_id: int, tmp_path: Path):
     """Test uploading and downloading files from a survey without a filename."""
     filepath = tmp_path / "hello world.txt"
@@ -630,7 +633,7 @@ def test_file_upload_no_filename(client: citric.Client, survey_id: int, tmp_path
 
 
 @pytest.mark.integration_test
-@pytest.mark.xfail_mysql
+@pytest.mark.xfail_mysql(strict=True)
 def test_file_upload_invalid_extension(
     client: citric.Client,
     survey_id: int,
@@ -670,6 +673,7 @@ def test_get_available_site_settings(
                 f"LimeSurvey {server_version} < 6.0.0"
             ),
             raises=requests.exceptions.HTTPError,
+            strict=True,
         ),
     )
     assert client.get_available_site_settings()
