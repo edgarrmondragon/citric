@@ -162,7 +162,7 @@ class LimeSurveyMockAdapter(BaseAdapter):
         request: requests.PreparedRequest,
         stream: bool = False,  # noqa: FBT001, FBT002
         timeout: float | tuple[float, float] | tuple[float, None] | None = None,
-        verify: bool | str = True,  # noqa: FBT002
+        verify: bool | str = True,  # noqa: FBT001, FBT002
         cert: None | bytes | str | tuple[bytes | str, bytes | str] = None,
         proxies: t.Mapping[str, str] | None = None,
     ):
