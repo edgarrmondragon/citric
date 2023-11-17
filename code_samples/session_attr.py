@@ -11,6 +11,6 @@ client = Client(
     "secret",
 )
 
-# Call the copy_survey method, not available in Client
-new_survey_id = client.session.copy_survey(35239, "copied_survey")
+# Call the not_available_in_client method, not available in the Client
+new_survey_id = client.session.not_available_in_client(35239, "copied_survey")
 # end example

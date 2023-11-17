@@ -32,6 +32,13 @@ Otherwise, you can manually close the session with {meth}`client.close() <citric
 :end-before: end example
 ```
 
+## Change the default HTTP session attributes
+
+```{literalinclude} ../code_samples/requests_session_attributes.py
+:start-after: start example
+:end-before: end example
+```
+
 ## Use custom `requests` session
 
 It's possible to use a custom session object to make requests. For example, to cache the requests

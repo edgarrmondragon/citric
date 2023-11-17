@@ -1,0 +1,5 @@
+kind: Documentation
+body: Document how to disable TLS certificate verification
+time: 2023-11-17T15:24:48.652397-06:00
+custom:
+  Issue: "1035"
