@@ -48,7 +48,7 @@ env:
 
 jobs:
   tests:
-    name: "${{ matrix.session }} ${{ matrix.python-version }} / ${{ matrix.os }}"
+    name: "${{ matrix.session }} ${{ matrix.python-version }}${{ matrix.nightly && ' (nightly) ' || ' ' }}${{ matrix.nogil && ' (nogil) ' || ' ' }}/ ${{ matrix.os }}"
     runs-on: ${{ matrix.os }}
     continue-on-error: ${{ matrix.experimental || false }}
     env:
@@ -84,6 +84,13 @@ jobs:
           experimental: true
           nightly: true
 
+        - python-version: "3.13"
+          os: "ubuntu-latest"
+          session: "tests"
+          experimental: true
+          nightly: true
+          nogil: true
+
         # - python-version: "3.14"
         #   os: "ubuntu-latest"
         #   session: "tests"
@@ -118,9 +125,10 @@ jobs:
 
     - name: Setup Python ${{ matrix.python-version }} (nightly)
       if: "${{ matrix.nightly }}"
-      uses: deadsnakes/action@v3.0.1
+      uses: deadsnakes/action@v3.1.0
       with:
         python-version: "${{ matrix.python-version }}-dev"
+        nogil: ${{ matrix.nogil }}
 
     - name: Install tools
       uses: ./.github/actions/install-tools
