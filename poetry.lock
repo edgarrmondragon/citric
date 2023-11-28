@@ -793,6 +793,21 @@ files = [
 pytest = ">=4.0.0"
 
 [[package]]
+name = "pytest-subtests"
+version = "0.11.0"
+description = "unittest subTest() support and subtests fixture"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "pytest-subtests-0.11.0.tar.gz", hash = "sha256:51865c88457545f51fb72011942f0a3c6901ee9e24cbfb6d1b9dc1348bafbe37"},
+    {file = "pytest_subtests-0.11.0-py3-none-any.whl", hash = "sha256:453389984952eec85ab0ce0c4f026337153df79587048271c7fd0f49119c07e4"},
+]
+
+[package.dependencies]
+attrs = ">=19.2.0"
+pytest = ">=7.0"
+
+[[package]]
 name = "python-dateutil"
 version = "2.8.2"
 description = "Extensions to the standard Python datetime module"
@@ -1513,4 +1528,4 @@ docs = ["furo", "myst-parser", "sphinx", "sphinx-autoapi", "sphinx-autobuild", "
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8"
-content-hash = "51b6e2b507477e56d22b54a01d0fe74f8d27689d378919fd9b07ee11d8027c60"
+content-hash = "7ef457d82189922a9cda4ae77b4e01089639b8fdf0a76b2fcad12a1ba455aaeb"

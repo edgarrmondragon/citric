@@ -19,7 +19,14 @@ except ImportError:
 
 GH_ACTIONS_ENV_VAR = "GITHUB_ACTIONS"
 FORCE_COLOR = "FORCE_COLOR"
-TEST_DEPS = ["coverage[toml]", "faker", "pytest", "python-dotenv", "semver"]
+TEST_DEPS = [
+    "coverage[toml]",
+    "faker",
+    "pytest",
+    "pytest-subtests",
+    "python-dotenv",
+    "semver",
+]
 
 package = "citric"
 
@@ -119,6 +126,7 @@ def mypy(session: Session) -> None:
         "faker",
         "mypy",
         "pytest",
+        "pytest-subtests",
         "python-dotenv",
         "semver",
         "sphinx",
