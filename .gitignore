@@ -1,3 +1,6 @@
+# Poetry dependency manager
+poetry.lock
+
 # Temp files
 *.temp.*
 

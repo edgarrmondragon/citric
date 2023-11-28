@@ -8,7 +8,6 @@ on:
     - tests/**
     - docker-compose*.yml
     - noxfile.py
-    - poetry.lock
     - pyproject.toml
     - .github/workflows/tests.yml
     - .github/workflows/constraints.txt
@@ -23,7 +22,6 @@ on:
     - tests/**
     - docker-compose*.yml
     - noxfile.py
-    - poetry.lock
     - pyproject.toml
     - .github/workflows/tests.yml
     - .github/workflows/constraints.txt
@@ -113,7 +111,7 @@ jobs:
         allow-prereleases: true
         cache: pip
         cache-dependency-path: |
-          poetry.lock
+          pyproject.toml
           .github/workflows/constraints.txt
 
     - name: Setup Python ${{ matrix.python-version }} (nightly)
@@ -165,7 +163,7 @@ jobs:
         allow-prereleases: true
         cache: pip
         cache-dependency-path: |
-          poetry.lock
+          pyproject.toml
           .github/workflows/constraints.txt
 
     - name: Install tools
@@ -286,7 +284,7 @@ jobs:
         cache: pip
         allow-prereleases: true
         cache-dependency-path: |
-          poetry.lock
+          pyproject.toml
           .github/workflows/constraints.txt
 
     - name: Install tools
