@@ -29,7 +29,10 @@ extensions = [
     "sphinx_copybutton",
     "limesurvey_future",
     "hoverxref.extension",
+    "notfound.extension",
 ]
+
+myst_heading_anchors = 2
 
 autodoc_typehints = "description"
 autodoc_typehints_description_target = "documented"

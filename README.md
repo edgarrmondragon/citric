@@ -34,19 +34,21 @@
 
 <div>
   <a href="https://pypi.org/project/citric">
-    <img alt="PyPI version" src="https://img.shields.io/pypi/v/citric.svg?color=blue"/>
+    <img alt="PyPI version" src="https://img.shields.io/pypi/v/citric.svg?logo=pypi&logoColor=FFE873&color=blue"/>
   </a>
   <a href="https://pypi.org/project/citric">
-    <img alt="Python versions" src="https://img.shields.io/pypi/pyversions/citric.svg"/>
+    <img alt="Python versions" src="https://img.shields.io/pypi/pyversions/citric.svg?logo=python&logoColor=FFE873"/>
   </a>
   <a href="https://pypi.org/project/citric">
     <img alt="PyPI - Downloads" src="https://img.shields.io/pypi/dm/citric?color=blue"/>
   </a>
 </div>
 
-A client to the [LimeSurvey Remote Control API 2](https://manual.limesurvey.org/RemoteControl_2_API), written in modern
-Python.
+*A client to the [LimeSurvey Remote Control API 2](https://manual.limesurvey.org/RemoteControl_2_API), written in modern Python.*
+
 </div>
+
+<!-- begin-short -->
 
 ## Features
 
@@ -59,16 +61,14 @@ Python.
 
 ### Integration tests
 
-<!-- start integration status -->
-| | **PostgreSQL** | **MySQL** |
-| - |:--: | :-: |
-| 6.2.8  | ✅ | ✅ |
-| 6.2.7  | ✅ | ✅ |
-| 6.2.6  | ✅ | ✅ |
-| 5.6.38 | ✅ | ✅ |
-| 5.6.37 | ✅ | ✅ |
-| 5.6.35 | ✅ | ✅ |
-<!-- end integration status -->
+Integration tests are run against a LimeSurvey instance, and both PostgreSQL and MySQL backends, using Docker Compose. The following versions of LimeSurvey were tested for this release:
+
+- [6.3.6](https://github.com/LimeSurvey/LimeSurvey/releases/tag/6.3.6%2B231120)
+- [6.3.5](https://github.com/LimeSurvey/LimeSurvey/releases/tag/6.3.5%2B231113)
+- [6.3.4](https://github.com/LimeSurvey/LimeSurvey/releases/tag/6.3.4%2B231108)
+- [5.6.46](https://github.com/LimeSurvey/LimeSurvey/releases/tag/5.6.46%2B231121)
+- [5.6.45](https://github.com/LimeSurvey/LimeSurvey/releases/tag/5.6.45%2B231114)
+- [5.6.44](https://github.com/LimeSurvey/LimeSurvey/releases/tag/5.6.44%2B231107)
 
 ## Installation
 
@@ -95,6 +95,8 @@ print(client.get_server_version())
 for survey in client.list_surveys():
     print(survey["surveyls_title"])
 ```
+
+<!-- end-short -->
 
 ## Documentation
 

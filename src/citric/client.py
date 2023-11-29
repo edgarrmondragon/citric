@@ -26,7 +26,7 @@ def __getattr__(name: str) -> t.Any:  # noqa: ANN401
             CitricDeprecationWarning,
             stacklevel=2,
         )
-        from citric.rpc import client
+        from citric.rpc import client  # noqa: PLC0415
 
         return getattr(client, name)
 

@@ -19,7 +19,7 @@ def __getattr__(name: str) -> t.Any:  # noqa: ANN401
             CitricDeprecationWarning,
             stacklevel=2,
         )
-        from citric.rpc import session
+        from citric.rpc import session  # noqa: PLC0415
 
         return getattr(session, name)
 

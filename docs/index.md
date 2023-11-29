@@ -8,18 +8,28 @@
 
 # Citric
 
-Release v{sub-ref}`version`.
+*A client to the [LimeSurvey Remote Control API 2](https://manual.limesurvey.org/RemoteControl_2_API), written in modern
+Python.*
+
+Release **v{sub-ref}`version`**. ([What's new?](./changelog.md))
 
 ```{include} ../README.md
-:start-line: 4
+:start-after: <!-- begin-short -->
+:end-before: <!-- end-short -->
 ```
 
-```{toctree}
-:maxdepth: 1
-:hidden:
+## How-to guides
 
-license
-```
+- [Automatically close the session with a context manager](how-to.md#automatically-close-the-session-with-a-context-manager)
+- [Get surveys and questions](how-to.md#get-surveys-and-questions)
+- [Export responses to a `pandas` dataframe](how-to.md#export-responses-to-a-pandas-dataframe)
+- [Export responses to a DuckDB database and analyze with SQL](how-to.md#export-responses-to-a-duckdb-database-and-analyze-with-sql)
+- [Change the default HTTP session attributes](how-to.md#change-the-default-http-session-attributes)
+- [Use custom `requests` session](how-to.md#use-custom-requests-session)
+- [Use a different authentication plugin](how-to.md#use-a-different-authentication-plugin)
+- [Get files uploaded to a survey and move them to S3](how-to.md#get-files-uploaded-to-a-survey-and-move-them-to-s3)
+- [Use the raw `RPC.session` for low-level interaction](how-to.md#use-the-session-attribute-for-low-level-interaction)
+- [Notebook samples](how-to.md#notebook-samples)
 
 ```{toctree}
 :maxdepth: 2
@@ -54,6 +64,13 @@ Python API reference <_api/index>
 :hidden:
 
 Deprecations <deprecations>
+```
+
+```{toctree}
+:maxdepth: 1
+:hidden:
+
+license
 ```
 
 ```{toctree}

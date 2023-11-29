@@ -44,26 +44,23 @@ class RESTClient:
         *,
         requests_session: requests.Session | None = None,
     ) -> None:
-        """Create a LimeSurvey REST session."""
         self.url = url
         self._session = requests_session or requests.session()
         self._session.headers["User-Agent"] = self.USER_AGENT
+        self._session_id: str | None
 
-        self.__session_id = self._authenticate(
+        self.authenticate(
             username=username,
             password=password,
         )
         self._session.auth = self._auth
 
-    def _authenticate(self, username: str, password: str) -> str:
+    def authenticate(self, username: str, password: str) -> None:
         """Authenticate with the REST API.
 
         Args:
             username: LimeSurvey user name.
             password: LimeSurvey password.
-
-        Returns:
-            Session ID.
         """
         response = self._session.post(
             url=f"{self.url}/rest/v1/session",
@@ -73,12 +70,14 @@ class RESTClient:
             },
         )
         response.raise_for_status()
-        return response.json()
+        self.__session_id = response.json()
 
     def close(self) -> None:
         """Delete the session."""
         response = self._session.delete(f"{self.url}/rest/v1/session")
         response.raise_for_status()
+        self.__session_id = None
+        self._session.auth = None
 
     def _auth(self, request: requests.PreparedRequest) -> requests.PreparedRequest:
         """Authenticate with the REST API.

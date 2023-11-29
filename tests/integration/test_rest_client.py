@@ -47,7 +47,11 @@ def test_get_survey_details(rest_client: RESTClient, survey_id: int) -> None:
 
 
 @pytest.mark.integration_test
-def test_patch_survey_details(rest_client: RESTClient, survey_id: int) -> None:
+def test_patch_survey_details(
+    server_version: semver.Version,
+    rest_client: RESTClient,
+    survey_id: int,
+) -> None:
     """Test getting surveys."""
     original = rest_client.get_survey_details(survey_id=survey_id)
     anonymized = original["anonymized"]
@@ -58,7 +62,8 @@ def test_patch_survey_details(rest_client: RESTClient, survey_id: int) -> None:
         anonymized=not anonymized,
         tokenLength=token_length + 10,
     )
-    assert result is True
+    expected = {"operationsApplied": 1} if server_version.prerelease else True
+    assert result == expected
 
     updated = rest_client.get_survey_details(survey_id=survey_id)
     assert updated["anonymized"] is (not anonymized)

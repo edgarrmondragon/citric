@@ -24,6 +24,7 @@ TEST_DEPS = [
     "faker",
     "pytest",
     "pytest-httpserver",
+    "pytest-subtests",
     "python-dotenv",
     "semver",
     "tinydb",
@@ -50,7 +51,7 @@ def tests(session: Session) -> None:
     if GH_ACTIONS_ENV_VAR in os.environ:
         deps.append("pytest-github-actions-annotate-failures")
 
-    if session.python in ("3.13",):
+    if session.python == "3.13":
         env["PIP_NO_BINARY"] = "coverage,MarkupSafe"
 
     if session.python.startswith("pypy"):
@@ -116,9 +117,17 @@ def coverage(session: Session) -> None:
     session.install("coverage[toml]")
 
     if not session.posargs and any(Path().glob(".coverage.*")):
-        session.run("coverage", "combine")
+        session.run("coverage", "combine", "--debug=pathmap")
 
     session.run("coverage", *args)
+
+
+@session(name="deps", python=python_versions)
+def dependencies(session: Session) -> None:
+    """Check issues with dependencies."""
+    session.install(".")
+    session.install("deptry")
+    session.run("deptry", "src")
 
 
 @session(python=python_versions, tags=["lint"])
@@ -131,12 +140,12 @@ def mypy(session: Session) -> None:
         "mypy",
         "pytest",
         "pytest-httpserver",
+        "pytest-subtests",
         "python-dotenv",
         "semver",
         "sphinx",
         "tinydb",
         "types-requests",
-        "types-tabulate",
         "typing-extensions",
     )
     session.run("mypy", *args)

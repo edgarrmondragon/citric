@@ -6,7 +6,7 @@ ci:
 
 repos:
 - repo: https://github.com/pre-commit/pre-commit-hooks
-  rev: v4.4.0
+  rev: v4.5.0
   hooks:
   - id: check-added-large-files
   - id: check-json
@@ -19,26 +19,21 @@ repos:
   - id: trailing-whitespace
 
 - repo: https://github.com/python-jsonschema/check-jsonschema
-  rev: 0.27.0
+  rev: 0.27.1
   hooks:
   - id: check-dependabot
   - id: check-github-workflows
   - id: check-readthedocs
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.0.292
+  rev: v0.1.6
   hooks:
   - id: ruff
+    name: Ruff lint
     args: [--fix, --exit-non-zero-on-fix, --show-fixes]
   - id: ruff
     name: Ruff format
     entry: ruff format
-
-- repo: https://github.com/psf/black
-  rev: 23.9.1
-  hooks:
-  - id: black
-    language_version: python3.11
 
 - repo: https://github.com/codespell-project/codespell
   rev: v2.2.6
@@ -52,20 +47,20 @@ repos:
   hooks:
   - id: flake8
     additional_dependencies:
-    - darglint==1.8.1
+    - pydoclint==0.3.8
 
 - repo: https://github.com/pre-commit/pre-commit
-  rev: v3.4.0
+  rev: v3.5.0
   hooks:
   - id: validate_manifest
 
 - repo: https://github.com/hadialqattan/pycln
-  rev: v2.2.2
+  rev: v2.4.0
   hooks:
   - id: pycln
     args: [--all]
 
 - repo: https://github.com/tox-dev/pyproject-fmt
-  rev: "1.2.0"
+  rev: "1.5.1"
   hooks:
   - id: pyproject-fmt

@@ -14,7 +14,7 @@ from pathlib import Path
 import requests
 
 from citric import enums
-from citric._compat import CitricDeprecationWarning
+from citric._compat import CitricDeprecationWarning, future_parameter
 from citric.exceptions import LimeSurveyStatusError
 from citric.rpc.session import Session
 
@@ -124,7 +124,6 @@ class RPC:  # noqa: PLR0904
         requests_session: requests.Session | None = None,
         auth_plugin: str = "Authdb",
     ) -> None:
-        """Create a LimeSurvey Python API client."""
         self.__session = self.session_class(
             url,
             username,
@@ -170,20 +169,34 @@ class RPC:  # noqa: PLR0904
         """
         return self.session.get_fieldmap(survey_id)
 
-    def activate_survey(self, survey_id: int) -> types.OperationStatus:
+    def activate_survey(
+        self,
+        survey_id: int,
+        *,
+        user_activation_settings: types.SurveyUserActivationSettings | None = None,
+    ) -> types.OperationStatus:
         """Activate a survey.
 
         Calls :rpc_method:`activate_survey`.
 
         Args:
             survey_id: ID of survey to be activated.
+            user_activation_settings: Optional user activation settings.
 
         Returns:
             Status and plugin feedback.
 
         .. versionadded:: 0.0.1
         """
-        return self.session.activate_survey(survey_id)
+        activation_settings = (
+            {
+                key: "Y" if value else "N"
+                for key, value in user_activation_settings.items()
+            }
+            if user_activation_settings
+            else None
+        )
+        return self.session.activate_survey(survey_id, activation_settings)
 
     def activate_tokens(
         self,
@@ -380,23 +393,11 @@ class RPC:  # noqa: PLR0904
         Returns:
             A new dictionary with the keys mapped to the <SID>X<GID>X<QID> format.
 
-        >>> mapped_keys = RPC._map_response_keys(
-        ...     {"Q1": "foo", "Q2": "bar", "BAZ": "qux"},
-        ...     {
-        ...         "Q1": {
-        ...             "title": "Q1",
-        ...             "qid": 9,
-        ...             "gid": 7,
-        ...             "sid": 123,
-        ...         },
-        ...         "Q2": {
-        ...             "title": "Q2",
-        ...             "qid": 10,
-        ...             "gid": 7,
-        ...             "sid": 123,
-        ...         },
-        ...     },
-        ... )
+        >>> keys = {"Q1": "foo", "Q2": "bar", "BAZ": "qux"}
+        >>> q1 = {"title": "Q1", "qid": 9, "gid": 7, "sid": 123}
+        >>> q2 = {"title": "Q2", "qid": 10, "gid": 7, "sid": 123}
+        >>> questions = {"Q1": q1, "Q2": q2}
+        >>> mapped_keys = Client._map_response_keys(keys, questions)
         >>> mapped_keys
         {'123X7X9': 'foo', '123X7X10': 'bar', 'BAZ': 'qux'}
         """
@@ -502,7 +503,14 @@ class RPC:  # noqa: PLR0904
         data = self._map_response_keys(response_data, questions)
         return self.session.update_response(survey_id, data)
 
-    def copy_survey(self, survey_id: int, name: str) -> dict[str, t.Any]:
+    @future_parameter("6.4.0", "destination_survey_id")
+    def copy_survey(
+        self,
+        survey_id: int,
+        name: str,
+        *,
+        destination_survey_id: int | None = None,
+    ) -> dict[str, t.Any]:
         """Copy a survey.
 
         Calls :rpc_method:`copy_survey`.
@@ -510,13 +518,18 @@ class RPC:  # noqa: PLR0904
         Args:
             survey_id: ID of the source survey.
             name: Name of the new survey.
+            destination_survey_id: ID of the new survey. If already used a, random one
+                will be generated.
 
         Returns:
             Dictionary of status message and the new survey ID.
 
         .. versionadded:: 0.0.10
+        .. versionchanged:: NEXT_VERSION
+           The ``destination_survey_id`` optional parameter was added.
+        .. futureparam:: 6.4.0 destination_survey_id
         """
-        return self.session.copy_survey(survey_id, name)
+        return self.session.copy_survey(survey_id, name, destination_survey_id)
 
     def import_cpdb_participants(
         self,
@@ -1080,7 +1093,7 @@ class RPC:  # noqa: PLR0904
         Returns:
             The LimeSurvey server version.
 
-        .. versionadded:: NEXT_VERSION
+        .. versionadded:: 0.9.0
         """
         return self._get_site_setting("versionnumber")
 

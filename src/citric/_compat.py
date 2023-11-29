@@ -6,7 +6,7 @@ import typing as t
 import warnings
 from functools import wraps
 
-__all__ = ["FutureVersionWarning", "future"]
+__all__ = ["FutureVersionWarning", "future", "future_parameter"]
 
 
 def _warning_message(next_version: str) -> tuple[str, ...]:
@@ -53,6 +53,36 @@ def future(version: str) -> t.Callable:
                 FutureVersionWarning,
                 stacklevel=2,
             )
+            return fn(*args, **kwargs)
+
+        return wrapper
+
+    return decorate
+
+
+def future_parameter(version: str, parameter: str) -> t.Callable:
+    """Mark a function as only available in the current development build of LimeSurvey.
+
+    Args:
+        version: The earliest version of LimeSurvey that this parameter is
+            available in.
+        parameter: The parameter that is only available in the current development
+            build of LimeSurvey.
+
+    Returns:
+        The wrapped function.
+    """
+    message = _warning_message(version)
+
+    def decorate(fn: t.Callable) -> t.Callable:
+        @wraps(fn)
+        def wrapper(*args: t.Any, **kwargs: t.Any) -> t.Callable:
+            if parameter in kwargs:
+                warnings.warn(
+                    f"Parameter {parameter} {''.join(message)}",
+                    FutureVersionWarning,
+                    stacklevel=2,
+                )
             return fn(*args, **kwargs)
 
         return wrapper

@@ -12,6 +12,7 @@ from urllib.parse import quote
 
 import pytest
 import requests
+import semver
 
 import citric
 from citric import enums
@@ -19,8 +20,8 @@ from citric.exceptions import LimeSurveyStatusError
 from citric.objects import Participant
 
 if t.TYPE_CHECKING:
-    import semver
     from faker import Faker
+    from pytest_subtests import SubTests
 
 NEW_SURVEY_NAME = "New Survey"
 
@@ -57,14 +58,17 @@ def participants(faker: Faker) -> list[dict[str, t.Any]]:
 
 
 @pytest.mark.integration_test
-def test_fieldmap(client: citric.Client, survey_id: int):
+def test_fieldmap(client: citric.Client, survey_id: int, subtests: SubTests):
     """Test fieldmap."""
     fieldmap = client.get_fieldmap(survey_id)
     for key, value in fieldmap.items():
-        assert key == value["fieldname"]
-        assert (
-            key == "{sid}X{gid}X{qid}".format(**value) or not value["qid"] or "_" in key
-        )
+        with subtests.test(msg="test field", field=key):
+            assert key == value["fieldname"]
+            assert (
+                key == "{sid}X{gid}X{qid}".format(**value)
+                or not value["qid"]
+                or "_" in key
+            )
 
 
 @pytest.mark.integration_test
@@ -149,6 +153,37 @@ def test_survey(client: citric.Client):
 
 
 @pytest.mark.integration_test
+def test_copy_survey_destination_id(
+    request: pytest.FixtureRequest,
+    client: citric.Client,
+    survey_id: int,
+    server_version: semver.VersionInfo,
+):
+    """Test copying a survey with a destination survey ID."""
+    request.applymarker(
+        pytest.mark.xfail(
+            server_version < semver.VersionInfo.parse("6.4.0-dev"),
+            reason=(
+                "The destination_survey_id parameter is not supported in LimeSurvey "
+                f"{server_version} < 6.4.0"
+            ),
+            strict=True,
+        ),
+    )
+
+    # Copy a survey, specifying a new survey ID
+    copied = client.copy_survey(
+        survey_id,
+        NEW_SURVEY_NAME,
+        destination_survey_id=9797,
+    )
+
+    assert copied["status"] == "OK"
+    assert copied["newsid"] == 9797
+
+
+@pytest.mark.integration_test
+@pytest.mark.xfail_mysql(strict=True)
 def test_group(client: citric.Client, survey_id: int):
     """Test group methods."""
     # Import a group
@@ -222,7 +257,7 @@ def test_question(client: citric.Client, survey_id: int):
 def test_quota(
     request: pytest.FixtureRequest,
     client: citric.Client,
-    server_version: semver.Version,
+    server_version: semver.VersionInfo,
     survey_id: int,
 ):
     """Test quota methods."""
@@ -234,6 +269,7 @@ def test_quota(
                 f"{server_version} < 6.0.0"
             ),
             raises=requests.exceptions.HTTPError,
+            strict=True,
         ),
     )
 
@@ -282,6 +318,52 @@ def test_activate_survey(client: citric.Client, survey_id: int):
 
 
 @pytest.mark.integration_test
+def test_activate_survey_with_settings(
+    request: pytest.FixtureRequest,
+    client: citric.Client,
+    server_version: semver.VersionInfo,
+    survey_id: int,
+):
+    """Test whether the survey gets activated with the requested settings."""
+    min_version = (5, 6, 45) if server_version < (6, 0) else (6, 3, 5)
+    request.applymarker(
+        pytest.mark.xfail(
+            server_version < min_version,
+            reason=(
+                "The user_activation_settings parameter is not supported in LimeSurvey "
+                f"{server_version} < {'.'.join(str(v) for v in min_version)}"
+            ),
+            strict=True,
+        ),
+    )
+
+    properties_before = client.get_survey_properties(
+        survey_id,
+        ["active", "anonymized", "ipaddr"],
+    )
+    assert properties_before["active"] == "N"
+    assert properties_before["anonymized"] == "N"
+    assert properties_before["ipaddr"] == "I"
+
+    result = client.activate_survey(
+        survey_id,
+        user_activation_settings={
+            "anonymized": True,
+            "ipaddr": False,
+        },
+    )
+    assert result["status"] == "OK"
+
+    properties_after = client.get_survey_properties(
+        survey_id,
+        ["active", "anonymized", "ipaddr"],
+    )
+    assert properties_after["active"] == "Y"
+    assert properties_after["anonymized"] == "Y"
+    assert properties_after["ipaddr"] == "N"
+
+
+@pytest.mark.integration_test
 def test_activate_tokens(client: citric.Client, survey_id: int):
     """Test whether the participants table gets activated."""
     client.activate_survey(survey_id)
@@ -301,6 +383,7 @@ def test_participants(
     client: citric.Client,
     survey_id: int,
     participants: list[dict[str, str]],
+    subtests: SubTests,
 ):
     """Test participants methods."""
     client.activate_survey(survey_id)
@@ -313,11 +396,12 @@ def test_participants(
         create_tokens=False,
     )
     for p, d in zip(added, participants):
-        assert p["email"] == d["email"]
-        assert p["firstname"] == d["firstname"]
-        assert p["lastname"] == d["lastname"]
-        assert p["attribute_1"] == d["attribute_1"]
-        assert p["attribute_2"] == d["attribute_2"]
+        with subtests.test(msg="test new participants properties", token=d["token"]):
+            assert p["email"] == d["email"]
+            assert p["firstname"] == d["firstname"]
+            assert p["lastname"] == d["lastname"]
+            assert p["attribute_1"] == d["attribute_1"]
+            assert p["attribute_2"] == d["attribute_2"]
 
     participants_list = client.list_participants(
         survey_id,
@@ -329,20 +413,22 @@ def test_participants(
 
     # Check added participant properties
     for p, d in zip(participants_list, participants[:2]):
-        assert p["participant_info"]["email"] == d["email"]
-        assert p["participant_info"]["firstname"] == d["firstname"]
-        assert p["participant_info"]["lastname"] == d["lastname"]
-        assert p["attribute_1"] == d["attribute_1"]
-        assert p["attribute_2"] == d["attribute_2"]
+        with subtests.test(msg="test new participants properties", token=p["tid"]):
+            assert p["participant_info"]["email"] == d["email"]
+            assert p["participant_info"]["firstname"] == d["firstname"]
+            assert p["participant_info"]["lastname"] == d["lastname"]
+            assert p["attribute_1"] == d["attribute_1"]
+            assert p["attribute_2"] == d["attribute_2"]
 
     # Get participant properties
     for p, d in zip(added, participants[:2]):
-        properties = client.get_participant_properties(survey_id, p["tid"])
-        assert properties["email"] == d["email"]
-        assert properties["firstname"] == d["firstname"]
-        assert properties["lastname"] == d["lastname"]
-        assert properties["attribute_1"] == d["attribute_1"]
-        assert properties["attribute_2"] == d["attribute_2"]
+        with subtests.test(msg="test updated participants properties", token=p["tid"]):
+            properties = client.get_participant_properties(survey_id, p["tid"])
+            assert properties["email"] == d["email"]
+            assert properties["firstname"] == d["firstname"]
+            assert properties["lastname"] == d["lastname"]
+            assert properties["attribute_1"] == d["attribute_1"]
+            assert properties["attribute_2"] == d["attribute_2"]
 
     # Update participant properties
     new_firstname = faker.first_name()
@@ -531,7 +617,7 @@ def test_file_upload_no_filename(
 
 
 @pytest.mark.integration_test
-@pytest.mark.xfail_mysql
+@pytest.mark.xfail_mysql(strict=True)
 def test_file_upload_invalid_extension(
     client: citric.Client,
     survey_id: int,
@@ -561,7 +647,7 @@ def test_file_upload_invalid_extension(
 def test_get_available_site_settings(
     request: pytest.FixtureRequest,
     client: citric.Client,
-    server_version: semver.Version,
+    server_version: semver.VersionInfo,
 ):
     """Test getting available site settings."""
     request.applymarker(
@@ -572,6 +658,7 @@ def test_get_available_site_settings(
                 f"LimeSurvey {server_version} < 6.0.0"
             ),
             raises=requests.exceptions.HTTPError,
+            strict=True,
         ),
     )
     assert client.get_available_site_settings()

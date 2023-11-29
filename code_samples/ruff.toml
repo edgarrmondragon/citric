@@ -1,0 +1,8 @@
+extend = "../pyproject.toml"
+ignore = [
+  "INP001", # implicit-namespace-package
+]
+
+[lint.isort]
+known-first-party = []
+known-third-party = ["citric"]

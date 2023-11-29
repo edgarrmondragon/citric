@@ -44,9 +44,6 @@ class MockSession(Session):
         "restrictToLanguages": "en fr es",
     }
 
-    def __init__(self, *args: t.Any, **kwargs: t.Any) -> None:
-        """Create a mock session."""
-
     def rpc(self, method: str, *params: t.Any) -> dict[str, t.Any]:
         """Process a mock RPC call."""
         return {"method": method, "params": [*params]}
@@ -197,7 +194,12 @@ def client() -> t.Generator[Client, None, None]:
 
 def test_activate_survey(client: MockClient):
     """Test activate_survey client method."""
-    assert_client_session_call(client, "activate_survey", 1)
+    assert_client_session_call(
+        client,
+        "activate_survey",
+        1,
+        user_activation_settings=None,
+    )
 
 
 def test_activate_tokens(client: MockClient):
@@ -245,7 +247,13 @@ def test_add_survey(client: MockClient):
 
 def test_copy_survey(client: MockClient):
     """Test copy_survey client method."""
-    assert_client_session_call(client, "copy_survey", 1, NEW_SURVEY_NAME)
+    assert_client_session_call(
+        client,
+        "copy_survey",
+        1,
+        NEW_SURVEY_NAME,
+        destination_survey_id=None,
+    )
 
 
 def test_delete_group(client: MockClient):
