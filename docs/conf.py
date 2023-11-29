@@ -150,8 +150,7 @@ def skip_member_filter(
     Returns:
         Whether to skip the member.
     """
-    parts = name.split(".")
-    if any(part.startswith("_") for part in parts):
+    if name == "citric.rest.client":
         skip = True
     return skip
 
