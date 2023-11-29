@@ -5,7 +5,7 @@ authors:
   given-names: "Edgar"
   orcid: "https://orcid.org/0000-0000-0000-0000"
 title: "My Research Software"
-version: "0.9.0"
+version: "0.10.0-alpha"
 doi: 10.5281/zenodo.1234
 date-released: 2021-11-11
 url: "https://github.com/edgarrmondragon/citric"

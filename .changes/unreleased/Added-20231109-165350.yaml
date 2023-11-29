@@ -1,5 +1,0 @@
-kind: Added
-body: Support `userActivationSettings` parameter in RPC method `activate_survey`
-time: 2023-11-09T16:53:50.378464-06:00
-custom:
-  Issue: "1026"
