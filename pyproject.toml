@@ -274,9 +274,7 @@ DEP004 = [
 ]
 
 [tool.poetry-dynamic-versioning]
-bump = true
 enable = true
-format = "{base}.{stage}{revision}+{commit}"
 vcs = "git"
 pattern = "^v?((?P<epoch>\\d+)!)?(?P<base>\\d+(\\.\\d+)*)([-._]?((?P<stage>[a-zA-Z]+)[-._]?(?P<revision>\\d+)?))?(\\+(?P<tagged_metadata>.+))?$"
 style = "pep440"
