@@ -219,10 +219,10 @@ skip = ".mypy_cache,.nox,.ruff_cache,build,docs/index.md,poetry.lock"
 [tool.pytest.ini_options]
 addopts = [
   "-vvv",
-  "-W default::citric._compat.FutureVersionWarning",
 ]
 filterwarnings = [
   "error",
+  "default::citric._compat.FutureVersionWarning",
   "always::citric._compat.CitricDeprecationWarning",
 ]
 markers = [
