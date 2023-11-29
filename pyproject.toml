@@ -275,8 +275,7 @@ DEP004 = [
 
 [tool.poetry-dynamic-versioning]
 enable = true
-# format = "{base}.{stage}{revision}+{commit}"
-format_jinja = """
+format-jinja = """
   {%- if distance == 0 -%}
     {{ serialize_pep440(base, stage, revision) }}
   {%- elif revision is not none -%}
