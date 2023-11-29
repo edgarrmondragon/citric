@@ -13,7 +13,6 @@ class Method(t.Generic[T]):
     """RPC method."""
 
     def __init__(self, caller: t.Callable[[str], T], name: str) -> None:
-        """Instantiate an RPC method."""
         self.__caller = caller
         self.__name = name
 

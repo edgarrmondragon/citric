@@ -106,7 +106,6 @@ class Session:
         requests_session: requests.Session | None = None,
         json_encoder: type[json.JSONEncoder] | None = None,
     ) -> None:
-        """Create a LimeSurvey RPC session."""
         self.url = url
         self._session = requests_session or requests.session()
         self._session.headers["User-Agent"] = self.USER_AGENT
