@@ -23,9 +23,11 @@ TEST_DEPS = [
     "coverage[toml]",
     "faker",
     "pytest",
+    "pytest-httpserver",
     "pytest-subtests",
     "python-dotenv",
     "semver",
+    "tinydb",
 ]
 
 package = "citric"
@@ -50,7 +52,10 @@ def tests(session: Session) -> None:
         deps.append("pytest-github-actions-annotate-failures")
 
     if session.python == "3.13":
-        env["PIP_NO_BINARY"] = "coverage"
+        env["PIP_NO_BINARY"] = "coverage,MarkupSafe"
+
+    if session.python.startswith("pypy"):
+        env["PIP_NO_BINARY"] = "MarkupSafe"
 
     session.install(".", env=env)
     session.install(*deps, env=env)
@@ -134,12 +139,13 @@ def mypy(session: Session) -> None:
         "faker",
         "mypy",
         "pytest",
+        "pytest-httpserver",
         "pytest-subtests",
         "python-dotenv",
         "semver",
         "sphinx",
+        "tinydb",
         "types-requests",
-        "types-tabulate",
         "typing-extensions",
     )
     session.run("mypy", *args)

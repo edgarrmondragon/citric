@@ -57,17 +57,18 @@
 - Easily export survey data to CSV files, [Pandas DataFrames](https://citric.readthedocs.io/en/stable/how-to.html#export-responses-to-a-pandas-dataframe) and [DuckDB databases](https://citric.readthedocs.io/en/stable/how-to.html#export-responses-to-a-duckdb-database-and-analyze-with-sql).
 - Easily [download survey files](https://citric.readthedocs.io/en/stable/how-to.html#get-files-uploaded-to-a-survey-and-move-them-to-s3) (e.g. images, audio, etc.) to a local directory.
 - Tested against LimeSurvey 6.0.0+ and 5.0.0+ versions.
+- Experimental support for the new [REST API](https://manual.limesurvey.org/REST_API).
 
 ### Integration tests
 
 Integration tests are run against a LimeSurvey instance, and both PostgreSQL and MySQL backends, using Docker Compose. The following versions of LimeSurvey were tested for this release:
 
-- [6.3.5](https://github.com/LimeSurvey/LimeSurvey/releases/tag/6.3.4%2B231108)
-- [6.3.4](https://github.com/LimeSurvey/LimeSurvey/releases/tag/6.3.3%2B231106)
-- [6.3.3](https://github.com/LimeSurvey/LimeSurvey/releases/tag/6.3.1%2B231023)
-- [5.6.45](https://github.com/LimeSurvey/LimeSurvey/releases/tag/5.6.44%2B231107)
-- [5.6.44](https://github.com/LimeSurvey/LimeSurvey/releases/tag/5.6.43%2B231030)
-- [5.6.43](https://github.com/LimeSurvey/LimeSurvey/releases/tag/5.6.42%2B231024)
+- [6.3.6](https://github.com/LimeSurvey/LimeSurvey/releases/tag/6.3.6%2B231120)
+- [6.3.5](https://github.com/LimeSurvey/LimeSurvey/releases/tag/6.3.5%2B231113)
+- [6.3.4](https://github.com/LimeSurvey/LimeSurvey/releases/tag/6.3.4%2B231108)
+- [5.6.46](https://github.com/LimeSurvey/LimeSurvey/releases/tag/5.6.46%2B231121)
+- [5.6.45](https://github.com/LimeSurvey/LimeSurvey/releases/tag/5.6.45%2B231114)
+- [5.6.44](https://github.com/LimeSurvey/LimeSurvey/releases/tag/5.6.44%2B231107)
 
 ## Installation
 

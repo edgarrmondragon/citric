@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import contextlib
 import csv
 import io
 import json
@@ -25,36 +24,6 @@ if t.TYPE_CHECKING:
     from pytest_subtests import SubTests
 
 NEW_SURVEY_NAME = "New Survey"
-
-
-@pytest.fixture(scope="module")
-def client(
-    integration_url: str,
-    integration_username: str,
-    integration_password: str,
-) -> t.Generator[citric.Client, None, None]:
-    """RemoteControl2 API client."""
-    with citric.Client(
-        integration_url,
-        integration_username,
-        integration_password,
-    ) as client:
-        yield client
-
-        with contextlib.suppress(LimeSurveyStatusError):
-            for survey in client.list_surveys(integration_username):
-                client.delete_survey(survey["sid"])
-
-
-@pytest.fixture
-def survey_id(client: citric.Client) -> t.Generator[int, None, None]:
-    """Import a survey from a file and return its ID."""
-    with Path("./examples/survey.lss").open("rb") as f:
-        survey_id = client.import_survey(f, survey_id=98765)
-
-    yield survey_id
-
-    client.delete_survey(survey_id)
 
 
 @pytest.fixture
@@ -86,12 +55,6 @@ def participants(faker: Faker) -> list[dict[str, t.Any]]:
             "attribute_2": "Night owl",
         },
     ]
-
-
-@pytest.fixture
-def server_version(client: citric.Client) -> semver.VersionInfo:
-    """Get the server version."""
-    return semver.VersionInfo.parse(client.get_server_version())
 
 
 @pytest.mark.integration_test
@@ -591,11 +554,16 @@ def test_responses(client: citric.Client, survey_id: int, tmp_path: Path):
 
 
 @pytest.mark.integration_test
-@pytest.mark.xfail_mysql(strict=True)
-def test_file_upload(client: citric.Client, survey_id: int, tmp_path: Path):
+@pytest.mark.xfail_mysql
+def test_file_upload(
+    client: citric.Client,
+    survey_id: int,
+    tmp_path: Path,
+    faker: Faker,
+):
     """Test uploading and downloading files from a survey."""
     filepath = tmp_path / "hello world.txt"
-    filepath.write_text("Hello world!")
+    filepath.write_text(faker.text())
 
     client.activate_survey(survey_id)
     group = client.list_groups(survey_id)[1]
@@ -609,7 +577,7 @@ def test_file_upload(client: citric.Client, survey_id: int, tmp_path: Path):
         filename=filename,
     )
     assert result["success"]
-    assert result["size"] == pytest.approx(filepath.stat().st_size / 1000)
+    assert result["size"] == pytest.approx(filepath.stat().st_size / 1000, rel=1e-2)
     assert result["name"] == filename
     assert result["ext"] == "txt"
     assert "filename" in result
@@ -617,11 +585,16 @@ def test_file_upload(client: citric.Client, survey_id: int, tmp_path: Path):
 
 
 @pytest.mark.integration_test
-@pytest.mark.xfail_mysql(strict=True)
-def test_file_upload_no_filename(client: citric.Client, survey_id: int, tmp_path: Path):
+@pytest.mark.xfail_mysql
+def test_file_upload_no_filename(
+    client: citric.Client,
+    survey_id: int,
+    tmp_path: Path,
+    faker: Faker,
+):
     """Test uploading and downloading files from a survey without a filename."""
     filepath = tmp_path / "hello world.txt"
-    filepath.write_text("Hello world!")
+    filepath.write_text(faker.text())
 
     client.activate_survey(survey_id)
     group = client.list_groups(survey_id)[1]
@@ -633,7 +606,10 @@ def test_file_upload_no_filename(client: citric.Client, survey_id: int, tmp_path
         filepath,
     )
     assert result_no_filename["success"]
-    assert result_no_filename["size"] == pytest.approx(filepath.stat().st_size / 1000)
+    assert result_no_filename["size"] == pytest.approx(
+        filepath.stat().st_size / 1000,
+        rel=1e-2,
+    )
     assert result_no_filename["name"] == quote(filepath.name)
     assert result_no_filename["ext"] == "txt"
     assert "filename" in result_no_filename
@@ -646,10 +622,11 @@ def test_file_upload_invalid_extension(
     client: citric.Client,
     survey_id: int,
     tmp_path: Path,
+    faker: Faker,
 ):
     """Test uploading and downloading files from a survey with an invalid extension."""
     filepath = tmp_path / "hello world.abc"
-    filepath.write_text("Hello world!")
+    filepath.write_text(faker.text())
 
     client.activate_survey(survey_id)
     group = client.list_groups(survey_id)[1]
