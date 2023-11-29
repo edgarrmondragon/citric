@@ -27,9 +27,6 @@
   <a href="https://codecov.io/gh/edgarrmondragon/citric">
     <img alt="codecov" src="https://codecov.io/gh/edgarrmondragon/citric/branch/main/graph/badge.svg"/>
   </a>
-  <a href="https://app.fossa.com/projects/git%2Bgithub.com%2Fedgarrmondragon%2Fcitric?ref=badge_shield">
-    <img alt="FOSSA Status" src="https://app.fossa.com/api/projects/git%2Bgithub.com%2Fedgarrmondragon%2Fcitric.svg?type=shield"/>
-  </a>
 </div>
 
 <div>
@@ -108,10 +105,9 @@ If you'd like to contribute to this project, please see the [contributing guide]
 
 ## Credits
 
+- [Markus Opolka][martialblog] for maintaining a very robust set of [LimeSurvey Docker images](https://github.com/martialblog/docker-limesurvey/).
 - [Claudio Jolowicz][claudio] and [his amazing blog post][hypermodern].
 
 [claudio]: https://twitter.com/cjolowicz/
 [hypermodern]: https://cjolowicz.github.io/posts/hypermodern-python-01-setup/
-
-## License
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fedgarrmondragon%2Fcitric.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fedgarrmondragon%2Fcitric?ref=badge_large)
+[martialblog]: https://github.com/martialblog/
