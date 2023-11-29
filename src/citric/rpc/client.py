@@ -397,7 +397,7 @@ class RPC:  # noqa: PLR0904
         >>> q1 = {"title": "Q1", "qid": 9, "gid": 7, "sid": 123}
         >>> q2 = {"title": "Q2", "qid": 10, "gid": 7, "sid": 123}
         >>> questions = {"Q1": q1, "Q2": q2}
-        >>> mapped_keys = Client._map_response_keys(keys, questions)
+        >>> mapped_keys = RPC._map_response_keys(keys, questions)
         >>> mapped_keys
         {'123X7X9': 'foo', '123X7X10': 'bar', 'BAZ': 'qux'}
         """
