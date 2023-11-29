@@ -151,9 +151,7 @@ def skip_member_filter(
         Whether to skip the member.
     """
     parts = name.split(".")
-    if any(part.startswith("_") for part in parts) or name.startswith(
-        "citric.rest.",
-    ):
+    if any(part.startswith("_") for part in parts) or name == "citric.rest.client":
         skip = True
     return skip
 

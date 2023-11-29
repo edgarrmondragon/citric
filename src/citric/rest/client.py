@@ -3,10 +3,9 @@
 from __future__ import annotations
 
 import typing as t
+from importlib import metadata
 
 import requests
-
-from citric._util import get_citric_user_agent
 
 if t.TYPE_CHECKING:
     import sys
@@ -21,6 +20,8 @@ if t.TYPE_CHECKING:
 class RESTClient:
     """LimeSurvey REST API client.
 
+    Upon creation, retrieves a session ID that's used for authentication.
+
     .. warning::
        The REST API is still in early development, so the client is subject to changes.
 
@@ -33,7 +34,7 @@ class RESTClient:
     .. versionadded:: NEXT_VERSION
     """
 
-    USER_AGENT = get_citric_user_agent()
+    USER_AGENT = f"citric/{metadata.version('citric')}"
 
     def __init__(
         self,
@@ -43,13 +44,16 @@ class RESTClient:
         *,
         requests_session: requests.Session | None = None,
     ) -> None:
-        """Create a LimeSurvey REST session."""
         self.url = url
-        self.username = username
-        self.password = password
         self._session = requests_session or requests.session()
         self._session.headers["User-Agent"] = self.USER_AGENT
-        self._session_id: str | None = None
+        self._session_id: str | None
+
+        self.authenticate(
+            username=username,
+            password=password,
+        )
+        self._session.auth = self._auth
 
     def authenticate(self, username: str, password: str) -> None:
         """Authenticate with the REST API.
@@ -66,13 +70,13 @@ class RESTClient:
             },
         )
         response.raise_for_status()
-        self._session_id = response.json()
+        self.__session_id = response.json()
 
     def close(self) -> None:
         """Delete the session."""
         response = self._session.delete(f"{self.url}/rest/v1/session")
         response.raise_for_status()
-        self._session_id = None
+        self.__session_id = None
         self._session.auth = None
 
     def _auth(self, request: requests.PreparedRequest) -> requests.PreparedRequest:
@@ -87,7 +91,7 @@ class RESTClient:
         Returns:
             The prepared request with the ``Authorization`` header set.
         """
-        request.headers["Authorization"] = f"Bearer {self._session_id}"
+        request.headers["Authorization"] = f"Bearer {self.__session_id}"
         return request
 
     def make_request(
@@ -124,11 +128,6 @@ class RESTClient:
         Returns:
             LimeSurvey REST client.
         """
-        self.authenticate(
-            username=self.username,
-            password=self.password,
-        )
-        self._session.auth = self._auth
         return self
 
     def __exit__(

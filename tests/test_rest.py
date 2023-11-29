@@ -6,12 +6,11 @@ import json
 import typing as t
 
 import pytest
-import pytest_asyncio
 import tinydb
 from tinydb.table import Document
 from werkzeug.wrappers import Response
 
-from citric.rest import AsyncRESTClient, RESTClient
+from citric.rest import RESTClient
 
 if t.TYPE_CHECKING:
     import sys
@@ -109,184 +108,79 @@ def api_handler(backend: tinydb.TinyDB) -> APIHandler:
     return handler
 
 
-class TestRESTClient:
-    """Tests for the REST API client."""
+@pytest.fixture
+def rest_client(
+    username: str,
+    password: str,
+    httpserver: HTTPServer,
+) -> t.Generator[RESTClient, None, None]:
+    """LimeSurvey REST API client."""
+    httpserver.expect_request(
+        "/rest/v1/session",
+        method="POST",
+        json={
+            "username": username,
+            "password": password,
+        },
+    ).respond_with_json('"my-session-id"')
+    httpserver.expect_request("/rest/v1/session", method="DELETE").respond_with_data("")
 
-    @pytest.fixture
-    def client(
-        self,
-        username: str,
-        password: str,
-        httpserver: HTTPServer,
-    ) -> t.Generator[RESTClient, None, None]:
-        """LimeSurvey REST API client."""
-        httpserver.expect_request(
-            "/rest/v1/session",
-            method="POST",
-            json={
-                "username": username,
-                "password": password,
-            },
-        ).respond_with_json('"my-session-id"')
-        httpserver.expect_request(
-            "/rest/v1/session",
-            method="DELETE",
-        ).respond_with_data("")
-
-        with RESTClient(
-            httpserver.url_for("").rstrip("/"),
-            username,
-            password,
-        ) as client:
-            yield client
-
-    def test_get_surveys(
-        self,
-        backend: tinydb.TinyDB,
-        client: RESTClient,
-        httpserver: HTTPServer,
-        api_handler: APIHandler,
-    ):
-        """Test getting surveys."""
-        httpserver.expect_request(
-            "/rest/v1/survey",
-            method="GET",
-        ).respond_with_handler(api_handler)
-
-        assert client.get_surveys() == backend.table("surveys").all()
-
-    def test_get_survey_details(
-        self,
-        backend: tinydb.TinyDB,
-        client: RESTClient,
-        httpserver: HTTPServer,
-        api_handler: APIHandler,
-    ):
-        """Test getting survey details."""
-        httpserver.expect_request(
-            "/rest/v1/survey-detail/12345",
-            method="GET",
-        ).respond_with_handler(api_handler)
-
-        surveys = backend.table("surveys")
-        assert client.get_survey_details(survey_id=12345) == surveys.get(doc_id=12345)
-
-    def test_update_survey_details(
-        self,
-        backend: tinydb.TinyDB,
-        client: RESTClient,
-        httpserver: HTTPServer,
-        api_handler: APIHandler,
-    ):
-        """Test updating survey details."""
-        httpserver.expect_request(
-            "/rest/v1/survey-detail/12345",
-            method="PATCH",
-        ).respond_with_handler(api_handler)
-
-        result = client.update_survey_details(
-            survey_id=12345,
-            anonymized=True,
-            tokenLength=10,
-        )
-        assert result is True
-
-        surveys = backend.table("surveys")
-        survey = surveys.get(doc_id=12345)
-        assert isinstance(survey, Document)
-        assert survey["anonymized"] is True
-        assert survey["tokenLength"] == 10
+    with RESTClient(httpserver.url_for("").rstrip("/"), username, password) as client:
+        yield client
 
 
-class TestAsyncRESTClient:
-    """Tests for the async REST API client."""
+def test_get_surveys(
+    backend: tinydb.TinyDB,
+    rest_client: RESTClient,
+    httpserver: HTTPServer,
+    api_handler: APIHandler,
+):
+    """Test getting surveys."""
+    httpserver.expect_request(
+        "/rest/v1/survey",
+        method="GET",
+    ).respond_with_handler(api_handler)
 
-    @pytest_asyncio.fixture
-    async def client(
-        self,
-        username: str,
-        password: str,
-        httpserver: HTTPServer,
-    ) -> t.Generator[AsyncRESTClient, None, None]:
-        """LimeSurvey REST API client."""
-        httpserver.expect_request(
-            "/rest/v1/session",
-            method="POST",
-            json={
-                "username": username,
-                "password": password,
-            },
-        ).respond_with_json('"my-session-id"')
-        httpserver.expect_request(
-            "/rest/v1/session",
-            method="DELETE",
-        ).respond_with_data("")
+    assert rest_client.get_surveys() == backend.table("surveys").all()
 
-        async with AsyncRESTClient(
-            httpserver.url_for("").rstrip("/"),
-            username,
-            password,
-        ) as client:
-            yield client
 
-    @pytest.mark.asyncio
-    async def test_async_get_surveys(
-        self,
-        backend: tinydb.TinyDB,
-        client: AsyncRESTClient,
-        httpserver: HTTPServer,
-        api_handler: APIHandler,
-    ):
-        """Test getting surveys."""
-        httpserver.expect_request(
-            "/rest/v1/survey",
-            method="GET",
-        ).respond_with_handler(api_handler)
+def test_get_survey_details(
+    backend: tinydb.TinyDB,
+    rest_client: RESTClient,
+    httpserver: HTTPServer,
+    api_handler: APIHandler,
+):
+    """Test getting survey details."""
+    httpserver.expect_request(
+        "/rest/v1/survey-detail/12345",
+        method="GET",
+    ).respond_with_handler(api_handler)
 
-        assert await client.get_surveys() == backend.table("surveys").all()
+    surveys = backend.table("surveys")
+    assert rest_client.get_survey_details(survey_id=12345) == surveys.get(doc_id=12345)
 
-    @pytest.mark.asyncio
-    async def test_async_get_survey_details(
-        self,
-        backend: tinydb.TinyDB,
-        client: AsyncRESTClient,
-        httpserver: HTTPServer,
-        api_handler: APIHandler,
-    ):
-        """Test getting survey details."""
-        httpserver.expect_request(
-            "/rest/v1/survey-detail/12345",
-            method="GET",
-        ).respond_with_handler(api_handler)
 
-        surveys = backend.table("surveys")
-        assert await client.get_survey_details(survey_id=12345) == surveys.get(
-            doc_id=12345,
-        )
+def test_update_survey_details(
+    backend: tinydb.TinyDB,
+    rest_client: RESTClient,
+    httpserver: HTTPServer,
+    api_handler: APIHandler,
+):
+    """Test updating survey details."""
+    httpserver.expect_request(
+        "/rest/v1/survey-detail/12345",
+        method="PATCH",
+    ).respond_with_handler(api_handler)
 
-    @pytest.mark.asyncio
-    async def test_async_update_survey_details(
-        self,
-        backend: tinydb.TinyDB,
-        client: AsyncRESTClient,
-        httpserver: HTTPServer,
-        api_handler: APIHandler,
-    ):
-        """Test updating survey details."""
-        httpserver.expect_request(
-            "/rest/v1/survey-detail/12345",
-            method="PATCH",
-        ).respond_with_handler(api_handler)
+    result = rest_client.update_survey_details(
+        survey_id=12345,
+        anonymized=True,
+        tokenLength=10,
+    )
+    assert result is True
 
-        result = await client.update_survey_details(
-            survey_id=12345,
-            anonymized=True,
-            tokenLength=10,
-        )
-        assert result is True
-
-        surveys = backend.table("surveys")
-        survey = surveys.get(doc_id=12345)
-        assert isinstance(survey, Document)
-        assert survey["anonymized"] is True
-        assert survey["tokenLength"] == 10
+    surveys = backend.table("surveys")
+    survey = surveys.get(doc_id=12345)
+    assert isinstance(survey, Document)
+    assert survey["anonymized"] is True
+    assert survey["tokenLength"] == 10
