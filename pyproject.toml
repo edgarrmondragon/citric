@@ -4,14 +4,12 @@ classifiers = [
   "Development Status :: 5 - Production/Stable",
   "Intended Audience :: Developers",
   "Intended Audience :: Information Technology",
+  "Intended Audience :: Science/Research",
   "Intended Audience :: System Administrators",
   "License :: OSI Approved :: MIT License",
   "Natural Language :: English",
   "Operating System :: OS Independent",
   "Programming Language :: Python :: 3.13",
-  "Programming Language :: Python :: Implementation :: CPython",
-  "Programming Language :: Python :: Implementation :: PyPy",
-  "Topic :: Software Development :: Libraries :: Python Modules",
   "Typing :: Typed",
 ]
 description = "A client to the LimeSurvey Remote Control API 2, written in modern Python."
@@ -27,6 +25,7 @@ version = "0.0.0"
 
 [tool.poetry.urls]
 "Issue Tracker" = "https://github.com/edgarrmondragon/citric/issues"
+"Changelog" = "https://github.com/edgarrmondragon/citric/blob/main/CHANGELOG.md"
 
 [tool.poetry.dependencies]
 python = ">=3.8"
