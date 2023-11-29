@@ -30,15 +30,15 @@ kinds:
 - label: Documentation
   auto: patch
 replacements:
-- path: pyproject.toml
-  find: ^version = ".*"$
-  replace: version = "{{.VersionNoPrefix}}"
 - path: src/citric/client.py
   find: "NEXT_VERSION"
   replace: "{{.VersionNoPrefix}}"
 - path: .github/ISSUE_TEMPLATE/BUG.yml
   find: "^      placeholder: \".*\"$"
   replace: "      placeholder: \"{{.VersionNoPrefix}}\""
+- path: CITATION.cff
+  find: "^version: \".*\"$"
+  replace: "version: \"{{.VersionNoPrefix}}\""
 custom:
 - key: Issue
   type: int
