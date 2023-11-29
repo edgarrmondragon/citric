@@ -27,6 +27,9 @@
   <a href="https://codecov.io/gh/edgarrmondragon/citric">
     <img alt="codecov" src="https://codecov.io/gh/edgarrmondragon/citric/branch/main/graph/badge.svg"/>
   </a>
+  <a href="https://zenodo.org/doi/10.5281/zenodo.10216279">
+    <img src="https://zenodo.org/badge/223537606.svg" alt="DOI">
+  </a>
 </div>
 
 <div>
