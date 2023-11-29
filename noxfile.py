@@ -117,6 +117,14 @@ def coverage(session: Session) -> None:
     session.run("coverage", *args)
 
 
+@session(name="deps", python=python_versions)
+def dependencies(session: Session) -> None:
+    """Check issues with dependencies."""
+    session.install(".")
+    session.install("deptry")
+    session.run("deptry", "src")
+
+
 @session(python=python_versions, tags=["lint"])
 def mypy(session: Session) -> None:
     """Type-check using mypy."""
