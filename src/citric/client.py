@@ -186,7 +186,7 @@ class Client:  # noqa: PLR0904
             Status and plugin feedback.
 
         .. versionadded:: 0.0.1
-        .. versionchanged:: NEXT_VERSION
+        .. versionchanged:: 0.10.0
            The ``user_activation_settings`` optional parameter was added.
         """
         activation_settings = (
@@ -526,7 +526,7 @@ class Client:  # noqa: PLR0904
             Dictionary of status message and the new survey ID.
 
         .. versionadded:: 0.0.10
-        .. versionchanged:: NEXT_VERSION
+        .. versionchanged:: 0.10.0
            The ``destination_survey_id`` optional parameter was added.
         .. futureparam:: 6.4.0 destination_survey_id
         """
