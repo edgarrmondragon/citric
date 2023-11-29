@@ -186,6 +186,8 @@ class Client:  # noqa: PLR0904
             Status and plugin feedback.
 
         .. versionadded:: 0.0.1
+        .. versionchanged:: NEXT_VERSION
+           The ``user_activation_settings`` optional parameter was added.
         """
         activation_settings = (
             {
