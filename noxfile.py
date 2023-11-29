@@ -139,7 +139,6 @@ def mypy(session: Session) -> None:
         "faker",
         "mypy",
         "pytest",
-        "pytest-asyncio",
         "pytest-httpserver",
         "pytest-subtests",
         "python-dotenv",
