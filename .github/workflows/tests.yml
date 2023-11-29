@@ -102,6 +102,7 @@ jobs:
     - name: Check out the repository
       uses: actions/checkout@v4.1.1
       with:
+        fetch-depth: 0
         fetch-tags: true
 
     - name: Setup Python ${{ matrix.python-version }}
