@@ -274,9 +274,17 @@ DEP004 = [
 ]
 
 [tool.poetry-dynamic-versioning]
-bump = true
 enable = true
-format = "{base}.{stage}{revision}+{commit}"
+# format = "{base}.{stage}{revision}+{commit}"
+format_jinja = """
+  {%- if distance == 0 -%}
+    {{ serialize_pep440(base, stage, revision) }}
+  {%- elif revision is not none -%}
+    {{ serialize_pep440(base, stage, revision) }}.dev{{ distance }}+{{ commit }}
+  {%- else -%}
+    {{ serialize_pep440(bump_version(base), stage, revision, dev=distance, metadata=[commit]) }}
+  {%- endif -%}
+"""
 vcs = "git"
 pattern = "^v?((?P<epoch>\\d+)!)?(?P<base>\\d+(\\.\\d+)*)([-._]?((?P<stage>[a-zA-Z]+)[-._]?(?P<revision>\\d+)?))?(\\+(?P<tagged_metadata>.+))?$"
 style = "pep440"
