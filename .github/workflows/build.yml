@@ -43,7 +43,7 @@ jobs:
       with:
         name: Packages
         path: dist
-    - uses: pypa/gh-action-pypi-publish@v1.8.10
+    - uses: pypa/gh-action-pypi-publish@v1.8.11
 
   # Move this up when PyPI supports signing
   sign:
