@@ -77,9 +77,6 @@ vcs = "git"
 pattern = "^v?((?P<epoch>\\d+)!)?(?P<base>\\d+(\\.\\d+)*)([-._]?((?P<stage>[a-zA-Z]+)[-._]?(?P<revision>\\d+)?))?(\\+(?P<tagged_metadata>.+))?$"
 style = "pep440"
 
-[tool.black]
-line-length = 88
-
 [tool.ruff]
 include = ["*.py", "*.pyi", "**/pyproject.toml", "*.ipynb"]
 line-length = 88
