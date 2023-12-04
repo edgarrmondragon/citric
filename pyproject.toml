@@ -71,8 +71,11 @@ docs = [
   "sphinx-notfound-page",
 ]
 
-[tool.black]
-line-length = 88
+[tool.poetry-dynamic-versioning]
+enable = true
+vcs = "git"
+pattern = "^v?((?P<epoch>\\d+)!)?(?P<base>\\d+(\\.\\d+)*)([-._]?((?P<stage>[a-zA-Z]+)[-._]?(?P<revision>\\d+)?))?(\\+(?P<tagged_metadata>.+))?$"
+style = "pep440"
 
 [tool.ruff]
 include = ["*.py", "*.pyi", "**/pyproject.toml", "*.ipynb"]
@@ -215,6 +218,21 @@ max-args = 10
 [tool.codespell]
 skip = ".mypy_cache,.nox,.ruff_cache,build,docs/index.md,poetry.lock"
 
+[tool.deptry.per_rule_ignores]
+DEP002 = [
+  "furo",
+  "myst-parser",
+  "sphinx",
+  "sphinx-autoapi",
+  "sphinx-autobuild",
+  "sphinx-copybutton",
+  "sphinx-hoverxref",
+  "sphinx-notfound-page",
+]
+DEP004 = [
+  "typing_extensions",
+]
+
 [tool.pytest.ini_options]
 addopts = [
   "-vvv",
@@ -257,27 +275,6 @@ module = [
   "nox_poetry.*",
   "pytest_subtests.*",  # TODO: Remove after https://github.com/pytest-dev/pytest-subtests/pull/115 is published
 ]
-
-[tool.deptry.per_rule_ignores]
-DEP002 = [
-  "furo",
-  "myst-parser",
-  "sphinx",
-  "sphinx-autoapi",
-  "sphinx-autobuild",
-  "sphinx-copybutton",
-  "sphinx-hoverxref",
-  "sphinx-notfound-page",
-]
-DEP004 = [
-  "typing_extensions",
-]
-
-[tool.poetry-dynamic-versioning]
-enable = true
-vcs = "git"
-pattern = "^v?((?P<epoch>\\d+)!)?(?P<base>\\d+(\\.\\d+)*)([-._]?((?P<stage>[a-zA-Z]+)[-._]?(?P<revision>\\d+)?))?(\\+(?P<tagged_metadata>.+))?$"
-style = "pep440"
 
 [build-system]
 build-backend = "poetry_dynamic_versioning.backend"

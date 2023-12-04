@@ -15,6 +15,9 @@
   <a href="https://python-poetry.org/">
     <img alt="Poetry" src="https://img.shields.io/endpoint?url=https://python-poetry.org/badge/v0.json"/>
   </a>
+  <a href="https://www.bestpractices.dev/projects/8144">
+    <img src="https://www.bestpractices.dev/projects/8144/badge">
+  </a>
 </div>
 
 <div>
