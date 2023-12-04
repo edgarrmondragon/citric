@@ -19,7 +19,7 @@ repos:
   - id: trailing-whitespace
 
 - repo: https://github.com/python-jsonschema/check-jsonschema
-  rev: 0.27.1
+  rev: 0.27.2
   hooks:
   - id: check-dependabot
   - id: check-github-workflows
@@ -61,6 +61,6 @@ repos:
     args: [--all]
 
 - repo: https://github.com/tox-dev/pyproject-fmt
-  rev: "1.5.1"
+  rev: "1.5.3"
   hooks:
   - id: pyproject-fmt
