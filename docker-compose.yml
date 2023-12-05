@@ -39,6 +39,8 @@ services:
       POSTGRES_PASSWORD: secret
     volumes:
       - "limedb:/var/lib/postgresql/data"
+    ports:
+      - 5432:5432
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "limesurvey"]
       interval: 30s

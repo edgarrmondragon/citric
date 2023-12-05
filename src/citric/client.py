@@ -1326,7 +1326,7 @@ class Client:  # noqa: PLR0904
         start: int = 0,
         limit: int = 10,
         unused: bool = False,
-        attributes: t.Sequence[str] | bool = False,
+        attributes: t.Sequence[types.ParticipantAttribute | str] | bool = False,
         conditions: t.Mapping[str, t.Any] | None = None,
     ) -> list[dict[str, t.Any]]:
         """Get participants in a survey.
