@@ -1344,6 +1344,25 @@ class Client:  # noqa: PLR0904
         Returns:
             List of participants with basic information.
 
+        Some valid participant attributes are:
+
+        * tid
+        * participant_id
+        * firstname
+        * lastname
+        * email
+        * emailstatus
+        * token
+        * language
+        * blacklisted
+        * sent
+        * remindersent
+        * remindercount
+        * completed
+        * usesleft
+        * validfrom
+        * validuntil
+
         .. versionadded:: 0.0.1
         .. versionchanged:: 0.4.0
            Use keyword-only arguments.
