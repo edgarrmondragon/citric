@@ -29,6 +29,7 @@ __all__ = [
     "SurveyProperties",
     "SurveyUserActivationSettings",
     "CPDBParticipantImportResult",
+    "ParticipantAttribute",
 ]
 
 Result: TypeAlias = t.Any
