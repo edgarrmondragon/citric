@@ -7,6 +7,7 @@ import io
 import json
 import typing as t
 import uuid
+from datetime import datetime
 from pathlib import Path
 from urllib.parse import quote
 
@@ -473,7 +474,16 @@ def test_invite_participants(
     with pytest.raises(LimeSurveyStatusError, match="Error: No candidate tokens"):
         client.invite_participants(survey_id, strategy=resend)
 
+    participant_data = client.list_participants(survey_id, attributes=["sent"])
+    assert participant_data[0]["sent"] == "N"
+    assert participant_data[1]["sent"] == "N"
+
     assert client.invite_participants(survey_id, strategy=pending) == 0
+
+    participant_data = client.list_participants(survey_id, attributes=["sent"])
+    date_format = "%Y-%m-%d %H:%M"
+    assert datetime.strptime(participant_data[0]["sent"], date_format)  # noqa: DTZ007
+    assert datetime.strptime(participant_data[1]["sent"], date_format)  # noqa: DTZ007
 
     with pytest.raises(LimeSurveyStatusError, match="Error: No candidate tokens"):
         client.invite_participants(survey_id, strategy=pending)
