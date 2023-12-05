@@ -482,8 +482,8 @@ def test_invite_participants(
 
     participant_data = client.list_participants(survey_id, attributes=["sent"])
     date_format = "%Y-%m-%d %H:%M"
-    assert datetime.strptime(participant_data[0]["sent"], date_format)  # noqa: DTZ007
-    assert datetime.strptime(participant_data[1]["sent"], date_format)  # noqa: DTZ007
+    datetime.strptime(participant_data[0]["sent"], date_format)  # noqa: DTZ007
+    datetime.strptime(participant_data[1]["sent"], date_format)  # noqa: DTZ007
 
     with pytest.raises(LimeSurveyStatusError, match="Error: No candidate tokens"):
         client.invite_participants(survey_id, strategy=pending)
