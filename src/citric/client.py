@@ -1326,7 +1326,7 @@ class Client:  # noqa: PLR0904
         start: int = 0,
         limit: int = 10,
         unused: bool = False,
-        attributes: t.Sequence[types.ParticipantAttribute | str] | bool = False,
+        attributes: t.Sequence[str] | bool = False,
         conditions: t.Mapping[str, t.Any] | None = None,
     ) -> list[dict[str, t.Any]]:
         """Get participants in a survey.
@@ -1343,6 +1343,25 @@ class Client:  # noqa: PLR0904
 
         Returns:
             List of participants with basic information.
+
+        Some valid participant attributes are:
+
+        * tid
+        * participant_id
+        * firstname
+        * lastname
+        * email
+        * emailstatus
+        * token
+        * language
+        * blacklisted
+        * sent
+        * remindersent
+        * remindercount
+        * completed
+        * usesleft
+        * validfrom
+        * validuntil
 
         .. versionadded:: 0.0.1
         .. versionchanged:: 0.4.0

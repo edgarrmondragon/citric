@@ -29,7 +29,6 @@ __all__ = [
     "SurveyProperties",
     "SurveyUserActivationSettings",
     "CPDBParticipantImportResult",
-    "ParticipantAttribute",
 ]
 
 Result: TypeAlias = t.Any
@@ -517,23 +516,3 @@ class SurveyUserActivationSettings(t.TypedDict, total=False):
     ipanonymize: bool
     refurl: bool
     savetimings: bool
-
-
-ParticipantAttribute = t.Literal[
-    "tid",
-    "partcipant_id",
-    "firstname",
-    "lastname",
-    "email",
-    "emailstatus",
-    "token",
-    "language",
-    "blacklisted",
-    "sent",
-    "remindersent",
-    "remindercount",
-    "completed",
-    "usesleft",
-    "validfrom",
-    "validuntil",
-]
