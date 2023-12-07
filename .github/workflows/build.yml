@@ -18,11 +18,11 @@ jobs:
     name: Build wheel and sdist
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4.1.1
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 0
         ref: ${{ github.event.inputs.tag || github.ref }}
-    - uses: actions/setup-python@v4.7.1
+    - uses: actions/setup-python@v5
       with:
         python-version: "3.11"
     - uses: hynek/build-and-inspect-python-package@v1
@@ -39,7 +39,7 @@ jobs:
       id-token: write # IMPORTANT: mandatory for trusted publishing
 
     steps:
-    - uses: actions/download-artifact@v3.0.2
+    - uses: actions/download-artifact@v3
       with:
         name: Packages
         path: dist
@@ -56,7 +56,7 @@ jobs:
       id-token: write # IMPORTANT: mandatory for sigstore
 
     steps:
-      - uses: actions/download-artifact@v3.0.2
+      - uses: actions/download-artifact@v3
         with:
           name: Packages
           path: dist
