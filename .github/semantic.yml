@@ -1,2 +1,6 @@
 enabled: true
 titleOnly: true
+
+scopes:
+- rest
+- rpc

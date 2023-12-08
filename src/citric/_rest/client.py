@@ -170,7 +170,7 @@ class RESTClient:
         self,
         survey_id: int,
         **data: t.Any,
-    ) -> bool:
+    ) -> dict[str, t.Any] | bool:
         """Update survey details.
 
         Args:
