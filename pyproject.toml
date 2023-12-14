@@ -48,8 +48,6 @@ dev = [
   "citric[docs,test,typing]",
   "colorama>=0.4.6",
   "requests-cache[sqlite]>=1.1",
-  "safety>=2.1.1",
-  "tabulate>=0.9",
   "xdoctest>=1.1.1",
 ]
 docs = [
@@ -238,16 +236,33 @@ max-args = 10
 [tool.codespell]
 skip = ".mypy_cache,.nox,.ruff_cache,build,docs/index.md,docs/requirements.txt"
 
+[tool.deptry.package_module_name_map]
+types-requests = "requests"
+
 [tool.deptry.per_rule_ignores]
 DEP002 = [
+  "colorama",
+  "coverage",
+  "deptry",
+  "faker",
   "furo",
+  "mypy",
   "myst-parser",
+  "pytest",
+  "pytest-github-actions-annotate-failures",
+  "pytest-httpserver",
+  "pytest-subtests",
+  "python-dotenv",
+  "requests-cache",
+  "semver",
   "sphinx",
   "sphinx-autoapi",
   "sphinx-autobuild",
   "sphinx-copybutton",
   "sphinx-hoverxref",
   "sphinx-notfound-page",
+  "tinydb",
+  "xdoctest",
 ]
 DEP004 = [
   "typing_extensions",
@@ -284,6 +299,7 @@ precision = 2
 show_missing = true
 
 [tool.mypy]
+warn_redundant_casts = true
 warn_unreachable = true
 warn_unused_configs = true
 warn_unused_ignores = true
