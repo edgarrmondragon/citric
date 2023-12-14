@@ -21,14 +21,14 @@ repos:
   - id: trailing-whitespace
 
 - repo: https://github.com/python-jsonschema/check-jsonschema
-  rev: 0.27.1
+  rev: 0.27.3
   hooks:
   - id: check-dependabot
   - id: check-github-workflows
   - id: check-readthedocs
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.1.6
+  rev: v0.1.7
   hooks:
   - id: ruff
     name: Ruff lint
@@ -63,7 +63,7 @@ repos:
     args: [--all]
 
 - repo: https://github.com/tox-dev/pyproject-fmt
-  rev: "1.5.1"
+  rev: "1.5.3"
   hooks:
   - id: pyproject-fmt
 

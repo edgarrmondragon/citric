@@ -15,6 +15,9 @@
   <a href="https://github.com/pypa/hatch">
     <img alt="Hatch project" src="https://img.shields.io/badge/%F0%9F%A5%9A-Hatch-4051b5.svg"/>
   </a>
+  <a href="https://www.bestpractices.dev/projects/8144">
+    <img src="https://www.bestpractices.dev/projects/8144/badge">
+  </a>
 </div>
 
 <div>
@@ -27,8 +30,8 @@
   <a href="https://codecov.io/gh/edgarrmondragon/citric">
     <img alt="codecov" src="https://codecov.io/gh/edgarrmondragon/citric/branch/main/graph/badge.svg"/>
   </a>
-  <a href="https://app.fossa.com/projects/git%2Bgithub.com%2Fedgarrmondragon%2Fcitric?ref=badge_shield">
-    <img alt="FOSSA Status" src="https://app.fossa.com/api/projects/git%2Bgithub.com%2Fedgarrmondragon%2Fcitric.svg?type=shield"/>
+  <a href="https://zenodo.org/doi/10.5281/zenodo.10216279">
+    <img src="https://zenodo.org/badge/223537606.svg" alt="DOI">
   </a>
 </div>
 
@@ -57,17 +60,18 @@
 - Easily export survey data to CSV files, [Pandas DataFrames](https://citric.readthedocs.io/en/stable/how-to.html#export-responses-to-a-pandas-dataframe) and [DuckDB databases](https://citric.readthedocs.io/en/stable/how-to.html#export-responses-to-a-duckdb-database-and-analyze-with-sql).
 - Easily [download survey files](https://citric.readthedocs.io/en/stable/how-to.html#get-files-uploaded-to-a-survey-and-move-them-to-s3) (e.g. images, audio, etc.) to a local directory.
 - Tested against LimeSurvey 6.0.0+ and 5.0.0+ versions.
+- Experimental support for the new [REST API](https://manual.limesurvey.org/REST_API).
 
 ### Integration tests
 
 Integration tests are run against a LimeSurvey instance, and both PostgreSQL and MySQL backends, using Docker Compose. The following versions of LimeSurvey were tested for this release:
 
-- [6.3.4](https://github.com/LimeSurvey/LimeSurvey/releases/tag/6.3.4%2B231108)
-- [6.3.3](https://github.com/LimeSurvey/LimeSurvey/releases/tag/6.3.3%2B231106)
-- [6.3.1](https://github.com/LimeSurvey/LimeSurvey/releases/tag/6.3.1%2B231023)
-- [5.6.44](https://github.com/LimeSurvey/LimeSurvey/releases/tag/5.6.44%2B231107)
-- [5.6.43](https://github.com/LimeSurvey/LimeSurvey/releases/tag/5.6.43%2B231030)
-- [5.6.42](https://github.com/LimeSurvey/LimeSurvey/releases/tag/5.6.42%2B231024)
+- [6.3.7](https://github.com/LimeSurvey/LimeSurvey/releases/tag/6.3.7%2B231127)
+- [6.3.6](https://github.com/LimeSurvey/LimeSurvey/releases/tag/6.3.6%2B231120)
+- [6.3.5](https://github.com/LimeSurvey/LimeSurvey/releases/tag/6.3.5%2B231113)
+- [5.6.47](https://github.com/LimeSurvey/LimeSurvey/releases/tag/5.6.47%2B231128)
+- [5.6.46](https://github.com/LimeSurvey/LimeSurvey/releases/tag/5.6.46%2B231121)
+- [5.6.45](https://github.com/LimeSurvey/LimeSurvey/releases/tag/5.6.45%2B231114)
 
 ## Installation
 
@@ -107,10 +111,9 @@ If you'd like to contribute to this project, please see the [contributing guide]
 
 ## Credits
 
+- [Markus Opolka][martialblog] for maintaining a very robust set of [LimeSurvey Docker images](https://github.com/martialblog/docker-limesurvey/).
 - [Claudio Jolowicz][claudio] and [his amazing blog post][hypermodern].
 
 [claudio]: https://twitter.com/cjolowicz/
 [hypermodern]: https://cjolowicz.github.io/posts/hypermodern-python-01-setup/
-
-## License
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fedgarrmondragon%2Fcitric.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fedgarrmondragon%2Fcitric?ref=badge_large)
+[martialblog]: https://github.com/martialblog/

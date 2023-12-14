@@ -3,9 +3,9 @@ message: "If you use this software, please cite it as below."
 authors:
 - family-names: "Ramírez Mondragón"
   given-names: "Edgar"
-  orcid: "https://orcid.org/0000-0000-0000-0000"
-title: "My Research Software"
-version: "0.9.0"
-doi: 10.5281/zenodo.1234
+  orcid: "https://orcid.org/0000-0002-4182-0385"
+title: "Citric"
+version: "0.10.0"
+doi: 10.5281/zenodo.10216279
 date-released: 2021-11-11
 url: "https://github.com/edgarrmondragon/citric"

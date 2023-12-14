@@ -29,7 +29,10 @@ def tests(session: Session) -> None:
     env = {"PIP_ONLY_BINARY": ":all:"}
 
     if session.python == "3.13":
-        env["PIP_NO_BINARY"] = "coverage"
+        env["PIP_NO_BINARY"] = "coverage,MarkupSafe"
+
+    if session.python.startswith("pypy"):
+        env["PIP_NO_BINARY"] = "MarkupSafe"
 
     session.install(".[tests]", env=env)
     args = session.posargs or ["-m", "not integration_test"]
@@ -88,6 +91,14 @@ def coverage(session: Session) -> None:
         session.run("coverage", "combine", "--debug=pathmap")
 
     session.run("coverage", *args)
+
+
+@session(name="deps", python=python_versions)
+def dependencies(session: Session) -> None:
+    """Check issues with dependencies."""
+    session.install(".")
+    session.install("deptry")
+    session.run("deptry", "src")
 
 
 @session(python=python_versions, tags=["lint"])

@@ -21,6 +21,7 @@ classifiers = [
   "Development Status :: 5 - Production/Stable",
   "Intended Audience :: Developers",
   "Intended Audience :: Information Technology",
+  "Intended Audience :: Science/Research",
   "Intended Audience :: System Administrators",
   "License :: OSI Approved :: MIT License",
   "Natural Language :: English",
@@ -63,19 +64,22 @@ docs = [
 ]
 tests = [
   "coverage[toml]>=7.3",
+  "deptry>=0.12",
   "faker>=19",
   "pytest>=7.3.1",
   "pytest-github-actions-annotate-failures>=0.1.7",
+  "pytest-httpserver",
   "pytest-subtests",
   "python-dotenv>=1",
+  "requests-cache>=1.1",
   "semver>=3.0.1",
+  "tinydb>=4.8",
 ]
 typing = [
   "citric[tests]",
   "mypy>=1.5",
   "sphinx",
   "types-requests>=2.31.0.2",
-  "types-tabulate>=0.9.0.3",
   'typing-extensions>=4.6; python_version < "3.12"',
 ]
 [project.urls]
@@ -84,11 +88,14 @@ Homepage = 'https://github.com/edgarrmondragon/citric'
 "Issue Tracker" = "https://github.com/edgarrmondragon/citric/issues"
 Repository = "https://github.com/edgarrmondragon/citric"
 
+[tool.poetry-dynamic-versioning]
+enable = true
+vcs = "git"
+pattern = "^v?((?P<epoch>\\d+)!)?(?P<base>\\d+(\\.\\d+)*)([-._]?((?P<stage>[a-zA-Z]+)[-._]?(?P<revision>\\d+)?))?(\\+(?P<tagged_metadata>.+))?$"
+style = "pep440"
+
 [tool.hatch.version]
 source = "vcs"
-
-[tool.black]
-line-length = 88
 
 [tool.ruff]
 include = ["*.py", "*.pyi", "**/pyproject.toml", "*.ipynb"]
@@ -230,6 +237,21 @@ max-args = 10
 
 [tool.codespell]
 skip = ".mypy_cache,.nox,.ruff_cache,build,docs/index.md,docs/requirements.txt"
+
+[tool.deptry.per_rule_ignores]
+DEP002 = [
+  "furo",
+  "myst-parser",
+  "sphinx",
+  "sphinx-autoapi",
+  "sphinx-autobuild",
+  "sphinx-copybutton",
+  "sphinx-hoverxref",
+  "sphinx-notfound-page",
+]
+DEP004 = [
+  "typing_extensions",
+]
 
 [tool.pytest.ini_options]
 addopts = [

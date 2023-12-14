@@ -8,9 +8,9 @@ alabaster==0.7.13
     # via sphinx
 anyascii==0.3.2
     # via sphinx-autoapi
-astroid==3.0.1
+astroid==3.0.2
     # via sphinx-autoapi
-babel==2.13.1
+babel==2.14.0
     # via sphinx
 beautifulsoup4==4.12.2
     # via furo
@@ -112,7 +112,7 @@ sphinxcontrib-qthelp==1.0.6
     # via sphinx
 sphinxcontrib-serializinghtml==1.1.9
     # via sphinx
-tornado==6.3.3
+tornado==6.4
     # via livereload
 urllib3==2.1.0
     # via requests

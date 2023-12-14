@@ -1,4 +1,4 @@
-"""Tests for RPC low-level calls."""
+"""Integration tests for the RPC client."""
 
 from __future__ import annotations
 
