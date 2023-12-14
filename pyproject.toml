@@ -43,14 +43,13 @@ dynamic = [
 dependencies = [
   "requests>=2.23",
 ]
-[project.optional-dependencies]
-dev = [
+optional-dependencies.dev = [
   "citric[docs,test,typing]",
   "colorama>=0.4.6",
   "requests-cache[sqlite]>=1.1",
   "xdoctest>=1.1.1",
 ]
-docs = [
+optional-dependencies.docs = [
   "furo",
   "myst-parser",
   "sphinx",
@@ -60,7 +59,7 @@ docs = [
   "sphinx-hoverxref",
   "sphinx-notfound-page",
 ]
-tests = [
+optional-dependencies.tests = [
   "coverage[toml]>=7.3",
   "deptry>=0.12",
   "faker>=19",
@@ -73,24 +72,17 @@ tests = [
   "semver>=3.0.1",
   "tinydb>=4.8",
 ]
-typing = [
+optional-dependencies.typing = [
   "citric[tests]",
   "mypy>=1.5",
   "sphinx",
   "types-requests>=2.31.0.2",
   'typing-extensions>=4.6; python_version < "3.12"',
 ]
-[project.urls]
-Documentation = "https://citric.readthedocs.io"
-Homepage = 'https://github.com/edgarrmondragon/citric'
-"Issue Tracker" = "https://github.com/edgarrmondragon/citric/issues"
-Repository = "https://github.com/edgarrmondragon/citric"
-
-[tool.poetry-dynamic-versioning]
-enable = true
-vcs = "git"
-pattern = "^v?((?P<epoch>\\d+)!)?(?P<base>\\d+(\\.\\d+)*)([-._]?((?P<stage>[a-zA-Z]+)[-._]?(?P<revision>\\d+)?))?(\\+(?P<tagged_metadata>.+))?$"
-style = "pep440"
+urls.Documentation = "https://citric.readthedocs.io"
+urls.Homepage = 'https://github.com/edgarrmondragon/citric'
+urls."Issue Tracker" = "https://github.com/edgarrmondragon/citric/issues"
+urls.Repository = "https://github.com/edgarrmondragon/citric"
 
 [tool.hatch.version]
 source = "vcs"
