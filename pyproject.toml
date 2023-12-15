@@ -155,7 +155,7 @@ select = [
   "TRY",     # tryceratops
   "FLY",     # flynt
   "PERF",    # perflint
-  "FURB",    # repeated-append
+  "FURB",    # refurb
   "LOG",     # flake8-logging
   "RUF",     # Ruff-specific rules
 ]
@@ -164,6 +164,7 @@ unfixable = [
 ]
 
 [tool.ruff.format]
+docstring-code-format = true
 # Enable preview style formatting.
 preview = true
 

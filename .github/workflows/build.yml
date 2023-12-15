@@ -22,9 +22,6 @@ jobs:
       with:
         fetch-depth: 0
         ref: ${{ github.event.inputs.tag || github.ref }}
-    - uses: actions/setup-python@v5
-      with:
-        python-version: "3.11"
     - uses: hynek/build-and-inspect-python-package@v1
 
   publish:

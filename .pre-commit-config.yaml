@@ -28,7 +28,7 @@ repos:
   - id: check-readthedocs
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.1.7
+  rev: v0.1.8
   hooks:
   - id: ruff
     name: Ruff lint
@@ -52,7 +52,7 @@ repos:
     - pydoclint==0.3.8
 
 - repo: https://github.com/pre-commit/pre-commit
-  rev: v3.5.0
+  rev: v3.6.0
   hooks:
   - id: validate_manifest
 
