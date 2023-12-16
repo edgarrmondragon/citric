@@ -74,6 +74,15 @@ def test_session(
         assert not session.closed
         assert session.key == LimeSurveyMockAdapter.session_key
 
+    assert session.closed
+    assert session.key is None
+
+    with pytest.raises(AttributeError, match=SET_PROPERTY_MESSAGE_REGEX):
+        session.key = "123456"  # type: ignore[misc]
+
+    with pytest.raises(AttributeError, match=SET_PROPERTY_MESSAGE_REGEX):
+        session.closed = False  # type: ignore[misc]
+
 
 def test_session_auth_plugin(
     url: str,
@@ -91,26 +100,6 @@ def test_session_auth_plugin(
     ) as session:
         assert not session.closed
         assert session.key == LimeSurveyMockAdapter.ldap_session_key
-
-
-def test_closed_session(
-    url: str,
-    username: str,
-    password: str,
-    mock_session: requests.Session,
-):
-    """Test context closes session."""
-    with Session(url, username, password, requests_session=mock_session) as session:
-        pass
-
-    assert session.closed
-    assert session.key is None
-
-    with pytest.raises(AttributeError, match=SET_PROPERTY_MESSAGE_REGEX):
-        session.key = "123456"  # type: ignore[misc]
-
-    with pytest.raises(AttributeError, match=SET_PROPERTY_MESSAGE_REGEX):
-        session.closed = False  # type: ignore[misc]
 
 
 def test_empty_response(session: Session):
