@@ -66,12 +66,12 @@
 
 Integration tests are run against a LimeSurvey instance, and both PostgreSQL and MySQL backends, using Docker Compose. The following versions of LimeSurvey were tested for this release:
 
-- [6.3.7](https://github.com/LimeSurvey/LimeSurvey/releases/tag/6.3.7%2B231127)
-- [6.3.6](https://github.com/LimeSurvey/LimeSurvey/releases/tag/6.3.6%2B231120)
-- [6.3.5](https://github.com/LimeSurvey/LimeSurvey/releases/tag/6.3.5%2B231113)
-- [5.6.47](https://github.com/LimeSurvey/LimeSurvey/releases/tag/5.6.47%2B231128)
-- [5.6.46](https://github.com/LimeSurvey/LimeSurvey/releases/tag/5.6.46%2B231121)
-- [5.6.45](https://github.com/LimeSurvey/LimeSurvey/releases/tag/5.6.45%2B231114)
+- [6.3.8](https://github.com/LimeSurvey/LimeSurvey/releases/tag/6.3.8+231204)
+- [6.3.7](https://github.com/LimeSurvey/LimeSurvey/releases/tag/6.3.7+231127)
+- [6.3.6](https://github.com/LimeSurvey/LimeSurvey/releases/tag/6.3.6+231120)
+- [5.6.48](https://github.com/LimeSurvey/LimeSurvey/releases/tag/5.6.48+231205)
+- [5.6.47](https://github.com/LimeSurvey/LimeSurvey/releases/tag/5.6.47+231128)
+- [5.6.46](https://github.com/LimeSurvey/LimeSurvey/releases/tag/5.6.46+231121)
 
 ## Installation
 
