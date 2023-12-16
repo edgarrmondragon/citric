@@ -292,6 +292,14 @@ omit = ["src/citric/types.py"]
 precision = 2
 show_missing = true
 
+[tool.tox]
+legacy_tox_ini = """
+    [tox]
+    requires =
+        tox>=4
+    env_list = py{38,39,310,311,312,313}
+"""
+
 [tool.mypy]
 warn_redundant_casts = true
 warn_unreachable = true
