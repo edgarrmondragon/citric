@@ -14,23 +14,12 @@ Ready to contribute? Here's how to set up `citric` for local development.
    cd citric
    ```
 
-1. Install [`poetry`][poetry] and the `poetry-dynamic-versioning` plugin:
-
-   ```shell
-   poetry self add "poetry-dynamic-versioning[plugin]"
-   ```
-
-1. Install the project dependencies:
-
-   ```shell
-   poetry install
-   ```
+1. Install [`hatch`][hatch]:
 
 1. Install [`nox`][nox] (used for automation):
 
     ```shell
     pipx install nox
-    pipx inject nox nox-poetry
     nox -l
     ```
 
@@ -65,7 +54,7 @@ Ready to contribute? Here's how to set up `citric` for local development.
    changie new
    ```
 
-[poetry]: https://python-poetry.org/docs/#installation
+[hatch]: https://hatch.pypa.io/latest/install/
 [nox]: https://nox.thea.codes/en/stable/
 [pre-commit]: https://pre-commit.com/
 [changie]: https://changie.dev/

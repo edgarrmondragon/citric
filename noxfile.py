@@ -4,35 +4,16 @@ from __future__ import annotations
 
 import os
 import shutil
-import sys
 from pathlib import Path
-from textwrap import dedent
 
-try:
-    from nox_poetry import Session, session
-except ImportError:
-    message = f"""\
-    Nox failed to import the 'nox-poetry' package.
-    Please install it using the following command:
-    {sys.executable} -m pip install nox-poetry"""
-    raise SystemExit(dedent(message)) from None
+from nox import Session, session
 
 GH_ACTIONS_ENV_VAR = "GITHUB_ACTIONS"
 FORCE_COLOR = "FORCE_COLOR"
-TEST_DEPS = [
-    "coverage[toml]",
-    "faker",
-    "pytest",
-    "pytest-httpserver",
-    "pytest-subtests",
-    "python-dotenv",
-    "semver",
-    "tinydb",
-]
 
 package = "citric"
 
-python_versions = ["3.12", "3.11", "3.10", "3.9", "3.8"]
+python_versions = ["3.13", "3.12", "3.11", "3.10", "3.9", "3.8"]
 pypy_versions = ["pypy3.9", "pypy3.10"]
 all_python_versions = python_versions + pypy_versions
 
@@ -45,20 +26,7 @@ locations = "src", "tests", "noxfile.py", "docs/conf.py"
 @session(python=all_python_versions, tags=["test"])
 def tests(session: Session) -> None:
     """Execute pytest tests and compute coverage."""
-    deps = [*TEST_DEPS]
-    env = {"PIP_ONLY_BINARY": ":all:"}
-
-    if GH_ACTIONS_ENV_VAR in os.environ:
-        deps.append("pytest-github-actions-annotate-failures")
-
-    if session.python == "3.13":
-        env["PIP_NO_BINARY"] = "coverage,MarkupSafe"
-
-    if session.python.startswith("pypy"):
-        env["PIP_NO_BINARY"] = "MarkupSafe"
-
-    session.install(".", env=env)
-    session.install(*deps, env=env)
+    session.install(".[tests]")
     args = session.posargs or ["-m", "not integration_test"]
 
     try:
@@ -71,12 +39,7 @@ def tests(session: Session) -> None:
 @session(python=[main_cpython_version, main_pypy_version], tags=["test"])
 def integration(session: Session) -> None:
     """Execute integration tests and compute coverage."""
-    deps = [*TEST_DEPS]
-    if GH_ACTIONS_ENV_VAR in os.environ:
-        deps.append("pytest-github-actions-annotate-failures")
-
-    session.install(".")
-    session.install(*deps)
+    session.install(".[tests]")
 
     args = [
         "coverage",
@@ -134,20 +97,7 @@ def dependencies(session: Session) -> None:
 def mypy(session: Session) -> None:
     """Type-check using mypy."""
     args = session.posargs or locations
-    session.install(
-        ".",
-        "faker",
-        "mypy",
-        "pytest",
-        "pytest-httpserver",
-        "pytest-subtests",
-        "python-dotenv",
-        "semver",
-        "sphinx",
-        "tinydb",
-        "types-requests",
-        "typing-extensions",
-    )
+    session.install(".[typing]")
     session.run("mypy", *args)
 
 

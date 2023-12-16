@@ -3,6 +3,8 @@ ci:
   autofix_prs: true
   autoupdate_schedule: monthly
   autoupdate_commit_msg: 'chore(deps): pre-commit autoupdate'
+  skip:
+  - pip-compile
 
 repos:
 - repo: https://github.com/pre-commit/pre-commit-hooks
@@ -64,3 +66,11 @@ repos:
   rev: "1.5.3"
   hooks:
   - id: pyproject-fmt
+    additional_dependencies: ["tox>=4.9"]
+
+- repo: https://github.com/jazzband/pip-tools
+  rev: 7.3.0
+  hooks:
+  - id: pip-compile
+    files: ^pyproject\.toml$
+    args: ["--extra", "docs", "-o", "docs/requirements.txt"]

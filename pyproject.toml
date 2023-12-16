@@ -1,5 +1,22 @@
-[tool.poetry]
-authors = ["Edgar Ramírez-Mondragón <edgarrm358@gmail.com>"]
+[build-system]
+build-backend = "hatchling.build"
+requires = [
+  "hatch-vcs",
+  "hatchling",
+]
+
+[project]
+name = "citric"
+description = "A client to the LimeSurvey Remote Control API 2, written in modern Python."
+readme = "README.md"
+keywords = [
+  "json-rpc",
+  "limesurvey",
+]
+license = {file = "LICENSE"}
+maintainers = [{ name = "Edgar Ramírez-Mondragón", email = "edgarrm358@gmail.com" }]
+authors = [{ name = "Edgar Ramírez-Mondragón", email = "edgarrm358@gmail.com" }]
+requires-python = ">=3.8"
 classifiers = [
   "Development Status :: 5 - Production/Stable",
   "Intended Audience :: Developers",
@@ -9,58 +26,30 @@ classifiers = [
   "License :: OSI Approved :: MIT License",
   "Natural Language :: English",
   "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: Implementation :: PyPy",
+  "Topic :: Software Development :: Libraries :: Python Modules",
   "Typing :: Typed",
 ]
-description = "A client to the LimeSurvey Remote Control API 2, written in modern Python."
-documentation = "https://citric.readthedocs.io"
-homepage = 'https://github.com/edgarrmondragon/citric'
-keywords = ["limesurvey", "json-rpc"]
-license = "MIT"
-maintainers = ["Edgar Ramírez-Mondragón <edgarrm358@gmail.com>"]
-name = "citric"
-readme = "README.md"
-repository = 'https://github.com/edgarrmondragon/citric'
-version = "0.0.0"
-
-[tool.poetry.urls]
-"Issue Tracker" = "https://github.com/edgarrmondragon/citric/issues"
-"Changelog" = "https://github.com/edgarrmondragon/citric/blob/main/CHANGELOG.md"
-
-[tool.poetry.dependencies]
-python = ">=3.8"
-requests = ">=2.23.0"
-
-# Docs
-furo = { version = ">=2023.3.27", optional = true, python = ">=3.9" }
-myst-parser = { version = ">=2", optional = true, python = ">=3.9" }
-sphinx = { version = ">=7.2.2", optional = true, python = ">=3.9" }
-sphinx-autoapi = { version = ">=3", optional = true, python = ">=3.9" }
-sphinx-autobuild = { version = ">=2021.3.14", optional = true, python = ">=3.9" }
-sphinx-copybutton = { version = ">=0.5.1", optional = true, python = ">=3.9" }
-sphinx-hoverxref = { version = ">=1.3.0", optional = true, python = ">=3.9" }
-sphinx-notfound-page = {version = ">=1.0.0", optional = true, python = ">=3.9"}
-
-[tool.poetry.group.dev.dependencies]
-colorama = ">=0.4.6"
-coverage = { extras = ["toml"], version = ">=7.3.0" }
-deptry = {version = ">=0.12.0", python = "<4"}
-faker = ">=19"
-mypy = ">=1.5"
-pytest = ">=7.3.1"
-pytest-github-actions-annotate-failures = ">=0.1.7"
-pytest-httpserver = {version = ">=1.0.8", python = "<4.0"}
-pytest-subtests = ">=0.11.0"
-python-dotenv = ">=1"
-requests-cache = { version = ">=1.1.0", python = "<4.0" }
-semver = ">=3.0.1"
-tinydb = {version = ">=4.8.0", python = ">=3.8,<4.0"}
-types-requests = ">=2.31.0.2"
-typing-extensions = { version = ">=4.6.0", python = "<3.12" }
-xdoctest = ">=1.1.1"
-
-[tool.poetry.extras]
-docs = [
+dynamic = [
+  "version",
+]
+dependencies = [
+  "requests>=2.23",
+]
+optional-dependencies.dev = [
+  "citric[docs,tests,typing]",
+  "colorama>=0.4.6",
+  "requests-cache[sqlite]>=1.1",
+]
+optional-dependencies.docs = [
   "furo",
   "myst-parser",
   "sphinx",
@@ -70,12 +59,33 @@ docs = [
   "sphinx-hoverxref",
   "sphinx-notfound-page",
 ]
+optional-dependencies.tests = [
+  "coverage[toml]>=7.3",
+  "deptry>=0.12",
+  "faker>=19",
+  "pytest>=7.3.1",
+  "pytest-github-actions-annotate-failures>=0.1.7",
+  "pytest-httpserver",
+  "pytest-subtests",
+  "python-dotenv>=1",
+  "semver>=3.0.1",
+  "tinydb>=4.8",
+  "xdoctest[colors]>=1.1.1",
+]
+optional-dependencies.typing = [
+  "citric[tests]",
+  "mypy>=1.5",
+  "sphinx",
+  "types-requests>=2.31.0.2",
+  'typing-extensions>=4.6; python_version < "3.12"',
+]
+urls.Documentation = "https://citric.readthedocs.io"
+urls.Homepage = 'https://github.com/edgarrmondragon/citric'
+urls."Issue Tracker" = "https://github.com/edgarrmondragon/citric/issues"
+urls.Repository = "https://github.com/edgarrmondragon/citric"
 
-[tool.poetry-dynamic-versioning]
-enable = true
-vcs = "git"
-pattern = "^v?((?P<epoch>\\d+)!)?(?P<base>\\d+(\\.\\d+)*)([-._]?((?P<stage>[a-zA-Z]+)[-._]?(?P<revision>\\d+)?))?(\\+(?P<tagged_metadata>.+))?$"
-style = "pep440"
+[tool.hatch.version]
+source = "vcs"
 
 [tool.ruff]
 include = ["*.py", "*.pyi", "**/pyproject.toml", "*.ipynb"]
@@ -217,18 +227,36 @@ convention = "google"
 max-args = 10
 
 [tool.codespell]
-skip = ".mypy_cache,.nox,.ruff_cache,build,docs/index.md,poetry.lock"
+skip = ".mypy_cache,.nox,.ruff_cache,build,docs/index.md,docs/requirements.txt"
+
+[tool.deptry.package_module_name_map]
+types-requests = "requests"
+typing-extensions = "typing_extensions"
 
 [tool.deptry.per_rule_ignores]
 DEP002 = [
+  "colorama",
+  "coverage",
+  "deptry",
+  "faker",
   "furo",
+  "mypy",
   "myst-parser",
+  "pytest",
+  "pytest-github-actions-annotate-failures",
+  "pytest-httpserver",
+  "pytest-subtests",
+  "python-dotenv",
+  "requests-cache",
+  "semver",
   "sphinx",
   "sphinx-autoapi",
   "sphinx-autobuild",
   "sphinx-copybutton",
   "sphinx-hoverxref",
   "sphinx-notfound-page",
+  "tinydb",
+  "xdoctest",
 ]
 DEP004 = [
   "typing_extensions",
@@ -264,7 +292,16 @@ omit = ["src/citric/types.py"]
 precision = 2
 show_missing = true
 
+[tool.tox]
+legacy_tox_ini = """
+    [tox]
+    requires =
+        tox>=4
+    env_list = py{38,39,310,311,312,313}
+"""
+
 [tool.mypy]
+warn_redundant_casts = true
 warn_unreachable = true
 warn_unused_configs = true
 warn_unused_ignores = true
@@ -273,13 +310,5 @@ warn_unused_ignores = true
 ignore_missing_imports = true
 module = [
   "nox.*",
-  "nox_poetry.*",
   "pytest_subtests.*",  # TODO: Remove after https://github.com/pytest-dev/pytest-subtests/pull/115 is published
-]
-
-[build-system]
-build-backend = "poetry_dynamic_versioning.backend"
-requires = [
-  "poetry-core>=1",
-  "poetry-dynamic-versioning<2.0.0,>=1",
 ]

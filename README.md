@@ -12,8 +12,8 @@
   <a href="https://github.com/wntrblm/nox">
     <img alt="Nox" src="https://img.shields.io/badge/%F0%9F%A6%8A-Nox-D85E00.svg"/>
   </a>
-  <a href="https://python-poetry.org/">
-    <img alt="Poetry" src="https://img.shields.io/endpoint?url=https://python-poetry.org/badge/v0.json"/>
+  <a href="https://github.com/pypa/hatch">
+    <img alt="Hatch project" src="https://img.shields.io/badge/%F0%9F%A5%9A-Hatch-4051b5.svg"/>
   </a>
   <a href="https://www.bestpractices.dev/projects/8144">
     <img src="https://www.bestpractices.dev/projects/8144/badge">
@@ -66,12 +66,12 @@
 
 Integration tests are run against a LimeSurvey instance, and both PostgreSQL and MySQL backends, using Docker Compose. The following versions of LimeSurvey were tested for this release:
 
-- [6.3.7](https://github.com/LimeSurvey/LimeSurvey/releases/tag/6.3.7%2B231127)
-- [6.3.6](https://github.com/LimeSurvey/LimeSurvey/releases/tag/6.3.6%2B231120)
-- [6.3.5](https://github.com/LimeSurvey/LimeSurvey/releases/tag/6.3.5%2B231113)
-- [5.6.47](https://github.com/LimeSurvey/LimeSurvey/releases/tag/5.6.47%2B231128)
-- [5.6.46](https://github.com/LimeSurvey/LimeSurvey/releases/tag/5.6.46%2B231121)
-- [5.6.45](https://github.com/LimeSurvey/LimeSurvey/releases/tag/5.6.45%2B231114)
+- [6.3.8](https://github.com/LimeSurvey/LimeSurvey/releases/tag/6.3.8+231204)
+- [6.3.7](https://github.com/LimeSurvey/LimeSurvey/releases/tag/6.3.7+231127)
+- [6.3.6](https://github.com/LimeSurvey/LimeSurvey/releases/tag/6.3.6+231120)
+- [5.6.48](https://github.com/LimeSurvey/LimeSurvey/releases/tag/5.6.48+231205)
+- [5.6.47](https://github.com/LimeSurvey/LimeSurvey/releases/tag/5.6.47+231128)
+- [5.6.46](https://github.com/LimeSurvey/LimeSurvey/releases/tag/5.6.46+231121)
 
 ## Installation
 
