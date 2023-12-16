@@ -126,7 +126,7 @@ jobs:
         nox -s tests
 
     - name: Upload coverage data
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: coverage-unit
         path: ".coverage.*"
@@ -320,7 +320,7 @@ jobs:
 
     - name: Upload coverage data
       if: always()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: coverage-integration
         path: ".coverage.*"
