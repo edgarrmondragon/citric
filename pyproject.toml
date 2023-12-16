@@ -32,6 +32,7 @@ classifiers = [
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
   "Programming Language :: Python :: Implementation :: CPython",
   "Programming Language :: Python :: Implementation :: PyPy",
   "Topic :: Software Development :: Libraries :: Python Modules",
@@ -44,10 +45,9 @@ dependencies = [
   "requests>=2.23",
 ]
 optional-dependencies.dev = [
-  "citric[docs,test,typing]",
+  "citric[docs,tests,typing]",
   "colorama>=0.4.6",
   "requests-cache[sqlite]>=1.1",
-  "xdoctest>=1.1.1",
 ]
 optional-dependencies.docs = [
   "furo",
@@ -71,6 +71,7 @@ optional-dependencies.tests = [
   "requests-cache>=1.1",
   "semver>=3.0.1",
   "tinydb>=4.8",
+  "xdoctest>=1.1.1",
 ]
 optional-dependencies.typing = [
   "citric[tests]",

@@ -13,7 +13,7 @@ FORCE_COLOR = "FORCE_COLOR"
 
 package = "citric"
 
-python_versions = ["3.12", "3.11", "3.10", "3.9", "3.8"]
+python_versions = ["3.13", "3.12", "3.11", "3.10", "3.9", "3.8"]
 pypy_versions = ["pypy3.9", "pypy3.10"]
 all_python_versions = python_versions + pypy_versions
 
@@ -26,15 +26,7 @@ locations = "src", "tests", "noxfile.py", "docs/conf.py"
 @session(python=all_python_versions, tags=["test"])
 def tests(session: Session) -> None:
     """Execute pytest tests and compute coverage."""
-    env = {"PIP_ONLY_BINARY": ":all:"}
-
-    if session.python == "3.13":
-        env["PIP_NO_BINARY"] = "coverage,MarkupSafe"
-
-    if session.python.startswith("pypy"):
-        env["PIP_NO_BINARY"] = "MarkupSafe"
-
-    session.install(".[tests]", env=env)
+    session.install(".[tests]")
     args = session.posargs or ["-m", "not integration_test"]
 
     try:
