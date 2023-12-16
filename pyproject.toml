@@ -231,6 +231,7 @@ skip = ".mypy_cache,.nox,.ruff_cache,build,docs/index.md,docs/requirements.txt"
 
 [tool.deptry.package_module_name_map]
 types-requests = "requests"
+typing-extensions = "typing_extensions"
 
 [tool.deptry.per_rule_ignores]
 DEP002 = [
