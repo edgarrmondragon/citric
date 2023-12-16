@@ -687,7 +687,7 @@ def test_site_settings(client: citric.Client):
 def test_missing_setting(client: citric.Client):
     """Test getting site settings."""
     with pytest.raises(LimeSurveyStatusError, match="Invalid setting"):
-        assert client._get_site_setting("not_a_valid_setting")
+        client._get_site_setting("not_a_valid_setting")
 
 
 @pytest.mark.integration_test
