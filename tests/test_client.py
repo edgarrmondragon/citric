@@ -32,6 +32,7 @@ if t.TYPE_CHECKING:
 NEW_GROUP_ID = 300
 NEW_QUESTION_ID = 400
 NEW_SURVEY_NAME = "New Survey"
+DUMMY_FILE_CONTENTS = b"FILE CONTENTS"
 
 
 class MockSession(Session):
@@ -101,15 +102,15 @@ class MockSession(Session):
 
     def export_responses(self, *args: t.Any) -> bytes:
         """Mock responses file content."""
-        return base64.b64encode(b"FILE CONTENTS")
+        return base64.b64encode(DUMMY_FILE_CONTENTS)
 
     def export_responses_by_token(self, *args: t.Any) -> bytes:
         """Mock responses file content."""
-        return base64.b64encode(b"FILE CONTENTS")
+        return base64.b64encode(DUMMY_FILE_CONTENTS)
 
     def export_statistics(self, *args: t.Any) -> bytes:
         """Mock statistics file content."""
-        return base64.b64encode(b"FILE CONTENTS")
+        return base64.b64encode(DUMMY_FILE_CONTENTS)
 
     def export_timeline(self, *args: t.Any) -> dict[str, int]:
         """Mock submission timeline."""
@@ -491,18 +492,18 @@ def test_save_responses(client: MockClient, tmpdir: LocalPath):
     """Test export_responses and export_responses_by_token client methods."""
     filename = tmpdir / "responses.csv"
     client.save_responses(filename, 1, file_format="csv")
-    assert filename.read_binary() == b"FILE CONTENTS"
+    assert filename.read_binary() == DUMMY_FILE_CONTENTS
 
     filename_token = tmpdir / "responses_token.csv"
     client.save_responses(filename_token, 1, token="123abc", file_format="csv")
-    assert filename_token.read_binary() == b"FILE CONTENTS"
+    assert filename_token.read_binary() == DUMMY_FILE_CONTENTS
 
 
 def test_save_statistics(client: MockClient, tmpdir: LocalPath):
     """Test save_statistics and export_responses_by_token client methods."""
     filename = tmpdir / "example.html"
     client.save_statistics(filename, 1, file_format="html")
-    assert filename.read_binary() == b"FILE CONTENTS"
+    assert filename.read_binary() == DUMMY_FILE_CONTENTS
 
 
 def test_download_files(client: MockClient, tmp_path: Path):
