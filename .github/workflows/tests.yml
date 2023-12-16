@@ -349,7 +349,7 @@ jobs:
       uses: ./.github/actions/install-tools
 
     - name: Download coverage data
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: coverage-${{ matrix.flag }}
 
