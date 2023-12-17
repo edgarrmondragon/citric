@@ -2,50 +2,63 @@
 
 # Citric
 
-<div>
-  <a href="https://github.com/edgarrmondragon/citric/blob/main/LICENSE">
-    <img alt="License" src="https://img.shields.io/github/license/edgarrmondragon/citric"/>
-  </a>
-  <a href="https://github.com/astral-sh/ruff">
-    <img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/charliermarsh/ruff/main/assets/badge/v2.json" alt="Ruff" style="max-width:100%;">
-  </a>
-  <a href="https://github.com/wntrblm/nox">
-    <img alt="Nox" src="https://img.shields.io/badge/%F0%9F%A6%8A-Nox-D85E00.svg"/>
-  </a>
-  <a href="https://github.com/pypa/hatch">
-    <img alt="Hatch project" src="https://img.shields.io/badge/%F0%9F%A5%9A-Hatch-4051b5.svg"/>
-  </a>
-  <a href="https://www.bestpractices.dev/projects/8144">
-    <img src="https://www.bestpractices.dev/projects/8144/badge">
-  </a>
-</div>
-
-<div>
-  <a href="https://results.pre-commit.ci/latest/github/edgarrmondragon/citric/main">
-    <img alt="pre-commit.ci status" src="https://results.pre-commit.ci/badge/github/edgarrmondragon/citric/main.svg"/>
-  </a>
-  <a href="https://citric.readthedocs.io/en/latest/?badge=latest">
-    <img alt="Documentation Status" src="https://readthedocs.org/projects/citric/badge/?version=latest"/>
-  </a>
-  <a href="https://codecov.io/gh/edgarrmondragon/citric">
-    <img alt="codecov" src="https://codecov.io/gh/edgarrmondragon/citric/branch/main/graph/badge.svg"/>
-  </a>
-  <a href="https://zenodo.org/doi/10.5281/zenodo.10216279">
-    <img src="https://zenodo.org/badge/223537606.svg" alt="DOI">
-  </a>
-</div>
-
-<div>
-  <a href="https://pypi.org/project/citric">
-    <img alt="PyPI version" src="https://img.shields.io/pypi/v/citric.svg?logo=pypi&logoColor=FFE873&color=blue"/>
-  </a>
-  <a href="https://pypi.org/project/citric">
-    <img alt="Python versions" src="https://img.shields.io/pypi/pyversions/citric.svg?logo=python&logoColor=FFE873"/>
-  </a>
-  <a href="https://pypi.org/project/citric">
-    <img alt="PyPI - Downloads" src="https://img.shields.io/pypi/dm/citric?color=blue"/>
-  </a>
-</div>
+<table>
+  <tbody>
+    <tr>
+      <td>Tests</td>
+      <td>
+        <a href="https://results.pre-commit.ci/latest/github/edgarrmondragon/citric/main">
+          <img alt="pre-commit.ci status" src="https://results.pre-commit.ci/badge/github/edgarrmondragon/citric/main.svg"/>
+        </a>
+        <a href="https://citric.readthedocs.io/en/latest/?badge=latest">
+          <img alt="Documentation Status" src="https://readthedocs.org/projects/citric/badge/?version=latest"/>
+        </a>
+        <a href="https://codecov.io/gh/edgarrmondragon/citric">
+          <img alt="codecov" src="https://codecov.io/gh/edgarrmondragon/citric/branch/main/graph/badge.svg"/>
+        </a>
+      </td>
+    </tr>
+    <tr>
+      <td>Packaging</td>
+      <td>
+        <a href="https://pypi.org/project/citric">
+          <img alt="PyPI version" src="https://img.shields.io/pypi/v/citric.svg?logo=pypi&logoColor=FFE873&color=blue"/>
+        </a>
+        <a href="https://pypi.org/project/citric">
+          <img alt="Python versions" src="https://img.shields.io/pypi/pyversions/citric.svg?logo=python&logoColor=FFE873"/>
+        </a>
+        <a href="https://pypi.org/project/citric">
+          <img alt="PyPI - Downloads" src="https://img.shields.io/pypi/dm/citric?color=blue"/>
+        </a>
+        <a href="https://anaconda.org/conda-forge/citric">
+          <img alt="Conda Version" src="https://img.shields.io/conda/vn/conda-forge/citric.svg"/>
+        </a>
+    </tr>
+    <tr>
+      <td>Misc</td>
+      <td>
+        <a href="https://github.com/astral-sh/ruff">
+          <img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/charliermarsh/ruff/main/assets/badge/v2.json" alt="Ruff" style="max-width:100%;">
+        </a>
+        <a href="https://github.com/wntrblm/nox">
+          <img alt="Nox" src="https://img.shields.io/badge/%F0%9F%A6%8A-Nox-D85E00.svg"/>
+        </a>
+        <a href="https://github.com/pypa/hatch">
+          <img alt="Hatch project" src="https://img.shields.io/badge/%F0%9F%A5%9A-Hatch-4051b5.svg"/>
+        </a>
+        <a href="https://github.com/edgarrmondragon/citric/blob/main/LICENSE">
+          <img alt="License" src="https://img.shields.io/github/license/edgarrmondragon/citric"/>
+        </a>
+        <a href="https://zenodo.org/doi/10.5281/zenodo.10216279">
+          <img src="https://zenodo.org/badge/223537606.svg" alt="DOI">
+        </a>
+        <a href="https://www.bestpractices.dev/projects/8144">
+          <img src="https://www.bestpractices.dev/projects/8144/badge">
+        </a>
+      </td>
+    </tr>
+  </tbody>
+</table>
 
 *A client to the [LimeSurvey Remote Control API 2](https://manual.limesurvey.org/RemoteControl_2_API), written in modern Python.*
 
@@ -75,8 +88,14 @@ Integration tests are run against a LimeSurvey instance, and both PostgreSQL and
 
 ## Installation
 
-```console
-$ pip install citric
+```sh
+# PyPI
+pip install citric
+```
+
+```sh
+# or conda
+conda install -c conda-forge citric
 ```
 
 ## Usage

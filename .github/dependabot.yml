@@ -61,10 +61,15 @@ updates:
     commit-message:
       prefix: "ci: "
     groups:
+      artifacts:
+        patterns:
+          - "actions/*-load-artifact"
       ci-dependencies:
         update-types:
           - "patch"
           - "minor"
+        exclude-patterns:
+          - "actions/*-load-artifact"
   - package-ecosystem: docker
     directory: "/"
     schedule:
