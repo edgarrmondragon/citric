@@ -60,7 +60,7 @@ optional-dependencies.docs = [
   "sphinx-notfound-page",
 ]
 optional-dependencies.tests = [
-  "coverage[toml]>=7.3",
+  "coverage[toml]!=7.3.3,>=7.3",
   "deptry>=0.12",
   "faker>=19",
   "pytest>=7.3.1",

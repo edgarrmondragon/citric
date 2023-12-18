@@ -67,7 +67,7 @@ def test_patch_survey_details(
             "operationsApplied": 1,
             "erronousOperations": [],
         }
-        if server_version.prerelease
+        if server_version >= (6, 4)
         else True
     )
     assert result == expected
