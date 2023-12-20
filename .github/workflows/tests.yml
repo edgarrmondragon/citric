@@ -105,6 +105,9 @@ jobs:
         architecture: x64
         allow-prereleases: true
         cache: pip
+        cache-dependency-path: |
+          pyproject.toml
+          .github/workflows/constraint.txt
 
     - name: Setup Python ${{ matrix.python-version }} (nightly)
       if: "${{ matrix.nightly }}"
@@ -154,6 +157,9 @@ jobs:
         architecture: x64
         allow-prereleases: true
         cache: pip
+        cache-dependency-path: |
+          pyproject.toml
+          .github/workflows/constraint.txt
 
     - name: Install tools
       uses: ./.github/actions/install-tools
@@ -272,6 +278,9 @@ jobs:
         architecture: x64
         allow-prereleases: true
         cache: pip
+        cache-dependency-path: |
+          pyproject.toml
+          .github/workflows/constraint.txt
 
     - name: Install tools
       uses: ./.github/actions/install-tools
