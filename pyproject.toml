@@ -301,6 +301,7 @@ legacy_tox_ini = """
 """
 
 [tool.mypy]
+warn_no_return = true
 warn_redundant_casts = true
 warn_unreachable = true
 warn_unused_configs = true
