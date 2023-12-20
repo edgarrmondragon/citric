@@ -27,7 +27,7 @@ on:
   workflow_dispatch:
     inputs:
       all_integrations:
-        description: "Whether to test against all the latest LimeSurvey docker image tags and all database engines"
+        description: "Test against all the latest LimeSurvey docker image tags and all database engines"
         required: true
         default: false
         type: boolean
