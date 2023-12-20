@@ -118,7 +118,7 @@ jobs:
 
     - name: Run Tests
       run: |
-        nox -s tests
+        nox --verbose -s tests
 
     - name: Upload coverage data
       uses: actions/upload-artifact@v4
