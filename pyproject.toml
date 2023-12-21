@@ -50,6 +50,7 @@ optional-dependencies.dev = [
   "requests-cache>=1.1",
 ]
 optional-dependencies.docs = [
+  "autodocsumm>=0.2.5", # 0.2.4 has a problematic dependency 'Sphinx>=2.2.*'
   "furo",
   "myst-parser",
   "sphinx",
@@ -58,6 +59,7 @@ optional-dependencies.docs = [
   "sphinx-copybutton",
   "sphinx-hoverxref",
   "sphinx-notfound-page",
+  "sphinx-toolbox>=3.5",
 ]
 optional-dependencies.tests = [
   "coverage[toml]!=7.3.3,>=7.3",
@@ -236,6 +238,7 @@ typing-extensions = "typing_extensions"
 
 [tool.deptry.per_rule_ignores]
 DEP002 = [
+  "autodocsumm",
   "colorama",
   "coverage",
   "deptry",
@@ -257,6 +260,7 @@ DEP002 = [
   "sphinx-copybutton",
   "sphinx-hoverxref",
   "sphinx-notfound-page",
+  "sphinx-toolbox",
   "tinydb",
   "xdoctest",
 ]
