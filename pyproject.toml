@@ -238,6 +238,7 @@ typing-extensions = "typing_extensions"
 
 [tool.deptry.per_rule_ignores]
 DEP002 = [
+  "autodocsumm",
   "colorama",
   "coverage",
   "deptry",
