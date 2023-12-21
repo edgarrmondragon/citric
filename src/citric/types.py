@@ -36,16 +36,7 @@ YesNo: TypeAlias = t.Literal["Y", "N", "I"]
 
 
 class FileUploadResult(t.TypedDict):
-    """File upload result.
-
-    Keys:
-        success: Whether the file was uploaded successfully.
-        size: The size of the file.
-        name: The name of the file.
-        ext: The extension of the file.
-        filename: The filename of the file.
-        msg: The message of the file.
-    """
+    """File upload result."""
 
     success: bool
     size: int
@@ -56,17 +47,7 @@ class FileUploadResult(t.TypedDict):
 
 
 class GroupProperties(t.TypedDict, total=False):
-    """Group properties.
-
-    Keys:
-        gid: The group ID.
-        sid: The survey ID.
-        group_order: The group order.
-        randomization_group: The randomization group.
-        grelevance: The group relevance.
-        group_name: The group name.
-        description: The group description.
-    """
+    """Group properties."""
 
     gid: int
     sid: int
@@ -78,43 +59,7 @@ class GroupProperties(t.TypedDict, total=False):
 
 
 class LanguageProperties(t.TypedDict, total=False):
-    """Language properties.
-
-    Keys:
-        surveyls_survey_id: The survey ID.
-        surveyls_language: The language code.
-        surveyls_title: The survey title.
-        surveyls_description: The survey description.
-        surveyls_welcometext: The survey welcome text.
-        surveyls_endtext: The survey end text.
-
-        surveyls_policy_notice: The survey policy notice.
-        surveyls_policy_error: The survey policy error.
-        surveyls_policy_notice_label: The survey policy notice label.
-
-        surveyls_url: The survey URL.
-        surveyls_urldescription: The survey URL description.
-
-        surveyls_email_invite_subj: The survey email invite subject.
-        surveyls_email_invite: The survey email invite.
-        surveyls_email_remind_subj: The survey email remind subject.
-        surveyls_email_remind: The survey email remind.
-        surveyls_email_register_subj: The survey email register subject.
-        surveyls_email_register: The survey email register.
-        surveyls_email_confirm_subj: The survey email confirm subject.
-        surveyls_email_confirm: The survey email confirm.
-
-        surveyls_dateformat: The survey date format.
-        surveyls_numberformat: The survey number format.
-        surveyls_attributecaptions: The survey attribute captions.
-
-        email_admin_notification_subj: The email admin notification subject.
-        email_admin_notification: The email admin notification.
-        email_admin_responses_subj: The email admin responses subject.
-        email_admin_responses: The email admin responses.
-
-        attachments: The attachments.
-    """
+    """Language properties."""
 
     surveyls_survey_id: int
     surveyls_language: str
@@ -152,43 +97,13 @@ class LanguageProperties(t.TypedDict, total=False):
 
 
 class OperationStatus(t.TypedDict):
-    """Delete language result.
-
-    Keys:
-        status: The status of the operation.
-    """
+    """Delete language result."""
 
     status: str
 
 
 class QuestionsListElement(t.TypedDict):
-    """List questions result.
-
-    Keys:
-        id: The question ID.
-        qid: The question ID.
-        parent_qid: The parent question ID.
-        gid: The group ID.
-        sid: The survey ID.
-
-        question: The question.
-        help: The question help text.
-        language: The question language.
-
-        type: The question type.
-        title: The question title.
-        preg: The question preg.
-        other: Whether the question has an "other" option.
-        mandatory: Whether the question is mandatory.
-        encrypted: Whether the question is encrypted.
-        question_order: The question order.
-        scale_id: The question scale ID.
-        same_default: The question same default.
-        relevance: The question relevance.
-        question_theme_name: The question theme name.
-        modulename: The question module name.
-        same_script: The question same script.
-    """
+    """List questions result."""
 
     id: int
     qid: int
@@ -216,37 +131,7 @@ class QuestionsListElement(t.TypedDict):
 
 
 class QuestionProperties(t.TypedDict, total=False):
-    """Question properties result.
-
-    Keys:
-        id: The question ID.
-        qid: The question ID.
-        parent_qid: The parent question ID.
-        gid: The group ID.
-        sid: The survey ID.
-
-        type: The question type.
-        title: The question title.
-        preg: The question preg.
-        other: Whether the question has an "other" option.
-        mandatory: Whether the question is mandatory.
-        encrypted: Whether the question is encrypted.
-        question_order: The question order.
-        scale_id: The question scale ID.
-        same_default: The question same default.
-        relevance: The question relevance.
-        question_theme_name: The question theme name.
-        modulename: The question module name.
-        same_script: The question same script.
-
-        available_answers: The available answers.
-        answer_options: The answer options.
-        subquestions: The subquestions.
-        default_values: The default values.
-
-        attributes: The question attributes.
-        attributes_lang: The question attributes language.
-    """
+    """Question properties result."""
 
     qid: int
     parent_qid: int
@@ -277,16 +162,7 @@ class QuestionProperties(t.TypedDict, total=False):
 
 
 class QuotaListElement(t.TypedDict):
-    """List quotas result.
-
-    Keys:
-        id: The quota ID.
-        name: The quota name.
-        qlimit: The quota limit.
-        active: Whether the quota is active.
-        action: The quota action.
-        autoload_url: Whether the quota autoload URL is active.
-    """
+    """List quotas result."""
 
     id: int
     name: str
@@ -297,17 +173,7 @@ class QuotaListElement(t.TypedDict):
 
 
 class QuotaProperties(t.TypedDict, total=False):
-    """Quota properties result.
-
-    Keys:
-        id: The quota ID.
-        sid: The survey ID.
-        name: The quota name.
-        qlimit: The quota limit.
-        action: The quota action.
-        active: Whether the quota is active.
-        autoload_url: Whether the quota autoload URL is active.
-    """
+    """Quota properties result."""
 
     id: int
     sid: int
@@ -319,13 +185,7 @@ class QuotaProperties(t.TypedDict, total=False):
 
 
 class RPCResponse(t.TypedDict):
-    """RPC response payload.
-
-    Keys:
-        id: The ID of the request.
-        result: The result of the RPC call.
-        error: The error message of the RPC call.
-    """
+    """RPC response payload."""
 
     id: int
     result: Result
@@ -333,89 +193,14 @@ class RPCResponse(t.TypedDict):
 
 
 class SetQuotaPropertiesResult(t.TypedDict):
-    """Set quota properties result.
-
-    Keys:
-        success: Whether the operation was successful.
-        message: The quota properties.
-    """
+    """Set quota properties result."""
 
     success: bool
     message: QuotaProperties
 
 
 class SurveyProperties(t.TypedDict, total=False):
-    """Survey properties result.
-
-    Keys:
-        sid: The survey ID.
-        owner_id: The survey owner ID.
-        gsid: The survey group ID.
-        active: Whether the survey is active.
-        expires: The survey expiration date.
-        startdate: The survey start date.
-        anonymized: Whether the survey is anonymized.
-        faxto: The survey fax number.
-        format: The survey format.
-        savetiming: Whether the survey saves timing.
-        template: The survey template.
-        datesstamp: Whether the survey stamps dates.
-        usecookie: Whether the survey uses cookies.
-        allowregister: Whether the survey allows registration.
-        allowsave: Whether the survey allows saving.
-        autonumber_start: The survey autonumber start.
-        autoredirect: Whether the survey auto-redirects.
-        allowprev: Whether the survey allows previous.
-        printanswers: Whether the survey prints answers.
-        ipaddr: Whether the survey uses IP addresses.
-        ipanonymize: Whether the survey anonymizes IP addresses.
-        refurl: Whether the survey uses referrer URLs.
-        datecreated: The survey creation date.
-        showsurveypolicynotice: Whether the survey shows policy notice.
-        publicstatistics: Whether the survey is public.
-        publicgraphs: Whether the survey graphs are public.
-        listpublic: Whether the survey is listed publicly.
-        tokenanswerspersistence: Whether the survey token answers persist.
-        assessments: Whether the survey uses assessments.
-        usecaptcha: Whether the survey uses CAPTCHA.
-        usetokens: Whether the survey uses tokens.
-        attributedescriptions: The survey attribute descriptions.
-        tokenlength: The survey token length.
-        alloweditaftercompletion: Whether the survey allows editing after completion.
-        googleanalyticsstyle: Whether the survey uses Google Analytics style.
-        googleanalyticsapikey: The survey Google Analytics API key.
-        tokenencryptionoptions: The survey token encryption options.
-
-        showxquestions: Whether the survey shows x questions.
-        showgroupinfo: Whether the survey shows group info.
-        shownoanswer: Whether the survey shows no answer.
-        showqnumcode: Whether the survey shows question number code.
-        showwelcome: Whether the survey shows welcome.
-        showprogress: Whether the survey shows progress.
-        questionindex: Index of the survey question.
-        navigationdelay: The survey navigation delay.
-        nokeyboard: Whether the survey should allow keyboard input.
-
-        bouncetime: The survey bounce time.
-        bounceprocessing: Whether the survey bounces are processed.
-        bounceaccounttype: The survey bounce account type.
-        bounceaccounthost: The survey bounce account host.
-        bounceaccountpass: The survey bounce account password.
-        bounceaccountencryption: The survey bounce account encryption.
-        bounceaccountuser: The survey bounce account user.
-
-        htmlemail: Whether the survey emails are HTML.
-        sendconfirmation: Whether the survey sends confirmation.
-        bounce_email: The survey bounce email.
-        emailresponseto: The survey email response to.
-        emailnotificationto: The survey email notification to.
-
-        admin: The survey admin.
-        admin_email: The survey admin email.
-
-        language: The survey language.
-        additional_languages: The survey additional languages.
-    """
+    """Survey properties result."""
 
     sid: int
     owner_id: int
@@ -487,28 +272,14 @@ class SurveyProperties(t.TypedDict, total=False):
 
 
 class CPDBParticipantImportResult(t.TypedDict):
-    """CPDB participant import result.
-
-    Keys:
-        ImportCount: The number of participants imported.
-        UpdateCount: The number of participants updated.
-    """
+    """CPDB participant import result."""
 
     ImportCount: int
     UpdateCount: int
 
 
 class SurveyUserActivationSettings(t.TypedDict, total=False):
-    """User settings for survey activation.
-
-    Keys:
-        anonymized: Whether the survey is anonymized.
-        datestamp: Whether the survey records dates.
-        ipaddr: Whether the survey records IP addresses.
-        ipanonymize: Whether the survey anonymizes IP addresses.
-        refurl: Whether the survey records referrer URLs.
-        savetimings: Whether the survey saves response timings.
-    """
+    """User settings for survey activation."""
 
     anonymized: bool
     datestamp: bool

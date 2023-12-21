@@ -58,6 +58,7 @@ optional-dependencies.docs = [
   "sphinx-copybutton",
   "sphinx-hoverxref",
   "sphinx-notfound-page",
+  "sphinx-toolbox",
 ]
 optional-dependencies.tests = [
   "coverage[toml]!=7.3.3,>=7.3",
@@ -257,6 +258,7 @@ DEP002 = [
   "sphinx-copybutton",
   "sphinx-hoverxref",
   "sphinx-notfound-page",
+  "sphinx-toolbox",
   "tinydb",
   "xdoctest",
 ]
