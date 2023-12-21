@@ -59,7 +59,7 @@ optional-dependencies.docs = [
   "sphinx-copybutton",
   "sphinx-hoverxref",
   "sphinx-notfound-page",
-  "sphinx-toolbox",
+  "sphinx-toolbox>=3.5",
 ]
 optional-dependencies.tests = [
   "coverage[toml]!=7.3.3,>=7.3",
