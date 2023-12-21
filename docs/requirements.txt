@@ -8,12 +8,20 @@ alabaster==0.7.13
     # via sphinx
 anyascii==0.3.2
     # via sphinx-autoapi
+apeye==1.4.1
+    # via sphinx-toolbox
+apeye-core==1.1.4
+    # via apeye
 astroid==3.0.2
     # via sphinx-autoapi
+autodocsumm==0.2.11
+    # via citric (pyproject.toml)
 babel==2.14.0
     # via sphinx
 beautifulsoup4==4.12.2
-    # via furo
+    # via
+    #   furo
+    #   sphinx-toolbox
 certifi==2023.11.17
     # via requests
 charset-normalizer==3.3.2
@@ -24,10 +32,21 @@ docutils==0.20.1
     # via
     #   myst-parser
     #   sphinx
+    #   sphinx-prompt
+    #   sphinx-toolbox
+domdf-python-tools==3.8.0.post2
+    # via
+    #   apeye
+    #   apeye-core
+    #   sphinx-toolbox
 furo==2023.9.10
     # via citric (pyproject.toml)
+html5lib==1.1
+    # via sphinx-toolbox
 idna==3.6
-    # via requests
+    # via
+    #   apeye-core
+    #   requests
 imagesize==1.4.1
     # via sphinx
 jinja2==3.1.2
@@ -49,28 +68,38 @@ mdurl==0.1.2
     # via markdown-it-py
 myst-parser==2.0.0
     # via citric (pyproject.toml)
+natsort==8.4.0
+    # via domdf-python-tools
 packaging==23.2
     # via sphinx
+platformdirs==4.1.0
+    # via apeye
 pygments==2.17.2
     # via
     #   furo
     #   sphinx
+    #   sphinx-prompt
 pyyaml==6.0.1
     # via
     #   myst-parser
     #   sphinx-autoapi
 requests==2.31.0
     # via
+    #   apeye
     #   citric (pyproject.toml)
     #   sphinx
+    #   sphinx-toolbox
 six==1.16.0
-    # via livereload
+    # via
+    #   html5lib
+    #   livereload
 snowballstemmer==2.2.0
     # via sphinx
 soupsieve==2.5
     # via beautifulsoup4
 sphinx==7.2.6
     # via
+    #   autodocsumm
     #   citric (pyproject.toml)
     #   furo
     #   myst-parser
@@ -80,6 +109,9 @@ sphinx==7.2.6
     #   sphinx-copybutton
     #   sphinx-hoverxref
     #   sphinx-notfound-page
+    #   sphinx-prompt
+    #   sphinx-tabs
+    #   sphinx-toolbox
     #   sphinxcontrib-applehelp
     #   sphinxcontrib-devhelp
     #   sphinxcontrib-htmlhelp
@@ -98,6 +130,12 @@ sphinx-hoverxref==1.3.0
     # via citric (pyproject.toml)
 sphinx-notfound-page==1.0.0
     # via citric (pyproject.toml)
+sphinx-prompt==1.8.0
+    # via sphinx-toolbox
+sphinx-tabs==1.1.13
+    # via sphinx-toolbox
+sphinx-toolbox==0.1.0
+    # via citric (pyproject.toml)
 sphinxcontrib-applehelp==1.0.7
     # via sphinx
 sphinxcontrib-devhelp==1.0.5
@@ -114,5 +152,9 @@ sphinxcontrib-serializinghtml==1.1.9
     # via sphinx
 tornado==6.4
     # via livereload
+typing-extensions==4.9.0
+    # via domdf-python-tools
 urllib3==2.1.0
     # via requests
+webencodings==0.5.1
+    # via html5lib
