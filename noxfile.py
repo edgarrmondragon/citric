@@ -29,8 +29,10 @@ def tests(session: Session) -> None:
     session.install(".[tests]")
     args = session.posargs or ["-m", "not integration_test"]
 
+    env = {"COVERAGE_CORE": "sysmon"} if session.python in {"3.12", "3.13"} else {}
+
     try:
-        session.run("coverage", "run", "-m", "pytest", *args)
+        session.run("coverage", "run", "-m", "pytest", *args, env=env)
     finally:
         if session.interactive:
             session.notify("coverage", posargs=[])
@@ -50,8 +52,10 @@ def integration(session: Session) -> None:
         "integration_test",
     ]
 
+    env = {"COVERAGE_CORE": "sysmon"} if session.python in {"3.12", "3.13"} else {}
+
     try:
-        session.run(*args, *session.posargs)
+        session.run(*args, *session.posargs, env=env)
     finally:
         if session.interactive:
             session.notify("coverage", posargs=[])
@@ -88,7 +92,7 @@ def coverage(session: Session) -> None:
 @session(name="deps", python=python_versions)
 def dependencies(session: Session) -> None:
     """Check issues with dependencies."""
-    session.install(".")
+    session.install(".[dev]")
     session.install("deptry")
     session.run("deptry", "src")
 
