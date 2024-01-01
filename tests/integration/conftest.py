@@ -47,3 +47,9 @@ def survey_id(client: citric.Client) -> t.Generator[int, None, None]:
 def server_version(client: citric.Client) -> semver.Version:
     """Get the server version."""
     return semver.Version.parse(client.get_server_version())
+
+
+@pytest.fixture(scope="session")
+def database_version(client: citric.Client) -> int:
+    """Get the LimeSurvey database schema version."""
+    return client._get_site_setting("dbversionnumber")
