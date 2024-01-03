@@ -30,6 +30,7 @@ extensions = [
     "limesurvey_future",
     "hoverxref.extension",
     "notfound.extension",
+    "sphinx_toolbox.more_autodoc.autotypeddict",
 ]
 
 myst_heading_anchors = 2

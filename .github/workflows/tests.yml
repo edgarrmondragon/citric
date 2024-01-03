@@ -8,33 +8,26 @@ on:
     - tests/**
     - docker-compose*.yml
     - noxfile.py
-    - poetry.lock
     - pyproject.toml
     - .github/workflows/tests.yml
     - .github/workflows/constraints.txt
-    - trunk.yaml
-    - .limesurvey-docker-tags.json
   push:
     branches:
     - 'main'
-    - 'trunk-merge/**'
     paths:
     - src/**
     - tests/**
     - docker-compose*.yml
     - noxfile.py
-    - poetry.lock
     - pyproject.toml
     - .github/workflows/tests.yml
     - .github/workflows/constraints.txt
-    - trunk.yaml
-    - .limesurvey-docker-tags.json
   schedule:
-  - cron: "44 */3 * * *"
+  - cron: "25 7 */3 * *"
   workflow_dispatch:
     inputs:
-      update_coverage:
-        description: "Update coverage"
+      all_integrations:
+        description: "Test against all the latest LimeSurvey docker image tags and all database engines"
         required: true
         default: false
         type: boolean
@@ -100,21 +93,21 @@ jobs:
 
     steps:
     - name: Check out the repository
-      uses: actions/checkout@v4.1.1
+      uses: actions/checkout@v4
       with:
         fetch-tags: true
 
     - name: Setup Python ${{ matrix.python-version }}
       if: "${{ !matrix.nightly }}"
-      uses: actions/setup-python@v4.7.1
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
         architecture: x64
         allow-prereleases: true
         cache: pip
         cache-dependency-path: |
-          poetry.lock
-          .github/workflows/constraints.txt
+          pyproject.toml
+          .github/workflows/constraint.txt
 
     - name: Setup Python ${{ matrix.python-version }} (nightly)
       if: "${{ matrix.nightly }}"
@@ -128,12 +121,12 @@ jobs:
 
     - name: Run Tests
       run: |
-        nox -s tests
+        nox --verbose -s tests
 
     - name: Upload coverage data
-      uses: actions/upload-artifact@v3.1.3
+      uses: actions/upload-artifact@v4
       with:
-        name: coverage-unit
+        name: "coverage-unit-${{ matrix.os }}-${{ matrix.python-version }}-${{ matrix.nightly && 'nightly' || 'stable' }}"
         path: ".coverage.*"
 
     - name: Run Doctests
@@ -155,29 +148,29 @@ jobs:
       tags: ${{ steps.tags.outputs.tags }}
     steps:
     - name: Check out the repository
-      uses: actions/checkout@v4.1.1
+      uses: actions/checkout@v4
 
     - name: Setup Python
-      uses: actions/setup-python@v4.7.1
+      uses: actions/setup-python@v5
       with:
         python-version: 3.12
         architecture: x64
         allow-prereleases: true
         cache: pip
         cache-dependency-path: |
-          poetry.lock
-          .github/workflows/constraints.txt
+          pyproject.toml
+          .github/workflows/constraint.txt
 
     - name: Install tools
       uses: ./.github/actions/install-tools
 
     - name: Test against required tags
-      if: ${{ contains(github.event.pull_request.labels.*.name, 'Release') || inputs.update_coverage }}
+      if: ${{ contains(github.event.pull_request.labels.*.name, 'Release') || inputs.all_integrations }}
       run: |
         nox -s generate-tags > limesurvey-docker-tags.json
 
     - name: Test against latest tags
-      if: ${{ !contains(github.event.pull_request.labels.*.name, 'Release') && !inputs.update_coverage }}
+      if: ${{ !contains(github.event.pull_request.labels.*.name, 'Release') && !inputs.all_integrations }}
       run: |
         echo '["6-apache", "5-apache"]' > limesurvey-docker-tags.json
 
@@ -193,15 +186,15 @@ jobs:
       engines: ${{ steps.engines.outputs.engines }}
     steps:
     - name: Check out the repository
-      uses: actions/checkout@v4.1.1
+      uses: actions/checkout@v4
 
     - name: Test against all engines
-      if: ${{ contains(github.event.pull_request.labels.*.name, 'Release') || inputs.update_coverage }}
+      if: ${{ contains(github.event.pull_request.labels.*.name, 'Release') || inputs.all_integrations }}
       run: |
         echo '["postgres", "mysql"]' > database-engines.json
 
     - name: Test against PostgreSQL
-      if: ${{ !contains(github.event.pull_request.labels.*.name, 'Release') && !inputs.update_coverage }}
+      if: ${{ !contains(github.event.pull_request.labels.*.name, 'Release') && !inputs.all_integrations }}
       run: |
         echo '["postgres"]' > database-engines.json
 
@@ -274,20 +267,20 @@ jobs:
 
     steps:
     - name: Check out the repository
-      uses: actions/checkout@v4.1.1
+      uses: actions/checkout@v4
       with:
         fetch-tags: true
 
     - name: Setup Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4.7.1
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
         architecture: x64
-        cache: pip
         allow-prereleases: true
+        cache: pip
         cache-dependency-path: |
-          poetry.lock
-          .github/workflows/constraints.txt
+          pyproject.toml
+          .github/workflows/constraint.txt
 
     - name: Install tools
       uses: ./.github/actions/install-tools
@@ -299,7 +292,7 @@ jobs:
         echo "LS_CHECKSUM=$(shasum -a 256 ls.tar.gz | cut -d' ' -f1)" >> $GITHUB_ENV
 
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3.0.0
+      uses: docker/setup-buildx-action@v3
 
     - name: Get Docker
       uses: actions-hub/docker/cli@v1.0.3
@@ -331,9 +324,9 @@ jobs:
 
     - name: Upload coverage data
       if: always()
-      uses: actions/upload-artifact@v3.1.3
+      uses: actions/upload-artifact@v4
       with:
-        name: coverage-integration
+        name: "coverage-integration-${{ matrix.python-version }}-${{ matrix.image_tag || env.LS_CHECKSUM }}-${{ matrix.database }}"
         path: ".coverage.*"
 
   coverage:
@@ -348,20 +341,22 @@ jobs:
       fail-fast: false
     steps:
     - name: Check out the repository
-      uses: actions/checkout@v4.1.1
+      uses: actions/checkout@v4
 
     - name: Set up Python
-      uses: actions/setup-python@v4.7.1
+      uses: actions/setup-python@v5
       with:
         python-version: "3.12"
+        cache: pip
 
     - name: Install tools
       uses: ./.github/actions/install-tools
 
     - name: Download coverage data
-      uses: actions/download-artifact@v3.0.2
+      uses: actions/download-artifact@v4
       with:
-        name: coverage-${{ matrix.flag }}
+        pattern: "coverage-${{ matrix.flag }}-*"
+        merge-multiple: true
 
     - name: Combine coverage data and display human readable report
       continue-on-error: true
@@ -373,7 +368,7 @@ jobs:
         nox -- xml
 
     - name: Upload coverage report
-      uses: codecov/codecov-action@v3.1.4
+      uses: codecov/codecov-action@v3
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         files: ./coverage.xml

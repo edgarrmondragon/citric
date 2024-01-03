@@ -99,7 +99,12 @@ def api_handler(backend: tinydb.TinyDB) -> APIHandler:
                     ],
                 )
                 return Response(
-                    json.dumps(True),  # noqa: FBT003
+                    json.dumps(
+                        {
+                            "operationsApplied": len(request.json["patch"]),  # type: ignore[index]
+                            "erronousOperations": [],
+                        },
+                    ),
                     content_type=content_type,
                 )
 
@@ -177,7 +182,9 @@ def test_update_survey_details(
         anonymized=True,
         tokenLength=10,
     )
-    assert result is True
+    assert isinstance(result, dict)
+    assert result["operationsApplied"] == 1
+    assert result["erronousOperations"] == []
 
     surveys = backend.table("surveys")
     survey = surveys.get(doc_id=12345)

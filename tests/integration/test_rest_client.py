@@ -62,7 +62,14 @@ def test_patch_survey_details(
         anonymized=not anonymized,
         tokenLength=token_length + 10,
     )
-    expected = {"operationsApplied": 1} if server_version.prerelease else True
+    expected = (
+        {
+            "operationsApplied": 1,
+            "erronousOperations": [],
+        }
+        if server_version >= (6, 4)
+        else True
+    )
     assert result == expected
 
     updated = rest_client.get_survey_details(survey_id=survey_id)

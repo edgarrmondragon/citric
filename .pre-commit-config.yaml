@@ -3,6 +3,8 @@ ci:
   autofix_prs: true
   autoupdate_schedule: monthly
   autoupdate_commit_msg: 'chore(deps): pre-commit autoupdate'
+  skip:
+  - pip-compile
 
 repos:
 - repo: https://github.com/pre-commit/pre-commit-hooks
@@ -19,14 +21,14 @@ repos:
   - id: trailing-whitespace
 
 - repo: https://github.com/python-jsonschema/check-jsonschema
-  rev: 0.27.1
+  rev: 0.27.3
   hooks:
   - id: check-dependabot
   - id: check-github-workflows
   - id: check-readthedocs
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.1.6
+  rev: v0.1.9
   hooks:
   - id: ruff
     name: Ruff lint
@@ -50,7 +52,7 @@ repos:
     - pydoclint==0.3.8
 
 - repo: https://github.com/pre-commit/pre-commit
-  rev: v3.5.0
+  rev: v3.6.0
   hooks:
   - id: validate_manifest
 
@@ -61,6 +63,14 @@ repos:
     args: [--all]
 
 - repo: https://github.com/tox-dev/pyproject-fmt
-  rev: "1.5.1"
+  rev: "1.5.3"
   hooks:
   - id: pyproject-fmt
+    additional_dependencies: ["tox>=4.9"]
+
+- repo: https://github.com/jazzband/pip-tools
+  rev: 7.3.0
+  hooks:
+  - id: pip-compile
+    files: ^pyproject\.toml$
+    args: ["--extra", "docs", "-o", "docs/requirements.txt"]

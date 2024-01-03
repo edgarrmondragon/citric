@@ -17,19 +17,19 @@ you can follow the [Docker guide][docker].
 ### Doctests
 
 ```shell
-nox -rs xdoctest -p 3.12
+nox -rs xdoctest -p "3.12"
 ```
 
 ### Type checking
 
 ```shell
-nox -rs mypy -p 3.12
+nox -rs mypy -p "3.12"
 ```
 
 ### Dependency checks
 
 ```shell
-nox -rs deps -p 3.12
+nox -rs deps -p "3.12"
 ```
 
 [environment]: /contributing/environment
