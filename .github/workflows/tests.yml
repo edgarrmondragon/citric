@@ -23,7 +23,7 @@ on:
     - .github/workflows/tests.yml
     - .github/workflows/constraints.txt
   schedule:
-  - cron: "44 */3 * * *"
+  - cron: "25 7 */3 * *"
   workflow_dispatch:
     inputs:
       all_integrations:
