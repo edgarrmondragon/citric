@@ -52,8 +52,12 @@
         <a href="https://zenodo.org/doi/10.5281/zenodo.10216279">
           <img src="https://zenodo.org/badge/223537606.svg" alt="DOI">
         </a>
+        <br />
         <a href="https://www.bestpractices.dev/projects/8144">
           <img src="https://www.bestpractices.dev/projects/8144/badge">
+        </a>
+        <a href="https://securityscorecards.dev/viewer/?uri=github.com/edgarrmondragon/citric">
+          <img src="https://api.securityscorecards.dev/projects/github.com/edgarrmondragon/citric/badge", alt="OpenSSF Scorecard">
         </a>
       </td>
     </tr>
