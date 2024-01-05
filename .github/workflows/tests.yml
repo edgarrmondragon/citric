@@ -32,6 +32,8 @@ on:
         default: false
         type: boolean
 
+permissions: read-all
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true

@@ -18,6 +18,8 @@ on:
         description: Metadata values to append to version
         required: false
 
+permissions: read-all
+
 jobs:
   generate-pr:
     runs-on: ubuntu-latest

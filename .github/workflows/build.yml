@@ -13,6 +13,8 @@ on:
         description: "Tag to use for release"
         required: true
 
+permissions: read-all
+
 jobs:
   build:
     name: Build wheel and sdist
