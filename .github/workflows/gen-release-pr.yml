@@ -18,15 +18,15 @@ on:
         description: Metadata values to append to version
         required: false
 
+permissions: read-all
+
 jobs:
   generate-pr:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-
+    - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
     - name: Batch changes
-      uses: miniscruff/changie-action@v2
+      uses: miniscruff/changie-action@6dcc2533cac0495148ed4046c438487e4dceaa23 # v2.0.0
       with:
         version: ${{ github.event.inputs.changie-version }}
         args: "\
@@ -38,7 +38,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Merge changes
-      uses: miniscruff/changie-action@v2
+      uses: miniscruff/changie-action@6dcc2533cac0495148ed4046c438487e4dceaa23 # v2.0.0
       with:
         version: ${{ github.event.inputs.changie-version }}
         args: merge
@@ -47,7 +47,7 @@ jobs:
 
     - name: Get the latest version
       id: latest
-      uses: miniscruff/changie-action@v2
+      uses: miniscruff/changie-action@6dcc2533cac0495148ed4046c438487e4dceaa23 # v2.0.0
       with:
         version: ${{ github.event.inputs.changie-version }}
         args: latest
@@ -56,7 +56,7 @@ jobs:
 
     - name: Draft Release
       id: draft-release
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@de2c0eb89ae2a093876385947365aca7b0e5f844 # v1
       with:
         draft: true
         body_path: ".changes/${{ steps.latest.outputs.output }}.md"
@@ -65,14 +65,14 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - uses: tibdex/github-app-token@v2
+    - uses: tibdex/github-app-token@3beb63f4bd073e61482598c45c71c1019b59b73a # v2.1.0
       id: generate-token
       with:
         app_id: ${{ secrets.APP_ID }}
         private_key: ${{ secrets.APP_PRIVATE_KEY }}
 
     - name: Create Pull Request
-      uses: peter-evans/create-pull-request@v5
+      uses: peter-evans/create-pull-request@153407881ec5c347639a548ade7d8ad1d6740e38 # v5.0.2
       with:
         token: ${{ steps.generate-token.outputs.token }}
         title: "chore: Release ${{ steps.latest.outputs.output }}"

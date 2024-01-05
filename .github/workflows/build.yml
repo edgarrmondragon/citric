@@ -13,16 +13,18 @@ on:
         description: "Tag to use for release"
         required: true
 
+permissions: read-all
+
 jobs:
   build:
     name: Build wheel and sdist
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       with:
         fetch-depth: 0
         ref: ${{ github.event.inputs.tag || github.ref }}
-    - uses: hynek/build-and-inspect-python-package@v2
+    - uses: hynek/build-and-inspect-python-package@c9fea028dc9c880c4d00d54727eff3fb1190d082 # v2.0.0
 
   publish:
     name: Publish to PyPI
@@ -36,11 +38,11 @@ jobs:
       id-token: write # IMPORTANT: mandatory for trusted publishing
 
     steps:
-    - uses: actions/download-artifact@v4
+    - uses: actions/download-artifact@f44cd7b40bfd40b6aa1cc1b9b5b7bf03d3c67110 # v4.1.0
       with:
         name: Packages
         path: dist
-    - uses: pypa/gh-action-pypi-publish@v1.8.11
+    - uses: pypa/gh-action-pypi-publish@2f6f737ca5f74c637829c0f5c3acd0e29ea5e8bf # v1.8.11
 
   # Move this up when PyPI supports signing
   sign:
@@ -53,16 +55,16 @@ jobs:
       id-token: write # IMPORTANT: mandatory for sigstore
 
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@f44cd7b40bfd40b6aa1cc1b9b5b7bf03d3c67110 # v4.1.0
         with:
           name: Packages
           path: dist
-      - uses: sigstore/gh-action-sigstore-python@v2.1.1
+      - uses: sigstore/gh-action-sigstore-python@61f6a500bbfdd9a2a339cf033e5421951fbc1cd2 # v2.1.1
         with:
           inputs: >-
             ./dist/*.tar.gz
             ./dist/*.whl
-      - uses: svenstaro/upload-release-action@v2
+      - uses: svenstaro/upload-release-action@1beeb572c19a9242f4361f4cee78f8e0d9aec5df # v2
         with:
           file: dist/**
           tag: ${{ github.event.inputs.tag || github.ref }}
