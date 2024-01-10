@@ -28,7 +28,7 @@ repos:
   - id: check-readthedocs
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.1.9
+  rev: v0.1.11
   hooks:
   - id: ruff
     name: Ruff lint
@@ -45,7 +45,7 @@ repos:
     - tomli
 
 - repo: https://github.com/pycqa/flake8
-  rev: 6.1.0
+  rev: 7.0.0
   hooks:
   - id: flake8
     additional_dependencies:
@@ -63,10 +63,10 @@ repos:
     args: [--all]
 
 - repo: https://github.com/tox-dev/pyproject-fmt
-  rev: "1.5.3"
+  rev: "1.6.0"
   hooks:
   - id: pyproject-fmt
-    additional_dependencies: ["tox>=4.9"]
+    args: ["--max-supported-python", "3.13"]
 
 - repo: https://github.com/jazzband/pip-tools
   rev: 7.3.0
