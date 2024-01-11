@@ -908,7 +908,7 @@ class Client:  # noqa: PLR0904
         Args:
             survey_id: ID of the survey.
             settings: Properties to get, default to all.
-            language: Parameter language for multilingual questions.
+            language: Specify language for multilingual surveys.
 
         Returns:
             Dictionary of survey language properties.

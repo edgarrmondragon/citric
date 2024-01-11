@@ -120,8 +120,12 @@ class LanguageProperties(t.TypedDict, total=False):
 
     surveyls_url: str
     """The survey URL."""
+
     surveyls_urldescription: str | None
     """The survey URL description."""
+
+    surveyls_alias: str | None
+    """The survey alias."""
 
     surveyls_email_invite_subj: str
     """The survey email invite subject."""
