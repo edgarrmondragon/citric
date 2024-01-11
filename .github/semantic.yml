@@ -4,3 +4,4 @@ titleOnly: true
 scopes:
 - rest
 - rpc
+- deps
