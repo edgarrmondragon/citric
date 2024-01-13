@@ -47,6 +47,7 @@ dependencies = [
 optional-dependencies.dev = [
   "citric[docs,tests,typing]",
   "colorama>=0.4.6",
+  "jupyterlab",
   "requests-cache>=1.1",
 ]
 optional-dependencies.docs = [
@@ -244,6 +245,7 @@ DEP002 = [
   "deptry",
   "faker",
   "furo",
+  "jupyterlab",
   "mypy",
   "myst-parser",
   "pytest",
