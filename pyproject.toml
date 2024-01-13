@@ -245,6 +245,7 @@ DEP002 = [
   "deptry",
   "faker",
   "furo",
+  "jupyterlab",
   "mypy",
   "myst-parser",
   "pytest",
