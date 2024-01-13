@@ -153,7 +153,7 @@ class LimeSurveyMockAdapter(BaseAdapter):
         elif method == "get_site_settings" and params[1] == "RPCInterface":
             output["result"] = self.rpc_interface
 
-        response.__setattr__("_content", json.dumps(output).encode())
+        response._content = json.dumps(output).encode()
 
         return response
 
@@ -180,7 +180,7 @@ class LimeSurveyMockAdapter(BaseAdapter):
         if method == "__not_json":
             response = requests.Response()
             response.status_code = 200
-            response.__setattr__("_content", b"this is not json")
+            response._content = b"this is not json"
             return response
 
         return self._handle_json_response(method, params, request_id)
