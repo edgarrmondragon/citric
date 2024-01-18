@@ -1098,6 +1098,18 @@ class Client:  # noqa: PLR0904
         """
         return self._get_site_setting("versionnumber")
 
+    def get_db_version(self) -> int:
+        """Get the LimeSurvey database version.
+
+        Calls :rpc_method:`get_site_settings("dbversionnumber") <get_site_settings>`.
+
+        Returns:
+            The LimeSurvey database version.
+
+        .. versionadded:: NEXT_VERSION
+        """
+        return self._get_site_setting("dbversionnumber")
+
     def get_summary(self, survey_id: int) -> dict[str, int]:
         """Get survey summary.
 

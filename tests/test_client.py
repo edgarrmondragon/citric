@@ -43,6 +43,8 @@ class MockSession(Session):
         "sitename": "mock-site",
         "defaultlang": "mock-lang",
         "restrictToLanguages": "en fr es",
+        "versionnumber": "6.0.0",
+        "dbversionnumber": 321,
     }
 
     def rpc(self, method: str, *params: t.Any) -> dict[str, t.Any]:
@@ -425,6 +427,16 @@ def test_get_default_language(client: MockClient):
 def test_get_available_languages(client: MockClient):
     """Test get site available languages."""
     assert client.get_available_languages() == ["en", "fr", "es"]
+
+
+def test_get_server_version(client: MockClient):
+    """Test get server version."""
+    assert client.get_server_version() == "6.0.0"
+
+
+def test_get_database_version(client: MockClient):
+    """Test get database version."""
+    assert client.get_db_version() == 321
 
 
 def test_import_group(client: MockClient, tmp_path: Path):
