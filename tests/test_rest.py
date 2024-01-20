@@ -10,7 +10,7 @@ import tinydb
 from tinydb.table import Document
 from werkzeug.wrappers import Response
 
-from citric._rest import RESTClient
+from citric._rest import RESTClient  # noqa: PLC2701
 
 if t.TYPE_CHECKING:
     import sys
