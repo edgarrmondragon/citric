@@ -57,10 +57,10 @@ optional-dependencies.docs = [
   "sphinx",
   "sphinx-autoapi",
   "sphinx-autobuild",
+  "sphinx-autodoc-typehints",
   "sphinx-copybutton",
   "sphinx-hoverxref",
   "sphinx-notfound-page",
-  "sphinx-toolbox>=3.5",
 ]
 optional-dependencies.tests = [
   "coverage[toml]>=7.4",
