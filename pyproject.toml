@@ -259,10 +259,10 @@ DEP002 = [
   "sphinx",
   "sphinx-autoapi",
   "sphinx-autobuild",
+  "sphinx-autodoc-typehints",
   "sphinx-copybutton",
   "sphinx-hoverxref",
   "sphinx-notfound-page",
-  "sphinx-toolbox",
   "tinydb",
   "xdoctest",
 ]
