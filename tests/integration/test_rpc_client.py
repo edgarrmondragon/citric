@@ -73,33 +73,19 @@ def test_fieldmap(client: citric.Client, survey_id: int, subtests: SubTests):
 
 
 @pytest.mark.integration_test
-def test_language(
-    client: citric.Client,
-    database_version: int,
-    survey_id: int,
-    subtests: SubTests,
-):
+def test_language(client: citric.Client, survey_id: int):
     """Test language methods."""
     # Add a new language
     assert client.add_language(survey_id, "es")["status"] == "OK"
     assert client.add_language(survey_id, "ru")["status"] == "OK"
 
     survey_props = client.get_survey_properties(survey_id)
-    with subtests.test(msg="additional languages are correct"):
-        assert survey_props["additional_languages"] == "es ru"
+    assert survey_props["additional_languages"] == "es ru"
 
     # Get language properties
     language_props = client.get_language_properties(survey_id, language="es")
     assert language_props["surveyls_email_register_subj"] is not None
     assert language_props["surveyls_email_invite"] is not None
-
-    with subtests.test(msg="legal notice is present"):
-        if database_version < 622:  # sourcery skip: no-conditionals-in-tests
-            pytest.xfail(
-                "The legal notice field is not supported in LimeSurvey database version"
-                f" {database_version} < 622"
-            )
-        assert "surveyls_legal_notice" in language_props
 
     # Update language properties
     new_confirmation = "Thank you for participating!"
@@ -108,24 +94,21 @@ def test_language(
         language="es",
         surveyls_email_confirm=new_confirmation,
     )
-    with subtests.test(msg="updated language properties"):
-        assert response == {"status": "OK", "surveyls_email_confirm": True}
+    assert response == {"status": "OK", "surveyls_email_confirm": True}
 
     new_props = client.get_language_properties(
         survey_id,
         language="es",
         settings=["surveyls_email_confirm"],
     )
-    with subtests.test(msg="read updated language properties"):
-        assert new_props["surveyls_email_confirm"] == new_confirmation
+    assert new_props["surveyls_email_confirm"] == new_confirmation
 
     # Delete language
     delete_response = client.delete_language(survey_id, "ru")
     assert delete_response["status"] == "OK"
 
     props_after_delete_language = client.get_survey_properties(survey_id)
-    with subtests.test(msg="language is deleted"):
-        assert props_after_delete_language["additional_languages"] == "es"
+    assert props_after_delete_language["additional_languages"] == "es"
 
 
 @pytest.mark.integration_test

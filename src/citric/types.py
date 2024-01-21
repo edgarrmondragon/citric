@@ -106,9 +106,6 @@ class LanguageProperties(t.TypedDict, total=False):
     surveyls_policy_notice: str | None
     """The survey policy notice."""
 
-    surveyls_legal_notice: str | None
-    """The survey legal notice."""
-
     surveyls_policy_error: str | None
     """The survey policy error."""
 
