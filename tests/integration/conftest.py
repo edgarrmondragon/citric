@@ -52,4 +52,4 @@ def server_version(client: citric.Client) -> semver.Version:
 @pytest.fixture(scope="session")
 def database_version(client: citric.Client) -> int:
     """Get the LimeSurvey database schema version."""
-    return client._get_site_setting("dbversionnumber")
+    return client.get_db_version()

@@ -57,10 +57,10 @@ optional-dependencies.docs = [
   "sphinx",
   "sphinx-autoapi",
   "sphinx-autobuild",
+  "sphinx-autodoc-typehints",
   "sphinx-copybutton",
   "sphinx-hoverxref",
   "sphinx-notfound-page",
-  "sphinx-toolbox>=3.5",
 ]
 optional-dependencies.tests = [
   "coverage[toml]>=7.4",
@@ -259,10 +259,10 @@ DEP002 = [
   "sphinx",
   "sphinx-autoapi",
   "sphinx-autobuild",
+  "sphinx-autodoc-typehints",
   "sphinx-copybutton",
   "sphinx-hoverxref",
   "sphinx-notfound-page",
-  "sphinx-toolbox",
   "tinydb",
   "xdoctest",
 ]
@@ -295,7 +295,7 @@ source = ["citric"]
 relative_files = true
 
 [tool.coverage.report]
-exclude_lines = ["pragma: no cover", '''if (t\.)?TYPE_CHECKING:''']
+exclude_also = ['''if (t\.)?TYPE_CHECKING:''']
 fail_under = 85
 omit = ["src/citric/types.py"]
 precision = 2

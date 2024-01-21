@@ -24,13 +24,13 @@ extensions = [
     "sphinx.ext.intersphinx",
     "sphinx.ext.linkcode",
     "sphinx.ext.napoleon",
+    "sphinx_autodoc_typehints",
     "autoapi.extension",
     "myst_parser",
     "sphinx_copybutton",
     "limesurvey_future",
     "hoverxref.extension",
     "notfound.extension",
-    "sphinx_toolbox.more_autodoc.autotypeddict",
 ]
 
 myst_heading_anchors = 2
@@ -76,7 +76,6 @@ intersphinx_mapping = {
 
 hoverxref_intersphinx = [
     "requests",
-    "python",
 ]
 
 hoverxref_domains = [
@@ -105,10 +104,6 @@ source_suffix = {
     ".rst": "restructuredtext",
     ".md": "markdown",
 }
-
-napoleon_custom_sections = [
-    ("Keys", "params_style"),
-]
 
 
 def linkcode_resolve(domain: str, info: dict) -> str | None:

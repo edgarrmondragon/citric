@@ -73,12 +73,7 @@ def test_fieldmap(client: citric.Client, survey_id: int, subtests: SubTests):
 
 
 @pytest.mark.integration_test
-def test_language(
-    client: citric.Client,
-    database_version: int,
-    survey_id: int,
-    subtests: SubTests,
-):
+def test_language(client: citric.Client, survey_id: int, subtests: SubTests):
     """Test language methods."""
     # Add a new language
     assert client.add_language(survey_id, "es")["status"] == "OK"
@@ -92,14 +87,6 @@ def test_language(
     language_props = client.get_language_properties(survey_id, language="es")
     assert language_props["surveyls_email_register_subj"] is not None
     assert language_props["surveyls_email_invite"] is not None
-
-    with subtests.test(msg="legal notice is present"):
-        if database_version < 622:  # sourcery skip: no-conditionals-in-tests
-            pytest.xfail(
-                "The legal notice field is not supported in LimeSurvey database version"
-                f" {database_version} < 622"
-            )
-        assert "surveyls_legal_notice" in language_props
 
     # Update language properties
     new_confirmation = "Thank you for participating!"

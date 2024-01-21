@@ -6,7 +6,7 @@ import typing as t
 
 import pytest
 
-from citric._rest import RESTClient
+from citric._rest import RESTClient  # noqa: PLC2701
 
 if t.TYPE_CHECKING:
     import semver
