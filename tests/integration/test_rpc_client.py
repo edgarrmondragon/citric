@@ -73,14 +73,15 @@ def test_fieldmap(client: citric.Client, survey_id: int, subtests: SubTests):
 
 
 @pytest.mark.integration_test
-def test_language(client: citric.Client, survey_id: int):
+def test_language(client: citric.Client, survey_id: int, subtests: SubTests):
     """Test language methods."""
     # Add a new language
     assert client.add_language(survey_id, "es")["status"] == "OK"
     assert client.add_language(survey_id, "ru")["status"] == "OK"
 
     survey_props = client.get_survey_properties(survey_id)
-    assert survey_props["additional_languages"] == "es ru"
+    with subtests.test(msg="additional languages are correct"):
+        assert survey_props["additional_languages"] == "es ru"
 
     # Get language properties
     language_props = client.get_language_properties(survey_id, language="es")
@@ -94,21 +95,24 @@ def test_language(client: citric.Client, survey_id: int):
         language="es",
         surveyls_email_confirm=new_confirmation,
     )
-    assert response == {"status": "OK", "surveyls_email_confirm": True}
+    with subtests.test(msg="updated language properties"):
+        assert response == {"status": "OK", "surveyls_email_confirm": True}
 
     new_props = client.get_language_properties(
         survey_id,
         language="es",
         settings=["surveyls_email_confirm"],
     )
-    assert new_props["surveyls_email_confirm"] == new_confirmation
+    with subtests.test(msg="read updated language properties"):
+        assert new_props["surveyls_email_confirm"] == new_confirmation
 
     # Delete language
     delete_response = client.delete_language(survey_id, "ru")
     assert delete_response["status"] == "OK"
 
     props_after_delete_language = client.get_survey_properties(survey_id)
-    assert props_after_delete_language["additional_languages"] == "es"
+    with subtests.test(msg="language is deleted"):
+        assert props_after_delete_language["additional_languages"] == "es"
 
 
 @pytest.mark.integration_test
