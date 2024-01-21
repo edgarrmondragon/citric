@@ -21,7 +21,7 @@ class UnreleasedFeature(Directive):
     """
 
     required_arguments = 1
-    message = "This feature is only supported in LimeSurvey >= {next_version}."
+    message = "This method is only supported in LimeSurvey >= {next_version}."
     admonition_type = nodes.warning
 
     def run(self) -> list[nodes.Node]:
@@ -55,7 +55,7 @@ class ReleasedFeature(UnreleasedFeature):
     Adds a note to features only available after some release of LimeSurvey.
     """
 
-    message = "This feature is only supported in LimeSurvey >= {next_version}."
+    message = "This method is only supported in LimeSurvey >= {next_version}."
     admonition_type = nodes.note
 
 
