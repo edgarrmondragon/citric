@@ -4,7 +4,11 @@ from __future__ import annotations
 
 import pytest
 
-from citric._compat import FutureVersionWarning, future, future_parameter
+from citric._compat import (
+    FutureVersionWarning,  # noqa: PLC2701
+    future,  # noqa: PLC2701
+    future_parameter,  # noqa: PLC2701
+)
 
 
 @future("4.0.0")

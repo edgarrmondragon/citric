@@ -47,6 +47,7 @@ dependencies = [
 optional-dependencies.dev = [
   "citric[docs,tests,typing]",
   "colorama>=0.4.6",
+  "jupyterlab",
   "requests-cache>=1.1",
 ]
 optional-dependencies.docs = [
@@ -56,10 +57,10 @@ optional-dependencies.docs = [
   "sphinx",
   "sphinx-autoapi",
   "sphinx-autobuild",
+  "sphinx-autodoc-typehints",
   "sphinx-copybutton",
   "sphinx-hoverxref",
   "sphinx-notfound-page",
-  "sphinx-toolbox>=3.5",
 ]
 optional-dependencies.tests = [
   "coverage[toml]>=7.4",
@@ -244,6 +245,7 @@ DEP002 = [
   "deptry",
   "faker",
   "furo",
+  "jupyterlab",
   "mypy",
   "myst-parser",
   "pytest",
@@ -257,10 +259,10 @@ DEP002 = [
   "sphinx",
   "sphinx-autoapi",
   "sphinx-autobuild",
+  "sphinx-autodoc-typehints",
   "sphinx-copybutton",
   "sphinx-hoverxref",
   "sphinx-notfound-page",
-  "sphinx-toolbox",
   "tinydb",
   "xdoctest",
 ]
@@ -296,19 +298,11 @@ source = ["citric"]
 relative_files = true
 
 [tool.coverage.report]
-exclude_lines = ["pragma: no cover", '''if (t\.)?TYPE_CHECKING:''']
+exclude_also = ['''if (t\.)?TYPE_CHECKING:''']
 fail_under = 85
 omit = ["src/citric/types.py"]
 precision = 2
 show_missing = true
-
-[tool.tox]
-legacy_tox_ini = """
-    [tox]
-    requires =
-        tox>=4
-    env_list = py{38,39,310,311,312,313}
-"""
 
 [tool.mypy]
 warn_no_return = true

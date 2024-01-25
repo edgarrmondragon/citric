@@ -32,10 +32,10 @@ if t.TYPE_CHECKING:
         from typing_extensions import Self, Unpack
 
 __all__ = [
-    "QuestionReference",
-    "FileMetadata",
-    "UploadedFile",
     "RPC",
+    "FileMetadata",
+    "QuestionReference",
+    "UploadedFile",
 ]
 
 EMAILS_SENT_STATUS_PATTERN = re.compile(r"(-?\d+) left to send")
@@ -909,7 +909,7 @@ class RPC:  # noqa: PLR0904
         Args:
             survey_id: ID of the survey.
             settings: Properties to get, default to all.
-            language: Parameter language for multilingual questions.
+            language: Specify language for multilingual surveys.
 
         Returns:
             Dictionary of survey language properties.
@@ -1099,6 +1099,18 @@ class RPC:  # noqa: PLR0904
         """
         return self._get_site_setting("versionnumber")
 
+    def get_db_version(self) -> int:
+        """Get the LimeSurvey database version.
+
+        Calls :rpc_method:`get_site_settings("dbversionnumber") <get_site_settings>`.
+
+        Returns:
+            The LimeSurvey database version.
+
+        .. versionadded:: NEXT_VERSION
+        """
+        return self._get_site_setting("dbversionnumber")
+
     def get_summary(self, survey_id: int) -> dict[str, int]:
         """Get survey summary.
 
@@ -1217,7 +1229,7 @@ class RPC:  # noqa: PLR0904
 
     def import_group(
         self,
-        file: t.BinaryIO,
+        file: t.IO[bytes],
         survey_id: int,
         file_type: str | enums.ImportGroupType = "lsg",
     ) -> int:
@@ -1248,7 +1260,7 @@ class RPC:  # noqa: PLR0904
 
     def import_question(
         self,
-        file: t.BinaryIO,
+        file: t.IO[bytes],
         survey_id: int,
         group_id: int,
     ) -> int:
@@ -1280,7 +1292,7 @@ class RPC:  # noqa: PLR0904
 
     def import_survey(
         self,
-        file: t.BinaryIO,
+        file: t.IO[bytes],
         file_type: str | enums.ImportSurveyType = "lss",
         survey_name: str | None = None,
         survey_id: int | None = None,
@@ -1614,7 +1626,7 @@ class RPC:  # noqa: PLR0904
         survey_id: int,
         field: str,
         filename: str,
-        file: t.BinaryIO,
+        file: t.IO[bytes],
     ) -> types.FileUploadResult:
         """Upload a file to a LimeSurvey survey.
 

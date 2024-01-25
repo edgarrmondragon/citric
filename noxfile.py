@@ -160,6 +160,13 @@ def api_changes(session: Session) -> None:
     session.run(*args, external=True)
 
 
+@session
+def notebook(session: Session) -> None:
+    """Start a Jupyter notebook."""
+    session.install("-e", ".[dev]")
+    session.run("jupyter", "lab")
+
+
 @session(name="generate-tags", tags=["status"])
 def tags(session: Session) -> None:
     """Print tags."""

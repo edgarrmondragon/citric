@@ -15,20 +15,20 @@ if t.TYPE_CHECKING:
     from citric import enums
 
 __all__ = [
-    "Result",
+    "CPDBParticipantImportResult",
     "FileUploadResult",
     "GroupProperties",
     "LanguageProperties",
     "OperationStatus",
-    "QuestionsListElement",
     "QuestionProperties",
+    "QuestionsListElement",
     "QuotaListElement",
     "QuotaProperties",
     "RPCResponse",
+    "Result",
     "SetQuotaPropertiesResult",
     "SurveyProperties",
     "SurveyUserActivationSettings",
-    "CPDBParticipantImportResult",
 ]
 
 Result: TypeAlias = t.Any
@@ -106,12 +106,6 @@ class LanguageProperties(t.TypedDict, total=False):
     surveyls_policy_notice: str | None
     """The survey policy notice."""
 
-    surveyls_legal_notice: str | None
-    """The survey legal notice.
-
-    .. future:: 6.5.0
-    """
-
     surveyls_policy_error: str | None
     """The survey policy error."""
 
@@ -120,8 +114,12 @@ class LanguageProperties(t.TypedDict, total=False):
 
     surveyls_url: str
     """The survey URL."""
+
     surveyls_urldescription: str | None
     """The survey URL description."""
+
+    surveyls_alias: str | None
+    """The survey alias."""
 
     surveyls_email_invite_subj: str
     """The survey email invite subject."""

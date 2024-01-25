@@ -18,14 +18,12 @@ with open("responses.csv", "wb") as file:
     file.write(client.export_responses(12345, file_format="csv"))
 
 duckdb.execute("CREATE TABLE responses AS SELECT * FROM 'responses.csv'")
-duckdb.sql(
-    """
+duckdb.sql("""
     SELECT
         token,
         submitdate - startdate AS duration
     FROM responses
     ORDER BY 2 DESC
     LIMIT 10
-"""
-).show()
+""").show()
 # end example
