@@ -4,11 +4,11 @@ from __future__ import annotations
 
 # start example
 import boto3
-from citric import Client
+from citric import RPC
 
 s3 = boto3.client("s3")
 
-client = Client(
+client = RPC(
     "https://mylimeserver.com/index.php/admin/remotecontrol",
     "iamadmin",
     "secret",

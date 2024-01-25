@@ -8,7 +8,7 @@ from __future__ import annotations
 import citric
 import duckdb
 
-client = citric.Client(
+client = citric.RPC(
     "https://mylimeserver.com/index.php/admin/remotecontrol",
     "iamadmin",
     "secret",

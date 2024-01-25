@@ -28,7 +28,7 @@ Release **v{sub-ref}`version`**. ([What's new?](./changelog.md))
 - [Use custom `requests` session](how-to.md#use-custom-requests-session)
 - [Use a different authentication plugin](how-to.md#use-a-different-authentication-plugin)
 - [Get files uploaded to a survey and move them to S3](how-to.md#get-files-uploaded-to-a-survey-and-move-them-to-s3)
-- [Use the raw `Client.session` for low-level interaction](how-to.md#use-the-session-attribute-for-low-level-interaction)
+- [Use the raw `RPC.session` for low-level interaction](how-to.md#use-the-session-attribute-for-low-level-interaction)
 - [Notebook samples](how-to.md#notebook-samples)
 
 ```{toctree}
@@ -57,6 +57,13 @@ REST endpoints coverage <rest_coverage>
 :hidden:
 
 Python API reference <_api/index>
+```
+
+```{toctree}
+:maxdepth: 2
+:hidden:
+
+Deprecations <deprecations>
 ```
 
 ```{toctree}

@@ -6,12 +6,12 @@ from __future__ import annotations
 # start example
 import io
 
+import citric
 import pandas as pd
-from citric import Client
 
 survey_id = 123456
 
-client = Client(
+client = citric.RPC(
     "https://mylimeserver.com/index.php/admin/remotecontrol",
     "iamadmin",
     "secret",
