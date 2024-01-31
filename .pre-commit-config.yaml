@@ -4,6 +4,7 @@ ci:
   autoupdate_schedule: monthly
   autoupdate_commit_msg: 'chore(deps): pre-commit autoupdate'
   skip:
+  - check-dependabot
   - pip-compile
 
 repos:
@@ -21,14 +22,14 @@ repos:
   - id: trailing-whitespace
 
 - repo: https://github.com/python-jsonschema/check-jsonschema
-  rev: 0.27.3
+  rev: 0.27.4
   hooks:
   - id: check-dependabot
   - id: check-github-workflows
   - id: check-readthedocs
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.1.14
+  rev: v0.1.15
   hooks:
   - id: ruff
     name: Ruff lint

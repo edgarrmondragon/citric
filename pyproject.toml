@@ -276,9 +276,11 @@ max_supported_python = "3.13"
 [tool.pytest.ini_options]
 addopts = [
   "-vvv",
-  "-W error",
-  "-W default::citric._compat.FutureVersionWarning",
   "--reverse",
+]
+filterwarnings = [
+  "error",
+  "ignore::citric._compat.FutureVersionWarning",
 ]
 markers = [
   "integration_test: Integration and end-to-end tests",
