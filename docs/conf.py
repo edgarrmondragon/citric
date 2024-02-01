@@ -98,6 +98,10 @@ extlinks = {
         "https://manual.limesurvey.org/%s",
         "%s",
     ),
+    "ls_tag": (
+        "https://github.com/LimeSurvey/LimeSurvey/releases/tag/%s",
+        "%s",
+    ),
 }
 
 source_suffix = {

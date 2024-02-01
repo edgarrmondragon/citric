@@ -18,6 +18,17 @@ Release **v{sub-ref}`version`**. ([What's new?](./changelog.md))
 :end-before: <!-- end-short -->
 ```
 
+### Integration tests
+
+Integration tests are run against a LimeSurvey instance, and both PostgreSQL and MySQL backends, using Docker Compose. The following versions of LimeSurvey were tested for this release:
+
+- {ls_tag}`6.4.3+240122`
+- {ls_tag}`6.4.2+240115`
+- {ls_tag}`6.4.1+240108`
+- {ls_tag}`5.6.52+240123`
+- {ls_tag}`5.6.51+240116`
+- {ls_tag}`5.6.50+240109`
+
 ## How-to guides
 
 - [Automatically close the session with a context manager](how-to.md#automatically-close-the-session-with-a-context-manager)
