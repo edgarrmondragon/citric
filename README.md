@@ -33,6 +33,9 @@
         <a href="https://anaconda.org/conda-forge/citric">
           <img alt="Conda Version" src="https://img.shields.io/conda/vn/conda-forge/citric.svg"/>
         </a>
+        <a href="https://calver.org/">
+          <img alt="CalVer" src="https://img.shields.io/badge/calver-YY.MINOR.MICRO-22bfda.svg"/>
+        </a>
     </tr>
     <tr>
       <td>Misc</td>

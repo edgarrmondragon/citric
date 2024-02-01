@@ -48,13 +48,6 @@ Ready to contribute? Here's how to set up `citric` for local development.
 
 1. Submit a pull request through the GitHub website.
 
-1. (Optional) Add a changelog entry using [`changie`][changie]. You'll need to install the Changie CLI in order to add a changelog entry:
-
-   ```shell
-   changie new
-   ```
-
 [hatch]: https://hatch.pypa.io/latest/install/
 [nox]: https://nox.thea.codes/en/stable/
 [pre-commit]: https://pre-commit.com/
-[changie]: https://changie.dev/
