@@ -79,17 +79,6 @@
 - Tested against LimeSurvey 6.0.0+ and 5.0.0+ versions.
 - Experimental support for the new [REST API](https://manual.limesurvey.org/REST_API).
 
-### Integration tests
-
-Integration tests are run against a LimeSurvey instance, and both PostgreSQL and MySQL backends, using Docker Compose. The following versions of LimeSurvey were tested for this release:
-
-- [6.4.3](https://github.com/LimeSurvey/LimeSurvey/releases/tag/6.4.3+240122)
-- [6.4.2](https://github.com/LimeSurvey/LimeSurvey/releases/tag/6.4.2+240115)
-- [6.4.1](https://github.com/LimeSurvey/LimeSurvey/releases/tag/6.4.1+240108)
-- [5.6.52](https://github.com/LimeSurvey/LimeSurvey/releases/tag/5.6.52+240123)
-- [5.6.51](https://github.com/LimeSurvey/LimeSurvey/releases/tag/5.6.51+240116)
-- [5.6.50](https://github.com/LimeSurvey/LimeSurvey/releases/tag/5.6.50+240109)
-
 ## Installation
 
 ```sh
