@@ -1,4 +1,6 @@
 extend = "../pyproject.toml"
+
+[lint]
 ignore = [
   "INP001", # implicit-namespace-package
 ]
