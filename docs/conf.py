@@ -13,18 +13,25 @@ sys.path.append(str(Path("./_ext").resolve()))
 if t.TYPE_CHECKING:
     from sphinx.application import Sphinx
 
+# -- Project information ---------------------------------------------------------------
+# https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
+
 project = "citric"
+
 author = "Edgar Ramírez Mondragón"
+project_copyright = f"2020, {author}"
 version = citric.__version__
 release = citric.__version__
-project_copyright = f"2020, {author}"
+
+# -- General configuration -------------------------------------------------------------
+# https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
+
 extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.extlinks",
     "sphinx.ext.intersphinx",
     "sphinx.ext.linkcode",
     "sphinx.ext.napoleon",
-    "sphinx_autodoc_typehints",
     "autoapi.extension",
     "myst_parser",
     "sphinx_copybutton",
@@ -33,30 +40,29 @@ extensions = [
     "notfound.extension",
 ]
 
-myst_heading_anchors = 2
+source_suffix = {
+    ".rst": "restructuredtext",
+    ".md": "markdown",
+}
 
-autodoc_typehints = "description"
-autodoc_typehints_description_target = "documented"
+nitpicky = True
+nitpick_ignore = {
+    ("py:class", "citric.types.Result"),
+    ("py:class", "Result"),
+    ("py:class", "YesNo"),
+    ("py:class", "T"),
+    ("py:obj", "T"),
+}
 
-autoapi_type = "python"
-autoapi_root = "_api"
-autoapi_dirs = [
-    Path("../src").resolve(),
-]
-autoapi_options = [
-    "members",
-    "undoc-members",
-    "show-inheritance",
-    "show-module-summary",
-    "special-members",
-    "imported-members",
-    "private-members",
-]
+# -- Options for internationalization --------------------------------------------------
+# https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-internationalization
 
-html_extra_path = [
-    "googled10b55fb460af091.html",
-    "code.png",
-]
+# -- Options for Math ------------------------------------------------------------------
+# https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-math
+
+# -- Options for HTML output -----------------------------------------------------------
+# https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
+
 html_theme = "furo"
 html_theme_options = {
     "navigation_with_keys": True,
@@ -65,29 +71,19 @@ html_theme_options = {
     "source_directory": "docs/",
 }
 html_title = "Citric, a Python client for LimeSurvey"
-
-hoverxref_default_type = "tooltip"
-
-intersphinx_mapping = {
-    "requests": ("https://requests.readthedocs.io/en/latest/", None),
-    "requests-cache": ("https://requests-cache.readthedocs.io/en/stable/", None),
-    "python": ("https://docs.python.org/3/", None),
-}
-
-hoverxref_intersphinx = [
-    "requests",
+html_extra_path = [
+    "googled10b55fb460af091.html",
+    "code.png",
 ]
 
-hoverxref_domains = [
-    "py",
-]
+# -- Options for Autodoc ---------------------------------------------------------------
+# https://www.sphinx-doc.org/en/master/usage/extensions/autodoc.html#configuration
 
-hoverxref_role_types = {
-    "hoverxref": "tooltip",
-    "ref": "modal",
-    "mod": "modal",
-    "class": "tooltip",
-}
+autodoc_typehints = "description"
+autodoc_typehints_description_target = "documented"
+
+# -- Options for extlinks --------------------------------------------------------------
+# https://www.sphinx-doc.org/en/master/usage/extensions/extlinks.html
 
 extlinks = {
     "rpc_method": (
@@ -104,10 +100,17 @@ extlinks = {
     ),
 }
 
-source_suffix = {
-    ".rst": "restructuredtext",
-    ".md": "markdown",
+# -- Options for intersphinx -----------------------------------------------------------
+# https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html#configuration
+
+intersphinx_mapping = {
+    "requests": ("https://requests.readthedocs.io/en/latest/", None),
+    "requests-cache": ("https://requests-cache.readthedocs.io/en/stable/", None),
+    "python": ("https://docs.python.org/3/", None),
 }
+
+# -- Options for linkcode --------------------------------------------------------------
+# https://www.sphinx-doc.org/en/master/usage/extensions/linkcode.html#configuration
 
 
 def linkcode_resolve(domain: str, info: dict) -> str | None:
@@ -126,6 +129,49 @@ def linkcode_resolve(domain: str, info: dict) -> str | None:
         return None
     filename = info["module"].replace(".", "/")
     return f"https://github.com/edgarrmondragon/citric/tree/main/src/{filename}.py"
+
+
+# -- Options for Napoleon --------------------------------------------------------------
+# https://www.sphinx-doc.org/en/master/usage/extensions/napoleon.html#configuration
+
+# -- Options for AutoAPI ---------------------------------------------------------------
+# https://sphinx-autoapi.readthedocs.io/en/latest/reference/config.html
+
+autoapi_dirs = [
+    Path("../src").resolve(),
+]
+autoapi_options = [
+    "members",
+    "undoc-members",
+    "show-inheritance",
+    "show-module-summary",
+    "special-members",
+    "imported-members",
+    "private-members",
+]
+autoapi_root = "_api"
+
+# -- Options for Myst ------------------------------------------------------------------
+# https://myst-parser.readthedocs.io/en/latest/configuration.html
+
+myst_heading_anchors = 2
+
+# -- Options for hoverxref -------------------------------------------------------------
+# https://sphinx-hoverxref.readthedocs.io/en/latest/configuration.html
+
+hoverxref_role_types = {
+    "hoverxref": "tooltip",
+    "ref": "modal",
+    "mod": "modal",
+    "class": "tooltip",
+}
+hoverxref_default_type = "tooltip"
+hoverxref_domains = [
+    "py",
+]
+hoverxref_intersphinx = [
+    "requests",
+]
 
 
 def skip_member_filter(

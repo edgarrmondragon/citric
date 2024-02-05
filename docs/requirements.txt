@@ -79,7 +79,6 @@ sphinx==7.2.6
     #   myst-parser
     #   sphinx-autoapi
     #   sphinx-autobuild
-    #   sphinx-autodoc-typehints
     #   sphinx-basic-ng
     #   sphinx-copybutton
     #   sphinx-hoverxref
@@ -88,8 +87,6 @@ sphinx==7.2.6
 sphinx-autoapi==3.1.0a1
     # via citric (pyproject.toml)
 sphinx-autobuild==2021.3.14
-    # via citric (pyproject.toml)
-sphinx-autodoc-typehints==1.25.3
     # via citric (pyproject.toml)
 sphinx-basic-ng==1.0.0b2
     # via furo
