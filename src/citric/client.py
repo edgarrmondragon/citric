@@ -1682,6 +1682,8 @@ class Client:  # noqa: PLR0904
     ) -> int:
         """Invite participants to a survey.
 
+        Calls :rpc_method:`invite_participants`.
+
         Args:
             survey_id: ID of the survey to invite participants to.
             token_ids: IDs of the participants to invite.

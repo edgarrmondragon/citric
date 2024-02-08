@@ -11,6 +11,7 @@ import semver
 
 import citric
 from citric.exceptions import LimeSurveyStatusError
+from tests.fixtures import MailHogClient
 
 
 @pytest.fixture(scope="session")
@@ -53,3 +54,11 @@ def server_version(client: citric.Client) -> semver.Version:
 def database_version(client: citric.Client) -> int:
     """Get the LimeSurvey database schema version."""
     return client.get_db_version()
+
+
+@pytest.fixture
+def mailhog(integration_mailhog_url: str) -> MailHogClient:
+    """Get the LimeSurvey database schema version."""
+    client = MailHogClient(integration_mailhog_url)
+    client.delete()
+    return client

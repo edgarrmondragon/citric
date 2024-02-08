@@ -24,6 +24,8 @@ if t.TYPE_CHECKING:
     from faker import Faker
     from pytest_subtests import SubTests
 
+    from tests.fixtures import MailHogClient
+
 NEW_SURVEY_NAME = "New Survey"
 
 
@@ -752,3 +754,85 @@ def test_users(client: citric.Client):
 def test_survey_groups(client: citric.Client):
     """Test survey group methods."""
     assert len(client.list_survey_groups()) == 1
+
+
+@pytest.mark.integration_test
+def test_mail_registered_participants(
+    client: citric.Client,
+    survey_id: int,
+    participants: list[dict[str, str]],
+    mailhog: MailHogClient,
+    subtests: SubTests,
+):
+    """Test mail_registered_participants."""
+    client.activate_survey(survey_id)
+    client.activate_tokens(survey_id, [1, 2])
+    client.add_participants(
+        survey_id,
+        participant_data=participants,
+        create_tokens=False,
+    )
+
+    with subtests.test(msg="No initial emails"):
+        assert mailhog.get_all()["total"] == 0
+
+    # `mail_registered_participants` returns a non-error status messages even when
+    # emails are sent successfully and that violates assumptions made by this
+    # library about the meaning of `status` messages
+    with pytest.raises(
+        LimeSurveyStatusError,
+        match="0 left to send",
+    ):
+        client.session.mail_registered_participants(survey_id)
+
+    with subtests.test(msg="2 emails sent"):
+        assert mailhog.get_all()["total"] == 2
+
+    mailhog.delete()
+
+    with pytest.raises(
+        LimeSurveyStatusError,
+        match="Error: No candidate tokens",
+    ):
+        client.session.mail_registered_participants(survey_id)
+
+    with subtests.test(msg="No more emails sent"):
+        assert mailhog.get_all()["total"] == 0
+
+
+@pytest.mark.integration_test
+def test_remind_participants(
+    client: citric.Client,
+    survey_id: int,
+    participants: list[dict[str, str]],
+    mailhog: MailHogClient,
+    subtests: SubTests,
+):
+    """Test remind_participants."""
+    client.activate_survey(survey_id)
+    client.activate_tokens(survey_id, [1, 2])
+    client.add_participants(
+        survey_id,
+        participant_data=participants,
+        create_tokens=False,
+    )
+
+    with subtests.test(msg="No initial emails"):
+        assert mailhog.get_all()["total"] == 0
+
+    # Use `call` to avoid error handling
+    client.session.call("mail_registered_participants", survey_id)
+
+    with subtests.test(msg="2 emails sent"):
+        assert mailhog.get_all()["total"] == 2
+
+    mailhog.delete()
+
+    # `remind_participants` returns a non-error status messages even when emails are
+    # sent successfully and that violates assumptions made by this library about the
+    # meaning of `status` messages"
+    with pytest.raises(LimeSurveyStatusError, match="0 left to send"):
+        client.session.remind_participants(survey_id)
+
+    with subtests.test(msg="2 reminders sent"):
+        assert mailhog.get_all()["total"] == 2
