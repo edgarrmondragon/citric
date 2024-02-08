@@ -66,6 +66,13 @@ def pytest_addoption(parser: pytest.Parser):
         default=_from_env_var("LS_PASSWORD"),
     )
 
+    parser.addoption(
+        "--mailhog-url",
+        action="store",
+        help="URL of the MailHog instance to test against.",
+        default=_from_env_var("MAILHOG_URL", "http://localhost:8025"),
+    )
+
 
 def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item]):
     """Modify test collection."""
@@ -107,6 +114,12 @@ def integration_username(request: pytest.FixtureRequest) -> str:
 def integration_password(request: pytest.FixtureRequest) -> str:
     """LimeSurvey password."""
     return request.config.getoption("--limesurvey-password")
+
+
+@pytest.fixture(scope="session")
+def integration_mailhog_url(request: pytest.FixtureRequest) -> str:
+    """MailHog URL."""
+    return request.config.getoption("--mailhog-url")
 
 
 class LimeSurveyMockAdapter(BaseAdapter):
