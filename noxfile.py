@@ -23,14 +23,8 @@ main_pypy_version = "pypy3.9"
 locations = "src", "tests", "noxfile.py", "docs/conf.py"
 
 
-@session(python=all_python_versions, tags=["test"])
-def tests(session: Session) -> None:
-    """Execute pytest tests and compute coverage."""
-    session.install(".[tests]")
-    args = session.posargs or ["-m", "not integration_test"]
-
+def _run_tests(session: Session, *args: str) -> None:
     env = {"COVERAGE_CORE": "sysmon"} if session.python in {"3.12", "3.13"} else {}
-
     try:
         session.run("coverage", "run", "-m", "pytest", *args, env=env)
     finally:
@@ -38,27 +32,20 @@ def tests(session: Session) -> None:
             session.notify("coverage", posargs=[])
 
 
+@session(python=all_python_versions, tags=["test"])
+def tests(session: Session) -> None:
+    """Execute pytest tests and compute coverage."""
+    session.install(".[tests]")
+    args = session.posargs or ["-m", "not integration_test"]
+    _run_tests(session, *args)
+
+
 @session(python=[main_cpython_version, main_pypy_version], tags=["test"])
 def integration(session: Session) -> None:
     """Execute integration tests and compute coverage."""
     session.install(".[tests]")
-
-    args = [
-        "coverage",
-        "run",
-        "-m",
-        "pytest",
-        "-m",
-        "integration_test",
-    ]
-
-    env = {"COVERAGE_CORE": "sysmon"} if session.python in {"3.12", "3.13"} else {}
-
-    try:
-        session.run(*args, *session.posargs, env=env)
-    finally:
-        if session.interactive:
-            session.notify("coverage", posargs=[])
+    args = session.posargs or ["-m", "integration_test"]
+    _run_tests(session, *args)
 
 
 @session(python=[main_cpython_version, main_pypy_version], tags=["test"])
@@ -94,7 +81,7 @@ def dependencies(session: Session) -> None:
     """Check issues with dependencies."""
     session.install(".[dev]")
     session.install("deptry")
-    session.run("deptry", "src")
+    session.run("deptry", "src", "tests", "docs")
 
 
 @session(python=python_versions, tags=["lint"])
@@ -160,11 +147,31 @@ def api_changes(session: Session) -> None:
     session.run(*args, external=True)
 
 
-@session
+@session(python=["3.11"])
 def notebook(session: Session) -> None:
     """Start a Jupyter notebook."""
-    session.install("-e", ".[dev]")
-    session.run("jupyter", "lab")
+    session.install(
+        "boto3",
+        "duckdb",
+        "duckdb-engine",
+        "faker",
+        "jupysql",
+        "jupyterlab",
+        "pandas",
+        "pyarrow",
+        "sqlalchemy",
+        "-e",
+        ".",
+    )
+    session.run(
+        "jupyter",
+        "lab",
+        env={
+            "AWS_ENDPOINT_URL": "http://localhost:9000",
+            "AWS_ACCESS_KEY_ID": "minioadmin",
+            "AWS_SECRET_ACCESS_KEY": "minioadmin",
+        },
+    )
 
 
 @session(name="generate-tags", tags=["status"])

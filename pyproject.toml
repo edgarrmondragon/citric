@@ -47,11 +47,11 @@ dependencies = [
 optional-dependencies.dev = [
   "citric[docs,tests,typing]",
   "colorama>=0.4.6",
-  "jupyterlab",
   "requests-cache>=1.1",
 ]
 optional-dependencies.docs = [
   "autodocsumm>=0.2.5", # 0.2.4 has a problematic dependency 'Sphinx>=2.2.*'
+  "docutils",
   "furo",
   "myst-parser",
   "sphinx",
@@ -237,8 +237,16 @@ types-requests = "requests"
 typing-extensions = "typing_extensions"
 
 [tool.deptry.per_rule_ignores]
+DEP001 = [
+  # Notebook dependencies
+  "boto3",
+  "IPython",
+  "pandas",
+  "sqlalchemy",
+]
 DEP002 = [
   "autodocsumm",
+  "citric",
   "colorama",
   "coverage",
   "deptry",
