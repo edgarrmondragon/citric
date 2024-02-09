@@ -22,6 +22,7 @@ Release **v{sub-ref}`version`**. ([What's new?](./changelog.md))
 
 Integration tests are run against a LimeSurvey instance, and both PostgreSQL and MySQL backends, using Docker Compose. The following versions of LimeSurvey were tested for this release:
 
+- {ls_tag}`6.4.5+240205`
 - {ls_tag}`6.4.4+240130`
 - {ls_tag}`6.4.3+240122`
 - {ls_tag}`6.4.2+240115`

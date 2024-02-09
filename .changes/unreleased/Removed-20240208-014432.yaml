@@ -1,5 +1,0 @@
-kind: Removed
-body: Removed the `Session._headers` attribute
-time: 2024-02-08T01:44:32.587864-06:00
-custom:
-  Issue: "1093"
