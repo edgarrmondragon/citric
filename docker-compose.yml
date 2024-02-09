@@ -57,6 +57,7 @@ services:
     command: server /data --console-address ":9001"
     profiles:
       - web
+      - notebook
 
   mailhog:
     image: mailhog/mailhog

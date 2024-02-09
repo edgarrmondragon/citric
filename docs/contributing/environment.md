@@ -14,8 +14,6 @@ Ready to contribute? Here's how to set up `citric` for local development.
    cd citric
    ```
 
-1. Install [`hatch`][hatch]:
-
 1. Install [`nox`][nox] (used for automation):
 
     ```shell
@@ -54,7 +52,6 @@ Ready to contribute? Here's how to set up `citric` for local development.
    changie new
    ```
 
-[hatch]: https://hatch.pypa.io/latest/install/
 [nox]: https://nox.thea.codes/en/stable/
 [pre-commit]: https://pre-commit.com/
 [changie]: https://changie.dev/
