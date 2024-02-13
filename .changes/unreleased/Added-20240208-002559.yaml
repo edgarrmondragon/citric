@@ -1,6 +1,0 @@
-kind: Added
-body: Added a `Session.call` method to allow calling RPC methods without any error
-  handling to get the raw response
-time: 2024-02-08T00:25:59.164455-06:00
-custom:
-  Issue: "1092"

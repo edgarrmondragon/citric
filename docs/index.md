@@ -22,6 +22,7 @@ Release **v{sub-ref}`version`**. ([What's new?](./changelog.md))
 
 Integration tests are run against a LimeSurvey instance, and both PostgreSQL and MySQL backends, using Docker Compose. The following versions of LimeSurvey were tested for this release:
 
+- {ls_tag}`6.4.5+240205`
 - {ls_tag}`6.4.4+240130`
 - {ls_tag}`6.4.3+240122`
 - {ls_tag}`6.4.2+240115`
@@ -38,7 +39,7 @@ But also, the latest 5.x and 6.x are tested continuously and are expected to wor
 - [Export responses to a `pandas` dataframe](how-to.md#export-responses-to-a-pandas-dataframe)
 - [Export responses to a DuckDB database and analyze with SQL](how-to.md#export-responses-to-a-duckdb-database-and-analyze-with-sql)
 - [Change the default HTTP session attributes](how-to.md#change-the-default-http-session-attributes)
-- [Use custom `requests` session](how-to.md#use-custom-requests-session)
+- [Use a custom `requests` session](how-to.md#use-a-custom-requests-session)
 - [Use a different authentication plugin](how-to.md#use-a-different-authentication-plugin)
 - [Get files uploaded to a survey and move them to S3](how-to.md#get-files-uploaded-to-a-survey-and-move-them-to-s3)
 - [Use the raw `Client.session` for low-level interaction](how-to.md#use-the-session-attribute-for-low-level-interaction)
