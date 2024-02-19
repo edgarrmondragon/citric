@@ -38,3 +38,11 @@ runs:
     run: |
       pipx install nox
       nox --version
+
+  - name: Install uv
+    shell: bash
+    env:
+      PIP_CONSTRAINT: ${{ inputs.constraints }}
+    run: |
+      pipx install uv
+      uv --version
