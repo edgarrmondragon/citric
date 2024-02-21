@@ -5,11 +5,9 @@ from __future__ import annotations
 import typing as t
 
 import pytest
+import semver
 
 from citric._rest import RESTClient  # noqa: PLC2701
-
-if t.TYPE_CHECKING:
-    import semver
 
 
 @pytest.fixture(scope="module")
@@ -63,12 +61,16 @@ def test_patch_survey_details(
         tokenLength=token_length + 10,
     )
     expected = (
-        {
+        True
+        if server_version < semver.Version(6, 4, prerelease="dev")
+        else {
             "operationsApplied": 1,
             "erronousOperations": [],
         }
-        if server_version >= (6, 4)
-        else True
+        if server_version < semver.Version(6, 5, prerelease="dev")
+        else {
+            "operationsApplied": 1,
+        }
     )
     assert result == expected
 
