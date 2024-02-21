@@ -98,6 +98,15 @@ def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item
                 _add_integration_skip(item, value, reason)
 
 
+def pytest_report_header() -> list[str]:
+    """Return a list of strings to be displayed in the header of the report."""
+    return [
+        f"{key}: {value}"
+        for key, value in os.environ.items()
+        if key.startswith(("COVERAGE_", "NOX_"))
+    ]
+
+
 @pytest.fixture(scope="session")
 def integration_url(request: pytest.FixtureRequest) -> str:
     """LimeSurvey URL."""

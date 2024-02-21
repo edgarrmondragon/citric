@@ -24,7 +24,7 @@ locations = "src", "tests", "noxfile.py", "docs/conf.py"
 
 
 def _run_tests(session: Session, *args: str) -> None:
-    env = {"COVERAGE_CORE": "sysmon"} if session.python in {"3.12", "3.13"} else {}
+    env = {"COVERAGE_CORE": "sysmon"}
     try:
         session.run("coverage", "run", "-m", "pytest", *args, env=env)
     finally:
