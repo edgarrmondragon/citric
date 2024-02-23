@@ -42,7 +42,7 @@ dynamic = [
   "version",
 ]
 dependencies = [
-  "requests>=2.23",
+  "requests>=2.25.1",
 ]
 optional-dependencies.dev = [
   "citric[docs,tests,typing]",
@@ -65,11 +65,11 @@ optional-dependencies.tests = [
   "coverage[toml]>=7.4.2",
   "deptry>=0.12",
   "faker>=19",
-  "pytest>=7.3.1",
+  "pytest>=8",
   "pytest-github-actions-annotate-failures>=0.1.7",
-  "pytest-httpserver",
-  "pytest-reverse",
-  "pytest-subtests",
+  "pytest-httpserver>=1.0.8",
+  "pytest-reverse>=1.7",
+  "pytest-subtests>=0.11",
   "python-dotenv>=1",
   "semver>=3.0.1",
   "tinydb>=4.8",
