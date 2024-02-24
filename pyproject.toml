@@ -94,7 +94,6 @@ source = "vcs"
 include = ["*.py", "*.pyi", "**/pyproject.toml", "*.ipynb"]
 line-length = 88
 src = ["src", "tests", "docs"]
-target-version = "py38"
 
 [tool.ruff.lint]
 explicit-preview-rules = false
