@@ -1,4 +1,4 @@
-griffe==0.40.0
+griffe==0.41.0
 nox==2023.4.22
 pip==23.3.2
-pip-tools==7.3.0
+pip-tools==7.4.0
