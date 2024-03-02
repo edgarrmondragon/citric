@@ -76,12 +76,12 @@ jobs:
 
     steps:
     - name: Check out the repository
-      uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
       with:
         fetch-tags: true
 
     - name: Setup Python ${{ matrix.python-version }}
-      uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c # v5.0.0
+      uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c
       with:
         python-version: ${{ matrix.python-version }}
         architecture: x64
@@ -99,7 +99,7 @@ jobs:
         nox --verbose -s tests
 
     - name: Upload coverage data
-      uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3 # v4.3.1
+      uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3
       with:
         name: "coverage-unit-${{ matrix.os }}-${{ matrix.python-version }}-${{ matrix.nightly && 'nightly' || 'stable' }}"
         path: ".coverage.*"
@@ -123,10 +123,10 @@ jobs:
       tags: ${{ steps.tags.outputs.tags }}
     steps:
     - name: Check out the repository
-      uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
 
     - name: Setup Python
-      uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c # v5.0.0
+      uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c
       with:
         python-version: 3.12
         architecture: x64
@@ -161,7 +161,7 @@ jobs:
       engines: ${{ steps.engines.outputs.engines }}
     steps:
     - name: Check out the repository
-      uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
 
     - name: Test against all engines
       if: ${{ contains(github.event.pull_request.labels.*.name, 'Release') || inputs.all_integrations }}
@@ -242,12 +242,12 @@ jobs:
 
     steps:
     - name: Check out the repository
-      uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
       with:
         fetch-tags: true
 
     - name: Setup Python ${{ matrix.python-version }}
-      uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c # v5.0.0
+      uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c
       with:
         python-version: ${{ matrix.python-version }}
         architecture: x64
@@ -267,10 +267,10 @@ jobs:
         echo "LS_CHECKSUM=$(shasum -a 256 ls.tar.gz | cut -d' ' -f1)" >> $GITHUB_ENV
 
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@0d103c3126aa41d772a8362f6aa67afac040f80c # v3.1.0
+      uses: docker/setup-buildx-action@0d103c3126aa41d772a8362f6aa67afac040f80c
 
     - name: Get Docker
-      uses: actions-hub/docker/cli@f5fdbfc3f9d2a9265ead8962c1314108a7b7ec5d # v1.0.3
+      uses: actions-hub/docker/cli@f5fdbfc3f9d2a9265ead8962c1314108a7b7ec5d
       env:
         SKIP_LOGIN: true
 
@@ -299,7 +299,7 @@ jobs:
 
     - name: Upload coverage data
       if: always()
-      uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3 # v4.3.1
+      uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3
       with:
         name: "coverage-integration-${{ matrix.python-version }}-${{ matrix.image_tag || env.LS_CHECKSUM }}-${{ matrix.database }}"
         path: ".coverage.*"
@@ -316,10 +316,10 @@ jobs:
       fail-fast: false
     steps:
     - name: Check out the repository
-      uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
 
     - name: Set up Python
-      uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c # v5.0.0
+      uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c
       with:
         python-version: "3.12"
         cache: pip
@@ -328,7 +328,7 @@ jobs:
       uses: ./.github/actions/install-tools
 
     - name: Download coverage data
-      uses: actions/download-artifact@87c55149d96e628cc2ef7e6fc2aab372015aec85 # v4.1.3
+      uses: actions/download-artifact@87c55149d96e628cc2ef7e6fc2aab372015aec85
       with:
         pattern: "coverage-${{ matrix.flag }}-*"
         merge-multiple: true
@@ -343,7 +343,7 @@ jobs:
         nox -- xml
 
     - name: Upload coverage report
-      uses: codecov/codecov-action@54bcd8715eee62d40e33596ef5e8f0f48dbbccab # v4.1.0
+      uses: codecov/codecov-action@54bcd8715eee62d40e33596ef5e8f0f48dbbccab
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         files: ./coverage.xml
