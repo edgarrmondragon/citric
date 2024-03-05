@@ -36,8 +36,7 @@ jobs:
         PIP_CONSTRAINT: .github/workflows/constraints.txt
       run: |
         python -Im pip install -U pip
-        pipx install griffe
-        pipx install nox
+        pipx install griffe nox uv
         pipx list
 
     - name: Set REF
