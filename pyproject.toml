@@ -77,7 +77,7 @@ optional-dependencies.tests = [
 ]
 optional-dependencies.typing = [
   "citric[tests]",
-  "mypy>=1.8",
+  "mypy>=1.9",
   "sphinx",
   "types-requests>=2.31.0.2",
   'typing-extensions>=4.6; python_version < "3.12"',
@@ -313,6 +313,7 @@ precision = 2
 show_missing = true
 
 [tool.mypy]
+local_partial_types = true
 warn_no_return = true
 warn_redundant_casts = true
 warn_unreachable = true
