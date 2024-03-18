@@ -101,7 +101,7 @@ jobs:
     - name: Upload coverage data
       uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3
       with:
-        name: "coverage-unit-${{ matrix.os }}-${{ matrix.python-version }}-${{ matrix.nightly && 'nightly' || 'stable' }}"
+        name: "coverage-unit-${{ matrix.os }}-${{ matrix.python-version }}"
         path: ".coverage.*"
 
     - name: Run Doctests
@@ -113,6 +113,7 @@ jobs:
         nox -s deps
 
     - name: Run Mypy
+      if: ${{ !startswith(matrix.python-version, 'pypy') }}
       run: |
         nox -s mypy
 
