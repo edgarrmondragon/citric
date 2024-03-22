@@ -20,11 +20,11 @@ jobs:
     name: Build wheel and sdist
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+    - uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633
       with:
         fetch-depth: 0
         ref: ${{ github.event.inputs.tag || github.ref }}
-    - uses: hynek/build-and-inspect-python-package@3a76fe0f90ca169edffd7d518137a64c0c4a3a41
+    - uses: hynek/build-and-inspect-python-package@88842b6fc4006f618405c1dc0c694afca67ecc58
 
   publish:
     name: Publish to PyPI
@@ -38,11 +38,11 @@ jobs:
       id-token: write # IMPORTANT: mandatory for trusted publishing
 
     steps:
-    - uses: actions/download-artifact@87c55149d96e628cc2ef7e6fc2aab372015aec85
+    - uses: actions/download-artifact@c850b930e6ba138125429b7e5c93fc707a7f8427
       with:
         name: Packages
         path: dist
-    - uses: pypa/gh-action-pypi-publish@e53eb8b103ffcb59469888563dc324e3c8ba6f06
+    - uses: pypa/gh-action-pypi-publish@81e9d935c883d0b210363ab89cf05f3894778450
 
   # Move this up when PyPI supports signing
   sign:
@@ -55,7 +55,7 @@ jobs:
       id-token: write # IMPORTANT: mandatory for sigstore
 
     steps:
-      - uses: actions/download-artifact@87c55149d96e628cc2ef7e6fc2aab372015aec85
+      - uses: actions/download-artifact@c850b930e6ba138125429b7e5c93fc707a7f8427
         with:
           name: Packages
           path: dist
