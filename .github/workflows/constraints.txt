@@ -1,5 +1,5 @@
-griffe==0.41.0
+griffe==0.42.1
 nox==2024.3.2
 pip==24.0
-pip-tools==7.4.0
-uv==0.1.14
+pip-tools==7.4.1
+uv==0.1.23
