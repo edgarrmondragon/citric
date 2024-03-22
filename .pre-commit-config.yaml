@@ -28,7 +28,7 @@ repos:
   - id: check-readthedocs
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.2.1
+  rev: v0.3.4
   hooks:
   - id: ruff
     name: Ruff lint
@@ -52,7 +52,7 @@ repos:
     - pydoclint==0.3.9
 
 - repo: https://github.com/pre-commit/pre-commit
-  rev: v3.6.0
+  rev: v3.6.2
   hooks:
   - id: validate_manifest
 
@@ -68,7 +68,7 @@ repos:
   - id: pyproject-fmt
 
 - repo: https://github.com/jazzband/pip-tools
-  rev: 7.3.0
+  rev: 7.4.1
   hooks:
   - id: pip-compile
     files: ^pyproject\.toml$
