@@ -24,7 +24,7 @@ jobs:
       with:
         fetch-depth: 0
         ref: ${{ github.event.inputs.tag || github.ref }}
-    - uses: hynek/build-and-inspect-python-package@88842b6fc4006f618405c1dc0c694afca67ecc58
+    - uses: hynek/build-and-inspect-python-package@e7acf29b3a66351dc424b3eda365c0b2c830dce6
 
   publish:
     name: Publish to PyPI
