@@ -49,10 +49,10 @@ repos:
   hooks:
   - id: flake8
     additional_dependencies:
-    - pydoclint==0.3.9
+    - pydoclint==0.4.1
 
 - repo: https://github.com/pre-commit/pre-commit
-  rev: v3.6.2
+  rev: v3.7.0
   hooks:
   - id: validate_manifest
 
@@ -72,5 +72,5 @@ repos:
   hooks:
   - id: pip-compile
     files: ^pyproject\.toml$
-    args: ["pyproject.toml", "--extra", "docs", "-o", "docs/requirements.txt", "--pre"]
+    args: ["pyproject.toml", "--extra", "docs", "-o", "docs/requirements.txt"]
     language_version: python3.12
