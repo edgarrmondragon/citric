@@ -11,6 +11,7 @@ on:
     - pyproject.toml
     - .github/workflows/tests.yml
     - .github/workflows/constraints.txt
+    - .github/actions/install-tools/action.yml
   push:
     branches:
     - 'main'
@@ -22,6 +23,7 @@ on:
     - pyproject.toml
     - .github/workflows/tests.yml
     - .github/workflows/constraints.txt
+    - .github/actions/install-tools/action.yml
   schedule:
   - cron: "25 7 */3 * *"
   workflow_dispatch:
