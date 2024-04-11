@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-# ruff: noqa: I001, PTH123
+# ruff: noqa: I001, PTH123, FURB103
 
 # start example
 import citric
