@@ -5,6 +5,7 @@ from __future__ import annotations
 import csv
 import io
 import json
+import operator
 import typing as t
 import uuid
 from datetime import datetime
@@ -207,7 +208,7 @@ def test_group(client: citric.Client, survey_id: int):
 
     questions = sorted(
         client.list_questions(survey_id, group_id),
-        key=lambda q: q["qid"],
+        key=operator.itemgetter("qid"),
     )
 
     assert questions[0]["question"] == "<p><strong>First question</p>"
