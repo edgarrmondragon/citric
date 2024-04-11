@@ -14,7 +14,7 @@
 - [ ] I have read the [CONTRIBUTING] guide.
 - [ ] I have added tests that prove my fix is effective or that my feature works.
 - [ ] If appropriate, I have added necessary documentation.
-- [ ] For user-facing changes, refactorings, performance improvements or documentation updates, I have added a changelog entry using the [Changie] tool.
+- [ ] For user-facing changes, refactorings, performance improvements or documentation updates, I have added a changelog entry using [Changie].
 
 For both the title of the PR and the changelog entry, prefer simple past tense or constructions with "now". For example:
 
