@@ -72,5 +72,5 @@ repos:
   hooks:
   - id: pip-compile
     files: ^pyproject\.toml$
-    args: ["pyproject.toml", "--extra", "docs", "-o", "docs/requirements.txt"]
+    args: ["pyproject.toml", "--pre", "--python-version", "3.12", "--extra", "docs", "-o", "docs/requirements.txt"]
     language_version: python3.12
