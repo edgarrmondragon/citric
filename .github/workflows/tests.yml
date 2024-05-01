@@ -78,7 +78,7 @@ jobs:
 
     steps:
     - name: Check out the repository
-      uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633
+      uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b
       with:
         fetch-tags: true
 
@@ -101,7 +101,7 @@ jobs:
         nox --verbose -s tests
 
     - name: Upload coverage data
-      uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3
+      uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808
       with:
         name: "coverage-unit-${{ matrix.os }}-${{ matrix.python-version }}-${{ matrix.nightly && 'nightly' || 'stable' }}"
         path: ".coverage.*"
@@ -125,7 +125,7 @@ jobs:
       tags: ${{ steps.tags.outputs.tags }}
     steps:
     - name: Check out the repository
-      uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633
+      uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b
 
     - name: Setup Python
       uses: actions/setup-python@82c7e631bb3cdc910f68e0081d67478d79c6982d
@@ -163,7 +163,7 @@ jobs:
       engines: ${{ steps.engines.outputs.engines }}
     steps:
     - name: Check out the repository
-      uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633
+      uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b
 
     - name: Test against all engines
       if: ${{ contains(github.event.pull_request.labels.*.name, 'Release') || inputs.all_integrations }}
@@ -244,7 +244,7 @@ jobs:
 
     steps:
     - name: Check out the repository
-      uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633
+      uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b
       with:
         fetch-tags: true
 
@@ -269,7 +269,7 @@ jobs:
         echo "LS_CHECKSUM=$(shasum -a 256 ls.tar.gz | cut -d' ' -f1)" >> $GITHUB_ENV
 
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@2b51285047da1547ffb1b2203d8be4c0af6b1f20
+      uses: docker/setup-buildx-action@d70bba72b1f3fd22344832f00baa16ece964efeb
 
     - name: Get Docker
       uses: actions-hub/docker/cli@f5fdbfc3f9d2a9265ead8962c1314108a7b7ec5d
@@ -301,7 +301,7 @@ jobs:
 
     - name: Upload coverage data
       if: always()
-      uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3
+      uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808
       with:
         name: "coverage-integration-${{ matrix.python-version }}-${{ matrix.image_tag || env.LS_CHECKSUM }}-${{ matrix.database }}"
         path: ".coverage.*"
@@ -318,7 +318,7 @@ jobs:
       fail-fast: false
     steps:
     - name: Check out the repository
-      uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633
+      uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b
 
     - name: Set up Python
       uses: actions/setup-python@82c7e631bb3cdc910f68e0081d67478d79c6982d
@@ -330,7 +330,7 @@ jobs:
       uses: ./.github/actions/install-tools
 
     - name: Download coverage data
-      uses: actions/download-artifact@c850b930e6ba138125429b7e5c93fc707a7f8427
+      uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e
       with:
         pattern: "coverage-${{ matrix.flag }}-*"
         merge-multiple: true
@@ -345,7 +345,7 @@ jobs:
         nox -- xml
 
     - name: Upload coverage report
-      uses: codecov/codecov-action@c16abc29c95fcf9174b58eb7e1abf4c866893bc8
+      uses: codecov/codecov-action@84508663e988701840491b86de86b666e8a86bed
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         files: ./coverage.xml
