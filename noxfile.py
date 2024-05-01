@@ -19,7 +19,8 @@ nox.options.sessions = [
     "docs-build",
     "api",
 ]
-nox.options.default_venv_backend = "uv"
+nox.needs_version = ">=2024.4.15"
+nox.options.default_venv_backend = "uv|virtualenv"
 
 package = "citric"
 
