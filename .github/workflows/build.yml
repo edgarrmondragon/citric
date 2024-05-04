@@ -44,24 +44,6 @@ jobs:
         path: dist
     - uses: pypa/gh-action-pypi-publish@81e9d935c883d0b210363ab89cf05f3894778450
 
-  attestations:
-    name: Attest Build Provenance
-    runs-on: ubuntu-latest
-    needs: [build]
-    permissions:
-      contents: read
-      id-token: write
-      attestations: write
-
-    steps:
-      - uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e
-        with:
-          name: Packages
-          path: dist
-      - uses: actions/attest-build-provenance@eab7f69317b589ac05272d67712fdd10ab3d4d1d
-        with:
-          subject-path: "./dist/citric*"
-
   # Move this up when PyPI supports signing
   sign:
     name: Sign the distribution package
@@ -69,22 +51,22 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build]
     permissions:
-      contents: write # IMPORTANT: mandatory for making GitHub Releases
-      id-token: write # IMPORTANT: mandatory for sigstore
+      contents: write     # IMPORTANT: mandatory for making GitHub Releases
+      id-token: write     # IMPORTANT: mandatory for attestations
+      attestations: write # IMPORTANT: mandatory for attestations
 
     steps:
       - uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e
         with:
           name: Packages
           path: dist
-      - uses: sigstore/gh-action-sigstore-python@61f6a500bbfdd9a2a339cf033e5421951fbc1cd2
+      - uses: actions/attest-build-provenance@eab7f69317b589ac05272d67712fdd10ab3d4d1d
+        id: attest
         with:
-          inputs: >-
-            ./dist/*.tar.gz
-            ./dist/*.whl
+          subject-path: "./dist/citric*"
       - uses: svenstaro/upload-release-action@04733e069f2d7f7f0b4aebc4fbdbce8613b03ccd
         with:
-          file: dist/**
+          file: ${{ steps.attest.outputs.bundle-path }}
           tag: ${{ github.event.inputs.tag || github.ref }}
           overwrite: false
           file_glob: true
