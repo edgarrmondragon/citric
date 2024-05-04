@@ -44,6 +44,24 @@ jobs:
         path: dist
     - uses: pypa/gh-action-pypi-publish@81e9d935c883d0b210363ab89cf05f3894778450
 
+  attestations:
+    name: Attest Build Provenance
+    runs-on: ubuntu-latest
+    needs: [build]
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
+
+    steps:
+      - uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e
+        with:
+          name: Packages
+          path: dist
+      - uses: actions/attest-build-provenance@eab7f69317b589ac05272d67712fdd10ab3d4d1d
+        with:
+          subject-path: "./dist/citric*"
+
   # Move this up when PyPI supports signing
   sign:
     name: Sign the distribution package
