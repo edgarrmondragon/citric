@@ -12,6 +12,6 @@ jobs:
   pr-preview-links:
     runs-on: ubuntu-latest
     steps:
-    - uses: readthedocs/actions/preview@cc0920454cf03ca8a3fbd3cbaa2ce2e509e70636
+    - uses: edgarrmondragon/actions/preview@88b7495d595103e0b02d41f031a267b4acd861cd
       with:
         project-slug: "citric"
