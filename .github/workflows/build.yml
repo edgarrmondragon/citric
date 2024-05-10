@@ -89,4 +89,4 @@ jobs:
           file: ${{ steps.attest.outputs.bundle-path }}
           tag: ${{ github.event.inputs.tag || github.ref }}
           overwrite: false
-          file_glob: true
+          asset_name: attestations.intoto.jsonl
