@@ -45,7 +45,7 @@ env:
 
 jobs:
   tests:
-    name: "Test ${{ matrix.python-version }}/ ${{ matrix.os }}"
+    name: "Test ${{ matrix.python-version }} ${{ matrix.nightly && '(nightly) ' || '' }}/ ${{ matrix.os }}"
     runs-on: ${{ matrix.os }}
     continue-on-error: ${{ matrix.experimental || false }}
     env:
@@ -60,13 +60,15 @@ jobs:
         - "3.10"
         - "3.11"
         - "3.12"
+        - "3.13"
         - "pypy3.10"
         os: ["ubuntu-latest"]
         include:
-        - python-version: "3.13"
+        - python-version: "3.14"
           os: "ubuntu-latest"
           session: "tests"
           experimental: true
+          nightly: true
 
         - python-version: "3.12"
           os: "windows-latest"
@@ -83,6 +85,7 @@ jobs:
         fetch-tags: true
 
     - name: Setup Python ${{ matrix.python-version }}
+      if: "${{ !matrix.nightly }}"
       uses: actions/setup-python@82c7e631bb3cdc910f68e0081d67478d79c6982d
       with:
         python-version: ${{ matrix.python-version }}
@@ -92,6 +95,12 @@ jobs:
         cache-dependency-path: |
           pyproject.toml
           .github/workflows/constraint.txt
+
+    - name: Setup Python ${{ matrix.python-version }} (nightly)
+      if: "${{ matrix.nightly }}"
+      uses: deadsnakes/action@241105c567c5b7600b24062b638324ff3ae8f4cd
+      with:
+        python-version: "${{ matrix.python-version }}-dev"
 
     - name: Install tools
       uses: ./.github/actions/install-tools
