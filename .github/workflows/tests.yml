@@ -45,7 +45,7 @@ env:
 
 jobs:
   tests:
-    name: "Test ${{ matrix.python-version }} ${{ matrix.nightly && '(nightly)  ' || '' }}/ ${{ matrix.os }}"
+    name: "Test ${{ matrix.python-version }} ${{ matrix.nightly && '(nightly) ' || '' }}/ ${{ matrix.os }}"
     runs-on: ${{ matrix.os }}
     continue-on-error: ${{ matrix.experimental || false }}
     env:
