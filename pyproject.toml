@@ -13,9 +13,13 @@ keywords = [
   "json-rpc",
   "limesurvey",
 ]
-license = {file = "LICENSE"}
-maintainers = [{ name = "Edgar Ramírez-Mondragón", email = "edgarrm358@gmail.com" }]
-authors = [{ name = "Edgar Ramírez-Mondragón", email = "edgarrm358@gmail.com" }]
+license = { file = "LICENSE" }
+maintainers = [
+  { name = "Edgar Ramírez-Mondragón", email = "edgarrm358@gmail.com" },
+]
+authors = [
+  { name = "Edgar Ramírez-Mondragón", email = "edgarrm358@gmail.com" },
+]
 requires-python = ">=3.8"
 classifiers = [
   "Development Status :: 5 - Production/Stable",
@@ -51,7 +55,7 @@ optional-dependencies.dev = [
   "requests-cache>=1.1",
 ]
 optional-dependencies.docs = [
-  "autodocsumm>=0.2.5", # 0.2.4 has a problematic dependency 'Sphinx>=2.2.*'
+  "autodocsumm>=0.2.5",          # 0.2.4 has a problematic dependency 'Sphinx>=2.2.*'
   "docutils>=0.20",
   "furo>=2024.1.29",
   "myst-parser>=2",
@@ -80,7 +84,7 @@ optional-dependencies.typing = [
   "mypy>=1.9",
   "sphinx",
   "types-requests>=2.31.0.2",
-  'typing-extensions>=4.6; python_version < "3.12"',
+  "typing-extensions>=4.6; python_version<'3.12'",
 ]
 urls.Documentation = "https://citric.readthedocs.io"
 urls.Homepage = 'https://github.com/edgarrmondragon/citric'
@@ -91,75 +95,84 @@ urls.Repository = "https://github.com/edgarrmondragon/citric"
 source = "vcs"
 
 [tool.ruff]
-include = ["*.py", "*.pyi", "**/pyproject.toml", "*.ipynb"]
+include = [
+  "*.py",
+  "*.pyi",
+  "**/pyproject.toml",
+  "*.ipynb",
+]
 line-length = 88
-src = ["src", "tests", "docs"]
+src = [
+  "src",
+  "tests",
+  "docs",
+]
 
 [tool.ruff.lint]
 explicit-preview-rules = false
 ignore = [
-  "ANN101",  # missing-type-self
-  "DJ",      # flake8-django
-  "FIX002",  # line-contains-todo
-  "COM812",  # missing-trailing-comma
-  "ISC001",  # single-line-implicit-string-concatenation
-  "D107",    # undocumented-public-init
+  "ANN101", # missing-type-self
+  "DJ",     # flake8-django
+  "FIX002", # line-contains-todo
+  "COM812", # missing-trailing-comma
+  "ISC001", # single-line-implicit-string-concatenation
+  "D107",   # undocumented-public-init
 ]
 preview = true
 select = [
-  "F",       # Pyflakes
-  "E",       # pycodestyle (error)
-  "W",       # pycodestyle (warning)
-  "C90",     # mccabe
-  "I",       # isort
-  "N",       # pep8-naming
-  "D",       # pydocstyle
-  "UP",      # pyupgrade
-  "YTT",     # flake8-2020
-  "ANN",     # flake8-annotations
-  "S",       # bandit
-  "BLE",     # flake8-blind-except
-  "FBT",     # flake8-boolean-trap
-  "B",       # flake8-bugbear
-  "A",       # flake8-builtins
-  "COM",     # flake8-commas
-  "C4",      # flake8-comprehensions
-  "DTZ",     # flake8-datetimez
-  "T10",     # flake8-debugger
-  "EM",      # flake8-errmsg
-  "FA",      # flake8-future-annotations
-  "ISC",     # flake8-implicit-str-concat
-  "ICN",     # flake8-import-conventions
-  "G",       # flake8-logging-format
-  "INP",     # flake8-no-pep420
-  "PIE",     # flake8-pie
-  "T20",     # flake8-print
-  "PT",      # flake8-pytest-style
-  "Q",       # flake8-quotes
-  "RSE",     # flake8-raise
-  "RET",     # flake8-return
-  "SLF",     # flake8-self
-  "SLOT",    # flake8-slots
-  "SIM",     # flake8-simplify
-  "TID",     # flake8-tidy-imports
-  "TCH",     # flake8-type-checking
-  "ARG",     # flake8-unused-arguments
-  "PTH",     # flake8-use-pathlib
-  "TD",      # flake8-todos
-  "FIX",     # flake8-fixme
-  "ERA",     # flake8-eradicate
-  "PD",      # pandas-vet
-  "PGH",     # pygrep-hooks
-  "PLC",     # pylint
-  "PLE",     # pylint
-  "PLR",     # pylint
-  "PLW",     # pylint
-  "TRY",     # tryceratops
-  "FLY",     # flynt
-  "PERF",    # perflint
-  "FURB",    # refurb
-  "LOG",     # flake8-logging
-  "RUF",     # Ruff-specific rules
+  "F",    # Pyflakes
+  "E",    # pycodestyle (error)
+  "W",    # pycodestyle (warning)
+  "C90",  # mccabe
+  "I",    # isort
+  "N",    # pep8-naming
+  "D",    # pydocstyle
+  "UP",   # pyupgrade
+  "YTT",  # flake8-2020
+  "ANN",  # flake8-annotations
+  "S",    # bandit
+  "BLE",  # flake8-blind-except
+  "FBT",  # flake8-boolean-trap
+  "B",    # flake8-bugbear
+  "A",    # flake8-builtins
+  "COM",  # flake8-commas
+  "C4",   # flake8-comprehensions
+  "DTZ",  # flake8-datetimez
+  "T10",  # flake8-debugger
+  "EM",   # flake8-errmsg
+  "FA",   # flake8-future-annotations
+  "ISC",  # flake8-implicit-str-concat
+  "ICN",  # flake8-import-conventions
+  "G",    # flake8-logging-format
+  "INP",  # flake8-no-pep420
+  "PIE",  # flake8-pie
+  "T20",  # flake8-print
+  "PT",   # flake8-pytest-style
+  "Q",    # flake8-quotes
+  "RSE",  # flake8-raise
+  "RET",  # flake8-return
+  "SLF",  # flake8-self
+  "SLOT", # flake8-slots
+  "SIM",  # flake8-simplify
+  "TID",  # flake8-tidy-imports
+  "TCH",  # flake8-type-checking
+  "ARG",  # flake8-unused-arguments
+  "PTH",  # flake8-use-pathlib
+  "TD",   # flake8-todos
+  "FIX",  # flake8-fixme
+  "ERA",  # flake8-eradicate
+  "PD",   # pandas-vet
+  "PGH",  # pygrep-hooks
+  "PLC",  # pylint
+  "PLE",  # pylint
+  "PLR",  # pylint
+  "PLW",  # pylint
+  "TRY",  # tryceratops
+  "FLY",  # flynt
+  "PERF", # perflint
+  "FURB", # refurb
+  "LOG",  # flake8-logging
+  "RUF",  # Ruff-specific rules
 ]
 unfixable = [
   "ERA", # Don't remove commented out code
@@ -206,7 +219,9 @@ suppress-dummy-args = true
 max-string-length = 30
 
 [tool.ruff.lint.flake8-import-conventions]
-banned-from = ["typing"]
+banned-from = [
+  "typing",
+]
 
 [tool.ruff.lint.flake8-import-conventions.extend-aliases]
 typing = "t"
@@ -216,8 +231,12 @@ fixture-parentheses = false
 mark-parentheses = false
 
 [tool.ruff.lint.isort]
-known-first-party = ["citric"]
-required-imports = ["from __future__ import annotations"]
+known-first-party = [
+  "citric",
+]
+required-imports = [
+  "from __future__ import annotations",
+]
 
 [tool.ruff.lint.mccabe]
 max-complexity = 5
@@ -232,7 +251,10 @@ max-args = 10
 skip = ".mypy_cache,.nox,.ruff_cache,build,docs/index.md,docs/requirements.txt"
 
 [tool.deptry]
-pep621_dev_dependency_groups = ["dev", "docs"]
+pep621_dev_dependency_groups = [
+  "dev",
+  "docs",
+]
 
 [tool.deptry.package_module_name_map]
 types-requests = "requests"
@@ -290,13 +312,19 @@ package = [
 [tool.coverage.run]
 branch = true
 parallel = true
-source = ["citric"]
+source = [
+  "citric",
+]
 relative_files = true
 
 [tool.coverage.report]
-exclude_also = ['''if (t\.)?TYPE_CHECKING:''']
+exclude_also = [
+  '''if (t\.)?TYPE_CHECKING:''',
+]
 fail_under = 85
-omit = ["src/citric/types.py"]
+omit = [
+  "src/citric/types.py",
+]
 precision = 2
 show_missing = true
 
@@ -312,5 +340,5 @@ warn_unused_ignores = true
 ignore_missing_imports = true
 module = [
   "nox.*",
-  "pytest_subtests.*",  # TODO: Remove after https://github.com/pytest-dev/pytest-subtests/pull/115 is published
+  "pytest_subtests.*", # TODO: Remove after https://github.com/pytest-dev/pytest-subtests/pull/115 is published
 ]
