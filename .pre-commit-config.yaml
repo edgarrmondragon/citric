@@ -63,14 +63,14 @@ repos:
     args: [--all]
 
 - repo: https://github.com/tox-dev/pyproject-fmt
-  rev: "1.8.0"
+  rev: "2.1.1"
   hooks:
   - id: pyproject-fmt
 
 - repo: https://github.com/astral-sh/uv-pre-commit
-  rev: 0.1.42
+  rev: 0.1.44
   hooks:
   - id: pip-compile
     files: ^pyproject\.toml$
-    args: ["pyproject.toml", "--extra", "docs", "-o", "docs/requirements.txt"]
+    args: ["pyproject.toml", "--pre", "--python-version", "3.12", "--extra", "docs", "-o", "docs/requirements.txt"]
     language_version: python3.12

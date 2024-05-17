@@ -13,9 +13,13 @@ keywords = [
   "json-rpc",
   "limesurvey",
 ]
-license = {file = "LICENSE"}
-maintainers = [{ name = "Edgar Ramírez-Mondragón", email = "edgarrm358@gmail.com" }]
-authors = [{ name = "Edgar Ramírez-Mondragón", email = "edgarrm358@gmail.com" }]
+license = { file = "LICENSE" }
+maintainers = [
+  { name = "Edgar Ramírez-Mondragón", email = "edgarrm358@gmail.com" },
+]
+authors = [
+  { name = "Edgar Ramírez-Mondragón", email = "edgarrm358@gmail.com" },
+]
 requires-python = ">=3.8"
 classifiers = [
   "Development Status :: 5 - Production/Stable",
@@ -47,23 +51,23 @@ dependencies = [
 optional-dependencies.dev = [
   "citric[docs,tests,typing]",
   "colorama>=0.4.6",
+  "deptry>=0.12",
   "requests-cache>=1.1",
 ]
 optional-dependencies.docs = [
-  "autodocsumm>=0.2.5", # 0.2.4 has a problematic dependency 'Sphinx>=2.2.*'
-  "docutils",
-  "furo",
-  "myst-parser",
-  "sphinx",
-  "sphinx-autoapi",
-  "sphinx-autobuild",
-  "sphinx-copybutton",
-  "sphinx-hoverxref",
-  "sphinx-notfound-page",
+  "autodocsumm>=0.2.5",          # 0.2.4 has a problematic dependency 'Sphinx>=2.2.*'
+  "docutils>=0.20",
+  "furo>=2024.1.29",
+  "myst-parser>=2",
+  "sphinx>=7",
+  "sphinx-autoapi>=3",
+  "sphinx-autobuild>=2021.3.14",
+  "sphinx-copybutton>=0.5.2",
+  "sphinx-hoverxref>=1.3",
+  "sphinx-notfound-page>=1",
 ]
 optional-dependencies.tests = [
   "coverage[toml]>=7.4.2",
-  "deptry>=0.12",
   "faker>=19",
   "pytest>=8",
   "pytest-github-actions-annotate-failures>=0.1.7",
@@ -80,7 +84,7 @@ optional-dependencies.typing = [
   "mypy>=1.9",
   "sphinx",
   "types-requests>=2.31.0.2",
-  'typing-extensions>=4.6; python_version < "3.12"',
+  "typing-extensions>=4.6; python_version<'3.12'",
 ]
 urls.Documentation = "https://citric.readthedocs.io"
 urls.Homepage = 'https://github.com/edgarrmondragon/citric'
@@ -91,145 +95,141 @@ urls.Repository = "https://github.com/edgarrmondragon/citric"
 source = "vcs"
 
 [tool.ruff]
-include = ["*.py", "*.pyi", "**/pyproject.toml", "*.ipynb"]
 line-length = 88
-src = ["src", "tests", "docs"]
-
-[tool.ruff.lint]
-explicit-preview-rules = false
-ignore = [
-  "ANN101",  # missing-type-self
-  "DJ",      # flake8-django
-  "FIX002",  # line-contains-todo
-  "COM812",  # missing-trailing-comma
-  "ISC001",  # single-line-implicit-string-concatenation
-  "D107",    # undocumented-public-init
-]
-preview = true
-select = [
-  "F",       # Pyflakes
-  "E",       # pycodestyle (error)
-  "W",       # pycodestyle (warning)
-  "C90",     # mccabe
-  "I",       # isort
-  "N",       # pep8-naming
-  "D",       # pydocstyle
-  "UP",      # pyupgrade
-  "YTT",     # flake8-2020
-  "ANN",     # flake8-annotations
-  "S",       # bandit
-  "BLE",     # flake8-blind-except
-  "FBT",     # flake8-boolean-trap
-  "B",       # flake8-bugbear
-  "A",       # flake8-builtins
-  "COM",     # flake8-commas
-  "C4",      # flake8-comprehensions
-  "DTZ",     # flake8-datetimez
-  "T10",     # flake8-debugger
-  "EM",      # flake8-errmsg
-  "FA",      # flake8-future-annotations
-  "ISC",     # flake8-implicit-str-concat
-  "ICN",     # flake8-import-conventions
-  "G",       # flake8-logging-format
-  "INP",     # flake8-no-pep420
-  "PIE",     # flake8-pie
-  "T20",     # flake8-print
-  "PT",      # flake8-pytest-style
-  "Q",       # flake8-quotes
-  "RSE",     # flake8-raise
-  "RET",     # flake8-return
-  "SLF",     # flake8-self
-  "SLOT",    # flake8-slots
-  "SIM",     # flake8-simplify
-  "TID",     # flake8-tidy-imports
-  "TCH",     # flake8-type-checking
-  "ARG",     # flake8-unused-arguments
-  "PTH",     # flake8-use-pathlib
-  "TD",      # flake8-todos
-  "FIX",     # flake8-fixme
-  "ERA",     # flake8-eradicate
-  "PD",      # pandas-vet
-  "PGH",     # pygrep-hooks
-  "PLC",     # pylint
-  "PLE",     # pylint
-  "PLR",     # pylint
-  "PLW",     # pylint
-  "TRY",     # tryceratops
-  "FLY",     # flynt
-  "PERF",    # perflint
-  "FURB",    # refurb
-  "LOG",     # flake8-logging
-  "RUF",     # Ruff-specific rules
-]
-unfixable = [
-  "ERA", # Don't remove commented out code
+src = [
+  "docs",
+  "src",
+  "tests",
 ]
 
-[tool.ruff.format]
-docstring-code-format = true
+include = [
+  "**/pyproject.toml",
+  "*.ipynb",
+  "*.py",
+  "*.pyi",
+]
+format.preview = true
+format.docstring-code-format = true
 # Enable preview style formatting.
-preview = true
-
-[tool.ruff.lint.per-file-ignores]
-"docs/notebooks/*" = [
-  "D100",   # undocumented-public-module
-  "INP001", # implicit-namespace-package
-  "I002",   # missing-required-import
-  "E402",   # module-import-not-at-top-of-file
+lint.select = [
+  "A",    # flake8-builtins
+  "ANN",  # flake8-annotations
+  "ARG",  # flake8-unused-arguments
+  "B",    # flake8-bugbear
+  "BLE",  # flake8-blind-except
+  "C4",   # flake8-comprehensions
+  "C90",  # mccabe
+  "COM",  # flake8-commas
+  "D",    # pydocstyle
+  "DTZ",  # flake8-datetimez
+  "E",    # pycodestyle (error)
+  "EM",   # flake8-errmsg
+  "ERA",  # flake8-eradicate
+  "F",    # Pyflakes
+  "FA",   # flake8-future-annotations
+  "FBT",  # flake8-boolean-trap
+  "FIX",  # flake8-fixme
+  "FLY",  # flynt
+  "FURB", # refurb
+  "G",    # flake8-logging-format
+  "I",    # isort
+  "ICN",  # flake8-import-conventions
+  "INP",  # flake8-no-pep420
+  "ISC",  # flake8-implicit-str-concat
+  "LOG",  # flake8-logging
+  "N",    # pep8-naming
+  "PD",   # pandas-vet
+  "PERF", # perflint
+  "PGH",  # pygrep-hooks
+  "PIE",  # flake8-pie
+  "PLC",  # pylint
+  "PLE",  # pylint
+  "PLR",  # pylint
+  "PLW",  # pylint
+  "PT",   # flake8-pytest-style
+  "PTH",  # flake8-use-pathlib
+  "Q",    # flake8-quotes
+  "RET",  # flake8-return
+  "RSE",  # flake8-raise
+  "RUF",  # Ruff-specific rules
+  "S",    # bandit
+  "SIM",  # flake8-simplify
+  "SLF",  # flake8-self
+  "SLOT", # flake8-slots
+  "T10",  # flake8-debugger
+  "T20",  # flake8-print
+  "TCH",  # flake8-type-checking
+  "TD",   # flake8-todos
+  "TID",  # flake8-tidy-imports
+  "TRY",  # tryceratops
+  "UP",   # pyupgrade
+  "W",    # pycodestyle (warning)
+  "YTT",  # flake8-2020
 ]
-"src/*" = [
+lint.explicit-preview-rules = false
+lint.per-file-ignores."docs/notebooks/*" = [
+  "D100",   # undocumented-public-module
+  "E402",   # module-import-not-at-top-of-file
+  "I002",   # missing-required-import
+  "INP001", # implicit-namespace-package
+]
+lint.per-file-ignores."src/*" = [
   "PD", # pandas-vet
 ]
-"tests/*" = [
+lint.per-file-ignores."tests/*" = [
+  "ANN201",  # missing-return-type-undocumented-public-function
   "ARG00",   # unused-method-argument
   "C901",    # complex-structure
+  "PLR2004", # magic-value-comparison
+  "PLR6301", # no-self-use
   "S101",    # assert
   "S105",    # hardcoded-password-string
   "S106",    # hardcoded-password-func-arg
-  "ANN201",  # missing-return-type-undocumented-public-function
-  "PLR2004", # magic-value-comparison
   "SLF001",  # private-member-access
-  "PLR6301", # no-self-use
 ]
-
-[tool.ruff.lint.flake8-quotes]
-docstring-quotes = "double"
-inline-quotes = "double"
-multiline-quotes = "double"
-
-[tool.ruff.lint.flake8-annotations]
-allow-star-arg-any = true
-mypy-init-return = true
-suppress-dummy-args = true
-
-[tool.ruff.lint.flake8-errmsg]
-max-string-length = 30
-
-[tool.ruff.lint.flake8-import-conventions]
-banned-from = ["typing"]
-
-[tool.ruff.lint.flake8-import-conventions.extend-aliases]
-typing = "t"
-
-[tool.ruff.lint.flake8-pytest-style]
-fixture-parentheses = false
-mark-parentheses = false
-
-[tool.ruff.lint.isort]
-known-first-party = ["citric"]
-required-imports = ["from __future__ import annotations"]
-
-[tool.ruff.lint.mccabe]
-max-complexity = 5
-
-[tool.ruff.lint.pydocstyle]
-convention = "google"
-
-[tool.ruff.lint.pylint]
-max-args = 10
+lint.unfixable = [
+  "ERA", # Don't remove commented out code
+]
+lint.flake8-annotations.allow-star-arg-any = true
+lint.flake8-annotations.mypy-init-return = true
+lint.flake8-annotations.suppress-dummy-args = true
+lint.flake8-errmsg.max-string-length = 30
+lint.flake8-import-conventions.banned-from = [
+  "typing",
+]
+lint.flake8-import-conventions.extend-aliases.typing = "t"
+lint.flake8-pytest-style.fixture-parentheses = false
+lint.flake8-pytest-style.mark-parentheses = false
+lint.flake8-quotes.docstring-quotes = "double"
+lint.flake8-quotes.inline-quotes = "double"
+lint.flake8-quotes.multiline-quotes = "double"
+lint.isort.known-first-party = [
+  "citric",
+]
+lint.isort.required-imports = [
+  "from __future__ import annotations",
+]
+lint.mccabe.max-complexity = 5
+lint.pydocstyle.convention = "google"
+lint.pylint.max-args = 10
+lint.ignore = [
+  "ANN101", # missing-type-self
+  "COM812", # missing-trailing-comma
+  "D107",   # undocumented-public-init
+  "DJ",     # flake8-django
+  "FIX002", # line-contains-todo
+  "ISC001", # single-line-implicit-string-concatenation
+]
+lint.preview = true
 
 [tool.codespell]
 skip = ".mypy_cache,.nox,.ruff_cache,build,docs/index.md,docs/requirements.txt"
+
+[tool.deptry]
+pep621_dev_dependency_groups = [
+  "dev",
+  "docs",
+]
 
 [tool.deptry.package_module_name_map]
 types-requests = "requests"
@@ -244,36 +244,21 @@ DEP001 = [
   "sqlalchemy",
 ]
 DEP002 = [
-  "autodocsumm",
-  "citric",
-  "colorama",
   "coverage",
-  "deptry",
   "faker",
-  "furo",
-  "jupyterlab",
   "mypy",
-  "myst-parser",
   "pytest",
   "pytest-github-actions-annotate-failures",
   "pytest-httpserver",
   "pytest-reverse",
   "pytest-subtests",
   "python-dotenv",
-  "requests-cache",
   "semver",
-  "sphinx",
-  "sphinx-autoapi",
-  "sphinx-autobuild",
-  "sphinx-autodoc-typehints",
-  "sphinx-copybutton",
-  "sphinx-hoverxref",
-  "sphinx-notfound-page",
   "tinydb",
   "xdoctest",
 ]
 DEP004 = [
-  "typing_extensions",
+  "docutils",
 ]
 
 [tool.pyproject-fmt]
@@ -302,13 +287,19 @@ package = [
 [tool.coverage.run]
 branch = true
 parallel = true
-source = ["citric"]
+source = [
+  "citric",
+]
 relative_files = true
 
 [tool.coverage.report]
-exclude_also = ['''if (t\.)?TYPE_CHECKING:''']
+exclude_also = [
+  '''if (t\.)?TYPE_CHECKING:''',
+]
 fail_under = 85
-omit = ["src/citric/types.py"]
+omit = [
+  "src/citric/types.py",
+]
 precision = 2
 show_missing = true
 
@@ -324,5 +315,5 @@ warn_unused_ignores = true
 ignore_missing_imports = true
 module = [
   "nox.*",
-  "pytest_subtests.*",  # TODO: Remove after https://github.com/pytest-dev/pytest-subtests/pull/115 is published
+  "pytest_subtests.*", # TODO: Remove after https://github.com/pytest-dev/pytest-subtests/pull/115 is published
 ]
