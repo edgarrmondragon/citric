@@ -21,6 +21,37 @@ updates:
         update-types:
           - "patch"
           - "minor"
+  - package-ecosystem: pip
+    directory: "/docs"
+    schedule:
+      interval: monthly
+      timezone: "America/Mexico_City"
+    reviewers:
+      - "edgarrmondragon"
+    labels:
+      - "dependencies"
+    commit-message:
+      prefix: "docs: "
+    groups:
+      docs-dependencies:
+        update-types:
+          - "patch"
+          - "minor"
+  - package-ecosystem: pip
+    directory: "/requirements"
+    schedule:
+      interval: monthly
+      timezone: "America/Mexico_City"
+    reviewers:
+      - "edgarrmondragon"
+    labels:
+      - "dependencies"
+    commit-message:
+      prefix: "test: "
+    groups:
+      lock-files:
+        patterns:
+          - "*"
   - package-ecosystem: github-actions
     directory: "/"
     schedule:
