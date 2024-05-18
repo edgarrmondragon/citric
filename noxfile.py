@@ -43,10 +43,16 @@ def _run_tests(session: nox.Session, *args: str) -> None:
             session.notify("coverage", posargs=[])
 
 
-@nox.session(python=all_python_versions, tags=["test"])
-def tests(session: nox.Session) -> None:
+@nox.session(python=python_versions, tags=["test"])
+@nox.parametrize("constraints", ["highest", "lowest-direct"])
+def tests(session: nox.Session, constraints: str) -> None:
     """Execute pytest tests and compute coverage."""
-    session.install("-v", "citric[tests] @ .")
+    session.install(
+        "-v",
+        "citric[tests] @ .",
+        "-c",
+        f"requirements/requirements-{constraints}.txt",
+    )
     args = session.posargs or ["-m", "not integration_test"]
     _run_tests(session, *args)
 
