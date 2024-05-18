@@ -145,7 +145,8 @@ jobs:
         cache: pip
         cache-dependency-path: |
           pyproject.toml
-          .github/workflows/constraint.txt
+          requirements/*.txt
+          .github/workflows/constraints.txt
 
     - name: Install tools
       uses: ./.github/actions/install-tools
