@@ -6,7 +6,7 @@ anyio==4.3.0
     # via
     #   starlette
     #   watchfiles
-astroid==3.2.0
+astroid==3.2.1
     # via sphinx-autoapi
 autodocsumm==0.2.12
     # via citric (pyproject.toml)
@@ -115,7 +115,7 @@ sphinxcontrib-serializinghtml==1.1.10
     # via sphinx
 starlette==0.37.2
     # via sphinx-autobuild
-typing-extensions==4.11.0
+typing-extensions==4.12.0rc1
     # via beautifulsoup4
 urllib3==2.2.1
     # via requests

@@ -74,3 +74,9 @@ repos:
     files: ^pyproject\.toml$
     args: ["pyproject.toml", "--pre", "--python-version", "3.12", "--extra", "docs", "-o", "docs/requirements.txt"]
     language_version: python3.12
+  - id: pip-compile
+    files: ^pyproject\.toml$
+    args: ["pyproject.toml", "--resolution", "highest", "-o", "requirements/requirements-highest.txt"]
+  - id: pip-compile
+    files: ^pyproject\.toml$
+    args: ["pyproject.toml", "--resolution", "lowest-direct", "-o", "requirements/requirements-lowest-direct.txt"]
