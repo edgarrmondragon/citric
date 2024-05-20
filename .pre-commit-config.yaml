@@ -21,7 +21,7 @@ repos:
   - id: trailing-whitespace
 
 - repo: https://github.com/python-jsonschema/check-jsonschema
-  rev: 0.28.3
+  rev: 0.28.4
   hooks:
   - id: check-dependabot
   - id: check-github-workflows
@@ -63,7 +63,7 @@ repos:
     args: [--all]
 
 - repo: https://github.com/tox-dev/pyproject-fmt
-  rev: "2.1.1"
+  rev: "2.1.2"
   hooks:
   - id: pyproject-fmt
 
@@ -74,9 +74,6 @@ repos:
     files: ^pyproject\.toml$
     args: ["pyproject.toml", "--pre", "--python-version", "3.12", "--extra", "docs", "-o", "docs/requirements.txt"]
     language_version: python3.12
-  - id: pip-compile
-    files: ^pyproject\.toml$
-    args: ["pyproject.toml", "--resolution", "highest", "-o", "requirements/requirements-highest.txt"]
   - id: pip-compile
     files: ^pyproject\.toml$
     args: ["pyproject.toml", "--resolution", "lowest-direct", "-o", "requirements/requirements-lowest-direct.txt"]
