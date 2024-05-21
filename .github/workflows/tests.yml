@@ -45,7 +45,7 @@ env:
 
 jobs:
   tests:
-    name: "Test ${{ matrix.python-version }} ${{ matrix.nightly && '(nightly) ' || '' }}/ ${{ matrix.os }}"
+    name: "Test ${{ matrix.python-version }} ${{ matrix.nightly && '(nightly) ' || '' }}${{ matrix.nogil && 'No GIL ' || '' }}/ ${{ matrix.os }}"
     runs-on: ${{ matrix.os }}
     continue-on-error: ${{ matrix.experimental || false }}
     env:
@@ -78,6 +78,11 @@ jobs:
           os: "macos-latest"
           session: "tests"
 
+        - python-version: "3.13"
+          os: "ubuntu-latest"
+          session: "tests"
+          nogil: true
+
     steps:
     - name: Check out the repository
       uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29
@@ -85,7 +90,7 @@ jobs:
         fetch-tags: true
 
     - name: Setup Python ${{ matrix.python-version }}
-      if: "${{ !matrix.nightly }}"
+      if: "${{ !matrix.nightly && !matrix.nogil }}"
       uses: actions/setup-python@82c7e631bb3cdc910f68e0081d67478d79c6982d
       with:
         python-version: ${{ matrix.python-version }}
@@ -97,10 +102,11 @@ jobs:
           .github/workflows/constraint.txt
 
     - name: Setup Python ${{ matrix.python-version }} (nightly)
-      if: "${{ matrix.nightly }}"
+      if: "${{ matrix.nightly || matrix.nogil }}"
       uses: deadsnakes/action@244dbe68f25c7b218e462ef9e155817fed612c0d
       with:
         python-version: "${{ matrix.python-version }}-dev"
+        nogil: ${{ matrix.nogil || false }}
 
     - name: Install tools
       uses: ./.github/actions/install-tools
