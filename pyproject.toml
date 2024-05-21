@@ -166,6 +166,14 @@ lint.select = [
   "W",    # pycodestyle (warning)
   "YTT",  # flake8-2020
 ]
+lint.ignore = [
+  "ANN101", # missing-type-self
+  "COM812", # missing-trailing-comma
+  "D107",   # undocumented-public-init
+  "DJ",     # flake8-django
+  "FIX002", # line-contains-todo
+  "ISC001", # single-line-implicit-string-concatenation
+]
 lint.explicit-preview-rules = false
 lint.per-file-ignores."docs/notebooks/*" = [
   "D100",   # undocumented-public-module
@@ -212,14 +220,6 @@ lint.isort.required-imports = [
 lint.mccabe.max-complexity = 5
 lint.pydocstyle.convention = "google"
 lint.pylint.max-args = 10
-lint.ignore = [
-  "ANN101", # missing-type-self
-  "COM812", # missing-trailing-comma
-  "D107",   # undocumented-public-init
-  "DJ",     # flake8-django
-  "FIX002", # line-contains-todo
-  "ISC001", # single-line-implicit-string-concatenation
-]
 lint.preview = true
 
 [tool.codespell]
