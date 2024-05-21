@@ -17,7 +17,7 @@ jobs:
     - uses: actions/setup-python@f677139bbe7f9c59b41e40162b753c062f5d49a3 # v5.2.0
       with:
         python-version: '3.x'
-    - uses: hynek/setup-cached-uv@4b4bfa932036976749a9653b0fa4fa10b1a7092b # v2.1.0
+    - uses: hynek/setup-cached-uv@3e2b834ff80f67c4f272449b9f1aa388c294ae48 # v2.2.1
     - uses: tibdex/github-app-token@3beb63f4bd073e61482598c45c71c1019b59b73a # v2.1.0
       id: generate-token
       with:
@@ -25,7 +25,7 @@ jobs:
         private_key: ${{ secrets.APP_PRIVATE_KEY }}
     - run: |
         uvx gha-update
-    - uses: peter-evans/create-pull-request@c5a7806660adbe173f04e3e038b0ccdcd758773c # v6.1.0
+    - uses: peter-evans/create-pull-request@6cd32fd93684475c31847837f87bb135d40a2b79 # v7.0.3
       with:
         token: ${{ steps.generate-token.outputs.token }}
         title: "chore: Update GitHub Actions"
