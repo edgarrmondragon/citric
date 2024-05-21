@@ -108,9 +108,9 @@ include = [
   "*.py",
   "*.pyi",
 ]
+# Enable preview style formatting.
 format.preview = true
 format.docstring-code-format = true
-# Enable preview style formatting.
 lint.select = [
   "A",    # flake8-builtins
   "ANN",  # flake8-annotations
