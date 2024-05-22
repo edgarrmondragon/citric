@@ -11,7 +11,16 @@ import nox
 GH_ACTIONS_ENV_VAR = "GITHUB_ACTIONS"
 FORCE_COLOR = "FORCE_COLOR"
 
-nox.options.default_venv_backend = "uv"
+nox.options.sessions = [
+    "tests",
+    "xdoctest",
+    "deps",
+    "mypy",
+    "docs-build",
+    "api",
+]
+nox.needs_version = ">=2024.4.15"
+nox.options.default_venv_backend = "uv|virtualenv"
 
 package = "citric"
 
@@ -20,7 +29,7 @@ pypy_versions = ["pypy3.9", "pypy3.10"]
 all_python_versions = python_versions + pypy_versions
 
 main_cpython_version = "3.12"
-main_pypy_version = "pypy3.9"
+main_pypy_version = "pypy3.10"
 
 locations = "src", "tests", "noxfile.py", "docs/conf.py"
 
@@ -34,10 +43,16 @@ def _run_tests(session: nox.Session, *args: str) -> None:
             session.notify("coverage", posargs=[])
 
 
-@nox.session(python=all_python_versions, tags=["test"])
-def tests(session: nox.Session) -> None:
+@nox.session(python=python_versions, tags=["test"])
+@nox.parametrize("constraints", ["highest", "lowest-direct"])
+def tests(session: nox.Session, constraints: str) -> None:
     """Execute pytest tests and compute coverage."""
-    session.install("-v", "citric[tests] @ .")
+    session.install(
+        "-v",
+        "citric[tests] @ .",
+        "-c",
+        f"requirements/requirements-{constraints}.txt",
+    )
     args = session.posargs or ["-m", "not integration_test"]
     _run_tests(session, *args)
 

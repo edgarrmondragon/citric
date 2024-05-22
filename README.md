@@ -126,9 +126,11 @@ If you'd like to contribute to this project, please see the [contributing guide]
 
 ## Credits
 
+- The [LimeSurvey][limesurvey-site] team for providing a great survey platform.
 - [Markus Opolka][martialblog] for maintaining a very robust set of [LimeSurvey Docker images](https://github.com/martialblog/docker-limesurvey/).
 - [Claudio Jolowicz][claudio] and [his amazing blog post][hypermodern].
 
 [claudio]: https://twitter.com/cjolowicz/
 [hypermodern]: https://cjolowicz.github.io/posts/hypermodern-python-01-setup/
+[limesurvey-site]: https://www.limesurvey.org/
 [martialblog]: https://github.com/martialblog/
