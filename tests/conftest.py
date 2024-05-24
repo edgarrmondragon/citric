@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import os
 import typing as t
+from importlib.metadata import version
 
 import pytest
 import requests
@@ -100,11 +101,18 @@ def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item
 
 def pytest_report_header() -> list[str]:
     """Return a list of strings to be displayed in the header of the report."""
-    return [
+    env_vars = [
         f"{key}: {value}"
         for key, value in os.environ.items()
         if key.startswith(("COVERAGE_", "NOX_"))
     ]
+
+    dependencies = [
+        f"requests: {version('requests')}",
+        f"urllib3: {version('urllib3')}",
+    ]
+
+    return env_vars + dependencies
 
 
 @pytest.fixture(scope="session")

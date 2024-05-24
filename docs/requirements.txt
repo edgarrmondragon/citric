@@ -6,7 +6,7 @@ anyio==4.3.0
     # via
     #   starlette
     #   watchfiles
-astroid==3.2.1
+astroid==3.2.2
     # via sphinx-autoapi
 autodocsumm==0.2.12
     # via citric (pyproject.toml)
@@ -87,7 +87,7 @@ sphinx==7.3.7
     #   sphinx-hoverxref
     #   sphinx-notfound-page
     #   sphinxcontrib-jquery
-sphinx-autoapi==3.1.0b0
+sphinx-autoapi==3.1.0
     # via citric (pyproject.toml)
 sphinx-autobuild==2024.4.16
     # via citric (pyproject.toml)

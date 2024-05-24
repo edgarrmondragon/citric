@@ -47,12 +47,11 @@ def _run_tests(session: nox.Session, *args: str) -> None:
 @nox.parametrize("constraints", ["highest", "lowest-direct"])
 def tests(session: nox.Session, constraints: str) -> None:
     """Execute pytest tests and compute coverage."""
-    session.install(
-        "-v",
-        "citric[tests] @ .",
-        "-c",
-        f"requirements/requirements-{constraints}.txt",
-    )
+    install_args = ["-v", "citric[tests] @ ."]
+    if constraints == "lowest-direct":
+        install_args.extend(["-c", "requirements/requirements-lowest-direct.txt"])
+
+    session.install(*install_args)
     args = session.posargs or ["-m", "not integration_test"]
     _run_tests(session, *args)
 
