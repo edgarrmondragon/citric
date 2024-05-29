@@ -87,7 +87,7 @@ autodoc_typehints_description_target = "documented"
 
 extlinks = {
     "rpc_method": (
-        "https://api.limesurvey.org/classes/remotecontrol_handle.html#method_%s",
+        "https://api.limesurvey.org/classes/remotecontrol-handle.html#method_%s",
         "RPC method %s",
     ),
     "ls_manual": (
