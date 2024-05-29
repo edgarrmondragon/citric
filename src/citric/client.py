@@ -1252,6 +1252,8 @@ class Client:  # noqa: PLR0904
             The ID of the new group.
 
         .. versionadded:: 0.0.10
+        .. versionchanged:: NEXT_VERSION
+           Added the ``name`` and ``description`` optional parameters.
         """
         contents = base64.b64encode(file.read()).decode()
         return self.session.import_group(
