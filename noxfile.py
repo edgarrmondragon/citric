@@ -95,7 +95,11 @@ def coverage(session: nox.Session) -> None:
 @nox.session(name="deps", python=python_versions)
 def dependencies(session: nox.Session) -> None:
     """Check issues with dependencies."""
-    session.install("-v", "citric[dev] @ .")
+    install_env = {}
+    if session.python in {"3.13", "3.14"}:
+        install_env["PYO3_USE_ABI3_FORWARD_COMPATIBILITY"] = "1"
+
+    session.install("-v", "citric[dev] @ .", env=install_env)
     session.install("-v", "deptry")
     session.run("deptry", "src", "tests", "docs")
 
