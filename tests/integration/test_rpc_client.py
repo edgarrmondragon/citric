@@ -6,6 +6,7 @@ import csv
 import io
 import json
 import operator
+import random
 import typing as t
 import uuid
 from datetime import datetime
@@ -158,6 +159,25 @@ def test_survey(client: citric.Client):
 
     new_props = client.get_survey_properties(survey_id, properties=["format"])
     assert new_props["format"] == enums.NewSurveyType.ALL_ON_ONE_PAGE
+
+
+@pytest.mark.integration_test
+def test_import_survey(client: citric.Client, subtests: SubTests):
+    """Test importing a survey with a custom ID and name."""
+    survey_id = random.randint(10000, 20000)  # noqa: S311
+    with Path("./examples/survey.lss").open("rb") as f:
+        imported_id = client.import_survey(
+            f,
+            survey_id=survey_id,
+            survey_name="Custom Name",
+        )
+
+    with subtests.test(msg="imported survey has custom ID"):
+        assert imported_id == survey_id
+
+    survey_props = client.get_language_properties(imported_id)
+    with subtests.test(msg="imported survey has custom name"):
+        assert survey_props["surveyls_title"] == "Custom Name"
 
 
 @pytest.mark.integration_test
