@@ -222,6 +222,13 @@ lint.pydocstyle.convention = "google"
 lint.pylint.max-args = 10
 lint.preview = true
 
+[tool.repo-review]
+ignore = [
+  "PC111", # waiting for https://github.com/astral-sh/ruff/issues/8237 instead
+  "PC140", # mypy is run by Nox
+  "PC180", # prettier made some changes that breaks plugins entirely, pre-commit hook is archived
+]
+
 [tool.codespell]
 skip = ".mypy_cache,.nox,.ruff_cache,build,docs/index.md,docs/requirements.txt"
 
