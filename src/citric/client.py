@@ -1251,6 +1251,11 @@ class Client:  # noqa: PLR0904
         Returns:
             The ID of the new group.
 
+        .. code-block:: python
+
+            with open("group.lsg", "rb") as f:
+                group_id = client.import_group(f, survey_id)
+
         .. versionadded:: 0.0.10
         .. versionchanged:: NEXT_VERSION
            Added the ``name`` and ``description`` optional parameters.
