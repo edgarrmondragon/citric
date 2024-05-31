@@ -268,15 +268,24 @@ max_supported_python = "3.13"
 addopts = [
   "-vvv",
   "--reverse",
+  "-ra",              # show extra test summary info for all except passed
+  "--strict-config",
+  "--strict-markers",
 ]
 filterwarnings = [
   "error",
   "ignore::citric._compat.FutureVersionWarning",
 ]
+log_cli_level = "INFO"
 markers = [
   "integration_test: Integration and end-to-end tests",
   "xfail_mysql: Mark a test as expected to fail on MySQL",
 ]
+minversion = "8"
+testpaths = [
+  "tests",
+]
+xfail_strict = true
 
 [tool.coverage.paths]
 package = [
@@ -304,7 +313,13 @@ precision = 2
 show_missing = true
 
 [tool.mypy]
+enable_error_code = [
+  "ignore-without-code",
+  "redundant-expr",
+  "truthy-bool",
+]
 local_partial_types = true
+strict = false
 warn_no_return = true
 warn_redundant_casts = true
 warn_unreachable = true
