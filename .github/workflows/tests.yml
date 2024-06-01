@@ -80,7 +80,7 @@ jobs:
 
     steps:
     - name: Check out the repository
-      uses: actions/checkout@44c2b7a8a4ea60a981eaca3cf939b5f4305c123b
+      uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29
       with:
         fetch-tags: true
 
@@ -98,7 +98,7 @@ jobs:
 
     - name: Setup Python ${{ matrix.python-version }} (nightly)
       if: "${{ matrix.nightly }}"
-      uses: deadsnakes/action@241105c567c5b7600b24062b638324ff3ae8f4cd
+      uses: deadsnakes/action@244dbe68f25c7b218e462ef9e155817fed612c0d
       with:
         python-version: "${{ matrix.python-version }}-dev"
 
@@ -134,7 +134,7 @@ jobs:
       tags: ${{ steps.tags.outputs.tags }}
     steps:
     - name: Check out the repository
-      uses: actions/checkout@44c2b7a8a4ea60a981eaca3cf939b5f4305c123b
+      uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29
 
     - name: Setup Python
       uses: actions/setup-python@82c7e631bb3cdc910f68e0081d67478d79c6982d
@@ -173,7 +173,7 @@ jobs:
       engines: ${{ steps.engines.outputs.engines }}
     steps:
     - name: Check out the repository
-      uses: actions/checkout@44c2b7a8a4ea60a981eaca3cf939b5f4305c123b
+      uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29
 
     - name: Test against all engines
       if: ${{ contains(github.event.pull_request.labels.*.name, 'Release') || inputs.all_integrations }}
@@ -254,7 +254,7 @@ jobs:
 
     steps:
     - name: Check out the repository
-      uses: actions/checkout@44c2b7a8a4ea60a981eaca3cf939b5f4305c123b
+      uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29
       with:
         fetch-tags: true
 
@@ -328,7 +328,7 @@ jobs:
       fail-fast: false
     steps:
     - name: Check out the repository
-      uses: actions/checkout@44c2b7a8a4ea60a981eaca3cf939b5f4305c123b
+      uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29
 
     - name: Set up Python
       uses: actions/setup-python@82c7e631bb3cdc910f68e0081d67478d79c6982d
@@ -355,7 +355,7 @@ jobs:
         nox -- xml
 
     - name: Upload coverage report
-      uses: codecov/codecov-action@5ecb98a3c6b747ed38dc09f787459979aebb39be
+      uses: codecov/codecov-action@125fc84a9a348dbcf27191600683ec096ec9021c
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         files: ./coverage.xml
