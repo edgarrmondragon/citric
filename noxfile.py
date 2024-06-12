@@ -24,7 +24,14 @@ nox.options.default_venv_backend = "uv|virtualenv"
 
 package = "citric"
 
-python_versions = ["3.13", "3.12", "3.11", "3.10", "3.9", "3.8"]
+python_versions = [
+    "3.13",
+    "3.12",
+    "3.11",
+    "3.10",
+    "3.9",
+    "3.8",
+]
 pypy_versions = ["pypy3.9", "pypy3.10"]
 all_python_versions = python_versions + pypy_versions
 
