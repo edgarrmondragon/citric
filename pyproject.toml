@@ -37,6 +37,7 @@ classifiers = [
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
   "Programming Language :: Python :: Implementation :: CPython",
   "Programming Language :: Python :: Implementation :: PyPy",
   "Topic :: Software Development :: Libraries :: Python Modules",
@@ -223,6 +224,7 @@ lint.pylint.max-args = 10
 lint.preview = true
 
 [tool.codespell]
+ignore-words-list = "socio-economic"
 skip = ".mypy_cache,.nox,.ruff_cache,build,docs/index.md,docs/requirements.txt"
 
 [tool.deptry]
@@ -262,21 +264,30 @@ DEP004 = [
 ]
 
 [tool.pyproject-fmt]
-max_supported_python = "3.13"
+max_supported_python = "3.14"
 
 [tool.pytest.ini_options]
 addopts = [
   "-vvv",
   "--reverse",
+  "-ra",              # show extra test summary info for all except passed
+  "--strict-config",
+  "--strict-markers",
 ]
 filterwarnings = [
   "error",
   "ignore::citric._compat.FutureVersionWarning",
 ]
+log_cli_level = "INFO"
 markers = [
   "integration_test: Integration and end-to-end tests",
   "xfail_mysql: Mark a test as expected to fail on MySQL",
 ]
+minversion = "8"
+testpaths = [
+  "tests",
+]
+xfail_strict = true
 
 [tool.coverage.paths]
 package = [
@@ -304,7 +315,13 @@ precision = 2
 show_missing = true
 
 [tool.mypy]
+enable_error_code = [
+  "ignore-without-code",
+  "redundant-expr",
+  "truthy-bool",
+]
 local_partial_types = true
+strict = false
 warn_no_return = true
 warn_redundant_casts = true
 warn_unreachable = true
