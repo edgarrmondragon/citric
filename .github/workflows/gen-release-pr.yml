@@ -28,7 +28,7 @@ jobs:
       pull-requests: write  # to create and update PRs
       discussions: write    # to create a discussion
     steps:
-    - uses: actions/checkout@44c2b7a8a4ea60a981eaca3cf939b5f4305c123b
+    - uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29
     - name: Batch changes
       uses: miniscruff/changie-action@6dcc2533cac0495148ed4046c438487e4dceaa23
       with:

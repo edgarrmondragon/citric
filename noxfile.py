@@ -24,7 +24,14 @@ nox.options.default_venv_backend = "uv|virtualenv"
 
 package = "citric"
 
-python_versions = ["3.13", "3.12", "3.11", "3.10", "3.9", "3.8"]
+python_versions = [
+    "3.13",
+    "3.12",
+    "3.11",
+    "3.10",
+    "3.9",
+    "3.8",
+]
 pypy_versions = ["pypy3.9", "pypy3.10"]
 all_python_versions = python_versions + pypy_versions
 
@@ -95,7 +102,11 @@ def coverage(session: nox.Session) -> None:
 @nox.session(name="deps", python=python_versions)
 def dependencies(session: nox.Session) -> None:
     """Check issues with dependencies."""
-    session.install("-v", "citric[dev] @ .")
+    install_env = {}
+    if session.python in {"3.13", "3.14"}:
+        install_env["PYO3_USE_ABI3_FORWARD_COMPATIBILITY"] = "1"
+
+    session.install("-v", "citric[dev] @ .", env=install_env)
     session.install("-v", "deptry")
     session.run("deptry", "src", "tests", "docs")
 

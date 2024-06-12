@@ -31,11 +31,8 @@ repos:
   rev: v0.4.4
   hooks:
   - id: ruff
-    name: Ruff lint
     args: [--fix, --exit-non-zero-on-fix, --show-fixes]
-  - id: ruff
-    name: Ruff format
-    entry: ruff format
+  - id: ruff-format
 
 - repo: https://github.com/codespell-project/codespell
   rev: v2.2.6
