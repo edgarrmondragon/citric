@@ -224,6 +224,7 @@ lint.pylint.max-args = 10
 lint.preview = true
 
 [tool.codespell]
+ignore-words-list = "socio-economic"
 skip = ".mypy_cache,.nox,.ruff_cache,build,docs/index.md,docs/requirements.txt"
 
 [tool.deptry]
