@@ -117,7 +117,7 @@ starlette==0.37.2
     # via sphinx-autobuild
 typing-extensions==4.12.0rc1
     # via beautifulsoup4
-urllib3==2.2.1
+urllib3==2.2.2
     # via requests
 uvicorn==0.29.0
     # via sphinx-autobuild
