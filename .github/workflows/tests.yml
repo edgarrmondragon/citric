@@ -238,11 +238,6 @@ jobs:
 
         # Test Limesurvey/LimeSurvey branches
         - python-version: "3.12"
-          ref: refs/heads/5.x
-          context: https://github.com/martialblog/docker-limesurvey.git#master:5.0/apache
-          database: postgres
-
-        - python-version: "3.12"
           ref: refs/heads/develop
           context: https://github.com/martialblog/docker-limesurvey.git#master:6.0/apache
           database: postgres
