@@ -332,5 +332,4 @@ warn_unused_ignores = true
 ignore_missing_imports = true
 module = [
   "nox.*",
-  "pytest_subtests.*", # TODO: Remove after https://github.com/pytest-dev/pytest-subtests/pull/115 is published
 ]
