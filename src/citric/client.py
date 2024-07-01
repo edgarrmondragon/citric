@@ -1231,12 +1231,13 @@ class Client:  # noqa: PLR0904
         file: t.IO[bytes],
         survey_id: int,
         file_type: str | enums.ImportGroupType = "lsg",
+        *,
+        name: str | None = None,
+        description: str | None = None,
     ) -> int:
         """Import group from a file.
 
         Create a new group from an exported LSG file.
-
-        TODO: Check support for custom name and description.
 
         Calls :rpc_method:`import_group`.
 
@@ -1244,17 +1245,28 @@ class Client:  # noqa: PLR0904
             file: File object.
             survey_id: The ID of the Survey that the question will belong to.
             file_type: Type of file. One of LSS, CSV, TXT and LSA.
+            name: Optional new name for the group.
+            description: Optional new description for the group.
 
         Returns:
             The ID of the new group.
 
+        .. code-block:: python
+
+            with open("group.lsg", "rb") as f:
+                group_id = client.import_group(f, survey_id)
+
         .. versionadded:: 0.0.10
+        .. versionchanged:: NEXT_VERSION
+           Added the ``name`` and ``description`` optional parameters.
         """
         contents = base64.b64encode(file.read()).decode()
         return self.session.import_group(
             survey_id,
             contents,
             enums.ImportGroupType(file_type),
+            name,
+            description,
         )
 
     def import_question(

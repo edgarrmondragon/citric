@@ -251,6 +251,28 @@ def test_group(client: citric.Client, survey_id: int):
 
 
 @pytest.mark.integration_test
+@pytest.mark.xfail_mysql(strict=True)
+def test_import_group_with_name(client: citric.Client, survey_id: int):
+    """Test importing a group with a custom name."""
+    with Path("./examples/group.lsg").open("rb") as f:
+        group_id = client.import_group(f, survey_id, name="Custom Name")
+
+    group_props = client.get_group_properties(group_id)
+    assert group_props["group_name"] == "Custom Name"
+
+
+@pytest.mark.integration_test
+@pytest.mark.xfail_mysql(strict=True)
+def test_import_group_with_description(client: citric.Client, survey_id: int):
+    """Test importing a group with a custom description."""
+    with Path("./examples/group.lsg").open("rb") as f:
+        group_id = client.import_group(f, survey_id, description="Custom description")
+
+    group_props = client.get_group_properties(group_id)
+    assert group_props["description"] == "Custom description"
+
+
+@pytest.mark.integration_test
 def test_question(client: citric.Client, survey_id: int):
     """Test question methods."""
     group_id = client.add_group(survey_id, "Test Group")
