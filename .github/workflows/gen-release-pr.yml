@@ -28,7 +28,7 @@ jobs:
       pull-requests: write  # to create and update PRs
       discussions: write    # to create a discussion
     steps:
-    - uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29
+    - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
     - name: Batch changes
       uses: miniscruff/changie-action@6dcc2533cac0495148ed4046c438487e4dceaa23
       with:
@@ -60,7 +60,7 @@ jobs:
 
     - name: Draft Release
       id: draft-release
-      uses: softprops/action-gh-release@69320dbe05506a9a39fc8ae11030b214ec2d1f87
+      uses: softprops/action-gh-release@a74c6b72af54cfa997e81df42d94703d6313a2d0
       with:
         draft: true
         body_path: ".changes/${{ steps.latest.outputs.output }}.md"
@@ -76,7 +76,7 @@ jobs:
         private_key: ${{ secrets.APP_PRIVATE_KEY }}
 
     - name: Create Pull Request
-      uses: peter-evans/create-pull-request@6d6857d36972b65feb161a90e484f2984215f83e
+      uses: peter-evans/create-pull-request@c5a7806660adbe173f04e3e038b0ccdcd758773c
       with:
         token: ${{ steps.generate-token.outputs.token }}
         title: "chore: Release ${{ steps.latest.outputs.output }}"

@@ -20,7 +20,7 @@ jobs:
     name: Build wheel and sdist
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29
+    - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
       with:
         fetch-depth: 0
         ref: ${{ github.event.inputs.tag || github.ref }}
@@ -62,7 +62,7 @@ jobs:
       with:
         name: Packages
         path: dist
-    - uses: pypa/gh-action-pypi-publish@81e9d935c883d0b210363ab89cf05f3894778450
+    - uses: pypa/gh-action-pypi-publish@ec4db0b4ddc65acdf4bff5fa45ac92d78b56bdf0
 
   # Move this up when PyPI supports signing
   sign:
@@ -80,7 +80,7 @@ jobs:
         with:
           name: Packages
           path: dist
-      - uses: actions/attest-build-provenance@923ac69214ed06972afec765eee56d277654c7bd
+      - uses: actions/attest-build-provenance@bdd51370e0416ac948727f861e03c2f05d32d78e
         id: attest
         with:
           subject-path: "./dist/citric*"
