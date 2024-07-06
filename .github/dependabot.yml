@@ -21,7 +21,7 @@ updates:
         update-types:
           - "patch"
           - "minor"
-  - package-ecosystem: pip-compile
+  - package-ecosystem: pip
     directory: "/docs"
     schedule:
       interval: monthly
