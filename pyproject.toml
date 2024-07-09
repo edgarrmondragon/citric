@@ -207,8 +207,6 @@ lint.flake8-import-conventions.banned-from = [
   "typing",
 ]
 lint.flake8-import-conventions.extend-aliases.typing = "t"
-lint.flake8-pytest-style.fixture-parentheses = false
-lint.flake8-pytest-style.mark-parentheses = false
 lint.flake8-quotes.docstring-quotes = "double"
 lint.flake8-quotes.inline-quotes = "double"
 lint.flake8-quotes.multiline-quotes = "double"
@@ -313,6 +311,7 @@ omit = [
 ]
 precision = 2
 show_missing = true
+skip_covered = true
 
 [tool.mypy]
 enable_error_code = [
