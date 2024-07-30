@@ -149,7 +149,7 @@ def docs_serve(session: nox.Session) -> None:
         "docs",
         "build",
     ]
-    session.install("-v", "citric[docs] @ .")
+    session.install("-v", "citric[docs] @ .", "sphinx-autobuild")
 
     build_dir = Path("build")
     if build_dir.exists():
