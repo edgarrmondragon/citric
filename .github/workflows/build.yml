@@ -24,7 +24,7 @@ jobs:
       with:
         fetch-depth: 0
         ref: ${{ github.event.inputs.tag || github.ref }}
-    - uses: hynek/build-and-inspect-python-package@b4fc3f6ba2b3da04f09659be99e2a29fb6146a61
+    - uses: hynek/build-and-inspect-python-package@2dbbf2b252d3a3c7cec7a810e3ed5983bd17b13a
 
   upload-to-release:
     name: Upload to GitHub Release
@@ -35,7 +35,7 @@ jobs:
       contents: write # IMPORTANT: mandatory for making GitHub Releases
 
     steps:
-    - uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e
+    - uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16
       with:
         name: Packages
         path: dist
@@ -58,7 +58,7 @@ jobs:
       id-token: write # IMPORTANT: mandatory for trusted publishing
 
     steps:
-    - uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e
+    - uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16
       with:
         name: Packages
         path: dist
@@ -76,11 +76,11 @@ jobs:
       attestations: write # IMPORTANT: mandatory for attestations
 
     steps:
-      - uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e
+      - uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16
         with:
           name: Packages
           path: dist
-      - uses: actions/attest-build-provenance@bdd51370e0416ac948727f861e03c2f05d32d78e
+      - uses: actions/attest-build-provenance@210c1913531870065f03ce1f9440dd87bc0938cd
         id: attest
         with:
           subject-path: "./dist/citric*"
