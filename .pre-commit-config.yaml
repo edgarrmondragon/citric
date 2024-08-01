@@ -63,12 +63,12 @@ repos:
     args: [--all]
 
 - repo: https://github.com/tox-dev/pyproject-fmt
-  rev: "2.2.0"
+  rev: "2.2.1"
   hooks:
   - id: pyproject-fmt
 
 - repo: https://github.com/astral-sh/uv-pre-commit
-  rev: 0.2.31
+  rev: 0.2.32
   hooks:
   - id: pip-compile
     files: ^pyproject\.toml$

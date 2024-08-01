@@ -80,7 +80,7 @@ sphinx-copybutton==0.5.2
     # via citric (pyproject.toml)
 sphinx-hoverxref==1.4.0
     # via citric (pyproject.toml)
-sphinx-notfound-page==1.0.3
+sphinx-notfound-page==1.0.4
     # via citric (pyproject.toml)
 sphinxcontrib-applehelp==2.0.0
     # via sphinx
