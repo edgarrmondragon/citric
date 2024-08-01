@@ -86,7 +86,7 @@ jobs:
 
     - name: Setup Python ${{ matrix.python-version }}
       if: "${{ !matrix.nightly }}"
-      uses: actions/setup-python@82c7e631bb3cdc910f68e0081d67478d79c6982d
+      uses: actions/setup-python@39cd14951b08e74b54015e9e001cdefcf80e669f
       with:
         python-version: ${{ matrix.python-version }}
         architecture: x64
@@ -98,7 +98,7 @@ jobs:
 
     - name: Setup Python ${{ matrix.python-version }} (nightly)
       if: "${{ matrix.nightly }}"
-      uses: deadsnakes/action@4ed7bc1eceb871d35db155a6e165205bdede9cf8
+      uses: deadsnakes/action@16723567940b8b0fcc842ae60a882337f9645873
       with:
         python-version: "${{ matrix.python-version }}-dev"
 
@@ -110,7 +110,7 @@ jobs:
         nox --verbose -s tests
 
     - name: Upload coverage data
-      uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808
+      uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72b
       with:
         name: "coverage-unit-${{ matrix.os }}-${{ matrix.python-version }}-${{ matrix.nightly && 'nightly' || 'stable' }}"
         path: ".coverage.*"
@@ -137,7 +137,7 @@ jobs:
       uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
 
     - name: Setup Python
-      uses: actions/setup-python@82c7e631bb3cdc910f68e0081d67478d79c6982d
+      uses: actions/setup-python@39cd14951b08e74b54015e9e001cdefcf80e669f
       with:
         python-version: 3.12
         architecture: x64
@@ -254,7 +254,7 @@ jobs:
         fetch-tags: true
 
     - name: Setup Python ${{ matrix.python-version }}
-      uses: actions/setup-python@82c7e631bb3cdc910f68e0081d67478d79c6982d
+      uses: actions/setup-python@39cd14951b08e74b54015e9e001cdefcf80e669f
       with:
         python-version: ${{ matrix.python-version }}
         architecture: x64
@@ -274,7 +274,7 @@ jobs:
         echo "LS_CHECKSUM=$(shasum -a 256 ls.tar.gz | cut -d' ' -f1)" >> $GITHUB_ENV
 
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@d70bba72b1f3fd22344832f00baa16ece964efeb
+      uses: docker/setup-buildx-action@988b5a0280414f521da01fcc63a27aeeb4b104db
 
     - name: Get Docker
       uses: actions-hub/docker/cli@f5fdbfc3f9d2a9265ead8962c1314108a7b7ec5d
@@ -306,7 +306,7 @@ jobs:
 
     - name: Upload coverage data
       if: always()
-      uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808
+      uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72b
       with:
         name: "coverage-integration-${{ matrix.python-version }}-${{ matrix.image_tag || env.LS_CHECKSUM }}-${{ matrix.database }}"
         path: ".coverage.*"
@@ -326,7 +326,7 @@ jobs:
       uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
 
     - name: Set up Python
-      uses: actions/setup-python@82c7e631bb3cdc910f68e0081d67478d79c6982d
+      uses: actions/setup-python@39cd14951b08e74b54015e9e001cdefcf80e669f
       with:
         python-version: "3.12"
         cache: pip
@@ -335,7 +335,7 @@ jobs:
       uses: ./.github/actions/install-tools
 
     - name: Download coverage data
-      uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e
+      uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16
       with:
         pattern: "coverage-${{ matrix.flag }}-*"
         merge-multiple: true
