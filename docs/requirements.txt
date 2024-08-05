@@ -2,9 +2,9 @@
 #    uv pip compile pyproject.toml --pre --python-version 3.12 --extra docs -o docs/requirements.txt
 alabaster==0.7.16
     # via sphinx
-astroid==3.2.4
+astroid==3.3.0
     # via sphinx-autoapi
-autodocsumm==0.2.12
+autodocsumm==0.2.13
     # via citric (pyproject.toml)
 babel==2.15.0
     # via sphinx
@@ -40,7 +40,7 @@ mdit-py-plugins==0.4.1
     # via myst-parser
 mdurl==0.1.2
     # via markdown-it-py
-myst-parser==3.0.1
+myst-parser==4.0.0
     # via citric (pyproject.toml)
 packaging==24.1
     # via sphinx
