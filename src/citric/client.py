@@ -22,7 +22,7 @@ if t.TYPE_CHECKING:
     from os import PathLike
     from types import TracebackType
 
-    from citric import types
+    from citric import _types as types
     from citric.objects import Participant
 
     if sys.version_info >= (3, 11):
