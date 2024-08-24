@@ -35,9 +35,6 @@ python_versions = [
 pypy_versions = ["pypy3.9", "pypy3.10"]
 all_python_versions = python_versions + pypy_versions
 
-main_cpython_version = "3.12"
-main_pypy_version = "pypy3.10"
-
 locations = "src", "tests", "noxfile.py", "docs/conf.py"
 
 
@@ -63,7 +60,7 @@ def tests(session: nox.Session, constraints: str) -> None:
     _run_tests(session, *args)
 
 
-@nox.session(python=[main_cpython_version, main_pypy_version], tags=["test"])
+@nox.session(tags=["test"])
 def integration(session: nox.Session) -> None:
     """Execute integration tests and compute coverage."""
     session.install("-v", "citric[tests] @ .")
@@ -71,7 +68,7 @@ def integration(session: nox.Session) -> None:
     _run_tests(session, *args)
 
 
-@nox.session(python=[main_cpython_version, main_pypy_version], tags=["test"])
+@nox.session(tags=["test"])
 def xdoctest(session: nox.Session) -> None:
     """Run examples with xdoctest."""
     if session.posargs:
@@ -174,7 +171,7 @@ def api_changes(session: nox.Session) -> None:
     session.run(*args, external=True)
 
 
-@nox.session(python=["3.11"])
+@nox.session()
 def notebook(session: nox.Session) -> None:
     """Start a Jupyter notebook."""
     session.install(
