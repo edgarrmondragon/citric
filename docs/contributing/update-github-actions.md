@@ -17,7 +17,7 @@ Go to the [Actions tab](https://github.com/edgarrmondragon/citric/actions/workfl
 
 ## Run the `gha-update` tool locally
 
-1. Install [`uv`](https://docs.astral.sh/uv/getting-started/installation/)
+1. Install [`uv`](https://docs.astral.sh/uv/getting-started/installation/).
 2. Run the following command:
 
    ```bash
