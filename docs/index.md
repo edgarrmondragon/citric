@@ -91,4 +91,5 @@ contributing/docs
 contributing/docker
 contributing/release
 contributing/unreleased-features
+contributing/update-github-actions
 ```
