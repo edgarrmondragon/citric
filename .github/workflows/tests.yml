@@ -86,7 +86,7 @@ jobs:
 
     - name: Setup Python ${{ matrix.python-version }}
       if: "${{ !matrix.nightly }}"
-      uses: actions/setup-python@39cd14951b08e74b54015e9e001cdefcf80e669f # v5.1.1
+      uses: actions/setup-python@f677139bbe7f9c59b41e40162b753c062f5d49a3 # v5.2.0
       with:
         python-version: ${{ matrix.python-version }}
         architecture: x64
@@ -110,8 +110,9 @@ jobs:
         nox --verbose -s tests
 
     - name: Upload coverage data
-      uses: actions/upload-artifact@834a144ee995460fba8ed112a2fc961b36a5ec5a # v4.3.6
+      uses: actions/upload-artifact@50769540e7f4bd5e21e526ee35c689e35e0d6874 # v4.4.0
       with:
+        include-hidden-files: true
         name: "coverage-unit-${{ matrix.os }}-${{ matrix.python-version }}-${{ matrix.nightly && 'nightly' || 'stable' }}"
         path: ".coverage.*"
 
@@ -137,9 +138,9 @@ jobs:
       uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
 
     - name: Setup Python
-      uses: actions/setup-python@39cd14951b08e74b54015e9e001cdefcf80e669f # v5.1.1
+      uses: actions/setup-python@f677139bbe7f9c59b41e40162b753c062f5d49a3 # v5.2.0
       with:
-        python-version: 3.12
+        python-version: 3.x
         architecture: x64
         allow-prereleases: true
         cache: pip
@@ -254,7 +255,7 @@ jobs:
         fetch-tags: true
 
     - name: Setup Python ${{ matrix.python-version }}
-      uses: actions/setup-python@39cd14951b08e74b54015e9e001cdefcf80e669f # v5.1.1
+      uses: actions/setup-python@f677139bbe7f9c59b41e40162b753c062f5d49a3 # v5.2.0
       with:
         python-version: ${{ matrix.python-version }}
         architecture: x64
@@ -306,8 +307,9 @@ jobs:
 
     - name: Upload coverage data
       if: always()
-      uses: actions/upload-artifact@834a144ee995460fba8ed112a2fc961b36a5ec5a # v4.3.6
+      uses: actions/upload-artifact@50769540e7f4bd5e21e526ee35c689e35e0d6874 # v4.4.0
       with:
+        include-hidden-files: true
         name: "coverage-integration-${{ matrix.python-version }}-${{ matrix.image_tag || env.LS_CHECKSUM }}-${{ matrix.database }}"
         path: ".coverage.*"
 
@@ -326,9 +328,9 @@ jobs:
       uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
 
     - name: Set up Python
-      uses: actions/setup-python@39cd14951b08e74b54015e9e001cdefcf80e669f # v5.1.1
+      uses: actions/setup-python@f677139bbe7f9c59b41e40162b753c062f5d49a3 # v5.2.0
       with:
-        python-version: "3.12"
+        python-version: "3.x"
         cache: pip
 
     - name: Install tools

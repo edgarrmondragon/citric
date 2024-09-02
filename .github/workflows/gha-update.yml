@@ -14,6 +14,9 @@ jobs:
     permissions:
       pull-requests: write  # to create and update PRs
     steps:
+    - uses: actions/setup-python@f677139bbe7f9c59b41e40162b753c062f5d49a3 # v5.2.0
+      with:
+        python-version: '3.x'
     - uses: hynek/setup-cached-uv@4b4bfa932036976749a9653b0fa4fa10b1a7092b # v2.1.0
     - uses: tibdex/github-app-token@3beb63f4bd073e61482598c45c71c1019b59b73a # v2.1.0
       id: generate-token
