@@ -18,6 +18,19 @@ Release **v{sub-ref}`version`**. ([What's new?](./changelog.md))
 :end-before: <!-- end-short -->
 ```
 
+### Integration tests
+
+Integration tests are run against a LimeSurvey instance, and both PostgreSQL and MySQL backends, using Docker Compose. The following versions of LimeSurvey were tested for this release:
+
+- {ls_tag}`6.5.9+240521`
+- {ls_tag}`6.5.7+240515`
+- {ls_tag}`6.5.5+240429`
+- {ls_tag}`5.6.65+240522`
+- {ls_tag}`5.6.63+240508`
+- {ls_tag}`5.6.61+240430`
+
+But also, the latest 5.x and 6.x are tested continuously and are expected to work.
+
 ## How-to guides
 
 - [Automatically close the session with a context manager](how-to.md#automatically-close-the-session-with-a-context-manager)
@@ -25,7 +38,7 @@ Release **v{sub-ref}`version`**. ([What's new?](./changelog.md))
 - [Export responses to a `pandas` dataframe](how-to.md#export-responses-to-a-pandas-dataframe)
 - [Export responses to a DuckDB database and analyze with SQL](how-to.md#export-responses-to-a-duckdb-database-and-analyze-with-sql)
 - [Change the default HTTP session attributes](how-to.md#change-the-default-http-session-attributes)
-- [Use custom `requests` session](how-to.md#use-custom-requests-session)
+- [Use a custom `requests` session](how-to.md#use-a-custom-requests-session)
 - [Use a different authentication plugin](how-to.md#use-a-different-authentication-plugin)
 - [Get files uploaded to a survey and move them to S3](how-to.md#get-files-uploaded-to-a-survey-and-move-them-to-s3)
 - [Use the raw `RPC.session` for low-level interaction](how-to.md#use-the-session-attribute-for-low-level-interaction)
@@ -85,4 +98,5 @@ contributing/docs
 contributing/docker
 contributing/release
 contributing/unreleased-features
+contributing/update-github-actions
 ```

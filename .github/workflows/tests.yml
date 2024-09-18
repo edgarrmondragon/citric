@@ -11,6 +11,7 @@ on:
     - pyproject.toml
     - .github/workflows/tests.yml
     - .github/workflows/constraints.txt
+    - .github/actions/install-tools/action.yml
   push:
     branches:
     - 'main'
@@ -22,6 +23,7 @@ on:
     - pyproject.toml
     - .github/workflows/tests.yml
     - .github/workflows/constraints.txt
+    - .github/actions/install-tools/action.yml
   schedule:
   - cron: "25 7 */3 * *"
   workflow_dispatch:
@@ -43,7 +45,7 @@ env:
 
 jobs:
   tests:
-    name: "Test ${{ matrix.python-version }}${{ matrix.nightly && ' (nightly) ' || ' ' }}${{ matrix.nogil && ' (nogil) ' || ' ' }}/ ${{ matrix.os }}"
+    name: "Test ${{ matrix.python-version }} ${{ matrix.nightly && '(nightly) ' || '' }}/ ${{ matrix.os }}"
     runs-on: ${{ matrix.os }}
     continue-on-error: ${{ matrix.experimental || false }}
     env:
@@ -58,32 +60,15 @@ jobs:
         - "3.10"
         - "3.11"
         - "3.12"
+        - "3.13"
         - "pypy3.10"
         os: ["ubuntu-latest"]
         include:
-        - python-version: "3.13"
-          os: "ubuntu-latest"
-          session: "tests"
-          experimental: true
-
-        - python-version: "3.13"
+        - python-version: "3.14"
           os: "ubuntu-latest"
           session: "tests"
           experimental: true
           nightly: true
-
-        # - python-version: "3.13"
-        #   os: "ubuntu-latest"
-        #   session: "tests"
-        #   experimental: true
-        #   nightly: true
-        #   nogil: true
-
-        # - python-version: "3.14"
-        #   os: "ubuntu-latest"
-        #   session: "tests"
-        #   experimental: true
-        #   nightly: true
 
         - python-version: "3.12"
           os: "windows-latest"
@@ -95,13 +80,13 @@ jobs:
 
     steps:
     - name: Check out the repository
-      uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
       with:
         fetch-tags: true
 
     - name: Setup Python ${{ matrix.python-version }}
       if: "${{ !matrix.nightly }}"
-      uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c # v5.0.0
+      uses: actions/setup-python@f677139bbe7f9c59b41e40162b753c062f5d49a3 # v5.2.0
       with:
         python-version: ${{ matrix.python-version }}
         architecture: x64
@@ -116,7 +101,6 @@ jobs:
       uses: deadsnakes/action@6c8b9b82fe0b4344f4b98f2775fcc395df45e494 # v3.1.0
       with:
         python-version: "${{ matrix.python-version }}-dev"
-        # nogil: ${{ matrix.nogil }}
 
     - name: Install tools
       uses: ./.github/actions/install-tools
@@ -126,8 +110,9 @@ jobs:
         nox --verbose -s tests
 
     - name: Upload coverage data
-      uses: actions/upload-artifact@c7d193f32edcb7bfad88892161225aeda64e9392 # v4.0.0
+      uses: actions/upload-artifact@50769540e7f4bd5e21e526ee35c689e35e0d6874 # v4.4.0
       with:
+        include-hidden-files: true
         name: "coverage-unit-${{ matrix.os }}-${{ matrix.python-version }}-${{ matrix.nightly && 'nightly' || 'stable' }}"
         path: ".coverage.*"
 
@@ -150,18 +135,19 @@ jobs:
       tags: ${{ steps.tags.outputs.tags }}
     steps:
     - name: Check out the repository
-      uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
 
     - name: Setup Python
-      uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c # v5.0.0
+      uses: actions/setup-python@f677139bbe7f9c59b41e40162b753c062f5d49a3 # v5.2.0
       with:
-        python-version: 3.12
+        python-version: 3.x
         architecture: x64
         allow-prereleases: true
         cache: pip
         cache-dependency-path: |
           pyproject.toml
-          .github/workflows/constraint.txt
+          requirements/*.txt
+          .github/workflows/constraints.txt
 
     - name: Install tools
       uses: ./.github/actions/install-tools
@@ -188,7 +174,7 @@ jobs:
       engines: ${{ steps.engines.outputs.engines }}
     steps:
     - name: Check out the repository
-      uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
 
     - name: Test against all engines
       if: ${{ contains(github.event.pull_request.labels.*.name, 'Release') || inputs.all_integrations }}
@@ -253,11 +239,6 @@ jobs:
 
         # Test Limesurvey/LimeSurvey branches
         - python-version: "3.12"
-          ref: refs/heads/5.x
-          context: https://github.com/martialblog/docker-limesurvey.git#master:5.0/apache
-          database: postgres
-
-        - python-version: "3.12"
           ref: refs/heads/develop
           context: https://github.com/martialblog/docker-limesurvey.git#master:6.0/apache
           database: postgres
@@ -269,12 +250,12 @@ jobs:
 
     steps:
     - name: Check out the repository
-      uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
       with:
         fetch-tags: true
 
     - name: Setup Python ${{ matrix.python-version }}
-      uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c # v5.0.0
+      uses: actions/setup-python@f677139bbe7f9c59b41e40162b753c062f5d49a3 # v5.2.0
       with:
         python-version: ${{ matrix.python-version }}
         architecture: x64
@@ -294,7 +275,7 @@ jobs:
         echo "LS_CHECKSUM=$(shasum -a 256 ls.tar.gz | cut -d' ' -f1)" >> $GITHUB_ENV
 
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@f95db51fddba0c2d1ec667646a06c2ce06100226 # v3.0.0
+      uses: docker/setup-buildx-action@988b5a0280414f521da01fcc63a27aeeb4b104db # v3.6.1
 
     - name: Get Docker
       uses: actions-hub/docker/cli@f5fdbfc3f9d2a9265ead8962c1314108a7b7ec5d # v1.0.3
@@ -326,8 +307,9 @@ jobs:
 
     - name: Upload coverage data
       if: always()
-      uses: actions/upload-artifact@c7d193f32edcb7bfad88892161225aeda64e9392 # v4.0.0
+      uses: actions/upload-artifact@50769540e7f4bd5e21e526ee35c689e35e0d6874 # v4.4.0
       with:
+        include-hidden-files: true
         name: "coverage-integration-${{ matrix.python-version }}-${{ matrix.image_tag || env.LS_CHECKSUM }}-${{ matrix.database }}"
         path: ".coverage.*"
 
@@ -343,19 +325,19 @@ jobs:
       fail-fast: false
     steps:
     - name: Check out the repository
-      uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
 
     - name: Set up Python
-      uses: actions/setup-python@0a5c61591373683505ea898e09a3ea4f39ef2b9c # v5.0.0
+      uses: actions/setup-python@f677139bbe7f9c59b41e40162b753c062f5d49a3 # v5.2.0
       with:
-        python-version: "3.12"
+        python-version: "3.x"
         cache: pip
 
     - name: Install tools
       uses: ./.github/actions/install-tools
 
     - name: Download coverage data
-      uses: actions/download-artifact@f44cd7b40bfd40b6aa1cc1b9b5b7bf03d3c67110 # v4.1.0
+      uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
       with:
         pattern: "coverage-${{ matrix.flag }}-*"
         merge-multiple: true
@@ -370,7 +352,7 @@ jobs:
         nox -- xml
 
     - name: Upload coverage report
-      uses: codecov/codecov-action@eaaf4bedf32dbdc6b720b63067d99c4d77d6047d # v3.1.4
+      uses: codecov/codecov-action@e28ff129e5465c2c0dcc6f003fc735cb6ae0c673 # v4.5.0
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         files: ./coverage.xml

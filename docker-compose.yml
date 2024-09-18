@@ -26,10 +26,10 @@ services:
       EMAIL_SMTPPASSWORD: ${LS_SMTP_PASSWORD:-secret}
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/index.php/admin"]
-      interval: 30s
+      interval: 15s
       timeout: 10s
       retries: 3
-      start_period: 15s
+      start_period: 5s
 
   db:
     image: postgres:16
@@ -43,8 +43,8 @@ services:
       - 5432:5432
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "limesurvey"]
-      interval: 30s
-      timeout: 30s
+      interval: 15s
+      timeout: 10s
       retries: 3
 
   storage:
@@ -57,6 +57,7 @@ services:
     command: server /data --console-address ":9001"
     profiles:
       - web
+      - notebook
 
   mailhog:
     image: mailhog/mailhog

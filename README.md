@@ -5,8 +5,11 @@
 <table>
   <tbody>
     <tr>
-      <td>Tests</td>
+      <td>Project Health</td>
       <td>
+        <a href="https://polar.sh/edgarrmondragon/citric">
+          <img src="https://polar.sh/embed/seeks-funding-shield.svg?org=edgarrmondragon&repo=citric"/>
+        </a>
         <a href="https://results.pre-commit.ci/latest/github/edgarrmondragon/citric/main">
           <img alt="pre-commit.ci status" src="https://results.pre-commit.ci/badge/github/edgarrmondragon/citric/main.svg"/>
         </a>
@@ -79,17 +82,6 @@
 - Tested against LimeSurvey 6.0.0+ and 5.0.0+ versions.
 - Experimental support for the new [REST API](https://manual.limesurvey.org/REST_API).
 
-### Integration tests
-
-Integration tests are run against a LimeSurvey instance, and both PostgreSQL and MySQL backends, using Docker Compose. The following versions of LimeSurvey were tested for this release:
-
-- [6.4.1](https://github.com/LimeSurvey/LimeSurvey/releases/tag/6.4.1+240108)
-- [6.4.0](https://github.com/LimeSurvey/LimeSurvey/releases/tag/6.4.0+231218)
-- [6.3.9](https://github.com/LimeSurvey/LimeSurvey/releases/tag/6.3.9+231211)
-- [5.6.50](https://github.com/LimeSurvey/LimeSurvey/releases/tag/5.6.50+240109)
-- [5.6.49](https://github.com/LimeSurvey/LimeSurvey/releases/tag/5.6.49+231212)
-- [5.6.48](https://github.com/LimeSurvey/LimeSurvey/releases/tag/5.6.48+231205)
-
 ## Installation
 
 ```sh
@@ -134,9 +126,11 @@ If you'd like to contribute to this project, please see the [contributing guide]
 
 ## Credits
 
+- The [LimeSurvey][limesurvey-site] team for providing a great survey platform.
 - [Markus Opolka][martialblog] for maintaining a very robust set of [LimeSurvey Docker images](https://github.com/martialblog/docker-limesurvey/).
 - [Claudio Jolowicz][claudio] and [his amazing blog post][hypermodern].
 
 [claudio]: https://twitter.com/cjolowicz/
 [hypermodern]: https://cjolowicz.github.io/posts/hypermodern-python-01-setup/
+[limesurvey-site]: https://www.limesurvey.org/
 [martialblog]: https://github.com/martialblog/

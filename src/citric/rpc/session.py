@@ -49,11 +49,14 @@ def handle_rpc_errors(result: Result, error: str | None) -> None:
             a non-null status.
         LimeSurveyApiError: The response payload has a non-null error key.
     """
-    if isinstance(result, dict) and result.get("status") not in {"OK", None}:
-        raise LimeSurveyStatusError(result["status"])
-
     if error is not None:
         raise LimeSurveyApiError(error)
+
+    if not isinstance(result, dict):
+        return
+
+    if result.get("status") not in {"OK", None}:
+        raise LimeSurveyStatusError(result["status"])
 
 
 class Session:
@@ -92,10 +95,6 @@ class Session:
 
     USER_AGENT = f"citric/{metadata.version('citric')}"
 
-    # TODO(edgarrmondragon): Remove this.
-    # https://github.com/edgarrmondragon/citric/issues/893
-    _headers: t.ClassVar[dict[str, t.Any]] = {}
-
     def __init__(
         self,
         url: str,
@@ -109,7 +108,6 @@ class Session:
         self.url = url
         self._session = requests_session or requests.session()
         self._session.headers["User-Agent"] = self.USER_AGENT
-        self._session.headers.update(self._headers)
         self._encoder = json_encoder or json.JSONEncoder
 
         self.__key: str | None = self.get_session_key(
@@ -134,10 +132,8 @@ class Session:
         """Magic method dispatcher."""
         return Method(self.rpc, name)
 
-    def rpc(self, method: str, *params: t.Any) -> Result:
-        """Execute RPC method on LimeSurvey, with optional token authentication.
-
-        Any method, except for `get_session_key`.
+    def call(self, method: str, *params: t.Any) -> RPCResponse:
+        """Get the raw response from an RPC method.
 
         Args:
             method: Name of the method to call.
@@ -152,11 +148,21 @@ class Session:
         # Methods requiring authentication
         return self._invoke(method, self.key, *params)
 
-    def _invoke(
-        self,
-        method: str,
-        *params: t.Any,
-    ) -> Result:
+    def rpc(self, method: str, *params: t.Any) -> Result:
+        """Execute a LimeSurvey RPC call with error handling.
+
+        Args:
+            method: Name of the method to call.
+            params: Positional arguments of the RPC method.
+
+        Returns:
+            An RPC result.
+        """
+        response = self.call(method, *params)
+        handle_rpc_errors(response["result"], response["error"])
+        return response["result"]
+
+    def _invoke(self, method: str, *params: t.Any) -> RPCResponse:
         """Execute a LimeSurvey RPC with a JSON payload.
 
         Args:
@@ -199,18 +205,13 @@ class Session:
         except json.JSONDecodeError as e:
             raise InvalidJSONResponseError from e
 
-        result = data["result"]
-        error = data["error"]
-        response_id = data["id"]
         logger.info("Invoked RPC method %s with ID %d", method, request_id)
 
-        handle_rpc_errors(result, error)
-
-        if response_id != request_id:
+        if (response_id := data["id"]) != request_id:
             msg = f"Response ID {response_id} does not match request ID {request_id}"
             raise ResponseMismatchError(msg)
 
-        return result
+        return data
 
     def close(self) -> None:
         """Close RPC session.

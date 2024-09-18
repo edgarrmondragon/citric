@@ -39,7 +39,7 @@ Otherwise, you can manually close the session with {meth}`client.close() <citric
 :end-before: end example
 ```
 
-## Use custom `requests` session
+## Use a custom `requests` session
 
 It's possible to use a custom session object to make requests. For example, to cache the requests
 and reduce the load on your server in read-intensive applications, you can use
@@ -53,7 +53,7 @@ and reduce the load on your server in read-intensive applications, you can use
 ## Use a different authentication plugin
 
 By default, this client uses the internal database for authentication but
-{ls_manual}`arbitrary plugins <Authentication_plugins>` are supported by the
+{ls_manual}`different plugins <Authentication_plugins>` are supported using the
 `auth_plugin` argument.
 
 ```{literalinclude} ../code_samples/auth_plugin.py
@@ -72,7 +72,7 @@ Common plugins are `Authdb` (default), `AuthLDAP` and `Authwebserver`.
 
 ## Use the session attribute for low-level interaction
 
-This library doesn't (yet) implement all RPC methods, so if you're in dire need of using a method not currently supported, you can use the `session` attribute to invoke the underlying RPC interface without having to pass a session key explicitly:
+This library doesn't implement all RPC methods, so if you're in dire need of using a method not currently supported, you can use the `session` attribute to invoke the underlying RPC interface without having to pass a session key explicitly:
 
 ```{literalinclude} ../code_samples/session_attr.py
 :start-after: start example

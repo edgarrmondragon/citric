@@ -11,6 +11,9 @@ client = RPC(
     "secret",
 )
 
-# Call the not_available_in_client method, not available in the RPC class
-new_survey_id = client.session.not_available_in_client(35239, "copied_survey")
+# Get the raw response from mail_registered_participants
+result = client.session.call("mail_registered_participants", 35239)
+
+# Get the raw response from remind_participants
+result = client.session.call("remind_participants", 35239)
 # end example

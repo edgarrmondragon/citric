@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import os
 import typing as t
+from importlib.metadata import version
 
 import pytest
 import requests
@@ -66,6 +67,13 @@ def pytest_addoption(parser: pytest.Parser):
         default=_from_env_var("LS_PASSWORD"),
     )
 
+    parser.addoption(
+        "--mailhog-url",
+        action="store",
+        help="URL of the MailHog instance to test against.",
+        default=_from_env_var("MAILHOG_URL", "http://localhost:8025"),
+    )
+
 
 def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item]):
     """Modify test collection."""
@@ -91,6 +99,22 @@ def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item
                 _add_integration_skip(item, value, reason)
 
 
+def pytest_report_header() -> list[str]:
+    """Return a list of strings to be displayed in the header of the report."""
+    env_vars = [
+        f"{key}: {value}"
+        for key, value in os.environ.items()
+        if key.startswith(("COVERAGE_", "NOX_"))
+    ]
+
+    dependencies = [
+        f"requests: {version('requests')}",
+        f"urllib3: {version('urllib3')}",
+    ]
+
+    return env_vars + dependencies
+
+
 @pytest.fixture(scope="session")
 def integration_url(request: pytest.FixtureRequest) -> str:
     """LimeSurvey URL."""
@@ -107,6 +131,12 @@ def integration_username(request: pytest.FixtureRequest) -> str:
 def integration_password(request: pytest.FixtureRequest) -> str:
     """LimeSurvey password."""
     return request.config.getoption("--limesurvey-password")
+
+
+@pytest.fixture(scope="session")
+def integration_mailhog_url(request: pytest.FixtureRequest) -> str:
+    """MailHog URL."""
+    return request.config.getoption("--mailhog-url")
 
 
 class LimeSurveyMockAdapter(BaseAdapter):

@@ -3,7 +3,7 @@ description: Install tools for Python projects
 
 inputs:
   constraints:
-    default: ".github/workflows/constraints.txt"
+    default: "${{ github.workspace }}/.github/workflows/constraints.txt"
     description: "Path to pip constraints file"
     required: true
   os:
@@ -31,14 +31,6 @@ runs:
       with open(os.environ["GITHUB_ENV"], mode="a") as io:
           print(f"VIRTUALENV_PIP={pip.__version__}", file=io)
 
-  - name: Install Hatch
-    shell: bash
-    env:
-      PIP_CONSTRAINT: ${{ inputs.constraints }}
-    run: |
-      pipx install hatch --verbose
-      hatch --version
-
   - name: Install Nox
     shell: bash
     env:
@@ -46,3 +38,11 @@ runs:
     run: |
       pipx install nox
       nox --version
+
+  - name: Install uv
+    shell: bash
+    env:
+      PIP_CONSTRAINT: ${{ inputs.constraints }}
+    run: |
+      pipx install uv
+      uv --version

@@ -1,4 +1,4 @@
-"""RPC Client."""
+"""Python API Client."""
 
 from __future__ import annotations
 
@@ -651,7 +651,7 @@ class RPC:  # noqa: PLR0904
         """
         return self.session.delete_survey(survey_id)
 
-    def export_responses(  # noqa: PLR0913
+    def export_responses(
         self,
         survey_id: int,
         *,
@@ -1107,7 +1107,7 @@ class RPC:  # noqa: PLR0904
         Returns:
             The LimeSurvey database version.
 
-        .. versionadded:: NEXT_VERSION
+        .. versionadded:: 1.0.0
         """
         return self._get_site_setting("dbversionnumber")
 
@@ -1682,6 +1682,8 @@ class RPC:  # noqa: PLR0904
         strategy: int = enums.EmailSendStrategy.PENDING,
     ) -> int:
         """Invite participants to a survey.
+
+        Calls :rpc_method:`invite_participants`.
 
         Args:
             survey_id: ID of the survey to invite participants to.
