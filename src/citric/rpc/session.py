@@ -89,8 +89,8 @@ class Session:
        The ``json_encoder`` parameter.
 
 
-    .. _key: #citric.session.Session.key
-    .. _closure: #citric.session.Session.close
+    .. _key: #citric.rpc.session.Session.key
+    .. _closure: #citric.rpc.session.Session.close
     """
 
     USER_AGENT = f"citric/{metadata.version('citric')}"
