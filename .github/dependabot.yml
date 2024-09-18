@@ -36,18 +36,6 @@ updates:
       docs:
         patterns:
           - "*"
-  - package-ecosystem: github-actions
-    directory: "/"
-    schedule:
-      interval: monthly
-    reviewers:
-      - "edgarrmondragon"
-    commit-message:
-      prefix: "ci: "
-    groups:
-      actions:
-        patterns:
-          - "*"
   - package-ecosystem: docker
     directory: "/"
     schedule:

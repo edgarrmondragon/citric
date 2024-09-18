@@ -21,14 +21,14 @@ repos:
   - id: trailing-whitespace
 
 - repo: https://github.com/python-jsonschema/check-jsonschema
-  rev: 0.29.1
+  rev: 0.29.2
   hooks:
   - id: check-dependabot
   - id: check-github-workflows
   - id: check-readthedocs
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.5.6
+  rev: v0.6.3
   hooks:
   - id: ruff
     args: [--fix, --exit-non-zero-on-fix, --show-fixes]
@@ -68,12 +68,12 @@ repos:
   - id: pyproject-fmt
 
 - repo: https://github.com/astral-sh/uv-pre-commit
-  rev: 0.2.33
+  rev: 0.4.2
   hooks:
   - id: pip-compile
     files: ^pyproject\.toml$
-    args: ["pyproject.toml", "--pre", "--python-version", "3.12", "--extra", "docs", "-o", "docs/requirements.txt"]
+    args: ["pyproject.toml", "--universal", "--pre", "--python-version", "3.12", "--extra", "docs", "-o", "docs/requirements.txt"]
     language_version: python3.12
   - id: pip-compile
     files: ^pyproject\.toml$
-    args: ["pyproject.toml", "--resolution", "lowest-direct", "-o", "requirements/requirements-lowest-direct.txt"]
+    args: ["pyproject.toml", "--universal", "--resolution", "lowest-direct", "-o", "requirements/requirements-lowest-direct.txt"]
