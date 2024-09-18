@@ -9,7 +9,7 @@ For the full JSON-RPC reference, see the [RemoteControl 2 API docs][rc2api].
 :end-before: end example
 ```
 
-Otherwise, you can manually close the session with {meth}`client.close() <citric.client.RPC.close>`.
+Otherwise, you can manually close the session with {meth}`client.close() <citric.rpc.client.RPC.close>`.
 
 ## Get surveys and questions
 

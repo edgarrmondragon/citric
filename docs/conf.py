@@ -198,7 +198,7 @@ def skip_member_filter(
     """
     parts = name.split(".")
     if (
-        any(part.startswith("_") for part in parts)
+        any(part.startswith("_") and part != "_compat" for part in parts)
         or name == "citric.rest.client"
         or name.startswith(("citric.client", "citric.session", "citric.method"))
     ):

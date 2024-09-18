@@ -75,7 +75,7 @@ class FileMetadata:
     """File extension."""
 
     question: QuestionReference
-    """:class:`~citric.client.QuestionReference` object."""
+    """:class:`~citric.rpc.client.QuestionReference` object."""
 
     index: int
     """File index."""
@@ -86,7 +86,7 @@ class UploadedFile:
     """A file uploaded to a survey response."""
 
     meta: FileMetadata
-    """:class:`~citric.client.FileMetadata` object."""
+    """:class:`~citric.rpc.client.FileMetadata` object."""
 
     content: io.BytesIO
     """File content as :py:class:`io.BytesIO <io.BytesIO>`.
@@ -1178,7 +1178,7 @@ class RPC:  # noqa: PLR0904
             token: Optional participant token to filter uploaded files.
 
         Yields:
-            :class:`~citric.client.UploadedFile` objects.
+            :class:`~citric.rpc.client.UploadedFile` objects.
 
         .. versionadded:: 0.0.13
         """
