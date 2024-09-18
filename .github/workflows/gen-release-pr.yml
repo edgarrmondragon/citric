@@ -28,9 +28,9 @@ jobs:
       pull-requests: write  # to create and update PRs
       discussions: write    # to create a discussion
     steps:
-    - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
+    - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
     - name: Batch changes
-      uses: miniscruff/changie-action@6dcc2533cac0495148ed4046c438487e4dceaa23
+      uses: miniscruff/changie-action@6dcc2533cac0495148ed4046c438487e4dceaa23 # v2.0.0
       with:
         version: ${{ github.event.inputs.changie-version }}
         args: "\
@@ -42,7 +42,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Merge changes
-      uses: miniscruff/changie-action@6dcc2533cac0495148ed4046c438487e4dceaa23
+      uses: miniscruff/changie-action@6dcc2533cac0495148ed4046c438487e4dceaa23 # v2.0.0
       with:
         version: ${{ github.event.inputs.changie-version }}
         args: merge
@@ -51,7 +51,7 @@ jobs:
 
     - name: Get the latest version
       id: latest
-      uses: miniscruff/changie-action@6dcc2533cac0495148ed4046c438487e4dceaa23
+      uses: miniscruff/changie-action@6dcc2533cac0495148ed4046c438487e4dceaa23 # v2.0.0
       with:
         version: ${{ github.event.inputs.changie-version }}
         args: latest
@@ -60,7 +60,7 @@ jobs:
 
     - name: Draft Release
       id: draft-release
-      uses: softprops/action-gh-release@a74c6b72af54cfa997e81df42d94703d6313a2d0
+      uses: softprops/action-gh-release@c062e08bd532815e2082a85e87e3ef29c3e6d191 # v2.0.8
       with:
         draft: true
         body_path: ".changes/${{ steps.latest.outputs.output }}.md"
@@ -69,14 +69,14 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - uses: tibdex/github-app-token@3beb63f4bd073e61482598c45c71c1019b59b73a
+    - uses: tibdex/github-app-token@3beb63f4bd073e61482598c45c71c1019b59b73a # v2.1.0
       id: generate-token
       with:
         app_id: ${{ secrets.APP_ID }}
         private_key: ${{ secrets.APP_PRIVATE_KEY }}
 
     - name: Create Pull Request
-      uses: peter-evans/create-pull-request@c5a7806660adbe173f04e3e038b0ccdcd758773c
+      uses: peter-evans/create-pull-request@c5a7806660adbe173f04e3e038b0ccdcd758773c # v6.1.0
       with:
         token: ${{ steps.generate-token.outputs.token }}
         title: "chore: Release ${{ steps.latest.outputs.output }}"

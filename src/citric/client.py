@@ -650,7 +650,7 @@ class Client:  # noqa: PLR0904
         """
         return self.session.delete_survey(survey_id)
 
-    def export_responses(  # noqa: PLR0913
+    def export_responses(
         self,
         survey_id: int,
         *,
