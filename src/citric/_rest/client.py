@@ -76,7 +76,10 @@ class RESTClient:
 
     def refresh_token(self) -> None:
         """Refresh the session token."""
-        response = self._session.put(url=f"{self.url}/rest/v1/session")
+        response = self._session.put(
+            url=f"{self.url}/rest/v1/session",
+            headers={"Content-Type": "application/json"},
+        )
         response.raise_for_status()
         self.__session_id = response.json()
 
