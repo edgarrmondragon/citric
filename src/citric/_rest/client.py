@@ -45,15 +45,16 @@ class RESTClient:
         requests_session: requests.Session | None = None,
     ) -> None:
         self.url = url
+        self.__username = username
+        self.__password = password
         self._session = requests_session or requests.session()
         self._session.headers["User-Agent"] = self.USER_AGENT
-        self._session_id: str | None
+        self.__session_id: str | None = None
 
-        self.authenticate(
-            username=username,
-            password=password,
-        )
-        self._session.auth = self._auth
+    @property
+    def session_id(self) -> str | None:
+        """Session ID."""
+        return self.__session_id
 
     def authenticate(self, username: str, password: str) -> None:
         """Authenticate with the REST API.
@@ -69,6 +70,13 @@ class RESTClient:
                 "password": password,
             },
         )
+        response.raise_for_status()
+        self.__session_id = response.json()
+        self._session.auth = self._auth
+
+    def refresh_token(self) -> None:
+        """Refresh the session token."""
+        response = self._session.put(url=f"{self.url}/rest/v1/session")
         response.raise_for_status()
         self.__session_id = response.json()
 
@@ -128,6 +136,10 @@ class RESTClient:
         Returns:
             LimeSurvey REST client.
         """
+        self.authenticate(
+            username=self.__username,
+            password=self.__password,
+        )
         return self
 
     def __exit__(

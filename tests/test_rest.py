@@ -123,10 +123,7 @@ def rest_client(
     httpserver.expect_request(
         "/rest/v1/session",
         method="POST",
-        json={
-            "username": username,
-            "password": password,
-        },
+        json={"username": username, "password": password},
     ).respond_with_json('"my-session-id"')
     httpserver.expect_request("/rest/v1/session", method="DELETE").respond_with_data("")
 
