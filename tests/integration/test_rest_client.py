@@ -27,17 +27,17 @@ def rest_client(
         integration_username,
         integration_password,
     ) as client:
-        print(f"Session started with ID: {client.token}")  # noqa: T201
+        print(f"Session started with ID: {client.session_id}")  # noqa: T201
         yield client
-        print(f"Session ended with ID: {client.token}")  # noqa: T201
+        print(f"Session ended with ID: {client.session_id}")  # noqa: T201
 
 
 @pytest.mark.integration_test
 def test_refresh_token(rest_client: RESTClient) -> None:
     """Test refreshing the token."""
-    session_id = rest_client.token
+    session_id = rest_client.session_id
     rest_client.refresh_token()
-    assert session_id != rest_client.token
+    assert session_id != rest_client.session_id
 
 
 @pytest.mark.integration_test

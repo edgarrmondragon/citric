@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-import dataclasses
-import datetime
 import typing as t
 from importlib import metadata
 
@@ -17,26 +15,6 @@ if t.TYPE_CHECKING:
         from typing import Self  # noqa: ICN003
     else:
         from typing_extensions import Self
-
-
-@dataclasses.dataclass
-class _SessionToken:
-    """Session token."""
-
-    token: str
-    created: datetime.datetime
-    expires: datetime.datetime
-    user_id: int
-
-    @classmethod
-    def from_dict(cls, data: dict[str, t.Any]) -> _SessionToken:
-        """Create a session token from a dictionary."""
-        return cls(
-            token=data["token"],
-            created=datetime.datetime.fromisoformat(data["created"]),
-            expires=datetime.datetime.fromisoformat(data["expires"]),
-            user_id=data["userId"],
-        )
 
 
 class RESTClient:
@@ -71,12 +49,12 @@ class RESTClient:
         self.__password = password
         self._session = requests_session or requests.session()
         self._session.headers["User-Agent"] = self.USER_AGENT
-        self.__token: _SessionToken | None = None
+        self.__session_id: str | None = None
 
     @property
-    def token(self) -> _SessionToken | None:
+    def session_id(self) -> str | None:
         """Session ID."""
-        return self.__token
+        return self.__session_id
 
     def authenticate(self, username: str, password: str) -> None:
         """Authenticate with the REST API.
@@ -93,20 +71,20 @@ class RESTClient:
             },
         )
         response.raise_for_status()
-        self.__token = _SessionToken.from_dict(response.json())
+        self.__session_id = response.json()
         self._session.auth = self._auth
 
     def refresh_token(self) -> None:
         """Refresh the session token."""
         response = self._session.put(url=f"{self.url}/rest/v1/session")
         response.raise_for_status()
-        self.__token = _SessionToken.from_dict(response.json())
+        self.__session_id = response.json()
 
     def close(self) -> None:
         """Delete the session."""
         response = self._session.delete(f"{self.url}/rest/v1/session")
         response.raise_for_status()
-        self.__token = None
+        self.__session_id = None
         self._session.auth = None
 
     def _auth(self, request: requests.PreparedRequest) -> requests.PreparedRequest:
@@ -121,7 +99,7 @@ class RESTClient:
         Returns:
             The prepared request with the ``Authorization`` header set.
         """
-        request.headers["Authorization"] = f"Bearer {self.__token.token}"
+        request.headers["Authorization"] = f"Bearer {self.__session_id}"
         return request
 
     def make_request(

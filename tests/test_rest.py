@@ -124,12 +124,7 @@ def rest_client(
         "/rest/v1/session",
         method="POST",
         json={"username": username, "password": password},
-    ).respond_with_json({
-        "token": "my-token",
-        "created": "2021-01-01T00:00:00Z",
-        "expires": "2021-01-01T01:00:00Z",
-        "userId": 1,
-    })
+    ).respond_with_json("my-session-id")
     httpserver.expect_request("/rest/v1/session", method="DELETE").respond_with_data("")
 
     with RESTClient(httpserver.url_for("").rstrip("/"), username, password) as client:
