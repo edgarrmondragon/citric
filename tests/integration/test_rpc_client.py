@@ -615,7 +615,6 @@ def test_responses(client: citric.Client, survey_id: int, tmp_path: Path):
 
 
 @pytest.mark.integration_test
-# @pytest.mark.xfail_mysql(strict=True)
 def test_file_upload(
     client: citric.Client,
     survey_id: int,
