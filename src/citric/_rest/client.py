@@ -78,7 +78,7 @@ class RESTClient:
         """Refresh the session token."""
         response = self._session.put(url=f"{self.url}/rest/v1/session")
         response.raise_for_status()
-        self.__session_id = response.json()
+        self.__session_id = response.json()["token"]
 
     def close(self) -> None:
         """Delete the session."""
