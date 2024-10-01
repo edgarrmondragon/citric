@@ -155,7 +155,7 @@ jobs:
     - name: Test against required tags
       if: ${{ contains(github.event.pull_request.labels.*.name, 'Release') || inputs.all_integrations }}
       run: |
-        nox -s generate-tags > limesurvey-docker-tags.json
+        nox --verbose -s generate-tags > limesurvey-docker-tags.json
 
     - name: Test against latest tags
       if: ${{ !contains(github.event.pull_request.labels.*.name, 'Release') && !inputs.all_integrations }}
