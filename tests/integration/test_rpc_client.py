@@ -211,7 +211,6 @@ def test_copy_survey_destination_id(
 
 
 @pytest.mark.integration_test
-@pytest.mark.xfail_mysql(strict=True)
 def test_group(client: citric.Client, survey_id: int):
     """Test group methods."""
     # Import a group
@@ -591,7 +590,6 @@ def test_responses(client: citric.Client, survey_id: int, tmp_path: Path):
 
 
 @pytest.mark.integration_test
-@pytest.mark.xfail_mysql
 def test_file_upload(
     client: citric.Client,
     survey_id: int,
@@ -622,7 +620,6 @@ def test_file_upload(
 
 
 @pytest.mark.integration_test
-@pytest.mark.xfail_mysql
 def test_file_upload_no_filename(
     client: citric.Client,
     survey_id: int,
@@ -654,7 +651,6 @@ def test_file_upload_no_filename(
 
 
 @pytest.mark.integration_test
-@pytest.mark.xfail_mysql(strict=True)
 def test_file_upload_invalid_extension(
     client: citric.Client,
     survey_id: int,
