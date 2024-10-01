@@ -80,7 +80,7 @@ jobs:
 
     steps:
     - name: Check out the repository
-      uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+      uses: actions/checkout@d632683dd7b4114ad314bca15554477dd762a938 # v4.2.0
       with:
         fetch-tags: true
 
@@ -98,7 +98,7 @@ jobs:
 
     - name: Setup Python ${{ matrix.python-version }} (nightly)
       if: "${{ matrix.nightly }}"
-      uses: deadsnakes/action@6c8b9b82fe0b4344f4b98f2775fcc395df45e494 # v3.1.0
+      uses: deadsnakes/action@e640ac8743173a67cca4d7d77cd837e514bf98e8 # v3.2.0
       with:
         python-version: "${{ matrix.python-version }}-dev"
 
@@ -135,7 +135,7 @@ jobs:
       tags: ${{ steps.tags.outputs.tags }}
     steps:
     - name: Check out the repository
-      uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+      uses: actions/checkout@d632683dd7b4114ad314bca15554477dd762a938 # v4.2.0
 
     - name: Setup Python
       uses: actions/setup-python@f677139bbe7f9c59b41e40162b753c062f5d49a3 # v5.2.0
@@ -174,7 +174,7 @@ jobs:
       engines: ${{ steps.engines.outputs.engines }}
     steps:
     - name: Check out the repository
-      uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+      uses: actions/checkout@d632683dd7b4114ad314bca15554477dd762a938 # v4.2.0
 
     - name: Test against all engines
       if: ${{ contains(github.event.pull_request.labels.*.name, 'Release') || inputs.all_integrations }}
@@ -250,7 +250,7 @@ jobs:
 
     steps:
     - name: Check out the repository
-      uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+      uses: actions/checkout@d632683dd7b4114ad314bca15554477dd762a938 # v4.2.0
       with:
         fetch-tags: true
 
@@ -325,7 +325,7 @@ jobs:
       fail-fast: false
     steps:
     - name: Check out the repository
-      uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+      uses: actions/checkout@d632683dd7b4114ad314bca15554477dd762a938 # v4.2.0
 
     - name: Set up Python
       uses: actions/setup-python@f677139bbe7f9c59b41e40162b753c062f5d49a3 # v5.2.0
