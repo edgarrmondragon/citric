@@ -259,7 +259,7 @@ def test_question(
     """Test question methods."""
     request.applymarker(
         pytest.mark.xfail(
-            server_version < (6, 6, 3),
+            server_version < (6, 6, 4),
             reason=(
                 "The question text property (`question`) is not available in "
                 f"LimeSurvey {server_version} < 6.6.4"
