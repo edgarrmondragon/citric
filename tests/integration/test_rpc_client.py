@@ -250,8 +250,25 @@ def test_group(client: citric.Client, survey_id: int):
 
 
 @pytest.mark.integration_test
-def test_question(client: citric.Client, survey_id: int):
+def test_question(
+    request: pytest.FixtureRequest,
+    client: citric.Client,
+    server_version: semver.VersionInfo,
+    survey_id: int,
+):
     """Test question methods."""
+    request.applymarker(
+        pytest.mark.xfail(
+            server_version < (6, 6, 4),
+            reason=(
+                "The question text property (`question`) is not available in "
+                f"LimeSurvey {server_version} < 6.6.4"
+            ),
+            raises=KeyError,
+            strict=True,
+        ),
+    )
+
     group_id = client.add_group(survey_id, "Test Group")
 
     # Import a question from a lsq file
@@ -260,6 +277,13 @@ def test_question(client: citric.Client, survey_id: int):
 
     # Get question properties
     props = client.get_question_properties(question_id)
+
+    # test language-specific question properties
+    assert props["question"] == "<p>Text for <strong>first question</strong></p>"
+    assert not props["help"]
+    assert not props["script"]
+    assert isinstance(props["questionl10ns"], dict)
+
     assert int(props["gid"]) == group_id
     assert int(props["qid"]) == question_id
     assert int(props["sid"]) == survey_id
