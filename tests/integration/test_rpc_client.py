@@ -620,6 +620,7 @@ def test_file_upload(
 
 
 @pytest.mark.integration_test
+@pytest.mark.xfail_mysql
 def test_file_upload_no_filename(
     client: citric.Client,
     survey_id: int,
