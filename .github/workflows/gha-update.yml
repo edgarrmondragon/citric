@@ -19,13 +19,6 @@ jobs:
       with:
         python-version: '3.x'
     - uses: hynek/setup-cached-uv@4b4bfa932036976749a9653b0fa4fa10b1a7092b # v2.1.0
-    - uses: tibdex/github-app-token@3beb63f4bd073e61482598c45c71c1019b59b73a # v2.1.0
-      id: generate-token
-      with:
-        app_id: ${{ secrets.APP_ID }}
-        private_key: ${{ secrets.APP_PRIVATE_KEY }}
-        permissions: >-
-          {"workflows": "write"}
     - run: |
         uvx gha-update
     - uses: peter-evans/create-pull-request@c5a7806660adbe173f04e3e038b0ccdcd758773c # v6.1.0
