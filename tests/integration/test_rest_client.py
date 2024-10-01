@@ -27,9 +27,7 @@ def rest_client(
         integration_username,
         integration_password,
     ) as client:
-        print(f"Session started with ID: {client.session_id}")  # noqa: T201
         yield client
-        print(f"Session ended with ID: {client.session_id}")  # noqa: T201
 
 
 @pytest.mark.integration_test
