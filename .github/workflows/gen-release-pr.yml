@@ -28,7 +28,7 @@ jobs:
       pull-requests: write  # to create and update PRs
       discussions: write    # to create a discussion
     steps:
-    - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+    - uses: actions/checkout@d632683dd7b4114ad314bca15554477dd762a938 # v4.2.0
     - name: Batch changes
       uses: miniscruff/changie-action@6dcc2533cac0495148ed4046c438487e4dceaa23 # v2.0.0
       with:
@@ -76,7 +76,7 @@ jobs:
         private_key: ${{ secrets.APP_PRIVATE_KEY }}
 
     - name: Create Pull Request
-      uses: peter-evans/create-pull-request@c5a7806660adbe173f04e3e038b0ccdcd758773c # v6.1.0
+      uses: peter-evans/create-pull-request@5e914681df9dc83aa4e4905692ca88beb2f9e91f # v7.0.5
       with:
         token: ${{ steps.generate-token.outputs.token }}
         title: "chore: Release ${{ steps.latest.outputs.output }}"
