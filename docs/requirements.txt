@@ -2,7 +2,7 @@
 #    uv pip compile pyproject.toml --universal --pre --python-version 3.12 --extra docs -o docs/requirements.txt
 alabaster==1.0.0
     # via sphinx
-astroid==3.3.2
+astroid==3.3.4
     # via sphinx-autoapi
 autodocsumm==0.2.13
     # via citric (pyproject.toml)
@@ -74,7 +74,7 @@ sphinx==8.0.2
     #   sphinx-hoverxref
     #   sphinx-notfound-page
     #   sphinxcontrib-jquery
-sphinx-autoapi==3.3.1
+sphinx-autoapi==3.3.2
     # via citric (pyproject.toml)
 sphinx-basic-ng==1.0.0b2
     # via furo
