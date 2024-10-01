@@ -13,7 +13,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write  # to create and update PRs
-      contents: write  # update workflow definitions
     steps:
     - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
     - uses: actions/setup-python@f677139bbe7f9c59b41e40162b753c062f5d49a3 # v5.2.0
@@ -25,6 +24,8 @@ jobs:
       with:
         app_id: ${{ secrets.APP_ID }}
         private_key: ${{ secrets.APP_PRIVATE_KEY }}
+        permissions: >-
+          {"workflows": "write"}
     - run: |
         uvx gha-update
     - uses: peter-evans/create-pull-request@c5a7806660adbe173f04e3e038b0ccdcd758773c # v6.1.0
