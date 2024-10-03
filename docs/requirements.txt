@@ -2,7 +2,7 @@
 #    uv pip compile pyproject.toml --universal --pre --python-version 3.12 --extra docs -o docs/requirements.txt
 alabaster==1.0.0
     # via sphinx
-astroid==3.3.2
+astroid==3.3.4
     # via sphinx-autoapi
 autodocsumm==0.2.13
     # via citric (pyproject.toml)
@@ -23,7 +23,7 @@ docutils==0.21.2
     #   sphinx
 furo==2024.8.6
     # via citric (pyproject.toml)
-idna==3.8
+idna==3.10
     # via requests
 imagesize==1.4.1
     # via sphinx
@@ -38,7 +38,7 @@ markdown-it-py==3.0.0
     #   myst-parser
 markupsafe==2.1.5
     # via jinja2
-mdit-py-plugins==0.4.1
+mdit-py-plugins==0.4.2
     # via myst-parser
 mdurl==0.1.2
     # via markdown-it-py
@@ -74,13 +74,13 @@ sphinx==8.0.2
     #   sphinx-hoverxref
     #   sphinx-notfound-page
     #   sphinxcontrib-jquery
-sphinx-autoapi==3.3.1
+sphinx-autoapi==3.3.2
     # via citric (pyproject.toml)
 sphinx-basic-ng==1.0.0b2
     # via furo
 sphinx-copybutton==0.5.2
     # via citric (pyproject.toml)
-sphinx-hoverxref==1.4.0
+sphinx-hoverxref==1.4.1
     # via citric (pyproject.toml)
 sphinx-notfound-page==1.0.4
     # via citric (pyproject.toml)
@@ -100,5 +100,5 @@ sphinxcontrib-serializinghtml==2.0.0
     # via sphinx
 typing-extensions==4.12.2
     # via beautifulsoup4
-urllib3==2.2.2
+urllib3==2.2.3
     # via requests

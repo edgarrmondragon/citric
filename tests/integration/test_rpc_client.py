@@ -211,7 +211,6 @@ def test_copy_survey_destination_id(
 
 
 @pytest.mark.integration_test
-@pytest.mark.xfail_mysql(strict=True)
 def test_group(client: citric.Client, survey_id: int):
     """Test group methods."""
     # Import a group
@@ -251,7 +250,6 @@ def test_group(client: citric.Client, survey_id: int):
 
 
 @pytest.mark.integration_test
-@pytest.mark.xfail_mysql(strict=True)
 def test_import_group_with_name(client: citric.Client, survey_id: int):
     """Test importing a group with a custom name."""
     with Path("./examples/group.lsg").open("rb") as f:
@@ -262,7 +260,6 @@ def test_import_group_with_name(client: citric.Client, survey_id: int):
 
 
 @pytest.mark.integration_test
-@pytest.mark.xfail_mysql(strict=True)
 def test_import_group_with_description(client: citric.Client, survey_id: int):
     """Test importing a group with a custom description."""
     with Path("./examples/group.lsg").open("rb") as f:
@@ -273,8 +270,25 @@ def test_import_group_with_description(client: citric.Client, survey_id: int):
 
 
 @pytest.mark.integration_test
-def test_question(client: citric.Client, survey_id: int):
+def test_question(
+    request: pytest.FixtureRequest,
+    client: citric.Client,
+    server_version: semver.VersionInfo,
+    survey_id: int,
+):
     """Test question methods."""
+    request.applymarker(
+        pytest.mark.xfail(
+            server_version < (6, 6, 4),
+            reason=(
+                "The question text property (`question`) is not available in "
+                f"LimeSurvey {server_version} < 6.6.4"
+            ),
+            raises=KeyError,
+            strict=True,
+        ),
+    )
+
     group_id = client.add_group(survey_id, "Test Group")
 
     # Import a question from a lsq file
@@ -283,6 +297,13 @@ def test_question(client: citric.Client, survey_id: int):
 
     # Get question properties
     props = client.get_question_properties(question_id)
+
+    # test language-specific question properties
+    assert props["question"] == "<p>Text for <strong>first question</strong></p>"
+    assert not props["help"]
+    assert not props["script"]
+    assert isinstance(props["questionl10ns"], dict)
+
     assert int(props["gid"]) == group_id
     assert int(props["qid"]) == question_id
     assert int(props["sid"]) == survey_id
@@ -613,7 +634,6 @@ def test_responses(client: citric.Client, survey_id: int, tmp_path: Path):
 
 
 @pytest.mark.integration_test
-@pytest.mark.xfail_mysql
 def test_file_upload(
     client: citric.Client,
     survey_id: int,
@@ -676,7 +696,6 @@ def test_file_upload_no_filename(
 
 
 @pytest.mark.integration_test
-@pytest.mark.xfail_mysql(strict=True)
 def test_file_upload_invalid_extension(
     client: citric.Client,
     survey_id: int,
