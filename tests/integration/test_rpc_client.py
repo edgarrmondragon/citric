@@ -250,8 +250,23 @@ def test_group(client: citric.Client, survey_id: int):
 
 
 @pytest.mark.integration_test
-def test_import_group_with_name(client: citric.Client, survey_id: int):
+def test_import_group_with_name(
+    request: pytest.FixtureRequest,
+    client: citric.Client,
+    server_version: semver.VersionInfo,
+    survey_id: int,
+):
     """Test importing a group with a custom name."""
+    request.applymarker(
+        pytest.mark.xfail(
+            server_version < semver.VersionInfo.parse("6.6.6"),
+            reason=(
+                f"The name override is broken in LimeSurvey {server_version} < 6.6.0"
+            ),
+            strict=True,
+        ),
+    )
+
     with Path("./examples/group.lsg").open("rb") as f:
         group_id = client.import_group(f, survey_id, name="Custom Name")
 
@@ -260,8 +275,24 @@ def test_import_group_with_name(client: citric.Client, survey_id: int):
 
 
 @pytest.mark.integration_test
-def test_import_group_with_description(client: citric.Client, survey_id: int):
+def test_import_group_with_description(
+    request: pytest.FixtureRequest,
+    client: citric.Client,
+    server_version: semver.VersionInfo,
+    survey_id: int,
+):
     """Test importing a group with a custom description."""
+    request.applymarker(
+        pytest.mark.xfail(
+            server_version < semver.VersionInfo.parse("6.6.6"),
+            reason=(
+                "The description override is broken in LimeSurvey "
+                f"{server_version} < 6.6.0"
+            ),
+            strict=True,
+        ),
+    )
+
     with Path("./examples/group.lsg").open("rb") as f:
         group_id = client.import_group(f, survey_id, description="Custom description")
 
