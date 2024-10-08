@@ -70,17 +70,17 @@ jobs:
           experimental: true
           nightly: true
 
-        - python-version: "3.12"
+        - python-version: "3.13"
           os: "windows-latest"
           session: "tests"
 
-        - python-version: "3.12"
+        - python-version: "3.13"
           os: "macos-latest"
           session: "tests"
 
     steps:
     - name: Check out the repository
-      uses: actions/checkout@d632683dd7b4114ad314bca15554477dd762a938 # v4.2.0
+      uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
       with:
         fetch-tags: true
 
@@ -110,7 +110,7 @@ jobs:
         nox --verbose -s tests
 
     - name: Upload coverage data
-      uses: actions/upload-artifact@50769540e7f4bd5e21e526ee35c689e35e0d6874 # v4.4.0
+      uses: actions/upload-artifact@604373da6381bf24206979c74d06a550515601b9 # v4.4.1
       with:
         include-hidden-files: true
         name: "coverage-unit-${{ matrix.os }}-${{ matrix.python-version }}-${{ matrix.nightly && 'nightly' || 'stable' }}"
@@ -135,7 +135,7 @@ jobs:
       tags: ${{ steps.tags.outputs.tags }}
     steps:
     - name: Check out the repository
-      uses: actions/checkout@d632683dd7b4114ad314bca15554477dd762a938 # v4.2.0
+      uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
 
     - name: Setup Python
       uses: actions/setup-python@f677139bbe7f9c59b41e40162b753c062f5d49a3 # v5.2.0
@@ -174,7 +174,7 @@ jobs:
       engines: ${{ steps.engines.outputs.engines }}
     steps:
     - name: Check out the repository
-      uses: actions/checkout@d632683dd7b4114ad314bca15554477dd762a938 # v4.2.0
+      uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
 
     - name: Test against all engines
       if: ${{ contains(github.event.pull_request.labels.*.name, 'Release') || inputs.all_integrations }}
@@ -206,7 +206,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.12"]
+        python-version: ["3.13"]
         database: ${{ fromJson(needs.databases.outputs.engines) }}
         ref: [""]
         context: [""]
@@ -229,7 +229,11 @@ jobs:
           image_tag: "6-apache"
           database: postgres
 
-        - python-version: "3.13"
+        - python-version: "3.12"
+          image_tag: "6-apache"
+          database: postgres
+
+        - python-version: "3.14"
           image_tag: "6-apache"
           database: postgres
 
@@ -238,19 +242,19 @@ jobs:
           database: postgres
 
         # Test Limesurvey/LimeSurvey branches
-        - python-version: "3.12"
+        - python-version: "3.13"
           ref: refs/heads/develop
           context: https://github.com/martialblog/docker-limesurvey.git#master:6.0/apache
           database: postgres
 
-        - python-version: "3.12"
+        - python-version: "3.13"
           ref: refs/heads/master
           context: https://github.com/martialblog/docker-limesurvey.git#master:6.0/apache
           database: postgres
 
     steps:
     - name: Check out the repository
-      uses: actions/checkout@d632683dd7b4114ad314bca15554477dd762a938 # v4.2.0
+      uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
       with:
         fetch-tags: true
 
@@ -275,7 +279,7 @@ jobs:
         echo "LS_CHECKSUM=$(shasum -a 256 ls.tar.gz | cut -d' ' -f1)" >> $GITHUB_ENV
 
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@988b5a0280414f521da01fcc63a27aeeb4b104db # v3.6.1
+      uses: docker/setup-buildx-action@c47758b77c9736f4b2ef4073d4d51994fabfe349 # v3.7.1
 
     - name: Get Docker
       uses: actions-hub/docker/cli@f5fdbfc3f9d2a9265ead8962c1314108a7b7ec5d # v1.0.3
@@ -307,7 +311,7 @@ jobs:
 
     - name: Upload coverage data
       if: always()
-      uses: actions/upload-artifact@50769540e7f4bd5e21e526ee35c689e35e0d6874 # v4.4.0
+      uses: actions/upload-artifact@604373da6381bf24206979c74d06a550515601b9 # v4.4.1
       with:
         include-hidden-files: true
         name: "coverage-integration-${{ matrix.python-version }}-${{ matrix.image_tag || env.LS_CHECKSUM }}-${{ matrix.database }}"
@@ -325,7 +329,7 @@ jobs:
       fail-fast: false
     steps:
     - name: Check out the repository
-      uses: actions/checkout@d632683dd7b4114ad314bca15554477dd762a938 # v4.2.0
+      uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
 
     - name: Set up Python
       uses: actions/setup-python@f677139bbe7f9c59b41e40162b753c062f5d49a3 # v5.2.0
