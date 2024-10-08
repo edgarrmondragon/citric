@@ -8,7 +8,7 @@ ci:
 
 repos:
 - repo: https://github.com/pre-commit/pre-commit-hooks
-  rev: v4.6.0
+  rev: v5.0.0
   hooks:
   - id: check-added-large-files
   - id: check-json
@@ -28,7 +28,7 @@ repos:
   - id: check-readthedocs
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.6.8
+  rev: v0.6.9
   hooks:
   - id: ruff
     args: [--fix, --exit-non-zero-on-fix, --show-fixes]
@@ -52,7 +52,7 @@ repos:
     - pydoclint==0.4.1
 
 - repo: https://github.com/pre-commit/pre-commit
-  rev: v3.8.0
+  rev: v4.0.0
   hooks:
   - id: validate_manifest
 
