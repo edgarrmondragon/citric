@@ -1,0 +1,5 @@
+kind: Added
+body: Official support for Python 3.13
+time: 2024-10-08T11:10:16.846831-06:00
+custom:
+    Issue: "1201"
