@@ -32,7 +32,7 @@ python_versions = [
     "3.9",
     "3.8",
 ]
-pypy_versions = ["pypy3.9", "pypy3.10"]
+pypy_versions = ["pypy3.10"]
 all_python_versions = python_versions + pypy_versions
 
 locations = "src", "tests", "noxfile.py", "docs/conf.py"
@@ -100,7 +100,7 @@ def coverage(session: nox.Session) -> None:
 def dependencies(session: nox.Session) -> None:
     """Check issues with dependencies."""
     install_env = {}
-    if session.python in {"3.13", "3.14"}:
+    if session.python == "3.14":
         install_env["PYO3_USE_ABI3_FORWARD_COMPATIBILITY"] = "1"
 
     session.install("citric[dev] @ .", env=install_env)
