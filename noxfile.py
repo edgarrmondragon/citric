@@ -20,7 +20,7 @@ nox.options.sessions = [
     "api",
 ]
 nox.needs_version = ">=2024.4.15"
-nox.options.default_venv_backend = "uv|virtualenv"
+nox.options.default_venv_backend = "uv"
 
 package = "citric"
 
@@ -51,7 +51,7 @@ def _run_tests(session: nox.Session, *args: str) -> None:
 @nox.parametrize("constraints", ["highest", "lowest-direct"])
 def tests(session: nox.Session, constraints: str) -> None:
     """Execute pytest tests and compute coverage."""
-    install_args = ["-v", "citric[tests] @ ."]
+    install_args = ["citric[tests] @ ."]
     if constraints == "lowest-direct":
         install_args.extend(["-c", "requirements/requirements-lowest-direct.txt"])
 
@@ -63,7 +63,7 @@ def tests(session: nox.Session, constraints: str) -> None:
 @nox.session(tags=["test"])
 def integration(session: nox.Session) -> None:
     """Execute integration tests and compute coverage."""
-    session.install("-v", "citric[tests] @ .")
+    session.install("citric[tests] @ .")
     args = session.posargs or ["-m", "integration_test"]
     _run_tests(session, *args)
 
@@ -78,8 +78,8 @@ def xdoctest(session: nox.Session) -> None:
         if FORCE_COLOR in os.environ:
             args.append("--colored=1")
 
-    session.install("-v", "citric @ .")
-    session.install("-v", "xdoctest[colors]")
+    session.install("citric @ .")
+    session.install("xdoctest[colors]")
     session.run("python", "-m", "xdoctest", *args)
 
 
@@ -88,7 +88,7 @@ def coverage(session: nox.Session) -> None:
     """Upload coverage data."""
     args = session.posargs or ["report"]
 
-    session.install("-v", "coverage[toml]")
+    session.install("coverage[toml]")
 
     if not session.posargs and any(Path().glob(".coverage.*")):
         session.run("coverage", "combine", "--debug=pathmap")
@@ -103,8 +103,8 @@ def dependencies(session: nox.Session) -> None:
     if session.python == "3.14":
         install_env["PYO3_USE_ABI3_FORWARD_COMPATIBILITY"] = "1"
 
-    session.install("-v", "citric[dev] @ .", env=install_env)
-    session.install("-v", "deptry")
+    session.install("citric[dev] @ .", env=install_env)
+    session.install("deptry")
     session.run("deptry", "src", "tests", "docs")
 
 
@@ -112,7 +112,7 @@ def dependencies(session: nox.Session) -> None:
 def mypy(session: nox.Session) -> None:
     """Type-check using mypy."""
     args = session.posargs or locations
-    session.install("-v", "citric[typing] @ .")
+    session.install("citric[typing] @ .")
     session.run("mypy", *args)
 
 
@@ -123,7 +123,7 @@ def docs_build(session: nox.Session) -> None:
     if not session.posargs and FORCE_COLOR in os.environ:
         args.insert(0, "--color")
 
-    session.install("-v", "citric[docs] @ .")
+    session.install("citric[docs] @ .")
 
     build_dir = Path("build")
     if build_dir.exists():
@@ -146,7 +146,7 @@ def docs_serve(session: nox.Session) -> None:
         "docs",
         "build",
     ]
-    session.install("-v", "citric[docs] @ .", "sphinx-autobuild")
+    session.install("citric[docs] @ .", "sphinx-autobuild")
 
     build_dir = Path("build")
     if build_dir.exists():
@@ -201,5 +201,5 @@ def notebook(session: nox.Session) -> None:
 @nox.session(name="generate-tags", tags=["status"])
 def tags(session: nox.Session) -> None:
     """Print tags."""
-    session.install("-v", "requests", "requests-cache")
+    session.install("requests", "requests-cache")
     session.run("python", "scripts/docker_tags.py")

@@ -9,7 +9,8 @@ Go to the [Actions tab](https://github.com/edgarrmondragon/citric/actions/workfl
 ## Run workflow locally
 
 1. Install the [GitHub CLI](https://cli.github.com/).
-2. Run the following command:
+
+1. Run the following command:
 
    ```bash
    gh workflow run gha-update.yml
@@ -18,7 +19,8 @@ Go to the [Actions tab](https://github.com/edgarrmondragon/citric/actions/workfl
 ## Run the `gha-update` tool locally
 
 1. Install [`uv`](https://docs.astral.sh/uv/getting-started/installation/).
-2. Run the following command:
+
+1. Run the following command:
 
    ```bash
    uvx gha-update

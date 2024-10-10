@@ -72,8 +72,13 @@ repos:
   hooks:
   - id: pip-compile
     files: ^pyproject\.toml$
-    args: ["pyproject.toml", "--universal", "--pre", "--python-version", "3.12", "--extra", "docs", "-o", "docs/requirements.txt"]
+    args: ["pyproject.toml", "--universal", "--pre", "--extra", "docs", "-o", "docs/requirements.txt"]
     language_version: python3.12
   - id: pip-compile
     files: ^pyproject\.toml$
     args: ["pyproject.toml", "--universal", "--resolution", "lowest-direct", "-o", "requirements/requirements-lowest-direct.txt"]
+
+- repo: https://github.com/executablebooks/mdformat
+  rev: 0.7.17
+  hooks:
+  - id: mdformat

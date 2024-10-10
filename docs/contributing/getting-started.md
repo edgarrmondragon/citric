@@ -28,8 +28,8 @@ articles, and such.
 
 If you're updating the Sphinx docs, you might want to check out [the docs guide][docs].
 
-[new-issue]: https://github.com/edgarrmondragon/citric/issues/new/choose
-[issues]: https://github.com/edgarrmondragon/citric/issues
 [bug-help-wanted]: https://github.com/edgarrmondragon/citric/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3A%22help+wanted%22
-[feature-help-wanted]: https://github.com/edgarrmondragon/citric/issues?q=is%3Aopen+is%3Aissue+label%3Aenhancement+label%3A%22help+wanted%22
 [docs]: /contributing/docs
+[feature-help-wanted]: https://github.com/edgarrmondragon/citric/issues?q=is%3Aopen+is%3Aissue+label%3Aenhancement+label%3A%22help+wanted%22
+[issues]: https://github.com/edgarrmondragon/citric/issues
+[new-issue]: https://github.com/edgarrmondragon/citric/issues/new/choose

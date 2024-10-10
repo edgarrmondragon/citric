@@ -266,7 +266,6 @@ max_supported_python = "3.14"
 
 [tool.pytest.ini_options]
 addopts = [
-  "-vvv",
   "--reverse",
   "-ra",              # show extra test summary info for all except passed
   "--strict-config",
