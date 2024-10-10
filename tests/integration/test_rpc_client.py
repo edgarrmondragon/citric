@@ -211,8 +211,11 @@ def test_copy_survey_destination_id(
 
 
 @pytest.mark.integration_test
-def test_group(client: citric.Client, survey_id: int):
+def test_group(client: citric.Client):
     """Test group methods."""
+    # Create a new survey
+    survey_id = client.add_survey(1234, "New Survey", "en")
+
     # Import a group
     with Path("./examples/group.lsg").open("rb") as f:
         group_id = client.import_group(f, survey_id)
