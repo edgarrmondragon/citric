@@ -25,6 +25,10 @@ def _warning_message(next_version: str) -> tuple[str, ...]:
     )
 
 
+class CitricDeprecationWarning(DeprecationWarning):
+    """Warning for deprecated APIs in Citric."""
+
+
 class FutureVersionWarning(UserWarning):
     """Warning for features only available in an unreleased version of LimeSurvey."""
 

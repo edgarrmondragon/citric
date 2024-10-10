@@ -3,9 +3,9 @@
 from __future__ import annotations
 
 # start example
-from citric import Client
+from citric import RPC
 
-client = Client(
+client = RPC(
     "https://example.com/index.php/admin/remotecontrol",
     "iamadmin",
     "secret",

@@ -4,14 +4,14 @@ from __future__ import annotations
 
 # start example
 import requests_cache
-from citric import Client
+from citric import RPC
 
 cached_session = requests_cache.CachedSession(
     expire_after=60,
     allowable_methods=["POST"],
 )
 
-client = Client(
+client = RPC(
     "https://example.com/index.php/admin/remotecontrol",
     "iamadmin",
     "secret",

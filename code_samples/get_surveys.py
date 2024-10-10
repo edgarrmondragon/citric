@@ -5,11 +5,11 @@
 from __future__ import annotations
 
 # start example
-from citric import Client
+from citric import RPC
 
 LS_URL = "http://localhost:8001/index.php/admin/remotecontrol"
 
-client = Client(LS_URL, "iamadmin", "secret")
+client = RPC(LS_URL, "iamadmin", "secret")
 
 # Get all surveys from user "iamadmin"
 surveys = client.list_surveys("iamadmin")

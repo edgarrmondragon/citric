@@ -1,11 +1,11 @@
-"""Example of using the Client.session attribute to call RPC methods directly."""
+"""Example of using the RPC.session attribute to call RPC methods directly."""
 
 from __future__ import annotations
 
-from citric import Client
+from citric import RPC
 
 # start example
-client = Client(
+client = RPC(
     "https://mylimeserver.com/index.php/admin/remotecontrol",
     "iamadmin",
     "secret",

@@ -7,7 +7,7 @@ import typing as t
 import pytest
 import semver
 
-from citric._rest import RESTClient  # noqa: PLC2701
+from citric.rest import RESTClient
 
 
 @pytest.fixture(scope="module")

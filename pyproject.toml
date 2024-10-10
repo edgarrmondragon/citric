@@ -273,7 +273,8 @@ addopts = [
 ]
 filterwarnings = [
   "error",
-  "ignore::citric._compat.FutureVersionWarning",
+  "default::citric._compat.FutureVersionWarning",
+  "always::citric._compat.CitricDeprecationWarning",
 ]
 log_cli_level = "INFO"
 markers = [

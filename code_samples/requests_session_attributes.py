@@ -4,7 +4,7 @@ from __future__ import annotations
 
 # start example
 import requests
-from citric import Client
+from citric import RPC
 
 session = requests.Session()
 
@@ -12,7 +12,7 @@ session = requests.Session()
 # https://requests.readthedocs.io/en/latest/api/#requests.Session.verify
 session.verify = False
 
-client = Client(
+client = RPC(
     "https://mylimeserver.com/index.php/admin/remotecontrol",
     "iamadmin",
     "secret",
