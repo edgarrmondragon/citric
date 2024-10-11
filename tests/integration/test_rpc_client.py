@@ -251,11 +251,11 @@ def test_group(client: citric.Client):
     assert questions[1]["question"] == "<p><strong>Second question</p>"
 
     # Update group properties
-    response = client.set_group_properties(imported_group, group_order=1)
+    response = client.set_group_properties(created_group, group_order=1)
     assert response == {"group_order": True}
 
-    new_props = client.get_group_properties(imported_group, settings=["group_order"])
-    assert int(new_props["group_order"]) == 2
+    new_props = client.get_group_properties(created_group, settings=["group_order"])
+    assert int(new_props["group_order"]) == 1
 
     with pytest.raises(LimeSurveyStatusError, match="Error: Invalid group ID"):
         client.set_group_properties(99999, group_order=1)
