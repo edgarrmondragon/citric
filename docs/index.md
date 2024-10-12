@@ -25,9 +25,9 @@ Integration tests are run against a LimeSurvey instance, and both PostgreSQL and
 - {ls_tag}`6.6.5+240924`
 - {ls_tag}`6.6.4+240923`
 - {ls_tag}`6.6.3+240909`
+- {ls_tag}`5.6.68+240625`
 - {ls_tag}`5.6.67+240612`
 - {ls_tag}`5.6.66+240604`
-- {ls_tag}`5.6.65+240522`
 
 But also, the latest 5.x and 6.x are tested continuously and are expected to work.
 

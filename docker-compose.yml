@@ -1,5 +1,3 @@
-version: '3'
-
 services:
   limesurvey:
     image: martialblog/limesurvey:${LS_IMAGE_TAG:-6-apache}

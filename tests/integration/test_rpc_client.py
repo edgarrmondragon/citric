@@ -211,22 +211,39 @@ def test_copy_survey_destination_id(
 
 
 @pytest.mark.integration_test
-def test_group(client: citric.Client, survey_id: int):
+def test_group(client: citric.Client):
     """Test group methods."""
+    # Create a new survey
+    survey_id = client.add_survey(1234, "New Survey", "en")
+
     # Import a group
     with Path("./examples/group.lsg").open("rb") as f:
-        group_id = client.import_group(f, survey_id)
+        imported_group = client.import_group(f, survey_id)
+
+    # Create a new group
+    created_group = client.add_group(
+        survey_id,
+        "Second Group",
+        description="A new group",
+    )
 
     # Get group properties
-    group_props = client.get_group_properties(group_id)
-    assert int(group_props["gid"]) == group_id
+    group_props = client.get_group_properties(imported_group)
+    assert int(group_props["gid"]) == imported_group
     assert int(group_props["sid"]) == survey_id
     assert group_props["group_name"] == "First Group"
     assert group_props["description"] == "<p>A new group</p>"
-    assert int(group_props["group_order"]) == 3
+    assert int(group_props["group_order"]) == 1
+
+    group_props = client.get_group_properties(created_group)
+    assert int(group_props["gid"]) == created_group
+    assert int(group_props["sid"]) == survey_id
+    assert group_props["group_name"] == "Second Group"
+    assert group_props["description"] == "A new group"
+    assert int(group_props["group_order"]) == 2
 
     questions = sorted(
-        client.list_questions(survey_id, group_id),
+        client.list_questions(survey_id, imported_group),
         key=operator.itemgetter("qid"),
     )
 
@@ -234,19 +251,70 @@ def test_group(client: citric.Client, survey_id: int):
     assert questions[1]["question"] == "<p><strong>Second question</p>"
 
     # Update group properties
-    response = client.set_group_properties(group_id, group_order=1)
+    response = client.set_group_properties(created_group, group_order=1)
     assert response == {"group_order": True}
 
-    new_props = client.get_group_properties(group_id, settings=["group_order"])
+    new_props = client.get_group_properties(created_group, settings=["group_order"])
     assert int(new_props["group_order"]) == 1
 
     with pytest.raises(LimeSurveyStatusError, match="Error: Invalid group ID"):
         client.set_group_properties(99999, group_order=1)
 
     # Delete group
-    client.delete_group(survey_id, group_id)
+    client.delete_group(survey_id, imported_group)
     with pytest.raises(LimeSurveyStatusError, match="Error: Invalid group ID"):
         client.get_group_properties(survey_id)
+
+
+@pytest.mark.integration_test
+def test_import_group_with_name(
+    request: pytest.FixtureRequest,
+    client: citric.Client,
+    server_version: semver.VersionInfo,
+    survey_id: int,
+):
+    """Test importing a group with a custom name."""
+    request.applymarker(
+        pytest.mark.xfail(
+            server_version < semver.VersionInfo.parse("6.6.6"),
+            reason=(
+                f"The name override is broken in LimeSurvey {server_version} < 6.6.0"
+            ),
+            strict=True,
+        ),
+    )
+
+    with Path("./examples/group.lsg").open("rb") as f:
+        group_id = client.import_group(f, survey_id, name="Custom Name")
+
+    group_props = client.get_group_properties(group_id)
+    assert group_props["group_name"] == "Custom Name"
+
+
+@pytest.mark.integration_test
+def test_import_group_with_description(
+    request: pytest.FixtureRequest,
+    client: citric.Client,
+    server_version: semver.VersionInfo,
+    survey_id: int,
+):
+    """Test importing a group with a custom description."""
+    request.applymarker(
+        pytest.mark.xfail(
+            server_version < semver.VersionInfo.parse("6.6.6"),
+            reason=(
+                "The description override is broken in LimeSurvey "
+                f"{server_version} < 6.6.0"
+            ),
+            strict=True,
+        ),
+    )
+
+    with Path("./examples/group.lsg").open("rb") as f:
+        group_id = client.import_group(f, survey_id, description="Custom description")
+
+    group_props = client.get_group_properties(group_id)
+    assert group_props["description"] == "Custom description"
 
 
 @pytest.mark.integration_test

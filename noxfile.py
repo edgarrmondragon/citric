@@ -165,6 +165,9 @@ def api_changes(session: nox.Session) -> None:
         "-s=src",
     ]
 
+    if GH_ACTIONS_ENV_VAR in os.environ:
+        args.append("-f=github")
+
     if session.posargs:
         args.append(f"-a={session.posargs[0]}")
 

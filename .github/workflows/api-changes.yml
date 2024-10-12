@@ -5,6 +5,7 @@ on:
     paths:
     - src/**
     - .github/workflows/api-changes.yml
+    - .github/workflows/constraints.txt
     - CHANGELOG.md
 
 concurrency:
