@@ -252,6 +252,11 @@ jobs:
           context: https://github.com/martialblog/docker-limesurvey.git#master:6.0/apache
           database: postgres
 
+        # - python-version: "3.12"
+        #   ref: refs/pull/3860/head
+        #   context: https://github.com/martialblog/docker-limesurvey.git#master:6.0/apache
+        #   database: postgres
+
     steps:
     - name: Check out the repository
       uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
