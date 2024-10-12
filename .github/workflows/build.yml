@@ -63,8 +63,9 @@ jobs:
         name: Packages
         path: dist
     - uses: pypa/gh-action-pypi-publish@f7600683efdcb7656dec5b29656edb7bc586e597 # v1.10.3
+      with:
+        attestations: true
 
-  # Move this up when PyPI supports signing
   sign:
     name: Sign the distribution package
     if: startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch'
