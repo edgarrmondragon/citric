@@ -18,8 +18,8 @@
 
 For both the title of the PR and the changelog entry, prefer simple past tense or constructions with "now". For example:
 
-  - Added `Client.invite_participants()`
-  - `Client.user_activation_settings()` now accepts a `user_activation_settings` keyword argument
+- Added `Client.invite_participants()`
+- `Client.user_activation_settings()` now accepts a `user_activation_settings` keyword argument
 
-[CONTRIBUTING]: https://citric.readthedocs.io/en/latest/contributing/code-of-conduct.html
-[Changie]: https://changie.dev/
+[changie]: https://changie.dev/
+[contributing]: https://citric.readthedocs.io/en/latest/contributing/code-of-conduct.html

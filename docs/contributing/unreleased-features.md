@@ -4,5 +4,5 @@ Citric supports LimeSurvey features that are not yet released and are sitting in
 
 There are also Sphinx directives that can be used to document these features:
 
-* The `.. future` directive will add a warning to the documentation that the method is not yet supported in any released version of LimeSurvey.
-* The `.. futureparam` directive will add a warning to the documentation that the parameter is not yet supported in any released version of LimeSurvey.
+- The `.. future` directive will add a warning to the documentation that the method is not yet supported in any released version of LimeSurvey.
+- The `.. futureparam` directive will add a warning to the documentation that the parameter is not yet supported in any released version of LimeSurvey.

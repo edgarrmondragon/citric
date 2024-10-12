@@ -1,6 +1,5 @@
 # REST endpoints coverage
 
-
 | Name                                       | Implemented                                         |
 | :----------------------------------------- | :-------------------------------------------------- |
 | `POST /rest/v1/session`                    | [Yes](citric._rest.RESTClient.authenticate)          |

@@ -1,9 +1,9 @@
 # Testing
 
-After you've [set up your environment][environment], you can run tests on Python 3.10:
+After you've [set up your environment][environment], you can run tests on available Python interpreters:
 
 ```shell
-nox -rs tests -p "3.10"
+nox -rs tests
 ```
 
 ## Coverage
@@ -17,20 +17,20 @@ you can follow the [Docker guide][docker].
 ### Doctests
 
 ```shell
-nox -rs xdoctest -p "3.12"
+nox -rs xdoctest
 ```
 
 ### Type checking
 
 ```shell
-nox -rs mypy -p "3.12"
+nox -rs mypy
 ```
 
 ### Dependency checks
 
 ```shell
-nox -rs deps -p "3.12"
+nox -rs deps
 ```
 
-[environment]: /contributing/environment
 [docker]: /contributing/docker
+[environment]: /contributing/environment

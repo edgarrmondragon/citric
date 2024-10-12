@@ -1,0 +1,5 @@
+kind: Refactored
+body: Test and document new top-level question attributes from LimeSurvey 6.6.3+
+time: 2024-09-21T21:22:14.488817-06:00
+custom:
+    Issue: "1189"

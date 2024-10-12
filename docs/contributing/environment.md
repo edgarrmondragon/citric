@@ -1,6 +1,5 @@
 # Setting up your environment
 
-
 ## Get Started
 
 Ready to contribute? Here's how to set up `citric` for local development.
@@ -14,12 +13,20 @@ Ready to contribute? Here's how to set up `citric` for local development.
    cd citric
    ```
 
+1. Optional: install [`uv`][uv].
+
 1. Install [`nox`][nox] (used for automation):
 
-    ```shell
-    pipx install nox
-    nox -l
-    ```
+   ```shell
+   pipx install 'nox[uv]'
+   nox -l
+   ```
+
+   Or use `uv` to install `nox`:
+
+   ```shell
+   uv tool install nox
+   ```
 
 1. Create a branch for local development:
 
@@ -52,6 +59,7 @@ Ready to contribute? Here's how to set up `citric` for local development.
    changie new
    ```
 
+[changie]: https://changie.dev/
 [nox]: https://nox.thea.codes/en/stable/
 [pre-commit]: https://pre-commit.com/
-[changie]: https://changie.dev/
+[uv]: https://docs.astral.sh/uv/

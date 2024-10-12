@@ -15,7 +15,7 @@ body:
     attributes:
       label: Citric Version
       description: Version of the package you are using
-      placeholder: "1.0.0"
+      placeholder: "1.0.1"
     validations:
       required: true
   - type: dropdown
@@ -31,6 +31,7 @@ body:
         - "3.10"
         - "3.11"
         - "3.12"
+        - "3.13"
         - "NA"
     validations:
       required: true

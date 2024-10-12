@@ -1,4 +1,4 @@
-"""Citric Python types."""
+"""Citric Python types."""  # noqa: A005
 
 from __future__ import annotations
 
@@ -252,6 +252,18 @@ class QuestionProperties(t.TypedDict, total=False):
 
     sid: int
     """The survey ID."""
+
+    question: str
+    """The question text in the survey language."""
+
+    help: str
+    """The question help text in the survey language."""
+
+    script: str
+    """The question script."""
+
+    questionl10ns: dict[str, t.Any]
+    """The question language-specific attributes."""
 
     type: str
     """The question type."""

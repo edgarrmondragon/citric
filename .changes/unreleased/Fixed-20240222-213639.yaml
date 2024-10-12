@@ -1,5 +1,0 @@
-kind: Fixed
-body: 'fix: Bump min `requests` to `2.25.1` (released 2020-12-16)'
-time: 2024-02-22T21:36:39.833205-06:00
-custom:
-  Issue: "1101"

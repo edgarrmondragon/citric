@@ -1,0 +1,44 @@
+name: Update GitHub Actions
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Monthly
+    - cron: '0 0 1 * *'
+
+permissions: read-all
+
+jobs:
+  generate-pr:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write  # to create and update PRs
+    steps:
+    - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
+    - uses: actions/setup-python@f677139bbe7f9c59b41e40162b753c062f5d49a3 # v5.2.0
+      with:
+        python-version: '3.x'
+    - uses: hynek/setup-cached-uv@3e2b834ff80f67c4f272449b9f1aa388c294ae48 # v2.2.1
+    - uses: tibdex/github-app-token@3beb63f4bd073e61482598c45c71c1019b59b73a # v2.1.0
+      id: generate-token
+      with:
+        app_id: ${{ secrets.APP_ID }}
+        private_key: ${{ secrets.APP_PRIVATE_KEY }}
+    - run: |
+        uvx gha-update
+    - uses: peter-evans/create-pull-request@5e914681df9dc83aa4e4905692ca88beb2f9e91f # v7.0.5
+      with:
+        token: ${{ steps.generate-token.outputs.token }}
+        title: "chore: Update GitHub Actions"
+        branch: chore/update-gha
+        commit-message: "chore: Update GitHub Actions"
+        body: |
+          Update GitHub Actions to the latest versions.
+
+          Uses https://github.com/davidism/gha-update.
+        reviewers: |
+          edgarrmondragon
+        assignees: |
+          edgarrmondragon
+        delete-branch: true
+        labels: Release
