@@ -345,7 +345,7 @@ class Client:  # noqa: PLR0904
 
     def delete_participants(
         self,
-        sid: int,
+        survey_id: int,
         participant_ids: t.Sequence[int],
     ) -> list[dict[str, t.Any]]:
         """Add participants to a survey.
@@ -353,7 +353,7 @@ class Client:  # noqa: PLR0904
         Calls :rpc_method:`delete_participants`.
 
         Args:
-            sid: Survey to delete participants to.
+            survey_id: Survey to delete participants to.
             participant_ids: Participant IDs to be deleted.
 
         Returns:
@@ -362,7 +362,7 @@ class Client:  # noqa: PLR0904
         .. versionadded:: 0.0.1
         """
         return self.session.delete_participants(
-            sid,
+            survey_id,
             participant_ids,
         )
 
