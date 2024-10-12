@@ -31,6 +31,14 @@ def rest_client(
 
 
 @pytest.mark.integration_test
+def test_refresh_token(rest_client: RESTClient) -> None:
+    """Test refreshing the token."""
+    session_id = rest_client.session_id
+    rest_client.refresh_token()
+    assert session_id != rest_client.session_id
+
+
+@pytest.mark.integration_test
 def test_get_surveys(rest_client: RESTClient, survey_id: int) -> None:
     """Test getting surveys."""
     surveys = rest_client.get_surveys()

@@ -1,0 +1,5 @@
+kind: Added
+body: Added a new `RESTClient` method to refresh the session token
+time: 2024-09-21T22:08:14.334533-06:00
+custom:
+    Issue: "1190"
