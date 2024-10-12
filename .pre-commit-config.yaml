@@ -82,3 +82,4 @@ repos:
   rev: 0.7.17
   hooks:
   - id: mdformat
+    exclude: \.github/pull_request_template\.md
