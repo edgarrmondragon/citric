@@ -21,7 +21,7 @@ repos:
   - id: trailing-whitespace
 
 - repo: https://github.com/python-jsonschema/check-jsonschema
-  rev: 0.29.3
+  rev: 0.29.4
   hooks:
   - id: check-dependabot
   - id: check-github-workflows
@@ -52,7 +52,7 @@ repos:
     - pydoclint==0.4.1
 
 - repo: https://github.com/pre-commit/pre-commit
-  rev: v4.0.0
+  rev: v4.0.1
   hooks:
   - id: validate_manifest
 
@@ -63,12 +63,12 @@ repos:
     args: [--all]
 
 - repo: https://github.com/tox-dev/pyproject-fmt
-  rev: "2.2.4"
+  rev: "2.3.0"
   hooks:
   - id: pyproject-fmt
 
 - repo: https://github.com/astral-sh/uv-pre-commit
-  rev: 0.4.19
+  rev: 0.4.20
   hooks:
   - id: pip-compile
     files: ^pyproject\.toml$
@@ -79,7 +79,7 @@ repos:
     args: ["pyproject.toml", "--universal", "--resolution", "lowest-direct", "-o", "requirements/requirements-lowest-direct.txt"]
 
 - repo: https://github.com/executablebooks/mdformat
-  rev: 0.7.17
+  rev: 0.7.18
   hooks:
   - id: mdformat
     exclude: \.github/pull_request_template\.md
