@@ -25,7 +25,7 @@ on:
     - .github/workflows/constraints.txt
     - .github/actions/install-tools/action.yml
   schedule:
-  - cron: "25 7 */3 * *"
+  - cron: "25 7 * * 1"
   workflow_dispatch:
     inputs:
       all_integrations:
