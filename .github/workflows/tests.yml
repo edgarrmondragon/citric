@@ -153,12 +153,12 @@ jobs:
       uses: ./.github/actions/install-tools
 
     - name: Test against required tags
-      if: ${{ contains(github.event.pull_request.labels.*.name, 'Release') || inputs.all_integrations }}
+      if: ${{ contains(github.event.pull_request.labels.*.name, 'Release') || inputs.all_integrations || github.event_name == 'schedule' }}
       run: |
         nox --verbose -s generate-tags > limesurvey-docker-tags.json
 
     - name: Test against latest tags
-      if: ${{ !contains(github.event.pull_request.labels.*.name, 'Release') && !inputs.all_integrations }}
+      if: ${{ !contains(github.event.pull_request.labels.*.name, 'Release') && !inputs.all_integrations && github.event_name != 'schedule' }}
       run: |
         echo '["6-apache", "5-apache"]' > limesurvey-docker-tags.json
 
