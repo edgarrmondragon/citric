@@ -1257,7 +1257,7 @@ class Client:  # noqa: PLR0904
                 group_id = client.import_group(f, survey_id)
 
         .. versionadded:: 0.0.10
-        .. versionchanged:: NEXT_VERSION
+        .. versionchanged:: 1.1.0
            Added the ``name`` and ``description`` optional parameters.
         """
         contents = base64.b64encode(file.read()).decode()
