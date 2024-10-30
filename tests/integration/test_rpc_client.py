@@ -276,9 +276,9 @@ def test_import_group_with_name(
     """Test importing a group with a custom name."""
     request.applymarker(
         pytest.mark.xfail(
-            server_version < semver.VersionInfo.parse("6.6.6"),
+            server_version < semver.VersionInfo.parse("6.6.7"),
             reason=(
-                f"The name override is broken in LimeSurvey {server_version} < 6.6.0"
+                f"The name override is broken in LimeSurvey {server_version} < 6.6.7"
             ),
             strict=True,
         ),
@@ -301,10 +301,10 @@ def test_import_group_with_description(
     """Test importing a group with a custom description."""
     request.applymarker(
         pytest.mark.xfail(
-            server_version < semver.VersionInfo.parse("6.6.6"),
+            server_version < semver.VersionInfo.parse("6.6.7"),
             reason=(
                 "The description override is broken in LimeSurvey "
-                f"{server_version} < 6.6.0"
+                f"{server_version} < 6.6.7"
             ),
             strict=True,
         ),
