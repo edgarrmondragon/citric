@@ -4,7 +4,7 @@ alabaster==1.0.0
     # via sphinx
 astroid==3.3.5
     # via sphinx-autoapi
-autodocsumm==0.2.13
+autodocsumm==0.2.14
     # via citric (pyproject.toml)
 babel==2.16.0
     # via sphinx
@@ -12,7 +12,7 @@ beautifulsoup4==4.13.0b2
     # via furo
 certifi==2024.8.30
     # via requests
-charset-normalizer==3.3.2
+charset-normalizer==3.4.0
     # via requests
 colorama==0.4.6 ; sys_platform == 'win32'
     # via sphinx
@@ -36,7 +36,7 @@ markdown-it-py==3.0.0
     # via
     #   mdit-py-plugins
     #   myst-parser
-markupsafe==3.0.0
+markupsafe==3.0.2
     # via jinja2
 mdit-py-plugins==0.4.2
     # via myst-parser
@@ -62,7 +62,7 @@ snowballstemmer==2.2.0
     # via sphinx
 soupsieve==2.6
     # via beautifulsoup4
-sphinx==8.0.2
+sphinx==8.1.3
     # via
     #   citric (pyproject.toml)
     #   autodocsumm
@@ -74,7 +74,7 @@ sphinx==8.0.2
     #   sphinx-hoverxref
     #   sphinx-notfound-page
     #   sphinxcontrib-jquery
-sphinx-autoapi==3.3.2
+sphinx-autoapi==3.3.3
     # via citric (pyproject.toml)
 sphinx-basic-ng==1.0.0b2
     # via furo
