@@ -1,0 +1,14 @@
+rules:
+  dangerous-triggers:
+    ignore:
+    - pr-preview-links.yml:3:1
+  excessive-permissions:
+    ignore:
+    - build.yml:16:1
+    - gen-release-pr.yml:21:1
+    - gha-update.yml:9:1
+    - scorecard.yml:19:1
+  template-injection:
+    ignore:
+    - api-changes.yml:44:7
+    - api-changes.yml:51:7

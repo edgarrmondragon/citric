@@ -24,6 +24,7 @@ jobs:
       with:
         fetch-depth: 0
         ref: ${{ github.event.inputs.tag || github.ref }}
+        persist-credentials: false
     - uses: hynek/build-and-inspect-python-package@f01e4d047aadcc0c054c95ec9900da3ec3fc7a0f # v2.10.0
 
   upload-to-release:
@@ -62,7 +63,7 @@ jobs:
       with:
         name: Packages
         path: dist
-    - uses: pypa/gh-action-pypi-publish@fb13cb306901256ace3dab689990e13a5550ffaa # v1.11.0
+    - uses: pypa/gh-action-pypi-publish@15c56dba361d8335944d31a2ecd17d700fc7bcbc # v1.12.2
 
   sign:
     name: Sign the distribution package
@@ -79,7 +80,7 @@ jobs:
         with:
           name: Packages
           path: dist
-      - uses: actions/attest-build-provenance@1c608d11d69870c2092266b3f9a6f3abbf17002c # v1.4.3
+      - uses: actions/attest-build-provenance@ef244123eb79f2f7a7e75d99086184180e6d0018 # v1.4.4
         id: attest
         with:
           subject-path: "./dist/citric*"

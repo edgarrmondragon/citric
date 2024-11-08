@@ -4,13 +4,15 @@ on:
   pull_request_target:
     types:
     - opened
-
-permissions:
-  pull-requests: write
+    paths:
+    - .github/workflows/pr-preview-links.yml
+    - docs/**
 
 jobs:
   pr-preview-links:
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
     steps:
     - uses: readthedocs/actions/preview@cc0920454cf03ca8a3fbd3cbaa2ce2e509e70636 # v1.2
       with:
