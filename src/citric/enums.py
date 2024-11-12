@@ -102,7 +102,25 @@ class QuotaAction(StringEnum):
     """Quota action."""
 
     TERMINATE = "terminate"
+    """Terminate after related visible question was submitted."""
+
     CONFIRM_TERMINATE = "confirm_terminate"
+    """Soft terminate after related visible question was submitted, answer will be
+    editable."""
+
+    TERMINATE_VISIBLE_HIDDEN = "terminate_visible_hidden"
+    """Terminate after related visible and hidden questions were submitted.
+
+    .. versionadded:: NEXT_VERSION
+    .. minlimesurveyattribute:: 6.6.7
+    """
+
+    TERMINATE_PAGES = "terminate_pages"
+    """Terminate after all page submissions.
+
+    .. versionadded:: NEXT_VERSION
+    .. minlimesurveyattribute:: 6.6.7
+    """
 
     @property
     def integer_value(self) -> int:
@@ -114,6 +132,8 @@ class QuotaAction(StringEnum):
         mapping = {
             self.TERMINATE: 1,
             self.CONFIRM_TERMINATE: 2,
+            self.TERMINATE_VISIBLE_HIDDEN: 3,
+            self.TERMINATE_PAGES: 4,
         }
         return mapping[self]
 

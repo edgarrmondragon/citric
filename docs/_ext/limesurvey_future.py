@@ -10,7 +10,14 @@ from docutils.parsers.rst import Directive
 if t.TYPE_CHECKING:
     from sphinx.application import Sphinx
 
-__all__ = ["ReleasedFeature", "UnreleasedFeature", "setup"]
+__all__ = [
+    "ReleasedAttribute",
+    "ReleasedFeature",
+    "ReleasedParameter",
+    "UnreleasedFeature",
+    "UnreleasedParameter",
+    "setup",
+]
 
 
 class UnreleasedFeature(Directive):
@@ -21,7 +28,7 @@ class UnreleasedFeature(Directive):
     """
 
     required_arguments = 1
-    message = "This method is only supported in LimeSurvey >= {next_version}."
+    message = "This method is only supported in LimeSurvey {next_version} and above."
     admonition_type = nodes.warning
 
     def run(self) -> list[nodes.Node]:
@@ -38,9 +45,7 @@ class UnreleasedParameter(Directive):
     """
 
     required_arguments = 2
-    message = (
-        "The parameter {parameter} is only supported in LimeSurvey >= {next_version}."
-    )
+    message = "The parameter {parameter} is only supported in LimeSurvey {next_version} and above."  # noqa: E501
     admonition_type = nodes.warning
 
     def run(self) -> list[nodes.Node]:
@@ -55,7 +60,7 @@ class ReleasedFeature(UnreleasedFeature):
     Adds a note to features only available after some release of LimeSurvey.
     """
 
-    message = "This method is only supported in LimeSurvey >= {next_version}."
+    message = "This method is only supported in LimeSurvey {next_version} and above."
     admonition_type = nodes.note
 
 
@@ -66,10 +71,19 @@ class ReleasedParameter(UnreleasedParameter):
     LimeSurvey.
     """
 
-    message = (
-        "The parameter {parameter} is only supported in LimeSurvey >= {next_version}."
-    )
+    message = "The parameter {parameter} is only supported in LimeSurvey {next_version} and above."  # noqa: E501
     admonition_type = nodes.note
+
+
+class ReleasedAttribute(ReleasedFeature):
+    """A directive for released attributes.
+
+    Adds a note to class attributes that are only available after some release of
+    LimeSurvey.
+    """
+
+    message = "The attribute is only supported in LimeSurvey {next_version} and above."
+    admonition_type = nodes.warning
 
 
 def setup(app: Sphinx) -> dict[str, t.Any]:
@@ -77,6 +91,7 @@ def setup(app: Sphinx) -> dict[str, t.Any]:
     app.add_directive("futureparam", UnreleasedParameter)
     app.add_directive("minlimesurvey", ReleasedFeature)
     app.add_directive("minlimesurveyparam", ReleasedParameter)
+    app.add_directive("minlimesurveyattribute", ReleasedAttribute)
 
     return {
         "version": "0.1",

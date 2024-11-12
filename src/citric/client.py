@@ -284,6 +284,9 @@ class Client:  # noqa: PLR0904
 
         Calls :rpc_method:`add_quota`.
 
+        You can read more about quotas in the
+        :ls_manual:`LimeSurvey manual <Survey_quotas>`.
+
         Args:
             survey_id: ID of the survey to add the quota to.
             name: Name of the quota.
@@ -589,6 +592,9 @@ class Client:  # noqa: PLR0904
         """Delete a LimeSurvey quota.
 
         Calls :rpc_method:`delete_quota`.
+
+        You can read more about quotas in the
+        :ls_manual:`LimeSurvey manual <Survey_quotas>`.
 
         Args:
             quota_id: ID of the quota to delete.
@@ -972,6 +978,9 @@ class Client:  # noqa: PLR0904
         """Get properties of a LimeSurvey quota.
 
         Calls :rpc_method:`get_quota_properties`.
+
+        You can read more about quotas in the
+        :ls_manual:`LimeSurvey manual <Survey_quotas>`.
 
         Args:
             quota_id: ID of the quota to get properties for.
@@ -1459,6 +1468,9 @@ class Client:  # noqa: PLR0904
 
         Calls :rpc_method:`list_quotas`.
 
+        You can read more about quotas in the
+        :ls_manual:`LimeSurvey manual <Survey_quotas>`.
+
         Args:
             survey_id: ID of the survey to get quotas for.
 
@@ -1600,6 +1612,9 @@ class Client:  # noqa: PLR0904
         """Set properties of a quota.
 
         Calls :rpc_method:`set_quota_properties`.
+
+        You can read more about quotas in the
+        :ls_manual:`LimeSurvey manual <Survey_quotas>`.
 
         Args:
             quota_id: Quota ID.
