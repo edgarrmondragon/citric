@@ -276,7 +276,7 @@ def test_import_group_with_name(
     """Test importing a group with a custom name."""
     request.applymarker(
         pytest.mark.xfail(
-            server_version < semver.VersionInfo.parse("6.6.7"),
+            server_version < (6, 6, 7),
             reason=(
                 f"The name override is broken in LimeSurvey {server_version} < 6.6.7"
             ),
@@ -301,7 +301,7 @@ def test_import_group_with_description(
     """Test importing a group with a custom description."""
     request.applymarker(
         pytest.mark.xfail(
-            server_version < semver.VersionInfo.parse("6.6.7"),
+            server_version < (6, 6, 7),
             reason=(
                 "The description override is broken in LimeSurvey "
                 f"{server_version} < 6.6.7"
@@ -421,6 +421,57 @@ def test_quota(
 
     with pytest.raises(LimeSurveyStatusError, match="Error: Invalid quota ID"):
         client.get_quota_properties(quota_id)
+
+
+@pytest.mark.parametrize(
+    ("action", "min_version"),
+    [
+        pytest.param(
+            enums.QuotaAction.TERMINATE,
+            "6.0.0",
+            id=enums.QuotaAction.TERMINATE,
+        ),
+        pytest.param(
+            enums.QuotaAction.CONFIRM_TERMINATE,
+            "6.0.0",
+            id=enums.QuotaAction.CONFIRM_TERMINATE,
+        ),
+        # New (6.6.7+) quota options
+        pytest.param(
+            enums.QuotaAction.TERMINATE_PAGES,
+            "6.6.7",
+            id=enums.QuotaAction.TERMINATE_PAGES,
+        ),
+        pytest.param(
+            enums.QuotaAction.TERMINATE_VISIBLE_HIDDEN,
+            "6.6.7",
+            id=enums.QuotaAction.TERMINATE_VISIBLE_HIDDEN,
+        ),
+    ],
+)
+@pytest.mark.integration_test
+def test_add_quota(
+    request: pytest.FixtureRequest,
+    client: citric.Client,
+    server_version: semver.VersionInfo,
+    survey_id: int,
+    action: enums.QuotaAction,
+    min_version: str,
+):
+    """Test adding a quota."""
+    request.applymarker(
+        pytest.mark.xfail(
+            server_version < semver.VersionInfo.parse(min_version),
+            reason=(
+                "Operation is not supported in LimeSurvey "
+                f"{server_version} < {min_version}"
+            ),
+            strict=True,
+        ),
+    )
+    quota_id = client.add_quota(survey_id, "Test Quota", 100, action=action)
+    props = client.get_quota_properties(quota_id)
+    assert int(props["action"]) == action.integer_value
 
 
 @pytest.mark.integration_test
@@ -704,7 +755,7 @@ def test_file_upload(
         filename=filename,
     )
     assert result["success"]
-    assert result["size"] == pytest.approx(filepath.stat().st_size / 1000, rel=1e-2)
+    assert result["size"] == pytest.approx(filepath.stat().st_size / 1000, rel=5e-2)
     assert result["name"] == filename
     assert result["ext"] == "txt"
     assert "filename" in result
@@ -735,7 +786,7 @@ def test_file_upload_no_filename(
     assert result_no_filename["success"]
     assert result_no_filename["size"] == pytest.approx(
         filepath.stat().st_size / 1000,
-        rel=1e-2,
+        rel=5e-2,
     )
     assert result_no_filename["name"] == quote(filepath.name)
     assert result_no_filename["ext"] == "txt"

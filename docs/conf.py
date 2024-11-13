@@ -91,7 +91,7 @@ extlinks = {
         "RPC method %s",
     ),
     "ls_manual": (
-        "https://manual.limesurvey.org/%s",
+        "https://limesurvey.org/manual/%s",
         "%s",
     ),
     "ls_tag": (
