@@ -275,6 +275,7 @@ filterwarnings = [
   "error",
   "ignore::citric._compat.FutureVersionWarning",
 ]
+junit_suite_name = "citric"
 log_cli_level = "INFO"
 markers = [
   "integration_test: Integration and end-to-end tests",

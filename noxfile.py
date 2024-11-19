@@ -56,16 +56,14 @@ def tests(session: nox.Session, constraints: str) -> None:
         install_args.extend(["-c", "requirements/requirements-lowest-direct.txt"])
 
     session.install(*install_args)
-    args = session.posargs or ["-m", "not integration_test"]
-    _run_tests(session, *args)
+    _run_tests(session, "-m", "not integration_test", *session.posargs)
 
 
 @nox.session(tags=["test"])
 def integration(session: nox.Session) -> None:
     """Execute integration tests and compute coverage."""
     session.install("citric[tests] @ .")
-    args = session.posargs or ["-m", "integration_test"]
-    _run_tests(session, *args)
+    _run_tests(session, "-m", "integration_test", *session.posargs)
 
 
 @nox.session(tags=["test"])
