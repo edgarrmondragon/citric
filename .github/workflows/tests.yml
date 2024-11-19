@@ -383,3 +383,10 @@ jobs:
         files: ./coverage.xml
         fail_ci_if_error: true
         flags: ${{ matrix.flag }}
+
+    - name: Upload test results to Codecov
+      if: ${{ !cancelled() }}
+      uses: codecov/test-results-action@9739113ad922ea0a9abb4b2c0f8bf6a4aa8ef820 # v1.0.1
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        flags: ${{ matrix.flag }}
