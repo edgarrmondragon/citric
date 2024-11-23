@@ -108,7 +108,7 @@ jobs:
 
     - name: Run Tests
       run: |
-        nox --verbose -s tests
+        nox --verbose -s tests -- --junit-xml=tests.xml
 
     - name: Upload coverage data
       uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
@@ -116,6 +116,14 @@ jobs:
         include-hidden-files: true
         name: "coverage-unit-${{ matrix.os }}-${{ matrix.python-version }}-${{ matrix.nightly && 'nightly' || 'stable' }}"
         path: ".coverage.*"
+
+    - name: Upload test results to Codecov
+      if: ${{ !cancelled() }}
+      uses: codecov/test-results-action@9739113ad922ea0a9abb4b2c0f8bf6a4aa8ef820 # v1.0.1
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        file: tests.xml
+        flags: unit-${{ matrix.os }}-${{ matrix.python-version }}-${{ matrix.nightly && 'nightly' || 'stable' }}
 
     - name: Run Doctests
       run: |
@@ -324,7 +332,15 @@ jobs:
         BACKEND: ${{ matrix.database }}
         LS_URL: http://localhost:${{ env.LS_PORT }}
       run: |
-        nox
+        nox -- --junit-xml=integration.xml
+
+    - name: Upload test results to Codecov
+      if: ${{ !cancelled() }}
+      uses: codecov/test-results-action@9739113ad922ea0a9abb4b2c0f8bf6a4aa8ef820 # v1.0.1
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        file: integration.xml
+        flags: integration-${{ matrix.python-version }}-${{ matrix.image_tag || matrix.ref }}-${{ matrix.database }}
 
     - name: Upload coverage data
       if: always()
