@@ -44,7 +44,7 @@ mdurl==0.1.2
     # via markdown-it-py
 myst-parser==4.0.0
     # via citric (pyproject.toml)
-packaging==24.1
+packaging==24.2
     # via sphinx
 pygments==2.18.0
     # via
@@ -80,7 +80,7 @@ sphinx-basic-ng==1.0.0b2
     # via furo
 sphinx-copybutton==0.5.2
     # via citric (pyproject.toml)
-sphinx-hoverxref==1.4.1
+sphinx-hoverxref==1.4.2
     # via citric (pyproject.toml)
 sphinx-notfound-page==1.0.4
     # via citric (pyproject.toml)
