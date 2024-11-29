@@ -11,7 +11,10 @@ changeFormat: '- [#{{.Custom.Issue}}](https://github.com/edgarrmondragon/citric/
 headerFormat: ""
 footerFormat: ""
 newlines:
-  beforeChangelogVersion: 2
+  afterChangelogVersion: 1
+  beforeChangelogVersion: 1
+  afterKind: 1
+  beforeKind: 1
 kinds:
 - label: Added
   auto: minor
