@@ -5,7 +5,7 @@ authors:
   given-names: "Edgar"
   orcid: "https://orcid.org/0000-0002-4182-0385"
 title: "Citric"
-version: "1.1.0"
+version: "1.2.0-a1"
 doi: 10.5281/zenodo.10216279
 date-released: 2021-11-11
 url: "https://github.com/edgarrmondragon/citric"
