@@ -24,14 +24,12 @@ body:
       label: Python Version
       description: Version of Python you are using
       options:
-        - "3.6 (deprecated)"
-        - "3.7 (deprecated)"
-        - "3.8"
-        - "3.9"
-        - "3.10"
-        - "3.11"
-        - "3.12"
         - "3.13"
+        - "3.12"
+        - "3.11"
+        - "3.10"
+        - "3.9"
+        - "3.8 or earlier"
         - "NA"
     validations:
       required: true
