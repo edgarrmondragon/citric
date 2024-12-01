@@ -42,6 +42,7 @@ But also, the latest 5.x and 6.x are tested continuously and are expected to wor
 - [Use a different authentication plugin](how-to.md#use-a-different-authentication-plugin)
 - [Get files uploaded to a survey and move them to S3](how-to.md#get-files-uploaded-to-a-survey-and-move-them-to-s3)
 - [Use the raw `Client.session` for low-level interaction](how-to.md#use-the-session-attribute-for-low-level-interaction)
+- [Use with _R_ via `reticulate`](how-to.md#use-with-r-via-reticulate)
 - [Notebook samples](how-to.md#notebook-samples)
 
 ```{toctree}

@@ -79,6 +79,24 @@ This library doesn't implement all RPC methods, so if you're in dire need of usi
 :end-before: end example
 ```
 
+## Use with _R_ via [reticulate]
+
+If you prefer using _R_ instead of _Python_, you can use the `reticulate` package to get survey data downloaded with `citric`.
+
+Write a Python script to get the survey data, making sure to assign a dataframe to a variable (e.g., `survey_data`):
+
+```{literalinclude} ../code_samples/reticulate.py
+:start-after: start example
+:end-before: end example
+```
+
+Then, in _R_, use the `reticulate` package to call the Python script and use the `df` variable:
+
+```{literalinclude} ../code_samples/citric.R
+:start-after: start example
+:end-before: end example
+```
+
 ## Notebook samples
 
 - [Import a survey file from S3](https://github.com/edgarrmondragon/citric/blob/main/docs/notebooks/import_s3.ipynb)
@@ -86,3 +104,4 @@ This library doesn't implement all RPC methods, so if you're in dire need of usi
 - [Download responses and save them to a SQLite database](https://github.com/edgarrmondragon/citric/blob/main/docs/notebooks/pandas_sqlite.ipynb)
 
 [rc2api]: https://api.limesurvey.org/classes/remotecontrol_handle.html
+[reticulate]: https://rstudio.github.io/reticulate/
