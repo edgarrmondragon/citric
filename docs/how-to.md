@@ -81,7 +81,7 @@ This library doesn't implement all RPC methods, so if you're in dire need of usi
 
 ## Use with _R_ via [reticulate]
 
-If you prefer using _R_ instead of _Python_ to analyze your survey data, you can use the `reticulate` package to get survey data downloaded with `citric`.
+If you prefer using _R_ instead of _Python_, you can use the `reticulate` package to get survey data downloaded with `citric`.
 
 Write a Python script to get the survey data, making sure to assign a dataframe to a variable (e.g., `survey_data`):
 
