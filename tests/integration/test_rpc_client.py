@@ -424,6 +424,13 @@ def test_quota(
         assert props["quotals_url"] == "https://example.com"
         assert props["quotals_urldescrip"] == "Learn more"
 
+    with subtests.test(msg="completeCount"):
+        if server_version < (6, 8, 2):
+            pytest.xfail("completeCount is not supported in LimeSurvey < 6.8.2")
+        client.activate_survey(survey_id)
+        props = client.get_quota_properties(quota_id)
+        assert int(props["completeCount"]) == 0
+
     # Set quota properties
     response = client.set_quota_properties(quota_id, qlimit=150)
     assert response["success"] is True
