@@ -369,6 +369,9 @@ class QuotaProperties(t.TypedDict, total=False):
     autoload_url: int
     """Whether the quota autoload URL is active."""
 
+    completeCount: int
+    """Count of completed interviews for this quota."""
+
     # Quota Language Settings
 
     quotals_message: str
