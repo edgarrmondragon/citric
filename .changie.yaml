@@ -18,20 +18,31 @@ newlines:
 kinds:
 - label: Added
   auto: minor
+  format: "### ✨ {{.Kind}}"
 - label: Changed
   auto: major
+  format: "### 🔄 {{.Kind}}"
 - label: Deprecated
   auto: patch
+  format: "### ⚠️ {{.Kind}}"
 - label: Removed
   auto: major
+  format: "### 🗑️ {{.Kind}}"
 - label: Fixed
   auto: patch
+  format: "### 🐛 {{.Kind}}"
 - label: Security
   auto: patch
+  format: "### 🔒 {{.Kind}}"
 - label: Refactored
   auto: patch
+  format: "### 🛠️ {{.Kind}}"
 - label: Documentation
   auto: patch
+  format: "### 📚 {{.Kind}}"
+- label: Typing
+  auto: patch
+  format: "### 🏷️ {{.Kind}}"
 replacements:
 - path: src/citric/client.py
   find: "NEXT_VERSION"
