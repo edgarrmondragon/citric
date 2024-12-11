@@ -369,6 +369,17 @@ class QuotaProperties(t.TypedDict, total=False):
     autoload_url: int
     """Whether the quota autoload URL is active."""
 
+    # Quota Language Settings
+
+    quotals_message: str
+    """Quota message for this language."""
+
+    quotals_url: str
+    """Quota end-URL for this language."""
+
+    quotals_urldescrip: str
+    """Quota end-URL description for this language."""
+
 
 class RPCResponse(t.TypedDict):
     """RPC response payload."""

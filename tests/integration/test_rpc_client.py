@@ -395,7 +395,14 @@ def test_quota(
     with pytest.raises(LimeSurveyStatusError, match="No quotas found"):
         client.list_quotas(survey_id)
 
-    quota_id = client.add_quota(survey_id, "Test Quota", 100)
+    quota_id = client.add_quota(
+        survey_id,
+        "Test Quota",
+        100,
+        message="No more responses allowed",
+        url="https://example.com",
+        url_description="Learn more",
+    )
 
     # List quotas
     quotas = client.list_quotas(survey_id)
@@ -409,6 +416,11 @@ def test_quota(
     assert int(props["qlimit"]) == 100
     assert int(props["active"]) == 1
     assert int(props["action"]) == enums.QuotaAction.TERMINATE.integer_value
+
+    # Language-specific quota properties
+    assert props["quotals_message"] == "No more responses allowed"
+    assert props["quotals_url"] == "https://example.com"
+    assert props["quotals_url_description"] == "Learn more"
 
     # Set quota properties
     response = client.set_quota_properties(quota_id, qlimit=150)
