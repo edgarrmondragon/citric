@@ -45,7 +45,7 @@ body:
     attributes:
       label: Backend database
       description: What database and version the LimeSurvey installation is connected to
-      placeholder: MySQL 5.5.3
+      placeholder: PostgreSQL 17.2
     validations:
       required: false
   - type: input
