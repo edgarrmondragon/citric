@@ -378,6 +378,7 @@ def test_quota(
     client: citric.Client,
     server_version: semver.VersionInfo,
     survey_id: int,
+    subtests: SubTests,
 ):
     """Test quota methods."""
     request.applymarker(
@@ -418,9 +419,10 @@ def test_quota(
     assert int(props["action"]) == enums.QuotaAction.TERMINATE.integer_value
 
     # Language-specific quota properties
-    assert props["quotals_message"] == "No more responses allowed"
-    assert props["quotals_url"] == "https://example.com"
-    assert props["quotals_url_description"] == "Learn more"
+    with subtests.test(msg="language-specific quota properties"):
+        assert props["quotals_message"] == "No more responses allowed"
+        assert props["quotals_url"] == "https://example.com"
+        assert props["quotals_urldescrip"] == "Learn more"
 
     # Set quota properties
     response = client.set_quota_properties(quota_id, qlimit=150)
