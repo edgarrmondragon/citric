@@ -378,6 +378,7 @@ def test_quota(
     client: citric.Client,
     server_version: semver.VersionInfo,
     survey_id: int,
+    subtests: SubTests,
 ):
     """Test quota methods."""
     request.applymarker(
@@ -395,7 +396,14 @@ def test_quota(
     with pytest.raises(LimeSurveyStatusError, match="No quotas found"):
         client.list_quotas(survey_id)
 
-    quota_id = client.add_quota(survey_id, "Test Quota", 100)
+    quota_id = client.add_quota(
+        survey_id,
+        "Test Quota",
+        100,
+        message="No more responses allowed",
+        url="https://example.com",
+        url_description="Learn more",
+    )
 
     # List quotas
     quotas = client.list_quotas(survey_id)
@@ -403,12 +411,25 @@ def test_quota(
     assert int(quotas[0]["id"]) == quota_id
 
     # Get quota properties
+    client.activate_survey(survey_id)
     props = client.get_quota_properties(quota_id)
     assert int(props["id"]) == quota_id
     assert props["name"] == "Test Quota"
     assert int(props["qlimit"]) == 100
     assert int(props["active"]) == 1
     assert int(props["action"]) == enums.QuotaAction.TERMINATE.integer_value
+
+    # Language-specific quota properties
+    with subtests.test(msg="language-specific quota properties"):
+        assert props["quotals_message"] == "No more responses allowed"
+        assert props["quotals_url"] == "https://example.com"
+        assert props["quotals_urldescrip"] == "Learn more"
+
+    with subtests.test(msg="completeCount"):
+        if server_version < (6, 8, 2):
+            pytest.xfail("completeCount is not supported in LimeSurvey < 6.8.2")
+        props = client.get_quota_properties(quota_id)
+        assert int(props["completeCount"]) == 0
 
     # Set quota properties
     response = client.set_quota_properties(quota_id, qlimit=150)
