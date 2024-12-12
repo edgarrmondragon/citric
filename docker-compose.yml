@@ -30,7 +30,7 @@ services:
       start_period: 5s
 
   db:
-    image: postgres:16
+    image: postgres:17
     environment:
       POSTGRES_USER: limesurvey
       POSTGRES_DB: limesurvey
