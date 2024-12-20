@@ -13,7 +13,8 @@ keywords = [
   "json-rpc",
   "limesurvey",
 ]
-license = { file = "LICENSE" }
+license = "MIT"
+license-files = [ "LICENSE" ]
 maintainers = [
   { name = "Edgar Ramírez-Mondragón", email = "edgarrm358@gmail.com" },
 ]
