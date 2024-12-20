@@ -3,7 +3,7 @@ description: Install tools for Python projects
 
 inputs:
   constraints:
-    default: "${{ github.workspace }}/.github/workflows/constraints.txt"
+    default: "${{ github.workspace }}/requirements/requirements-ci.txt"
     description: "Path to pip constraints file"
     required: true
   os:

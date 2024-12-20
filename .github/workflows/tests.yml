@@ -9,8 +9,8 @@ on:
     - docker-compose*.yml
     - noxfile.py
     - pyproject.toml
+    - requirements/requirements*.txt
     - .github/workflows/tests.yml
-    - .github/workflows/constraints.txt
     - .github/actions/install-tools/action.yml
   push:
     branches:
@@ -21,8 +21,8 @@ on:
     - docker-compose*.yml
     - noxfile.py
     - pyproject.toml
+    - requirements/requirements*.txt
     - .github/workflows/tests.yml
-    - .github/workflows/constraints.txt
     - .github/actions/install-tools/action.yml
   schedule:
   - cron: "25 7 * * 1"

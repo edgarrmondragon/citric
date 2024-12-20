@@ -84,6 +84,10 @@ repos:
     name: pip-compile Highest
     files: ^pyproject\.toml$
     args: ["pyproject.toml", "--universal", "--resolution", "highest", "-o", "requirements/requirements-highest.txt"]
+  - id: pip-compile
+    name: pip-compile CI Dependencies
+    files: ^requirements/requirements-ci\.in$
+    args: ["requirements/requirements-ci.in", "--universal", "-o", "requirements/requirements-ci.txt"]
 
 - repo: https://github.com/executablebooks/mdformat
   rev: 0.7.21
