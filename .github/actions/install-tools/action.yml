@@ -21,6 +21,8 @@ runs:
 
   - name: Install Nox
     shell: bash
+    env:
+      UV_CONSTRAINT: "${{ inputs.constraints }}"
     run: |
       uv tool install nox
       nox --version
