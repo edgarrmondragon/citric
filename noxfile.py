@@ -93,7 +93,7 @@ def coverage(session: nox.Session) -> None:
     session.run("coverage", *args)
 
 
-@nox.session(name="deps", python=python_versions)
+@nox.session(name="deps")
 def dependencies(session: nox.Session) -> None:
     """Check issues with dependencies."""
     install_env = {}
@@ -105,7 +105,7 @@ def dependencies(session: nox.Session) -> None:
     session.run("deptry", "src", "tests", "docs")
 
 
-@nox.session(python=python_versions, tags=["lint"])
+@nox.session(tags=["lint"])
 def mypy(session: nox.Session) -> None:
     """Type-check using mypy."""
     args = session.posargs or locations

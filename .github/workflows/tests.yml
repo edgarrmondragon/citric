@@ -90,10 +90,6 @@ jobs:
         python-version: ${{ matrix.python-version }}
         architecture: x64
         allow-prereleases: true
-        cache: pip
-        cache-dependency-path: |
-          pyproject.toml
-          .github/workflows/constraint.txt
 
     - name: Setup Python ${{ matrix.python-version }} (nightly)
       if: "${{ matrix.nightly }}"
@@ -127,6 +123,25 @@ jobs:
       run: |
         nox -s xdoctest
 
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+    - name: Check out the repository
+      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      with:
+        persist-credentials: false
+
+    - uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b # v5.3.0
+      with:
+        python-version: 3.x
+
+    - name: Install tools
+      uses: ./.github/actions/install-tools
+
     - name: Run Dependency Checks
       run: |
         nox -s deps
@@ -154,11 +169,6 @@ jobs:
         python-version: 3.x
         architecture: x64
         allow-prereleases: true
-        cache: pip
-        cache-dependency-path: |
-          pyproject.toml
-          requirements/*.txt
-          .github/workflows/constraints.txt
 
     - name: Install tools
       uses: ./.github/actions/install-tools
@@ -286,10 +296,6 @@ jobs:
         python-version: ${{ matrix.python-version }}
         architecture: x64
         allow-prereleases: true
-        cache: pip
-        cache-dependency-path: |
-          pyproject.toml
-          .github/workflows/constraint.txt
 
     - name: Install tools
       uses: ./.github/actions/install-tools
@@ -369,7 +375,6 @@ jobs:
       uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b # v5.3.0
       with:
         python-version: "3.x"
-        cache: pip
 
     - name: Install tools
       uses: ./.github/actions/install-tools
