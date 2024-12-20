@@ -81,7 +81,6 @@ jobs:
     - name: Check out the repository
       uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       with:
-        fetch-tags: true
         persist-credentials: false
 
     - name: Setup Python ${{ matrix.python-version }}
@@ -110,7 +109,7 @@ jobs:
         nox --verbose -s tests -- --junit-xml=tests.xml
 
     - name: Upload coverage data
-      uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
+      uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4.5.0
       with:
         include-hidden-files: true
         name: "coverage-unit-${{ matrix.os }}-${{ matrix.python-version }}-${{ matrix.nightly && 'nightly' || 'stable' }}"
@@ -279,7 +278,6 @@ jobs:
     - name: Check out the repository
       uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       with:
-        fetch-tags: true
         persist-credentials: false
 
     - name: Setup Python ${{ matrix.python-version }}
@@ -303,7 +301,7 @@ jobs:
         echo "LS_CHECKSUM=$(shasum -a 256 ls.tar.gz | cut -d' ' -f1)" >> $GITHUB_ENV
 
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@c47758b77c9736f4b2ef4073d4d51994fabfe349 # v3.7.1
+      uses: docker/setup-buildx-action@6524bf65af31da8d45b59e8c27de4bd072b392f5 # v3.8.0
 
     - name: Get Docker
       uses: actions-hub/docker/cli@f5fdbfc3f9d2a9265ead8962c1314108a7b7ec5d # v1.0.3
@@ -343,7 +341,7 @@ jobs:
 
     - name: Upload coverage data
       if: always()
-      uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
+      uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4.5.0
       with:
         include-hidden-files: true
         name: "coverage-integration-${{ matrix.python-version }}-${{ matrix.image_tag || env.LS_CHECKSUM }}-${{ matrix.database }}"
@@ -392,7 +390,7 @@ jobs:
         nox -- xml
 
     - name: Upload coverage report
-      uses: codecov/codecov-action@015f24e6818733317a2da2edd6290ab26238649a # v5.0.7
+      uses: codecov/codecov-action@1e68e06f1dbfde0e4cefc87efeba9e4643565303 # v5.1.2
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         files: ./coverage.xml

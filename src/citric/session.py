@@ -129,7 +129,14 @@ class Session:
         return self.__key
 
     def __getattr__(self, name: str) -> Method[Result]:
-        """Magic method dispatcher."""
+        """Magic method dispatcher.
+
+        Args:
+            name: Name of the method to call.
+
+        Returns:
+            A method object.
+        """
         return Method(self.rpc, name)
 
     def call(self, method: str, *params: t.Any) -> RPCResponse:

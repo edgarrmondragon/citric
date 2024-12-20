@@ -12,7 +12,11 @@ if t.TYPE_CHECKING:
 
 
 def to_yes_no(*, value: bool) -> YesNo:
-    """Convert boolean to yes/no string."""
+    """Convert boolean to yes/no string.
+
+    Returns:
+        "Y" if value is True, "N" if value is False.
+    """
     return "Y" if value else "N"
 
 

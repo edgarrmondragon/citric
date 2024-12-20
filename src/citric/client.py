@@ -136,7 +136,11 @@ class Client:  # noqa: PLR0904
         self.session.close()
 
     def __enter__(self: Self) -> Self:
-        """Create client context."""
+        """Create client context.
+
+        Returns:
+            Client instance.
+        """
         return self
 
     def __exit__(
@@ -1726,7 +1730,7 @@ class Client:  # noqa: PLR0904
             RuntimeError: If an unexpected error occurs.
 
         .. versionadded:: 0.8.0
-        """
+        """  # noqa: DOC502
         email_flag = enums.EmailSendStrategy.to_flag(strategy)
         try:
             self.session.invite_participants(survey_id, token_ids, email_flag)

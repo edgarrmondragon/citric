@@ -832,7 +832,7 @@ def test_file_upload_invalid_extension(
 
     with pytest.raises(
         LimeSurveyStatusError,
-        match="The extension abc is not valid. Valid extensions are: txt",
+        match="The extension abc is not valid\\. Valid extensions are: txt",
     ):
         client.upload_file(
             survey_id,
