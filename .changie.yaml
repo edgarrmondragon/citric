@@ -43,6 +43,9 @@ kinds:
 - label: Typing
   auto: patch
   format: "### 🏷️ {{.Kind}}"
+- label: Packaging
+  auto: patch
+  format: "### 📦 {{.Kind}}"
 replacements:
 - path: src/citric/client.py
   find: "NEXT_VERSION"

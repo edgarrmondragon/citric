@@ -13,6 +13,7 @@ types:
 - chore
 - revert
 - typing
+- packaging
 
 scopes:
 - rest
