@@ -12,7 +12,7 @@ if t.TYPE_CHECKING:
 
 
 def to_yes_no(*, value: bool) -> YesNo:
-    """Convert boolean to yes/no string."""
+    """Convert boolean to yes/no string."""  # noqa: DOC201
     return "Y" if value else "N"
 
 

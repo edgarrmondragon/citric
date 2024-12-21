@@ -1,7 +1,6 @@
 ci:
   autofix_commit_msg: '[pre-commit.ci] auto fixes'
   autofix_prs: true
-  autoupdate_schedule: monthly
   autoupdate_commit_msg: 'chore(deps): pre-commit autoupdate'
   skip:
   - pip-compile
@@ -28,7 +27,7 @@ repos:
   - id: check-readthedocs
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.8.1
+  rev: v0.8.4
   hooks:
   - id: ruff
     args: [--fix, --exit-non-zero-on-fix, --show-fixes]
@@ -38,18 +37,13 @@ repos:
   rev: v2.3.0
   hooks:
   - id: codespell
-    # TODO: Use inline ignores, e.g. # codespell:ignore intoto
-    # https://github.com/codespell-project/codespell/issues/3387
-    args: [-L, intoto]
+    exclude: |
+      (?x)^(
+        uv\.lock|
+        requirements/requirements.*\.txt
+      )$
     additional_dependencies:
     - tomli
-
-- repo: https://github.com/pycqa/flake8
-  rev: 7.1.1
-  hooks:
-  - id: flake8
-    additional_dependencies:
-    - pydoclint==0.4.1
 
 - repo: https://github.com/pre-commit/pre-commit
   rev: v4.0.1
@@ -68,18 +62,35 @@ repos:
   - id: pyproject-fmt
 
 - repo: https://github.com/astral-sh/uv-pre-commit
-  rev: 0.5.5
+  rev: 0.5.10
   hooks:
-  - id: pip-compile
+  - id: uv-export
+    name: Export Docs Dependencies
     files: ^pyproject\.toml$
-    args: ["pyproject.toml", "--universal", "--pre", "--extra", "docs", "-o", "docs/requirements.txt"]
-    language_version: python3.12
+    args: ["--frozen", "--no-editable", "--output-file=requirements/requirements-docs.txt", "--only-group=docs"]
+  - id: uv-export
+    name: Export Test Dependencies
+    files: ^pyproject\.toml$
+    args: ["--frozen", "--output-file=requirements/requirements-test.txt", "--no-dev", "--only-group=test"]
+  - id: uv-export
+    name: Export Typing Dependencies
+    files: ^pyproject\.toml$
+    args: ["--frozen", "--output-file=requirements/requirements-typing.txt", "--only-group=typing"]
   - id: pip-compile
+    name: pip-compile Lowest Direct
     files: ^pyproject\.toml$
     args: ["pyproject.toml", "--universal", "--resolution", "lowest-direct", "-o", "requirements/requirements-lowest-direct.txt"]
+  - id: pip-compile
+    name: pip-compile Highest
+    files: ^pyproject\.toml$
+    args: ["pyproject.toml", "--universal", "--resolution", "highest", "-o", "requirements/requirements-highest.txt"]
+  - id: pip-compile
+    name: pip-compile CI Dependencies
+    files: ^requirements/requirements-ci\.in$
+    args: ["requirements/requirements-ci.in", "--universal", "-o", "requirements/requirements-ci.txt"]
 
 - repo: https://github.com/executablebooks/mdformat
-  rev: 0.7.19
+  rev: 0.7.21
   hooks:
   - id: mdformat
     exclude: \.github/pull_request_template\.md

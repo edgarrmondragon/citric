@@ -3,9 +3,9 @@ name: API Changes
 on:
   pull_request:
     paths:
+    - requirements/requirements*.txt
     - src/**
     - .github/workflows/api-changes.yml
-    - .github/workflows/constraints.txt
     - CHANGELOG.md
 
 concurrency:
@@ -35,7 +35,7 @@ jobs:
 
     - name: Install tools
       env:
-        PIP_CONSTRAINT: ${{ github.workspace }}/.github/workflows/constraints.txt
+        PIP_CONSTRAINT: ${{ github.workspace }}/requirements/requirements-ci.txt
       run: |
         python -Im pip install -U pip
         pipx install griffe nox uv

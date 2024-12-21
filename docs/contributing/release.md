@@ -19,6 +19,8 @@
    ```
    ````
 
-1. Validate the release notes and publish the generated [draft release](https://github.com/edgarrmondragon/citric/releases).
+1. Review that changelog and merge the pull request if everything looks good.
+
+1. Publish the generated [draft release](https://github.com/edgarrmondragon/citric/releases).
 
 [gen-release-pr]: https://github.com/edgarrmondragon/citric/actions/workflows/gen-release-pr.yml

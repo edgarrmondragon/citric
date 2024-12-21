@@ -1,12 +1,12 @@
 [build-system]
 build-backend = "hatchling.build"
 requires = [
-  "hatch-vcs",
   "hatchling",
 ]
 
 [project]
 name = "citric"
+version = "1.2.0"
 description = "A client to the LimeSurvey Remote Control API 2, written in modern Python."
 readme = "README.md"
 keywords = [
@@ -43,30 +43,25 @@ classifiers = [
   "Topic :: Software Development :: Libraries :: Python Modules",
   "Typing :: Typed",
 ]
-dynamic = [
-  "version",
-]
 dependencies = [
   "requests>=2.25.1",
 ]
-optional-dependencies.dev = [
-  "citric[docs,tests,typing]",
+urls.Documentation = "https://citric.readthedocs.io"
+urls.Funding = "https://github.com/sponsors/edgarrmondragon"
+urls.Homepage = 'https://github.com/edgarrmondragon/citric'
+urls."Issue Tracker" = "https://github.com/edgarrmondragon/citric/issues"
+urls.Repository = "https://github.com/edgarrmondragon/citric"
+
+[dependency-groups]
+dev = [
   "colorama>=0.4.6",
   "deptry>=0.12",
   "requests-cache>=1.1",
+  { include-group = "docs" },
+  { include-group = "test" },
+  { include-group = "typing" },
 ]
-optional-dependencies.docs = [
-  "autodocsumm>=0.2.5",       # 0.2.4 has a problematic dependency 'Sphinx>=2.2.*'
-  "docutils>=0.20",
-  "furo>=2024.1.29",
-  "myst-parser>=2",
-  "sphinx>=7",
-  "sphinx-autoapi>=3",
-  "sphinx-copybutton>=0.5.2",
-  "sphinx-hoverxref>=1.3",
-  "sphinx-notfound-page>=1",
-]
-optional-dependencies.tests = [
+test = [
   "coverage[toml]>=7.4.2",
   "faker>=19",
   "pytest>=8",
@@ -79,21 +74,24 @@ optional-dependencies.tests = [
   "tinydb>=4.8",
   "xdoctest[colors]>=1.1.1",
 ]
-optional-dependencies.typing = [
-  "citric[tests]",
+docs = [
+  "autodocsumm>=0.2.5",       # 0.2.4 has a problematic dependency 'Sphinx>=2.2.*'
+  "docutils>=0.20",
+  "furo>=2024.1.29",
+  "myst-parser>=2",
+  "sphinx>=7",
+  "sphinx-autoapi>=3",
+  "sphinx-copybutton>=0.5.2",
+  "sphinx-hoverxref>=1.3",
+  "sphinx-notfound-page>=1",
+]
+typing = [
   "mypy>=1.9",
   "sphinx",
   "types-requests>=2.31.0.2",
   "typing-extensions>=4.6; python_version<'3.12'",
+  { include-group = "test" },
 ]
-urls.Documentation = "https://citric.readthedocs.io"
-urls.Funding = "https://github.com/sponsors/edgarrmondragon"
-urls.Homepage = 'https://github.com/edgarrmondragon/citric'
-urls."Issue Tracker" = "https://github.com/edgarrmondragon/citric/issues"
-urls.Repository = "https://github.com/edgarrmondragon/citric"
-
-[tool.hatch.version]
-source = "vcs"
 
 [tool.ruff]
 line-length = 88
@@ -122,6 +120,7 @@ lint.select = [
   "C90",  # mccabe
   "COM",  # flake8-commas
   "D",    # pydocstyle
+  "DOC",  # pydoclint
   "DTZ",  # flake8-datetimez
   "E",    # pycodestyle (error)
   "EM",   # flake8-errmsg
@@ -188,6 +187,8 @@ lint.per-file-ignores."tests/*" = [
   "ANN201",  # missing-return-type-undocumented-public-function
   "ARG00",   # unused-method-argument
   "C901",    # complex-structure
+  "DOC201",  # docstring-missing-returns
+  "DOC402",  # docstring-missing-yields
   "PLR2004", # magic-value-comparison
   "PLR6301", # no-self-use
   "S101",    # assert
@@ -242,22 +243,10 @@ DEP001 = [
   "pandas",
   "sqlalchemy",
 ]
-DEP002 = [
-  "coverage",
-  "faker",
-  "mypy",
-  "pytest",
-  "pytest-github-actions-annotate-failures",
-  "pytest-httpserver",
-  "pytest-reverse",
-  "pytest-subtests",
-  "python-dotenv",
-  "semver",
-  "tinydb",
-  "xdoctest",
-]
 DEP004 = [
   "docutils",
+  "faker",
+  "typing_extensions",
 ]
 
 [tool.pyproject-fmt]

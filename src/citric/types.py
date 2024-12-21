@@ -32,6 +32,8 @@ __all__ = [
 ]
 
 Result: TypeAlias = t.Any
+
+#: Yes/No/Inherit type alias.
 YesNo: TypeAlias = t.Literal["Y", "N", "I"]
 
 
