@@ -17,7 +17,14 @@ requests_cache.install_cache("docker_tags")
 
 
 def _extract_version(tag: dict) -> tuple[int, ...]:
-    """Extract version from tag."""
+    """Extract version from tag.
+
+    Args:
+        tag: A tag.
+
+    Returns:
+        A tuple of integers representing the version.
+    """
     name = tag["name"]
     return (
         tuple(int(part) for part in match.group(1).split("."))
@@ -27,7 +34,11 @@ def _extract_version(tag: dict) -> tuple[int, ...]:
 
 
 def get_tags() -> t.Generator[dict, None, None]:
-    """Get all tags from the Docker Hub."""
+    """Get all tags from the Docker Hub.
+
+    Yields:
+        Tag data.
+    """
     url = (
         "https://hub.docker.com/v2/namespaces/martialblog/repositories/limesurvey/tags"
     )
@@ -41,12 +52,26 @@ def get_tags() -> t.Generator[dict, None, None]:
 
 
 def sort_tags(tags: t.Iterable[dict]) -> list[dict]:
-    """Sort tags."""
+    """Sort tags.
+
+    Args:
+        tags: An iterable of tags.
+
+    Returns:
+        A list of tags sorted by version
+    """
     return sorted(tags, key=_extract_version, reverse=True)
 
 
 def filter_tags(tags: t.Iterable[dict]) -> t.Generator[str, None, None]:
-    """Filter tags."""
+    """Filter tags.
+
+    Args:
+        tags: An iterable of tags.
+
+    Yields:
+        Tag names.
+    """
     count_5 = 0
     count_6 = 0
     for tag in tags:

@@ -5,37 +5,6 @@
 
 version: 2
 updates:
-  - package-ecosystem: pip
-    directory: "/.github/workflows"
-    schedule:
-      interval: monthly
-      timezone: "America/Mexico_City"
-    reviewers:
-      - "edgarrmondragon"
-    labels:
-      - "dependencies"
-    commit-message:
-      prefix: "ci: "
-    groups:
-      ci-dependencies:
-        update-types:
-          - "patch"
-          - "minor"
-  - package-ecosystem: pip
-    directory: "/docs"
-    schedule:
-      interval: monthly
-      timezone: "America/Mexico_City"
-    reviewers:
-      - "edgarrmondragon"
-    labels:
-      - "dependencies"
-    commit-message:
-      prefix: "docs: "
-    groups:
-      docs:
-        patterns:
-          - "*"
   - package-ecosystem: docker
     directory: "/"
     schedule:
