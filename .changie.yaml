@@ -43,6 +43,9 @@ kinds:
 - label: Typing
   auto: patch
   format: "### 🏷️ {{.Kind}}"
+- label: Packaging
+  auto: patch
+  format: "### 📦 {{.Kind}}"
 replacements:
 - path: pyproject.toml
   find: "^version = \".*\"$"
