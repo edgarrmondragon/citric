@@ -19,5 +19,5 @@ refresh-uv-lock:
 
 # Update lock files
 update-lock-files py=default_python:
-    -uvx --python={{py}} pre-commit run uv-export
-    -uvx --python={{py}} pre-commit run pip-compile
+    -uvx --python={{py}} pre-commit run uv-export --all-files
+    -uvx --python={{py}} pre-commit run pip-compile --all-files
