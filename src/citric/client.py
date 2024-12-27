@@ -878,9 +878,11 @@ class Client:  # noqa: PLR0904
             survey_id,
             enums.TimelineAggregationPeriod(period),
             start.isoformat(),
-            end.isoformat()
-            if end
-            else datetime.datetime.now(tz=datetime.timezone.utc).isoformat(),
+            (
+                end.isoformat()
+                if end
+                else datetime.datetime.now(tz=datetime.timezone.utc).isoformat()
+            ),
         )
 
     def get_group_properties(
@@ -1486,20 +1488,30 @@ class Client:  # noqa: PLR0904
         """
         return self.session.list_quotas(survey_id)
 
-    def list_surveys(self, username: str | None = None) -> list[dict[str, t.Any]]:
+    def list_surveys(
+        self,
+        username: str | None = None,
+        *,
+        survey_group_id: int | None = None,
+    ) -> list[dict[str, t.Any]]:
         """Get all surveys or only those owned by a user.
 
         Calls :rpc_method:`list_surveys`.
 
         Args:
             username: Owner of the surveys to retrieve.
+            survey_group_id: ID of the survey group to retrieve surveys from.
 
         Returns:
             List of surveys with basic information.
 
         .. versionadded:: 0.0.1
+           This method.
+
+        .. versionadded:: NEXT_VERSION
+           The *survey_group_id* parameter.
         """
-        return self.session.list_surveys(username)
+        return self.session.list_surveys(username, survey_group_id)
 
     def list_survey_groups(
         self,

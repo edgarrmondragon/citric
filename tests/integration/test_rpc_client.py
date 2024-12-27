@@ -120,7 +120,11 @@ def test_language(client: citric.Client, survey_id: int, subtests: SubTests):
 
 
 @pytest.mark.integration_test
-def test_survey(client: citric.Client):
+def test_survey(
+    client: citric.Client,
+    server_version: semver.VersionInfo,
+    subtests: SubTests,
+):
     """Test survey methods."""
     # Try to get a survey that doesn't exist
     with pytest.raises(LimeSurveyStatusError, match="Error: Invalid survey"):
@@ -149,6 +153,17 @@ def test_survey(client: citric.Client):
 
     matched = next(s for s in client.list_surveys() if int(s["sid"]) == survey_id)
     assert matched["surveyls_title"] == NEW_SURVEY_NAME
+
+    with subtests.test(msg="survey group ID"):
+        if server_version < (6, 9, 0):
+            pytest.xfail(
+                "The gsid field is not available as input nor output of the RPC "
+                "list_surveys method in LimeSurvey < 6.9.0"
+            )
+
+        gsid = matched["gsid"]
+        surveys_in_group = client.list_surveys(survey_group_id=gsid)
+        assert all(s["gsid"] == gsid for s in surveys_in_group)
 
     # Update survey properties
     response = client.set_survey_properties(
