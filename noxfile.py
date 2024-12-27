@@ -207,4 +207,4 @@ def notebook(session: nox.Session) -> None:
 def tags(session: nox.Session) -> None:
     """Print tags."""
     session.install("requests", "requests-cache")
-    session.run("python", "scripts/docker_tags.py")
+    session.run("python", "scripts/docker_tags.py", "--max-tags", "5")

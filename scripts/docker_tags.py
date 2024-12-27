@@ -1,7 +1,13 @@
-"""Get all tags from the Docker Hub."""  # noqa: INP001
+# /// script
+# dependencies = ["requests", "requests-cache"]
+# requires-python = ">=3.9"
+# ///
+
+"""Get all tags from the Docker Hub."""
 
 from __future__ import annotations
 
+import argparse
 import json
 import re
 import typing as t
@@ -63,11 +69,16 @@ def sort_tags(tags: t.Iterable[dict]) -> list[dict]:
     return sorted(tags, key=_extract_version, reverse=True)
 
 
-def filter_tags(tags: t.Iterable[dict]) -> t.Generator[str, None, None]:
+def filter_tags(
+    tags: t.Iterable[dict],
+    *,
+    max_tags: int = 3,
+) -> t.Generator[str, None, None]:
     """Filter tags.
 
     Args:
         tags: An iterable of tags.
+        max_tags: Maximum number of tags to yield.
 
     Yields:
         Tag names.
@@ -76,19 +87,37 @@ def filter_tags(tags: t.Iterable[dict]) -> t.Generator[str, None, None]:
     count_6 = 0
     for tag in tags:
         name = tag["name"]
+
         if name in {"6-apache", "5-apache"}:
             yield name
-        if re.match(PATTERN_5x, name) and count_5 < 3:  # noqa: PLR2004
+
+        if re.match(PATTERN_5x, name) and count_5 < max_tags:
             yield name
             count_5 += 1
-        if re.match(PATTERN_6x, name) and count_6 < 3:  # noqa: PLR2004
+
+        if re.match(PATTERN_6x, name) and count_6 < max_tags:
             yield name
             count_6 += 1
 
 
 def main() -> None:
     """Print tags."""
-    tags = filter_tags(sort_tags(get_tags()))
+
+    class ParserNamespace(argparse.Namespace):
+        """Namespace for CLI arguments."""
+
+        max_tags: int
+
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--max-tags",
+        type=int,
+        default=3,
+        help="Maximum tags to present for each version.",
+    )
+    args = parser.parse_args(namespace=ParserNamespace)
+
+    tags = filter_tags(sort_tags(get_tags()), max_tags=args.max_tags)
     print(json.dumps(list(tags)))  # noqa: T201
 
 
