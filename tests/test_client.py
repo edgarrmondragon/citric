@@ -291,7 +291,7 @@ def test_list_groups(client: MockClient):
 
 def test_list_surveys(client: MockClient):
     """Test list_surveys client method."""
-    assert_client_session_call(client, "list_surveys", None)
+    assert_client_session_call(client, "list_surveys", None, survey_group_id=None)
 
 
 def test_list_survey_groups(client: MockClient):
