@@ -61,7 +61,7 @@ repos:
   - id: pyproject-fmt
 
 - repo: https://github.com/astral-sh/uv-pre-commit
-  rev: 0.5.12
+  rev: 0.5.13
   hooks:
   - id: uv-export
     name: Export Docs Dependencies
