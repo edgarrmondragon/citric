@@ -1493,7 +1493,7 @@ class Client:  # noqa: PLR0904
         username: str | None = None,
         *,
         survey_group_id: int | None = None,
-    ) -> list[dict[str, t.Any]]:
+    ) -> list[types.SurveyListElement]:
         """Get all surveys or only those owned by a user.
 
         Calls :rpc_method:`list_surveys`.

@@ -409,6 +409,31 @@ class SetQuotaPropertiesResult(t.TypedDict):
     """The quota properties."""
 
 
+class SurveyListElement(t.TypedDict, total=False):
+    """List surveys result."""
+
+    sid: int
+    """The survey ID."""
+
+    gsid: int
+    """The survey group ID.
+
+    .. minlimesurveyattribute:: 6.9.0
+    """
+
+    surveyls_title: str
+    """The survey title."""
+
+    startdate: str
+    """The survey start date."""
+
+    expires: str
+    """The survey expiration date."""
+
+    active: YesNo
+    """Whether the survey is active."""
+
+
 class SurveyProperties(t.TypedDict, total=False):
     """Survey properties result."""
 
