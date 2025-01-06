@@ -26,7 +26,7 @@ repos:
   - id: check-readthedocs
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.8.4
+  rev: v0.8.6
   hooks:
   - id: ruff
     args: [--fix, --exit-non-zero-on-fix, --show-fixes]
@@ -50,7 +50,7 @@ repos:
   - id: validate_manifest
 
 - repo: https://github.com/hadialqattan/pycln
-  rev: v2.4.0
+  rev: v2.5.0
   hooks:
   - id: pycln
     args: [--all]
@@ -61,7 +61,7 @@ repos:
   - id: pyproject-fmt
 
 - repo: https://github.com/astral-sh/uv-pre-commit
-  rev: 0.5.12
+  rev: 0.5.14
   hooks:
   - id: uv-export
     name: Export Docs Dependencies
