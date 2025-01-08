@@ -27,6 +27,7 @@ __all__ = [
     "RPCResponse",
     "Result",
     "SetQuotaPropertiesResult",
+    "SurveyListElement",
     "SurveyProperties",
     "SurveyUserActivationSettings",
 ]
