@@ -126,7 +126,7 @@ def docs_build(session: nox.Session) -> None:
     if build_dir.exists():
         shutil.rmtree(build_dir)
 
-    session.run("sphinx-build", *args)
+    session.run("sphinx-build", "-W", *args)
 
 
 @nox.session(name="docs-serve")
