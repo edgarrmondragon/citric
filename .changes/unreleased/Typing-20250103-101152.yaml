@@ -1,5 +1,0 @@
-kind: Typing
-body: Richer annotation for the return type of `list_surveys`
-time: 2025-01-03T10:11:52.478901-06:00
-custom:
-    Issue: "1245"
