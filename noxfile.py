@@ -12,12 +12,12 @@ GH_ACTIONS_ENV_VAR = "GITHUB_ACTIONS"
 FORCE_COLOR = "FORCE_COLOR"
 
 nox.options.sessions = [
-    "tests",
     "xdoctest",
-    "deps",
     "mypy",
+    "deps",
     "docs-build",
     "api",
+    "tests",
 ]
 nox.needs_version = ">=2024.4.15"
 nox.options.default_venv_backend = "uv"
