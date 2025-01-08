@@ -1,5 +1,0 @@
-kind: Typing
-body: 'Add type annotations for quota language settings and test those attributes'
-time: 2024-12-10T19:49:42.152857-06:00
-custom:
-    Issue: "1230"

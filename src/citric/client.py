@@ -1508,7 +1508,7 @@ class Client:  # noqa: PLR0904
         .. versionadded:: 0.0.1
            This method.
 
-        .. versionadded:: NEXT_VERSION
+        .. versionadded:: 1.3.0
            The *survey_group_id* parameter.
 
         .. minlimesurveyparam:: 6.10.0 survey_group_id
