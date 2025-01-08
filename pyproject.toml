@@ -14,7 +14,7 @@ keywords = [
   "limesurvey",
 ]
 license = "MIT"
-license-files = [ "LICENSE" ]
+license-files = [ "LICENSE", "AUTHORS.md" ]
 maintainers = [
   { name = "Edgar Ramírez-Mondragón", email = "edgarrm358@gmail.com" },
 ]
