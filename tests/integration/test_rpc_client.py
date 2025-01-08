@@ -155,10 +155,10 @@ def test_survey(
     assert matched["surveyls_title"] == NEW_SURVEY_NAME
 
     with subtests.test(msg="survey group ID"):
-        if server_version < (6, 9, 0):
+        if server_version < (6, 10, 0):
             pytest.xfail(
                 "The gsid field is not available as input nor output of the RPC "
-                "list_surveys method in LimeSurvey < 6.9.0"
+                "list_surveys method in LimeSurvey < 6.10.0"
             )
 
         gsid = matched["gsid"]
