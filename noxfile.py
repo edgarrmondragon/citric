@@ -18,6 +18,7 @@ nox.options.sessions = [
     "docs-build",
     "api",
     "tests",
+    "integration",
 ]
 nox.needs_version = ">=2024.4.15"
 nox.options.default_venv_backend = "uv"
@@ -63,7 +64,7 @@ def tests(session: nox.Session, constraints: str) -> None:
 def integration(session: nox.Session) -> None:
     """Execute integration tests and compute coverage."""
     session.install("citric @ .", "-r=requirements/requirements-test.txt")
-    _run_tests(session, "-m", "integration_test", *session.posargs)
+    _run_tests(session, "--integration", "-m", "integration_test", *session.posargs)
 
 
 @nox.session(tags=["test"])

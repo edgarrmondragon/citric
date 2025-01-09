@@ -257,6 +257,7 @@ dev = [
     { name = "myst-parser", version = "3.0.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
     { name = "myst-parser", version = "4.0.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10'" },
     { name = "pytest" },
+    { name = "pytest-docker" },
     { name = "pytest-github-actions-annotate-failures" },
     { name = "pytest-httpserver" },
     { name = "pytest-reverse", version = "1.7.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.9'" },
@@ -298,6 +299,7 @@ test = [
     { name = "coverage", version = "7.6.10", source = { registry = "https://pypi.org/simple" }, extra = ["toml"], marker = "python_full_version >= '3.9'" },
     { name = "faker" },
     { name = "pytest" },
+    { name = "pytest-docker" },
     { name = "pytest-github-actions-annotate-failures" },
     { name = "pytest-httpserver" },
     { name = "pytest-reverse", version = "1.7.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.9'" },
@@ -315,6 +317,7 @@ typing = [
     { name = "faker" },
     { name = "mypy" },
     { name = "pytest" },
+    { name = "pytest-docker" },
     { name = "pytest-github-actions-annotate-failures" },
     { name = "pytest-httpserver" },
     { name = "pytest-reverse", version = "1.7.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.9'" },
@@ -347,6 +350,7 @@ dev = [
     { name = "mypy", specifier = ">=1.9" },
     { name = "myst-parser", specifier = ">=2" },
     { name = "pytest", specifier = ">=8" },
+    { name = "pytest-docker", specifier = ">=3.1.1" },
     { name = "pytest-github-actions-annotate-failures", specifier = ">=0.1.7" },
     { name = "pytest-httpserver", specifier = ">=1.0.8" },
     { name = "pytest-reverse", specifier = ">=1.7" },
@@ -380,6 +384,7 @@ test = [
     { name = "coverage", extras = ["toml"], specifier = ">=7.4.2" },
     { name = "faker", specifier = ">=19" },
     { name = "pytest", specifier = ">=8" },
+    { name = "pytest-docker", specifier = ">=3.1.1" },
     { name = "pytest-github-actions-annotate-failures", specifier = ">=0.1.7" },
     { name = "pytest-httpserver", specifier = ">=1.0.8" },
     { name = "pytest-reverse", specifier = ">=1.7" },
@@ -394,6 +399,7 @@ typing = [
     { name = "faker", specifier = ">=19" },
     { name = "mypy", specifier = ">=1.9" },
     { name = "pytest", specifier = ">=8" },
+    { name = "pytest-docker", specifier = ">=3.1.1" },
     { name = "pytest-github-actions-annotate-failures", specifier = ">=0.1.7" },
     { name = "pytest-httpserver", specifier = ">=1.0.8" },
     { name = "pytest-reverse", specifier = ">=1.7" },
@@ -1095,6 +1101,19 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/05/35/30e0d83068951d90a01852cb1cef56e5d8a09d20c7f511634cc2f7e0372a/pytest-8.3.4.tar.gz", hash = "sha256:965370d062bce11e73868e0335abac31b4d3de0e82f4007408d242b4f8610761", size = 1445919 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/11/92/76a1c94d3afee238333bc0a42b82935dd8f9cf8ce9e336ff87ee14d9e1cf/pytest-8.3.4-py3-none-any.whl", hash = "sha256:50e16d954148559c9a74109af1eaf0c945ba2d8f30f0a3d3335edde19788b6f6", size = 343083 },
+]
+
+[[package]]
+name = "pytest-docker"
+version = "3.1.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "attrs" },
+    { name = "pytest" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/e7/a6/543f2fb157ad228fcc04a8974aa16c989058834d8e539608814cf722f1b3/pytest-docker-3.1.1.tar.gz", hash = "sha256:2371524804a752aaa766c79b9eee8e634534afddb82597f3b573da7c5d6ffb5f", size = 12918 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/1a/a4/69defc13bf77ee5aeb3e7b7c45393d6c7312e9c4d8b55d280a094ff76ff3/pytest_docker-3.1.1-py3-none-any.whl", hash = "sha256:fd0d48d6feac41f62acbc758319215ec9bb805c2309622afb07c27fa5c5ae362", size = 8243 },
 ]
 
 [[package]]
