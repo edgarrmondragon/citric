@@ -17,17 +17,6 @@ from citric.session import Session
 load_dotenv()
 
 
-def _add_integration_skip(
-    item: pytest.Item,
-    value: str | None,
-    reason: str,
-) -> None:
-    """Add a skip marker to integration tests if the required option is not set."""
-    if value is None:
-        marker = pytest.mark.skip(reason=reason)
-        item.add_marker(marker)
-
-
 def _from_env_var(
     env_var: str,
     default: str | None = None,
@@ -39,67 +28,83 @@ def _from_env_var(
 def pytest_addoption(parser: pytest.Parser):
     """Add command line options to pytest."""
     parser.addoption(
-        "--database-type",
-        action="store",
-        choices=["postgres", "mysql"],
-        help="Database used for integration tests.",
-        default=_from_env_var("BACKEND"),
+        "--integration",
+        action="store_true",
+        help="Enable integration tests.",
     )
 
     parser.addoption(
-        "--limesurvey-url",
+        "--limesurvey-database-type",
         action="store",
-        help="URL of the LimeSurvey instance to test against.",
-        default=_from_env_var("LS_URL"),
+        choices=["postgres", "mysql"],
+        help="Database used for integration tests.",
+        default=_from_env_var("LS_DATABASE_TYPE", "postgres"),
+    )
+
+    parser.addoption(
+        "--limesurvey-image-tag",
+        action="store",
+        help="Docker image tag for integration tests.",
+        default=_from_env_var("LS_IMAGE_TAG", "6-apache"),
     )
 
     parser.addoption(
         "--limesurvey-username",
         action="store",
         help="Username of the LimeSurvey user to test against.",
-        default=_from_env_var("LS_USER"),
+        default=_from_env_var("LS_USER", "limesurvey_user"),
     )
 
     parser.addoption(
         "--limesurvey-password",
         action="store",
         help="Password of the LimeSurvey user to test against.",
-        default=_from_env_var("LS_PASSWORD"),
+        default=_from_env_var("LS_PASSWORD", "limesurvey_password"),
+    )
+
+    # Use a specific git reference in LimeSurvey's repository
+    parser.addoption(
+        "--limesurvey-git-reference",
+        action="store",
+        help="Reference to a specific LimeSurvey commit.",
+        default=_from_env_var("LS_REF"),
     )
 
     parser.addoption(
-        "--mailhog-url",
+        "--limesurvey-docker-context",
         action="store",
-        help="URL of the MailHog instance to test against.",
-        default=_from_env_var("MAILHOG_URL", "http://localhost:8025"),
+        help="Path to the Docker context to build the LimeSurvey image.",
+        default=_from_env_var(
+            "LS_DOCKER_CONTEXT",
+            "https://github.com/martialblog/docker-limesurvey.git#master:6.0/apache",
+        ),
+    )
+
+    parser.addoption(
+        "--limesurvey-dockerfile",
+        action="store",
+        help="Path to the Dockerfile to build the LimeSurvey image, relative to the Docker context.",  # noqa: E501
+        default=_from_env_var("LS_DOCKERFILE", "Dockerfile"),
     )
 
 
 def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item]):
     """Modify test collection."""
-    backend = config.getoption("--database-type")
-    url = config.getoption("--limesurvey-url")
-    username = config.getoption("--limesurvey-username")
-    password = config.getoption("--limesurvey-password")
+    integration_enabled = config.getoption("--integration")
+    backend = config.getoption("--limesurvey-database-type")
 
     xfail_mysql = pytest.mark.xfail(reason="This test fails on MySQL")
-    skip_integration = [
-        (backend, "No database type specified"),
-        (url, "No LimeSurvey URL specified"),
-        (username, "No LimeSurvey username specified"),
-        (password, "No LimeSurvey password specified"),
-    ]
 
     for item in items:
         if backend == "mysql" and "xfail_mysql" in item.keywords:
             item.add_marker(xfail_mysql)
 
-        if "integration_test" in item.keywords:
-            for value, reason in skip_integration:
-                _add_integration_skip(item, value, reason)
+        if "integration_test" in item.keywords and not integration_enabled:
+            marker = pytest.mark.skip(reason="Integration tests are not enabled.")
+            item.add_marker(marker)
 
 
-def pytest_report_header() -> list[str]:
+def pytest_report_header(config: pytest.Config) -> list[str]:
     """Return a list of strings to be displayed in the header of the report."""
     env_vars = [
         f"{key}: {value}"
@@ -112,13 +117,35 @@ def pytest_report_header() -> list[str]:
         f"urllib3: {version('urllib3')}",
     ]
 
-    return env_vars + dependencies
+    integration = [
+        f"Limesurvey database type: {config.getoption('--limesurvey-database-type')}",
+        f"LimeSurvey username: {config.getoption('--limesurvey-username')}",
+        f"LimeSurvey password: {config.getoption('--limesurvey-password')}",
+    ]
+
+    if config.getoption("--limesurvey-git-reference"):
+        integration.extend([
+            f"LimeSurvey git reference: {config.getoption('--limesurvey-git-reference')}",  # noqa: E501
+            f"LimeSurvey Docker context: {config.getoption('--limesurvey-docker-context')}",  # noqa: E501
+        ])
+    else:
+        integration.append(
+            f"LimeSurvey image tag: {config.getoption('--limesurvey-image-tag')}"
+        )
+
+    return env_vars + dependencies + integration
 
 
 @pytest.fixture(scope="session")
-def integration_url(request: pytest.FixtureRequest) -> str:
+def database_type(request: pytest.FixtureRequest) -> str:
+    """Database type."""
+    return request.config.getoption("--limesurvey-database-type")
+
+
+@pytest.fixture(scope="session")
+def image_tag(request: pytest.FixtureRequest) -> str:
     """LimeSurvey URL."""
-    return request.config.getoption("--limesurvey-url")
+    return request.config.getoption("--limesurvey-image-tag")
 
 
 @pytest.fixture(scope="session")
@@ -137,6 +164,24 @@ def integration_password(request: pytest.FixtureRequest) -> str:
 def integration_mailhog_url(request: pytest.FixtureRequest) -> str:
     """MailHog URL."""
     return request.config.getoption("--mailhog-url")
+
+
+@pytest.fixture(scope="session")
+def git_reference(request: pytest.FixtureRequest) -> str:
+    """LimeSurvey git reference."""
+    return request.config.getoption("--limesurvey-git-reference")
+
+
+@pytest.fixture(scope="session")
+def docker_context(request: pytest.FixtureRequest) -> str:
+    """Docker context."""
+    return request.config.getoption("--limesurvey-docker-context")
+
+
+@pytest.fixture(scope="session")
+def dockerfile(request: pytest.FixtureRequest) -> str:
+    """Dockerfile."""
+    return request.config.getoption("--limesurvey-dockerfile")
 
 
 class LimeSurveyMockAdapter(BaseAdapter):
