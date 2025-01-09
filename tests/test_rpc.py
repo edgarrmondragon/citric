@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import contextlib
+import dataclasses
 import json
 import random
 import sys
@@ -125,51 +127,53 @@ def test_non_json_response(session: Session):
         session.__not_json()
 
 
-def test_json_encode_error(session: Session):
-    """Test JSON encoding error."""
+@dataclasses.dataclass
+class NotSerializable:
+    """Not serializable."""
 
-    class NotSerializable:
-        """Not serializable."""
-
-        def __init__(self, value: int):
-            self.value = value
-
-    with pytest.raises(
-        TypeError,
-        match="Object of type NotSerializable is not JSON serializable",
-    ):
-        session._invoke("json_encode_error", NotSerializable(123))
+    value: int
 
 
-def test_custom_json_encoder(
+class CustomJSONEncoder(json.JSONEncoder):
+    """Custom JSON encoder."""
+
+    def default(self, o: object) -> object:  # noqa: D102
+        return o.value if isinstance(o, NotSerializable) else super().default(o)
+
+
+@pytest.mark.parametrize(
+    ("encoder", "context"),
+    [
+        pytest.param(
+            None,
+            pytest.raises(
+                TypeError,
+                match="Object of type NotSerializable is not JSON serializable",
+            ),
+            id="default",
+        ),
+        pytest.param(CustomJSONEncoder, contextlib.nullcontext(), id="custom"),
+    ],
+)
+def test_json_encoder(
+    mock_session: requests.Session,
     url: str,
     username: str,
     password: str,
-    mock_session: requests.Session,
+    encoder: type[json.JSONEncoder],
+    context: contextlib.AbstractContextManager,
 ):
-    """Test custom JSON encoder."""
-
-    class NotSerializable:
-        """Not serializable."""
-
-        def __init__(self, value: int):
-            self.value = value
-
-    class CustomJSONEncoder(json.JSONEncoder):
-        """Custom JSON encoder."""
-
-        def default(self, o: object) -> object:
-            return o.value if isinstance(o, NotSerializable) else super().default(o)
-
+    """Test JSON encoding error."""
     session = Session(
         url,
         username,
         password,
         requests_session=mock_session,
-        json_encoder=CustomJSONEncoder,
+        json_encoder=encoder,
     )
 
-    session._invoke("json_encode_error", NotSerializable(123))
+    with context:
+        session._invoke("json_encode_error", NotSerializable(123))
 
 
 def test_api_error(session: Session):
