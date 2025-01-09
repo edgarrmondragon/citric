@@ -2,7 +2,7 @@ services:
   limesurvey:
     image: edgarrmondragon/limesurvey
     build:
-      context: ${LS_DOCKERFILE_CONTEXT:-https://github.com/martialblog/docker-limesurvey.git#master:6.0/apache}
+      context: ${LS_DOCKER_CONTEXT:-https://github.com/martialblog/docker-limesurvey.git#master:6.0/apache}
       dockerfile: ${LS_DOCKERFILE:-Dockerfile}
       args:
         archive_url: ${LS_ARCHIVE_URL}

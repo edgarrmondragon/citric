@@ -2,7 +2,7 @@ services:
   limesurvey:
     volumes:
       - "surveys:/var/www/html/upload/surveys"
-      - "./tests/resources/config.php:/var/www/html/application/config/config.php"
+      - "./resources/config.php:/var/www/html/application/config/config.php"
     environment:
       DB_TYPE: mysql
       DB_HOST: db
