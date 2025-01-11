@@ -67,13 +67,13 @@ def docker_compose_file(
     git_reference: str | None,
 ) -> list[Path | str] | Path | str:
     """Get an absolute path to the  `docker-compose.yml` file."""
-    files = ["docker-compose.yml"]
+    files = ["compose.yaml"]
 
     if database_type == "mysql":
-        files.append("docker-compose.mysql.yml")
+        files.append("compose.mysql.yaml")
 
     if git_reference:
-        files.append("docker-compose.ref.yml")
+        files.append("compose.git-ref.yaml")
 
     return [pytestconfig.rootpath / "tests" / file for file in files]
 
