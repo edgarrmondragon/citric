@@ -13,7 +13,6 @@ footerFormat: ""
 newlines:
   beforeChangelogVersion: 1
   afterKind: 1
-  beforeKind: 1
   afterChange: 1
 kinds:
 - label: Added

@@ -1,6 +1,7 @@
 ci:
-  autofix_commit_msg: '[pre-commit.ci] auto fixes'
+  autofix_commit_msg: 'chore: pre-commit auto fixes'
   autofix_prs: true
+  autoupdate_commit_msg: 'chore(deps): pre-commit autoupdate'
   skip:
   - pip-compile
 
@@ -19,14 +20,14 @@ repos:
   - id: trailing-whitespace
 
 - repo: https://github.com/python-jsonschema/check-jsonschema
-  rev: 0.30.0
+  rev: 0.31.0
   hooks:
   - id: check-dependabot
   - id: check-github-workflows
   - id: check-readthedocs
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.8.4
+  rev: v0.9.1
   hooks:
   - id: ruff
     args: [--fix, --exit-non-zero-on-fix, --show-fixes]
@@ -50,7 +51,7 @@ repos:
   - id: validate_manifest
 
 - repo: https://github.com/hadialqattan/pycln
-  rev: v2.4.0
+  rev: v2.5.0
   hooks:
   - id: pycln
     args: [--all]
@@ -61,7 +62,7 @@ repos:
   - id: pyproject-fmt
 
 - repo: https://github.com/astral-sh/uv-pre-commit
-  rev: 0.5.12
+  rev: 0.5.18
   hooks:
   - id: uv-export
     name: Export Docs Dependencies

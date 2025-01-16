@@ -12,12 +12,13 @@ GH_ACTIONS_ENV_VAR = "GITHUB_ACTIONS"
 FORCE_COLOR = "FORCE_COLOR"
 
 nox.options.sessions = [
-    "tests",
     "xdoctest",
-    "deps",
     "mypy",
+    "deps",
     "docs-build",
     "api",
+    "tests",
+    "integration",
 ]
 nox.needs_version = ">=2024.4.15"
 nox.options.default_venv_backend = "uv"
@@ -63,7 +64,7 @@ def tests(session: nox.Session, constraints: str) -> None:
 def integration(session: nox.Session) -> None:
     """Execute integration tests and compute coverage."""
     session.install("citric @ .", "-r=requirements/requirements-test.txt")
-    _run_tests(session, "-m", "integration_test", *session.posargs)
+    _run_tests(session, "--integration", "-m", "integration_test", *session.posargs)
 
 
 @nox.session(tags=["test"])
@@ -126,7 +127,7 @@ def docs_build(session: nox.Session) -> None:
     if build_dir.exists():
         shutil.rmtree(build_dir)
 
-    session.run("sphinx-build", *args)
+    session.run("sphinx-build", "-W", *args)
 
 
 @nox.session(name="docs-serve")

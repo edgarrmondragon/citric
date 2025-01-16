@@ -27,6 +27,7 @@ __all__ = [
     "RPCResponse",
     "Result",
     "SetQuotaPropertiesResult",
+    "SurveyListElement",
     "SurveyProperties",
     "SurveyUserActivationSettings",
 ]
@@ -418,7 +419,7 @@ class SurveyListElement(t.TypedDict, total=False):
     gsid: int
     """The survey group ID.
 
-    .. minlimesurveyattribute:: 6.9.0
+    .. minlimesurveyattribute:: 6.10.0
     """
 
     surveyls_title: str

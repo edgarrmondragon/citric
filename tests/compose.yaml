@@ -4,7 +4,7 @@ services:
     volumes:
       - "surveys:/var/www/html/upload/surveys"
       - "apache:/var/log/apache2"
-      - "./tests/resources/config.php:/var/www/html/application/config/config.php"
+      - "./resources/config.php:/var/www/html/application/config/config.php"
     depends_on:
       - db
     ports:
@@ -37,25 +37,11 @@ services:
       POSTGRES_PASSWORD: secret
     volumes:
       - "limedb:/var/lib/postgresql/data"
-    ports:
-      - 5432:5432
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "limesurvey"]
       interval: 15s
       timeout: 10s
       retries: 3
-
-  storage:
-    image: quay.io/minio/minio:latest
-    volumes:
-      - "object_storage:/data/"
-    ports:
-      - "9000:9000"
-      - "9001:9001"
-    command: server /data --console-address ":9001"
-    profiles:
-      - web
-      - notebook
 
   mailhog:
     image: mailhog/mailhog
