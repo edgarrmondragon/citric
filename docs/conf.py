@@ -27,17 +27,20 @@ release = citric.__version__
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
 extensions = [
+    # Built-in extensions
     "sphinx.ext.autodoc",
     "sphinx.ext.extlinks",
     "sphinx.ext.intersphinx",
     "sphinx.ext.linkcode",
     "sphinx.ext.napoleon",
+    # Third-party extensions
     "autoapi.extension",
     "myst_parser",
     "sphinx_copybutton",
-    "limesurvey_future",
     "hoverxref.extension",
     "notfound.extension",
+    # Custom extensions
+    "minlimesurvey",
 ]
 
 source_suffix = {
