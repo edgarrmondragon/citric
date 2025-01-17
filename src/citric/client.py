@@ -535,7 +535,7 @@ class Client:  # noqa: PLR0904
         .. versionadded:: 0.0.10
         .. versionchanged:: 0.10.0
            The ``destination_survey_id`` optional parameter was added.
-        .. futureparam:: 6.4.0 destination_survey_id
+        .. minlimesurveyparam:: 6.4.0 destination_survey_id
         """
         return self.session.copy_survey(survey_id, name, destination_survey_id)
 
@@ -1510,6 +1510,8 @@ class Client:  # noqa: PLR0904
 
         .. versionadded:: NEXT_VERSION
            The *survey_group_id* parameter.
+
+        .. minlimesurveyparam:: 6.10.0 survey_group_id
         """
         return self.session.list_surveys(username, survey_group_id)
 
