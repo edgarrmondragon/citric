@@ -436,9 +436,9 @@ pytest==8.3.4 \
 pytest-docker==3.1.1 \
     --hash=sha256:2371524804a752aaa766c79b9eee8e634534afddb82597f3b573da7c5d6ffb5f \
     --hash=sha256:fd0d48d6feac41f62acbc758319215ec9bb805c2309622afb07c27fa5c5ae362
-pytest-github-actions-annotate-failures==0.2.0 \
-    --hash=sha256:844ab626d389496e44f960b42f0a72cce29ae06d363426d17ea9ae1b4bef2288 \
-    --hash=sha256:8bcef65fed503faaa0524b59cfeccc8995130972dd7b008d64193cc41b9cde85
+pytest-github-actions-annotate-failures==0.3.0 \
+    --hash=sha256:41ea558ba10c332c0bfc053daeee0c85187507b2034e990f21e4f7e5fef044cf \
+    --hash=sha256:d4c3177c98046c3900a7f8ddebb22ea54b9f6822201b5d3ab8fcdea51e010db7
 pytest-httpserver==1.1.0 \
     --hash=sha256:6b1cb0199e2ed551b1b94d43f096863bbf6ae5bcd7c75c2c06845e5ce2dc8701 \
     --hash=sha256:7ef88be8ed3354b6784daa3daa75a422370327c634053cefb124903fa8d73a41
