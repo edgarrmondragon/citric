@@ -7,7 +7,7 @@ on:
 
 env:
   UV_VERSION: ">=0.5.19"
-  ZIZMOR_VERSION: 1.2.0
+  ZIZMOR_VERSION: 1.2.1
 
 jobs:
   zizmor:
