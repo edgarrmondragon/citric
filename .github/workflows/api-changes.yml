@@ -1,4 +1,4 @@
-name: API Changes
+name: API Changes 🤝
 
 on:
   pull_request:
@@ -11,6 +11,15 @@ on:
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
+
+env:
+  FORCE_COLOR: 1
+  # renovate: datasource=pypi depName=griffe
+  GRIFFE_VERSION: 1.5.5
+  # renovate: datasource=pypi depName=nox
+  NOX_VERSION: 2024.10.9
+  # renovate: datasource=pypi depName=uv
+  UV_VERSION: 0.5.21
 
 permissions:  # added using https://github.com/step-security/secure-repo
   contents: read
@@ -33,13 +42,16 @@ jobs:
       with:
         python-version: 3.x
 
+    - name: Install uv
+      uses: astral-sh/setup-uv@180f8b44399608a850e1db031fa65c77746566d3 # v5.0.1
+      with:
+        version: ${{ env.UV_VERSION }}
+
     - name: Install tools
-      env:
-        PIP_CONSTRAINT: ${{ github.workspace }}/requirements/requirements-ci.txt
       run: |
-        python -Im pip install -U pip
-        pipx install griffe nox uv
-        pipx list
+        uv tool install --with nox==${{ env.NOX_VERSION }} nox
+        uv tool install --with griffe==${{ env.GRIFFE_VERSION }} griffe
+        uv tool list
 
     - name: Set REF
       id: set-ref
