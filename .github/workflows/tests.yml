@@ -40,6 +40,10 @@ concurrency:
 
 env:
   FORCE_COLOR: "1"
+  # renovate: datasource=pypi depName=nox
+  NOX_VERSION: 2024.10.9
+  # renovate: datasource=pypi depName=uv
+  UV_VERSION: 0.5.21
 
 jobs:
   tests:
@@ -99,6 +103,9 @@ jobs:
 
     - name: Install tools
       uses: ./.github/actions/install-tools
+      with:
+        nox-version: ${{ env.NOX_VERSION }}
+        uv-version: ${{ env.UV_VERSION }}
 
     - name: Run Tests
       run: |
@@ -141,6 +148,9 @@ jobs:
 
     - name: Install tools
       uses: ./.github/actions/install-tools
+      with:
+        nox-version: ${{ env.NOX_VERSION }}
+        uv-version: ${{ env.UV_VERSION }}
 
     - name: Run Dependency Checks
       run: |
@@ -172,6 +182,9 @@ jobs:
 
     - name: Install tools
       uses: ./.github/actions/install-tools
+      with:
+        nox-version: ${{ env.NOX_VERSION }}
+        uv-version: ${{ env.UV_VERSION }}
 
     - name: Test against required tags
       if: ${{ contains(github.event.pull_request.labels.*.name, 'Release') || inputs.all_integrations || github.event_name == 'schedule' }}
@@ -299,6 +312,9 @@ jobs:
 
     - name: Install tools
       uses: ./.github/actions/install-tools
+      with:
+        nox-version: ${{ env.NOX_VERSION }}
+        uv-version: ${{ env.UV_VERSION }}
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@6524bf65af31da8d45b59e8c27de4bd072b392f5 # v3.8.0
@@ -362,6 +378,9 @@ jobs:
 
     - name: Install tools
       uses: ./.github/actions/install-tools
+      with:
+        nox-version: ${{ env.NOX_VERSION }}
+        uv-version: ${{ env.UV_VERSION }}
 
     - name: Download coverage data
       uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
