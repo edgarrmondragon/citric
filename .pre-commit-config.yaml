@@ -46,7 +46,7 @@ repos:
     - tomli
 
 - repo: https://github.com/pre-commit/pre-commit
-  rev: v4.0.1
+  rev: v4.1.0
   hooks:
   - id: validate_manifest
 
