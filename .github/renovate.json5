@@ -37,6 +37,10 @@
   // https://docs.renovatebot.com/configuration-options/#reviewers
   "reviewers": ["edgarrmondragon"],
 
+  "ignorePaths": [
+    "requirements/requirements-*.txt",
+  ],
+
   // https://docs.renovatebot.com/configuration-options/#packagerules
   "packageRules": [
     {
@@ -47,11 +51,5 @@
       "matchPackageNames": ["actions/upload-artifact", "actions/download-artifact"],
       "groupName": "GitHub artifact actions",
     },
-    {
-      "matchFileNames": ["requirements/requirements-docs.txt"],
-      "labels": ["dependencies", "documentation"],
-      "groupName": "Documentation dependencies",
-      "groupSlug": "deps-docs",
-    }
   ]
 }
