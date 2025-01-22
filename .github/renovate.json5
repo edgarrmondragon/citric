@@ -41,6 +41,16 @@
     "requirements/requirements-*.txt",
   ],
 
+  "customManagers": [
+    {
+      "customType": "regex",
+      "fileMatch": ["\\.github/workflows/tests\\.yml"],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)\\s+os: \"?(?<currentValue>\\S+?)\"?\\s+"
+      ]
+    }
+  ],
+
   // https://docs.renovatebot.com/configuration-options/#packagerules
   "packageRules": [
     {

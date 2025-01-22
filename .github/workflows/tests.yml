@@ -58,28 +58,48 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version:
-        - "3.9"
-        - "3.10"
-        - "3.11"
-        - "3.12"
-        - "3.13"
-        - "pypy3.10"
-        os: ["ubuntu-24.04"]
         include:
+        - python-version: "3.13"
+          # renovate: datasource=github-runners depName=ubuntu
+          os: ubuntu-24.04
+
+        - python-version: "3.12"
+          # renovate: datasource=github-runners depName=ubuntu
+          os: ubuntu-24.04
+
+        - python-version: "3.11"
+          # renovate: datasource=github-runners depName=ubuntu
+          os: ubuntu-24.04
+
+        - python-version: "3.10"
+          # renovate: datasource=github-runners depName=ubuntu
+          os: ubuntu-24.04
+
+        - python-version: "3.9"
+          # renovate: datasource=github-runners depName=ubuntu
+          os: ubuntu-24.04
+
         - python-version: "3.8"
-          os: "ubuntu-24.04"
+          # renovate: datasource=github-runners depName=ubuntu
+          os: ubuntu-24.04
+
+        - python-version: "pypy3.10"
+          # renovate: datasource=github-runners depName=ubuntu
+          os: ubuntu-24.04
 
         - python-version: "3.14"
-          os: "ubuntu-24.04"
+          # renovate: datasource=github-runners depName=ubuntu
+          os: ubuntu-24.04
           experimental: true
           nightly: true
 
         - python-version: "3.13"
-          os: "windows-latest"
+        # renovate: datasource=github-runners depName=windows
+          os: windows-2022
 
         - python-version: "3.13"
-          os: "macos-latest"
+          # renovate: datasource=github-runners depName=macos
+          os: macos-15
 
     steps:
     - name: Check out the repository
