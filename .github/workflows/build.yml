@@ -19,12 +19,15 @@ jobs:
   build:
     name: Build wheel and sdist
     runs-on: ubuntu-24.04
+    outputs:
+      version: ${{ steps.baipp.outputs.package_version }}
     steps:
     - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       with:
         ref: ${{ github.event.inputs.tag || github.ref }}
         persist-credentials: false
     - uses: hynek/build-and-inspect-python-package@14c7e53f5d033cfa99f7af916fa59a6f7f356394 # v2.11.0
+      id: baipp
 
   upload-to-release:
     name: Upload to GitHub Release
@@ -53,7 +56,7 @@ jobs:
     needs: [build]
     environment:
       name: pypi
-      url: https://pypi.org/p/citric
+      url: https://pypi.org/project/citric/${{ needs.build.outputs.version }}
     permissions:
       id-token: write # IMPORTANT: mandatory for trusted publishing
 
