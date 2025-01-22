@@ -30,6 +30,13 @@ jobs:
     steps:
       - checkout
       - run: python --version
+      - run:
+          name: Install Python dependencies
+          command: "curl -LsSf https://astral.sh/uv/install.sh | sh"
+          no_output_timeout: 5m
+      - run:
+          name: Run unit tests
+          command: uvx nox -s tests
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/configuration-reference/#workflows
