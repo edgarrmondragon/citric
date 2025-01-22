@@ -41,11 +41,17 @@
   "packageRules": [
     {
       "matchPackageNames": ["uv", "astral-sh/uv-pre-commit"],
-      "groupName": "uv-version"
+      "groupName": "uv-version",
     },
     {
       "matchPackageNames": ["actions/upload-artifact", "actions/download-artifact"],
-      "groupName": "GitHub artifact actions"
+      "groupName": "GitHub artifact actions",
     },
+    {
+      "matchFileNames": ["requirements/requirements-docs.txt"],
+      "labels": ["dependencies", "documentation"],
+      "groupName": "Documentation dependencies",
+      "groupSlug": "deps-docs",
+    }
   ]
 }
