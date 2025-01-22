@@ -43,5 +43,9 @@
       "matchPackageNames": ["uv", "astral-sh/uv-pre-commit"],
       "groupName": "uv-version"
     },
+    {
+      "matchPackageNames": ["actions/upload-artifact", "actions/download-artifact"],
+      "groupName": "GitHub artifact actions"
+    },
   ]
 }
