@@ -26,7 +26,7 @@ if t.TYPE_CHECKING:
     from faker import Faker
     from pytest_subtests import SubTests
 
-    from tests.fixtures import MailHogClient
+    from tests.fixtures import MailpitClient
 
 NEW_SURVEY_NAME = "New Survey"
 
@@ -958,7 +958,7 @@ def test_mail_registered_participants(
     client: citric.Client,
     survey_id: int,
     participants: list[dict[str, str]],
-    mailhog: MailHogClient,
+    mailpit: MailpitClient,
     subtests: SubTests,
 ):
     """Test mail_registered_participants."""
@@ -971,7 +971,7 @@ def test_mail_registered_participants(
     )
 
     with subtests.test(msg="No initial emails"):
-        assert mailhog.get_all()["total"] == 0
+        assert mailpit.get_all()["total"] == 0
 
     # `mail_registered_participants` returns a non-error status messages even when
     # emails are sent successfully and that violates assumptions made by this
@@ -983,9 +983,9 @@ def test_mail_registered_participants(
         client.session.mail_registered_participants(survey_id)
 
     with subtests.test(msg="2 emails sent"):
-        assert mailhog.get_all()["total"] == 2
+        assert mailpit.get_all()["total"] == 2
 
-    mailhog.delete()
+    mailpit.delete()
 
     with pytest.raises(
         LimeSurveyStatusError,
@@ -994,7 +994,7 @@ def test_mail_registered_participants(
         client.session.mail_registered_participants(survey_id)
 
     with subtests.test(msg="No more emails sent"):
-        assert mailhog.get_all()["total"] == 0
+        assert mailpit.get_all()["total"] == 0
 
 
 @pytest.mark.integration_test
@@ -1002,7 +1002,7 @@ def test_remind_participants(
     client: citric.Client,
     survey_id: int,
     participants: list[dict[str, str]],
-    mailhog: MailHogClient,
+    mailpit: MailpitClient,
     subtests: SubTests,
 ):
     """Test remind_participants."""
@@ -1015,15 +1015,15 @@ def test_remind_participants(
     )
 
     with subtests.test(msg="No initial emails"):
-        assert mailhog.get_all()["total"] == 0
+        assert mailpit.get_all()["total"] == 0
 
     # Use `call` to avoid error handling
     client.session.call("mail_registered_participants", survey_id)
 
     with subtests.test(msg="2 emails sent"):
-        assert mailhog.get_all()["total"] == 2
+        assert mailpit.get_all()["total"] == 2
 
-    mailhog.delete()
+    mailpit.delete()
 
     # `remind_participants` returns a non-error status messages even when emails are
     # sent successfully and that violates assumptions made by this library about the
@@ -1032,4 +1032,4 @@ def test_remind_participants(
         client.session.remind_participants(survey_id)
 
     with subtests.test(msg="2 reminders sent"):
-        assert mailhog.get_all()["total"] == 2
+        assert mailpit.get_all()["total"] == 2
