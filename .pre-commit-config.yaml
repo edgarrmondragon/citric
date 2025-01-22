@@ -22,9 +22,12 @@ repos:
 - repo: https://github.com/python-jsonschema/check-jsonschema
   rev: 0.31.0
   hooks:
-  - id: check-dependabot
   - id: check-github-workflows
   - id: check-readthedocs
+  - id: check-renovate
+    language: python
+    additional_dependencies:
+    - pyjson5==1.6.8
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
   rev: v0.9.2
