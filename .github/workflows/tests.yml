@@ -65,13 +65,13 @@ jobs:
         - "3.12"
         - "3.13"
         - "pypy3.10"
-        os: ["ubuntu-latest"]
+        os: ["ubuntu-24.04"]
         include:
         - python-version: "3.8"
-          os: "ubuntu-latest"
+          os: "ubuntu-24.04"
 
         - python-version: "3.14"
-          os: "ubuntu-latest"
+          os: "ubuntu-24.04"
           experimental: true
           nightly: true
 
@@ -132,7 +132,7 @@ jobs:
 
   lint:
     name: Lint
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
 
@@ -162,7 +162,7 @@ jobs:
 
   docker_tags:
     name: Get Docker tags
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     outputs:
       tags: ${{ steps.tags.outputs.tags }}
     permissions:
@@ -203,7 +203,7 @@ jobs:
 
   databases:
     name: Get database engines
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     outputs:
       engines: ${{ steps.engines.outputs.engines }}
     permissions:
@@ -231,7 +231,7 @@ jobs:
 
   integration:
     name: "integration ${{ matrix.python-version }} / ${{ matrix.image_tag || matrix.ref }} / ${{ matrix.database }}"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     continue-on-error: true
     needs: [docker_tags, databases]
     permissions:
@@ -355,7 +355,7 @@ jobs:
 
   coverage:
     name: Coverage
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [tests, integration]
     permissions:
       contents: read

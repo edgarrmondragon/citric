@@ -18,7 +18,7 @@ permissions: read-all
 jobs:
   build:
     name: Build wheel and sdist
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
     - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       with:
@@ -29,7 +29,7 @@ jobs:
   upload-to-release:
     name: Upload to GitHub Release
     if: startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [build]
     permissions:
       contents: write # IMPORTANT: mandatory for making GitHub Releases
@@ -49,7 +49,7 @@ jobs:
   publish:
     name: Publish to PyPI
     if: startsWith(github.ref, 'refs/tags/') || github.event.inputs.publish == 'true'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [build]
     environment:
       name: pypi
@@ -67,7 +67,7 @@ jobs:
   sign:
     name: Sign the distribution package
     if: startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [build]
     permissions:
       contents: write     # IMPORTANT: mandatory for making GitHub Releases
