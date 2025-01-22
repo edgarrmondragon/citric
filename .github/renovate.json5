@@ -40,8 +40,8 @@
   // https://docs.renovatebot.com/configuration-options/#packagerules
   "packageRules": [
     {
-      "matchPackageNames": ["pre-commit", "pre-commit/pre-commit"],
-      "groupName": "pre-commit-version"
+      "matchPackageNames": ["uv", "astral-sh/uv-pre-commit"],
+      "groupName": "uv-version"
     },
   ]
 }
