@@ -27,7 +27,7 @@ permissions:  # added using https://github.com/step-security/secure-repo
 jobs:
   check-api-changes:
     name: Check API Changes
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     env:
       NOXSESSION: api
     steps:
