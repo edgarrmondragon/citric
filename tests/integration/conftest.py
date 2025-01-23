@@ -14,7 +14,7 @@ import semver
 
 import citric
 from citric.exceptions import LimeSurveyStatusError
-from tests.fixtures import MailHogClient
+from tests.fixtures import MailpitClient
 
 if t.TYPE_CHECKING:
     from pytest_docker.plugin import Services
@@ -99,14 +99,14 @@ def integration_url(docker_ip: str, docker_services: Services) -> str:
 
 
 @pytest.fixture(scope="session")
-def integration_mailhog_url(docker_ip: str, docker_services: Services) -> str:
+def integration_mailpit_url(docker_ip: str, docker_services: Services) -> str:
     """Ensure that the service is up and responsive."""
-    port = docker_services.port_for("mailhog", 8025)
+    port = docker_services.port_for("mailpit", 8025)
     url = f"http://{docker_ip}:{port}"
 
     def _check_connection() -> bool:
         try:
-            return requests.get(f"{url}/api/v2/messages", timeout=5).status_code == 200
+            return requests.get(f"{url}/api/v1/messages", timeout=5).status_code == 200
         except requests.RequestException:
             return False
 
@@ -161,8 +161,8 @@ def database_version(client: citric.Client) -> int:
 
 
 @pytest.fixture
-def mailhog(integration_mailhog_url: str) -> MailHogClient:
+def mailpit(integration_mailpit_url: str) -> MailpitClient:
     """Get the LimeSurvey database schema version."""
-    client = MailHogClient(integration_mailhog_url)
+    client = MailpitClient(integration_mailpit_url)
     client.delete()
     return client

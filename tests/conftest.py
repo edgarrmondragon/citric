@@ -161,12 +161,6 @@ def integration_password(request: pytest.FixtureRequest) -> str:
 
 
 @pytest.fixture(scope="session")
-def integration_mailhog_url(request: pytest.FixtureRequest) -> str:
-    """MailHog URL."""
-    return request.config.getoption("--mailhog-url")
-
-
-@pytest.fixture(scope="session")
 def git_reference(request: pytest.FixtureRequest) -> str:
     """LimeSurvey git reference."""
     return request.config.getoption("--limesurvey-git-reference")

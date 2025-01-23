@@ -19,7 +19,7 @@ services:
       ADMIN_USER: ${LS_USER:-iamadmin}
       ADMIN_NAME: Lime Administrator
       ADMIN_PASSWORD: ${LS_PASSWORD:-secret}
-      EMAIL_SMTPHOST: ${LS_SMTP_HOST:-mailhog:1025}
+      EMAIL_SMTPHOST: ${LS_SMTP_HOST:-mailpit:1025}
       EMAIL_SMTPUSER: ${LS_SMTP_USER:-citric@example.com}
       EMAIL_SMTPPASSWORD: ${LS_SMTP_PASSWORD:-secret}
     healthcheck:
@@ -43,8 +43,11 @@ services:
       timeout: 10s
       retries: 3
 
-  mailhog:
-    image: mailhog/mailhog
+  mailpit:
+    image: axllent/mailpit:v1.21
+    environment:
+      MP_SMTP_AUTH: "citric@example.com:secret"
+      MP_SMTP_AUTH_ALLOW_INSECURE: "true"
     ports:
       - "1025:1025"
       - "8025:8025"
