@@ -23,7 +23,7 @@
   "labels": ["dependencies"],
 
   // https://docs.renovatebot.com/configuration-options/#schedule
-  "schedule": ["before 5am on monday"],
+  "schedule": ["* * * * 0,6"],
 
   // https://docs.renovatebot.com/configuration-options/#platformautomerge
   "platformAutomerge": true,
@@ -31,7 +31,7 @@
   // https://docs.renovatebot.com/configuration-options/#lockfilemaintenance
   "lockFileMaintenance": {
     "enabled": true,
-    "schedule": ["before 5am on monday"]
+    "schedule": ["* * * * 0,6"]
   },
 
   // https://docs.renovatebot.com/configuration-options/#reviewers
