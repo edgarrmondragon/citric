@@ -37,6 +37,9 @@
   // https://docs.renovatebot.com/configuration-options/#reviewers
   "reviewers": ["edgarrmondragon"],
 
+  // https://docs.renovatebot.com/configuration-options/#assigneesfromcodeowners
+  "assigneesFromCodeOwners": true,
+
   "ignorePaths": [
     "requirements/requirements-*.txt",
   ],
