@@ -61,5 +61,23 @@
       "matchPackageNames": ["actions/upload-artifact", "actions/download-artifact"],
       "groupName": "GitHub artifact actions",
     },
-  ]
+  ],
+
+  // https://docs.renovatebot.com/configuration-options/#postupgradetasks
+  "postUpgradeTasks": {
+    "commands": [
+      // Export Docs Dependencies
+      "uv export --frozen --no-editable --output-file=requirements/requirements-docs.txt --only-group=docs",
+      // Export Test Dependencies
+      "uv export --frozen --output-file=requirements/requirements-test.txt --no-dev --only-group=test",
+      // Export Typing Dependencies
+      "uv export --frozen --output-file=requirements/requirements-typing.txt --only-group=typing",
+      // Export Runtime Dependencies
+      "uv export --frozen --output-file=requirements/requirements-highest.txt --no-dev --no-hashes --no-emit-project",
+    ],
+    "fileFilters": [
+      "uv.lock",
+    ],
+    "executionMode": "branch",
+  },
 }
