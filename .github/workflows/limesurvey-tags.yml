@@ -1,0 +1,60 @@
+name: Update LimeSurvey Docker tags
+
+on:
+  workflow_dispatch: {}
+  schedule:
+    # Weekly on Saturday at 14:00 UTC
+    - cron: '0 14 * * 6'
+env:
+  FORCE_COLOR: "1"
+  # renovate: datasource=pypi depName=nox
+  NOX_VERSION: 2024.10.9
+  # renovate: datasource=pypi depName=uv
+  UV_VERSION: 0.5.21
+
+permissions: read-all
+
+jobs:
+  update-tags:
+    name: Update tags
+    runs-on: ubuntu-24.04
+    permissions:
+      pull-requests: write  # to create and update PRs
+    steps:
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      with:
+        persist-credentials: false
+    - name: Install tools
+      uses: ./.github/actions/install-tools
+      with:
+        nox-version: ${{ env.NOX_VERSION }}
+        uv-version: ${{ env.UV_VERSION }}
+    - name: Update tags
+      run: nox -s generate-tags
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - uses: tibdex/github-app-token@3beb63f4bd073e61482598c45c71c1019b59b73a # v2.1.0
+      id: generate-token
+      with:
+        app_id: ${{ secrets.APP_ID }}
+        private_key: ${{ secrets.APP_PRIVATE_KEY }}
+    - name: Create Pull Request
+      uses: peter-evans/create-pull-request@67ccf781d68cd99b580ae25a5c18a1cc84ffff1f # v7.0.6
+      with:
+        token: ${{ steps.generate-token.outputs.token }}
+        title: "chore: Update LimeSurvey Docker tags"
+        branch: docker/update-tags
+        commit-message: "chore: Update LimeSurvey Docker tags"
+        body: |
+          This PR updates the tags for the LimeSurvey Docker images.
+
+          Links:
+
+          - [Docker Hub](https://hub.docker.com/r/martialblog/limesurvey/tags)
+          - [LimeSurvey tags](https://github.com/LimeSurvey/LimeSurvey/tags)
+        reviewers: |
+          edgarrmondragon
+        assignees: |
+          edgarrmondragon
+        delete-branch: true
+        labels: Release
