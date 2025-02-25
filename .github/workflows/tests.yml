@@ -219,7 +219,7 @@ jobs:
     - name: Output tags
       id: tags
       run: |
-        echo "tags=$(cat limesurvey-docker-tags.json)" >> $GITHUB_OUTPUT
+        echo "tags=$(cat limesurvey-docker-tags.json | jq -c .)" >> $GITHUB_OUTPUT
 
   databases:
     name: Get database engines
