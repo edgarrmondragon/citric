@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import pathlib
 import re
 import typing as t
 
@@ -107,18 +108,43 @@ def main() -> None:
         """Namespace for CLI arguments."""
 
         max_tags: int
+        tags_file: pathlib.Path
+        markdown_block_file: pathlib.Path
 
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "--max-tags",
         type=int,
-        default=3,
+        default=5,
         help="Maximum tags to present for each version.",
+    )
+    parser.add_argument(
+        "--tags-file",
+        type=pathlib.Path,
+        default=pathlib.Path(".github/workflows/resources/tags.json"),
+        help="Path to the target tags file.",
+    )
+    parser.add_argument(
+        "--markdown-block-file",
+        type=pathlib.Path,
+        default=pathlib.Path("docs/_partial/tags.md"),
+        help="Path to the target markdown block file.",
     )
     args = parser.parse_args(namespace=ParserNamespace)
 
-    tags = filter_tags(sort_tags(get_tags()), max_tags=args.max_tags)
-    print(json.dumps(list(tags)))  # noqa: T201
+    tags = list(filter_tags(sort_tags(get_tags()), max_tags=args.max_tags))
+
+    with args.tags_file.open("w") as file:
+        json.dump(tags, file, indent=2)
+        file.write("\n")
+
+    with args.markdown_block_file.open("w") as file:
+        for tag in tags:
+            if tag in {"6-apache", "5-apache"}:
+                continue
+            # Convert '6.10.5-250217-apache' to '- {ls_tag}`6.10.0+250106'
+            version, date, _ = tag.split("-")
+            file.write(f"- {{ls_tag}}`{version}+{date}`\n")
 
 
 if __name__ == "__main__":

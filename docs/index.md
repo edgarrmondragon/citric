@@ -22,18 +22,10 @@ Release **v{sub-ref}`version`**. ([What's new?](./changelog.md))
 
 Integration tests are run against a LimeSurvey instance, and both PostgreSQL and MySQL backends, using Docker Compose. The following versions of LimeSurvey were tested for this release:
 
-- {ls_tag}`6.10.0+250106`
-- {ls_tag}`6.9.0+241218`
-- {ls_tag}`6.8.2+241203`
-- {ls_tag}`6.8.1+241120`
-- {ls_tag}`6.8.0+241119`
-- {ls_tag}`5.6.68+240625`
-- {ls_tag}`5.6.67+240612`
-- {ls_tag}`5.6.66+240604`
-- {ls_tag}`5.6.65+240522`
-- {ls_tag}`5.6.63+240508`
+```{include} _partial/tags.md
+```
 
-But also, the latest 5.x and 6.x are tested continuously and are expected to work.
+But also the latest 5.x and 6.x are tested continuously and are expected to work.
 
 ## How-to guides
 

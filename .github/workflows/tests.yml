@@ -209,7 +209,7 @@ jobs:
     - name: Test against required tags
       if: ${{ contains(github.event.pull_request.labels.*.name, 'Release') || inputs.all_integrations || github.event_name == 'schedule' }}
       run: |
-        nox --verbose -s generate-tags > limesurvey-docker-tags.json
+        cp .github/workflows/resources/tags.json limesurvey-docker-tags.json
 
     - name: Test against latest tags
       if: ${{ !contains(github.event.pull_request.labels.*.name, 'Release') && !inputs.all_integrations && github.event_name != 'schedule' }}
@@ -219,7 +219,7 @@ jobs:
     - name: Output tags
       id: tags
       run: |
-        echo "tags=$(cat limesurvey-docker-tags.json)" >> $GITHUB_OUTPUT
+        echo "tags=$(cat limesurvey-docker-tags.json | jq -c .)" >> $GITHUB_OUTPUT
 
   databases:
     name: Get database engines
