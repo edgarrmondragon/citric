@@ -660,7 +660,7 @@ class Client:  # noqa: PLR0904
         """
         return self.session.delete_survey(survey_id)
 
-    def export_responses(
+    def export_responses(  # noqa: PLR0913
         self,
         survey_id: int,
         *,
@@ -673,6 +673,7 @@ class Client:  # noqa: PLR0904
         from_response_id: int | None = None,
         to_response_id: int | None = None,
         fields: t.Sequence[str] | None = None,
+        additional_options: types.ExporAdditionalOptions | None = None,
     ) -> bytes:
         """Export responses to a file-like object.
 
@@ -689,6 +690,7 @@ class Client:  # noqa: PLR0904
             from_response_id: First response to export.
             to_response_id: Last response to export.
             fields: Which response fields to export. If none, exports all fields.
+            additional_options: Dictionary of additional options to format the export.
 
         Returns:
             Content bytes of exported to file.
@@ -697,6 +699,9 @@ class Client:  # noqa: PLR0904
 
         .. versionchanged:: 0.0.2
            Return raw bytes instead of number of bytes written.
+
+        .. versionadded:: 1.4.0
+           The ``additional_options`` parameter.
         """
         if token is None:
             return base64.b64decode(
@@ -710,6 +715,7 @@ class Client:  # noqa: PLR0904
                     from_response_id,
                     to_response_id,
                     fields,
+                    additional_options,
                 ),
             )
 
@@ -725,6 +731,7 @@ class Client:  # noqa: PLR0904
                 from_response_id,
                 to_response_id,
                 fields,
+                additional_options,
             ),
         )
 
@@ -742,6 +749,7 @@ class Client:  # noqa: PLR0904
         from_response_id: int | None = None,
         to_response_id: int | None = None,
         fields: t.Sequence[str] | None = None,
+        additional_options: types.ExporAdditionalOptions | None = None,
     ) -> int:
         """Save responses to a file.
 
@@ -757,11 +765,15 @@ class Client:  # noqa: PLR0904
             from_response_id: First response to export.
             to_response_id: Last response to export.
             fields: Which response fields to export. If none, exports all fields.
+            additional_options: Dictionary of additional options to format the export.
 
         Returns:
             Bytes length written to file.
 
         .. versionadded:: 0.0.10
+
+        .. versionadded:: 1.4.0
+           The ``additional_options`` parameter.
         """
         with Path(filename).open("wb") as f:
             return f.write(
@@ -776,6 +788,7 @@ class Client:  # noqa: PLR0904
                     from_response_id=from_response_id,
                     to_response_id=to_response_id,
                     fields=fields,
+                    additional_options=additional_options,
                 ),
             )
 
