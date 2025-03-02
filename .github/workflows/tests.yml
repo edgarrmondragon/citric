@@ -11,6 +11,7 @@ on:
     - pyproject.toml
     - requirements/requirements*.txt
     - .github/workflows/tests.yml
+    - .github/workflows/resources/tags.json
     - .github/actions/install-tools/action.yml
   push:
     branches:
@@ -23,6 +24,7 @@ on:
     - pyproject.toml
     - requirements/requirements*.txt
     - .github/workflows/tests.yml
+    - .github/workflows/resources/tags.json
     - .github/actions/install-tools/action.yml
   schedule:
   - cron: "25 7 * * 1"
@@ -193,33 +195,10 @@ jobs:
       with:
         persist-credentials: false
 
-    - name: Setup Python
-      uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b # v5.3.0
-      with:
-        python-version: 3.x
-        architecture: x64
-        allow-prereleases: true
-
-    - name: Install tools
-      uses: ./.github/actions/install-tools
-      with:
-        nox-version: ${{ env.NOX_VERSION }}
-        uv-version: ${{ env.UV_VERSION }}
-
-    - name: Test against required tags
-      if: ${{ contains(github.event.pull_request.labels.*.name, 'Release') || inputs.all_integrations || github.event_name == 'schedule' }}
-      run: |
-        cp .github/workflows/resources/tags.json limesurvey-docker-tags.json
-
-    - name: Test against latest tags
-      if: ${{ !contains(github.event.pull_request.labels.*.name, 'Release') && !inputs.all_integrations && github.event_name != 'schedule' }}
-      run: |
-        echo '["6-apache", "5-apache"]' > limesurvey-docker-tags.json
-
     - name: Output tags
       id: tags
       run: |
-        echo "tags=$(cat limesurvey-docker-tags.json | jq -c .)" >> $GITHUB_OUTPUT
+        echo "tags=$(cat .github/workflows/resources/tags.json | jq -c .)" >> $GITHUB_OUTPUT
 
   databases:
     name: Get database engines
