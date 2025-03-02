@@ -16,11 +16,32 @@ import typing as t
 import requests
 import requests_cache
 
+DEFAULT_TAGS = (
+    "6.0.0-230405-apache",
+    "6.2.0-230732-apache",
+    "6.6.0-240729-apache",
+)
 PATTERN_VERSION = re.compile(r"(\d+\.\d+\.\d+)-\d{6}-apache")
 PATTERN_5x = re.compile(r"5\.\d+.\d+-\d{6}-apache")
 PATTERN_6x = re.compile(r"6\.\d+.\d+-\d{6}-apache")
 
 requests_cache.install_cache("docker_tags")
+
+
+def _version_parts(tag: str) -> tuple[int, int, int]:
+    """Extract version parts from tag.
+
+    Args:
+        tag: A tag.
+
+    Returns:
+        A tuple of integers representing the version parts.
+    """
+    return (
+        tuple(int(part) for part in match.group(1).split("."))
+        if (match := PATTERN_VERSION.match(tag))
+        else (999,)
+    )
 
 
 def _extract_version(tag: dict) -> tuple[int, ...]:
@@ -32,12 +53,7 @@ def _extract_version(tag: dict) -> tuple[int, ...]:
     Returns:
         A tuple of integers representing the version.
     """
-    name = tag["name"]
-    return (
-        tuple(int(part) for part in match.group(1).split("."))
-        if (match := PATTERN_VERSION.match(name))
-        else (999,)
-    )
+    return _version_parts(tag["name"])
 
 
 def get_tags() -> t.Generator[dict, None, None]:
@@ -56,18 +72,6 @@ def get_tags() -> t.Generator[dict, None, None]:
         url = data.get("next")
         if not url:
             break
-
-
-def sort_tags(tags: t.Iterable[dict]) -> list[dict]:
-    """Sort tags.
-
-    Args:
-        tags: An iterable of tags.
-
-    Returns:
-        A list of tags sorted by version
-    """
-    return sorted(tags, key=_extract_version, reverse=True)
 
 
 def filter_tags(
@@ -100,6 +104,8 @@ def filter_tags(
             yield name
             count_6 += 1
 
+    yield from DEFAULT_TAGS
+
 
 def main() -> None:
     """Print tags."""
@@ -115,7 +121,7 @@ def main() -> None:
     parser.add_argument(
         "--max-tags",
         type=int,
-        default=5,
+        default=3,
         help="Maximum tags to present for each version.",
     )
     parser.add_argument(
@@ -132,16 +138,28 @@ def main() -> None:
     )
     args = parser.parse_args(namespace=ParserNamespace)
 
-    tags = list(filter_tags(sort_tags(get_tags()), max_tags=args.max_tags))
+    tags = list(
+        filter_tags(
+            sorted(get_tags(), key=_extract_version, reverse=True),
+            max_tags=args.max_tags,
+        )
+    )
 
     with args.tags_file.open("w") as file:
         json.dump(tags, file, indent=2)
         file.write("\n")
 
     with args.markdown_block_file.open("w") as file:
+        # 1. Filter out '6-apache' and '5-apache' tags
+        # 2. Sort tags by version
+        # 3. Convert '6.10.5-250217-apache' to '- {ls_tag}`6.10.0+250
+        tags = [
+            tag
+            for tag in sorted(tags, key=_version_parts, reverse=True)
+            if tag not in {"6-apache", "5-apache"}
+        ]
+
         for tag in tags:
-            if tag in {"6-apache", "5-apache"}:
-                continue
             # Convert '6.10.5-250217-apache' to '- {ls_tag}`6.10.0+250106'
             version, date, _ = tag.split("-")
             file.write(f"- {{ls_tag}}`{version}+{date}`\n")

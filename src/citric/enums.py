@@ -71,8 +71,13 @@ class ResponsesExportFormat(StringEnum):
 class SurveyCompletionStatus(StringEnum):
     """Survey completion status values."""
 
+    #: Include only incomplete answers
     COMPLETE = "complete"
+
+    #: Only include incomplete answers
     INCOMPLETE = "incomplete"
+
+    #: Include ALL answers
     ALL = "all"
 
 

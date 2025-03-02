@@ -16,6 +16,7 @@ if t.TYPE_CHECKING:
 
 __all__ = [
     "CPDBParticipantImportResult",
+    "ExporAdditionalOptions",
     "FileUploadResult",
     "GroupProperties",
     "LanguageProperties",
@@ -655,3 +656,52 @@ class SurveyUserActivationSettings(t.TypedDict, total=False):
 
     savetimings: bool
     """Whether the survey saves response timings."""
+
+
+class ExporAdditionalOptions(t.TypedDict, total=False):
+    """Export formatting options."""
+
+    convertY: bool
+    """Convert ``Y`` response values.
+
+    If ``response_type`` is ``short``, then this indicates that ``Y`` responses should
+    be converted to another value that is specified by ``yValue``.
+    """
+
+    yValue: t.Any
+    """The value to convert ``Y`` responses to."""
+
+    convertN: bool
+    """Convert ``N`` response values.
+
+    If ``response_type`` is ``short``, then this indicates that ``N`` responses should
+    be converted to another value that is specified by ``nValue``.
+    """
+
+    nValue: t.Any
+    """The value to convert ``N`` responses to."""
+
+    headerSpacesToUnderscores: bool
+    """Indicates whether to convert spaces in question headers to underscores."""
+
+    headingTextLength: int
+    """Indicates whether to ellipsize each text part to."""
+
+    useEMCode: bool
+    """Indicates whether to use ExpressionScript Engine code."""
+
+    headCodeTextSeparator: str
+    """What is the characters to separate code and text."""
+
+    csvFieldSeparator: str
+    """What is the character to separate CSV fields."""
+
+    csvMaskEquations: bool
+    """Mask CSV/Excel equation fields to prevent CSV injection attacks."""
+
+    stripHtmlCode: t.Literal["1", "0"]
+    """Strip HTML code from the responses.
+
+    - ``1``: Strip HTML code.
+    - ``0``: No stripping.
+    """

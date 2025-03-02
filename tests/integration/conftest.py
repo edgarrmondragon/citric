@@ -138,10 +138,13 @@ def client(
 
 
 @pytest.fixture
-def survey_id(client: citric.Client) -> t.Generator[int, None, None]:
+def survey_id(
+    client: citric.Client,
+    request: pytest.FixtureRequest,
+) -> t.Generator[int, None, None]:
     """Import a survey from a file and return its ID."""
     with Path("./examples/survey.lss").open("rb") as f:
-        survey_id = client.import_survey(f, survey_id=98765)
+        survey_id = client.import_survey(f, survey_id=request.node.nodeid)
 
     yield survey_id
 
