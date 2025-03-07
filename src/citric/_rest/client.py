@@ -64,25 +64,43 @@ class RESTClient:
             username: LimeSurvey user name.
             password: LimeSurvey password.
         """
-        response = self._session.post(
-            url=f"{self.url}/rest/v1/session",
-            json={
-                "username": username,
-                "password": password,
-            },
-        )
+        try:
+            response = self._session.post(
+                url=f"{self.url}/rest/v1/auth",
+                json={
+                    "username": username,
+                    "password": password,
+                },
+            )
+        except requests.HTTPError:
+            response = self._session.post(
+                url=f"{self.url}/rest/v1/session",
+                json={
+                    "username": username,
+                    "password": password,
+                },
+            )
+
         response.raise_for_status()
         self.__session_id = response.json()
 
     def refresh_token(self) -> None:
         """Refresh the session token."""
-        response = self._session.put(url=f"{self.url}/rest/v1/session")
+        try:
+            response = self._session.put(url=f"{self.url}/rest/v1/auth")
+        except requests.HTTPError:
+            response = self._session.put(url=f"{self.url}/rest/v1/session")
+
         response.raise_for_status()
         self.__session_id = response.json()["token"]
 
     def close(self) -> None:
         """Delete the session."""
-        response = self._session.delete(f"{self.url}/rest/v1/session")
+        try:
+            response = self._session.delete(f"{self.url}/rest/v1/auth")
+        except requests.HTTPError:
+            response = self._session.delete(f"{self.url}/rest/v1/session")
+
         response.raise_for_status()
         self.__session_id = None
         self._session.auth = None
