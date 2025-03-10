@@ -696,39 +696,64 @@ def test_invite_participants(
     assert client.invite_participants(survey_id, strategy=resend) == -2
 
 
+@pytest.fixture
+def responses() -> list[dict]:
+    """Create responses for a survey."""
+    return [
+        {
+            "G01Q01": "Long text 1",
+            "G01Q02": "1",
+            "G02Q04": "Y",
+            "token": "T00000",
+        },
+        {
+            "G01Q01": "Long text 2",
+            "G01Q02": "5",
+            "G02Q04": "N",
+            "token": "T00001",
+        },
+        {
+            "G01Q01": "Long text 3",
+            "G01Q02": None,
+            "G02Q04": "Y",
+            "token": "T00002",
+        },
+    ]
+
+
 @pytest.mark.integration_test
-def test_responses(client: citric.Client, survey_id: int, tmp_path: Path):
+def test_responses(
+    client: citric.Client,
+    server_version: semver.VersionInfo,
+    survey_id: int,
+    responses: list[dict],
+    tmp_path: Path,
+    subtests: SubTests,
+):
     """Test adding and exporting responses."""
     client.activate_survey(survey_id)
     client.activate_tokens(survey_id)
 
     # Add a single response to a survey
-    single_response = {"G01Q01": "Long text 1", "G01Q02": "1", "token": "T00000"}
-    assert client.add_response(survey_id, single_response) == 1
+    assert client.add_response(survey_id, responses[0]) == 1
 
     # Add multiple responses to a survey
-    data: list[dict[str, t.Any]]
-    data = [
-        {"G01Q01": "Long text 2", "G01Q02": "5", "token": "T00001"},
-        {"G01Q01": "Long text 3", "G01Q02": None, "token": "T00002"},
-    ]
-    assert client.add_responses(survey_id, data) == [2, 3]
+    assert client.add_responses(survey_id, responses[1:]) == [2, 3]
 
     # Update a response
     client.set_survey_properties(survey_id, alloweditaftercompletion="Y")
-    data[1]["G01Q01"] = "New long text 3"
-    assert client.update_response(survey_id, data[1]) is True
-
-    all_responses = [single_response, *data]
+    responses[2]["G01Q01"] = "New long text 3"
+    assert client.update_response(survey_id, responses[2]) is True
 
     with io.BytesIO() as file, io.TextIOWrapper(file, encoding="utf-8-sig") as textfile:
         file.write(client.export_responses(survey_id, file_format="csv"))
         file.seek(0)
         reader = csv.DictReader(textfile, delimiter=";")
         for i, row in enumerate(reader):
-            assert row["G01Q01"] == (all_responses[i]["G01Q01"] or "")
-            assert row["G01Q02"] == (all_responses[i]["G01Q02"] or "")
-            assert row["token"] == (all_responses[i]["token"] or "")
+            assert row["G01Q01"] == (responses[i]["G01Q01"] or "")
+            assert row["G01Q02"] == (responses[i]["G01Q02"] or "")
+            assert row["G02Q04"] == responses[i]["G02Q04"]
+            assert row["token"] == (responses[i]["token"] or "")
         file.seek(0)
 
         file.write(
@@ -744,6 +769,44 @@ def test_responses(client: citric.Client, survey_id: int, tmp_path: Path):
     # Export existing response works
     client.export_responses(survey_id, token="T00000")
 
+    with subtests.test(msg="Convert Y to 'true' and N to 'false'"):
+        json_responses = client.export_responses(
+            survey_id,
+            file_format="json",
+            additional_options={
+                "convertY": True,
+                "yValue": "true",
+                "convertN": True,
+                "nValue": "false",
+            },
+        )
+        json_data = json.loads(json_responses)
+        for i, response in enumerate(json_data["responses"]):
+            bool_string_value = "true" if responses[i]["G02Q04"] == "Y" else "false"
+            assert response["G02Q04"] == bool_string_value
+
+    with subtests.test(msg="Convert Y to 1 and N to 0"):
+        if server_version < (6, 11, 0):
+            pytest.xfail(
+                f"LimeSurvey {server_version} < 6.11.0 doesn't support 0 for "
+                "answer codes"
+            )
+
+        json_responses = client.export_responses(
+            survey_id,
+            file_format="json",
+            additional_options={
+                "convertY": True,
+                "yValue": 1,
+                "convertN": True,
+                "nValue": 0,
+            },
+        )
+        json_data = json.loads(json_responses)
+        for i, response in enumerate(json_data["responses"]):
+            int_value = 1 if responses[i]["G02Q04"] == "Y" else 0
+            assert response["G02Q04"] == int_value
+
     # Save responses to a file
     filepath = tmp_path / "responses.json"
     client.save_responses(
@@ -751,9 +814,9 @@ def test_responses(client: citric.Client, survey_id: int, tmp_path: Path):
         survey_id,
     )
     with filepath.open("r") as f:
-        responses = json.load(f)
+        file_responses = json.load(f)
 
-    assert len(responses["responses"]) == 3
+    assert len(file_responses["responses"]) == 3
 
     # Get response IDs for a token
     response_ids = client.get_response_ids(survey_id, token="T00000")
@@ -765,10 +828,11 @@ def test_responses(client: citric.Client, survey_id: int, tmp_path: Path):
         client.export_responses(survey_id, token="T00000")
 
     with pytest.raises(LimeSurveyStatusError, match="No matching Response"):
-        client.update_response(survey_id, all_responses[0])
+        client.update_response(survey_id, responses[0])
 
 
 @pytest.mark.integration_test
+@pytest.mark.xfail_mysql
 def test_file_upload(
     client: citric.Client,
     survey_id: int,
@@ -776,14 +840,14 @@ def test_file_upload(
     faker: Faker,
 ):
     """Test uploading and downloading files from a survey."""
-    filepath = tmp_path / "hello world.txt"
-    filepath.write_text(faker.text())
+    filepath = tmp_path / "file.zip"
+    filepath.write_bytes(faker.zip())
 
     client.activate_survey(survey_id)
     group = client.list_groups(survey_id)[1]
     question = client.list_questions(survey_id, group["gid"])[0]
 
-    filename = "upload.txt"
+    filename = "upload.zip"
     result = client.upload_file(
         survey_id,
         f"{survey_id}X{group['gid']}X{question['qid']}",
@@ -793,7 +857,7 @@ def test_file_upload(
     assert result["success"]
     assert result["size"] == pytest.approx(filepath.stat().st_size / 1000, rel=5e-2)
     assert result["name"] == filename
-    assert result["ext"] == "txt"
+    assert result["ext"] == "zip"
     assert "filename" in result
     assert "msg" in result
 
@@ -807,8 +871,8 @@ def test_file_upload_no_filename(
     faker: Faker,
 ):
     """Test uploading and downloading files from a survey without a filename."""
-    filepath = tmp_path / "hello world.txt"
-    filepath.write_text(faker.text())
+    filepath = tmp_path / "file.zip"
+    filepath.write_bytes(faker.zip())
 
     client.activate_survey(survey_id)
     group = client.list_groups(survey_id)[1]
@@ -825,12 +889,13 @@ def test_file_upload_no_filename(
         rel=5e-2,
     )
     assert result_no_filename["name"] == quote(filepath.name)
-    assert result_no_filename["ext"] == "txt"
+    assert result_no_filename["ext"] == "zip"
     assert "filename" in result_no_filename
     assert "msg" in result_no_filename
 
 
 @pytest.mark.integration_test
+@pytest.mark.xfail_mysql
 def test_file_upload_invalid_extension(
     client: citric.Client,
     survey_id: int,
@@ -838,8 +903,8 @@ def test_file_upload_invalid_extension(
     faker: Faker,
 ):
     """Test uploading and downloading files from a survey with an invalid extension."""
-    filepath = tmp_path / "hello world.abc"
-    filepath.write_text(faker.text())
+    filepath = tmp_path / "file.abc"
+    filepath.write_bytes(faker.zip())
 
     client.activate_survey(survey_id)
     group = client.list_groups(survey_id)[1]
@@ -847,7 +912,7 @@ def test_file_upload_invalid_extension(
 
     with pytest.raises(
         LimeSurveyStatusError,
-        match="The extension abc is not valid\\. Valid extensions are: txt",
+        match="The extension abc is not valid\\. Valid extensions are: zip",
     ):
         client.upload_file(
             survey_id,
