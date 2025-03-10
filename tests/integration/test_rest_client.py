@@ -5,6 +5,7 @@ from __future__ import annotations
 import typing as t
 
 import pytest
+import requests
 import semver
 
 from citric._rest import RESTClient  # noqa: PLC2701
@@ -18,9 +19,9 @@ def rest_client(
     server_version: semver.Version,
 ) -> t.Generator[RESTClient, None, None]:
     """LimeSurvey REST API client."""
-    if server_version < (6, 0, 0):
+    if server_version < (6, 2, 0):
         pytest.xfail(
-            f"The REST API is not supported in LimeSurvey {server_version} < 6.0.0",
+            f"The REST API is not supported in LimeSurvey {server_version} < 6.2.0",
         )
     with RESTClient(
         integration_url,
@@ -31,8 +32,23 @@ def rest_client(
 
 
 @pytest.mark.integration_test
-def test_refresh_token(rest_client: RESTClient) -> None:
+def test_refresh_token(
+    rest_client: RESTClient,
+    server_version: semver.Version,
+    request: pytest.FixtureRequest,
+) -> None:
     """Test refreshing the token."""
+    if server_version < (6, 6, 0):
+        request.applymarker(
+            pytest.mark.xfail(
+                reason=(
+                    "The REST API does not support refreshing the token in "
+                    "LimeSurvey < 6.6.0"
+                ),
+                raises=requests.exceptions.HTTPError,
+                strict=True,
+            )
+        )
     session_id = rest_client.session_id
     rest_client.refresh_token()
     assert session_id != rest_client.session_id

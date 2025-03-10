@@ -38,7 +38,7 @@ jobs:
       contents: write # IMPORTANT: mandatory for making GitHub Releases
 
     steps:
-    - uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
+    - uses: actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806 # v4.1.9
       with:
         name: Packages
         path: dist
@@ -61,7 +61,7 @@ jobs:
       id-token: write # IMPORTANT: mandatory for trusted publishing
 
     steps:
-    - uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
+    - uses: actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806 # v4.1.9
       with:
         name: Packages
         path: dist
@@ -78,11 +78,11 @@ jobs:
       attestations: write # IMPORTANT: mandatory for attestations
 
     steps:
-      - uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
+      - uses: actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806 # v4.1.9
         with:
           name: Packages
           path: dist
-      - uses: actions/attest-build-provenance@7668571508540a607bdfd90a87a560489fe372eb # v2.1.0
+      - uses: actions/attest-build-provenance@c074443f1aee8d4aeeae555aebba3282517141b2 # v2.2.3
         id: attest
         with:
           subject-path: "./dist/citric*"
