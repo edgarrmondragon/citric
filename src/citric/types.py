@@ -1,4 +1,4 @@
-"""Citric Python types."""  # noqa: A005
+"""Citric Python types."""
 
 from __future__ import annotations
 
