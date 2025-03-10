@@ -786,7 +786,7 @@ def test_responses(
             assert response["G02Q04"] == bool_string_value
 
     with subtests.test(msg="Convert Y to 1 and N to 0"):
-        if server_version < (6, 10, 7):
+        if server_version < (6, 11, 0):
             pytest.xfail(
                 f"LimeSurvey {server_version} < 6.10.7 doesn't support 0 for "
                 "answer codes"
