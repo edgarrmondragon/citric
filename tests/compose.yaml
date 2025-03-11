@@ -44,7 +44,7 @@ services:
       retries: 3
 
   mailpit:
-    image: axllent/mailpit:v1.22
+    image: axllent/mailpit:v1.23
     environment:
       MP_SMTP_AUTH: "citric@example.com:secret"
       MP_SMTP_AUTH_ALLOW_INSECURE: "true"
