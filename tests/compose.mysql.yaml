@@ -15,7 +15,7 @@ services:
       ADMIN_PASSWORD: ${LS_PASSWORD:-admin}
 
   db:
-    image: mariadb:11.6
+    image: mariadb:11.7
     environment:
       MARIADB_ROOT_PASSWORD: secret
       MARIADB_DATABASE: limesurvey
