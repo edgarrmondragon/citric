@@ -1,5 +1,0 @@
-kind: Added
-body: The `additional_options` parameter for the `export_responses` and `save_responses` methods of the RPC client
-time: 2025-03-01T23:37:25.187318-06:00
-custom:
-    Issue: "1285"
