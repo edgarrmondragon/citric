@@ -6,9 +6,18 @@ import base64
 import datetime
 import io
 import re
-import typing as t
 from dataclasses import dataclass
 from pathlib import Path
+from typing import (
+    IO,
+    TYPE_CHECKING,
+    Any,
+    Generator,
+    Iterable,
+    Literal,
+    Mapping,
+    Sequence,
+)
 
 import requests
 
@@ -17,7 +26,7 @@ from citric._compat import future_parameter
 from citric.exceptions import LimeSurveyStatusError
 from citric.session import Session
 
-if t.TYPE_CHECKING:
+if TYPE_CHECKING:
     import sys
     from os import PathLike
     from types import TracebackType
@@ -26,7 +35,7 @@ if t.TYPE_CHECKING:
     from citric.objects import Participant
 
     if sys.version_info >= (3, 11):
-        from typing import Self, Unpack  # noqa: ICN003
+        from typing import Self, Unpack
     else:
         from typing_extensions import Self, Unpack
 
@@ -157,7 +166,7 @@ class Client:  # noqa: PLR0904
         """Low-level RPC session."""
         return self.__session
 
-    def get_fieldmap(self, survey_id: int) -> dict[str, t.Any]:
+    def get_fieldmap(self, survey_id: int) -> dict[str, Any]:
         """Get fieldmap for a survey.
 
         Calls :rpc_method:`get_fieldmap`.
@@ -246,9 +255,9 @@ class Client:  # noqa: PLR0904
         self,
         survey_id: int,
         *,
-        participant_data: t.Sequence[t.Mapping[str, t.Any]],
+        participant_data: Sequence[Mapping[str, Any]],
         create_tokens: bool = True,
-    ) -> list[dict[str, t.Any]]:
+    ) -> list[dict[str, Any]]:
         """Add participants to a survey.
 
         Calls :rpc_method:`add_participants`.
@@ -353,8 +362,8 @@ class Client:  # noqa: PLR0904
     def delete_participants(
         self,
         survey_id: int,
-        participant_ids: t.Sequence[int],
-    ) -> list[dict[str, t.Any]]:
+        participant_ids: Sequence[int],
+    ) -> list[dict[str, Any]]:
         """Add participants to a survey.
 
         Calls :rpc_method:`delete_participants`.
@@ -389,9 +398,9 @@ class Client:  # noqa: PLR0904
 
     @staticmethod
     def _map_response_keys(
-        response_data: t.Mapping[str, t.Any],
+        response_data: Mapping[str, Any],
         question_mapping: dict[str, types.QuestionsListElement],
-    ) -> dict[str, t.Any]:
+    ) -> dict[str, Any]:
         """Convert response keys to LimeSurvey's internal representation.
 
         Args:
@@ -438,7 +447,7 @@ class Client:  # noqa: PLR0904
     def _add_response(
         self,
         survey_id: int,
-        response_data: t.Mapping[str, t.Any],
+        response_data: Mapping[str, Any],
     ) -> int:
         """Add a single response to a survey.
 
@@ -452,7 +461,7 @@ class Client:  # noqa: PLR0904
         """
         return int(self.session.add_response(survey_id, response_data))
 
-    def add_response(self, survey_id: int, response_data: t.Mapping[str, t.Any]) -> int:
+    def add_response(self, survey_id: int, response_data: Mapping[str, Any]) -> int:
         """Add a single response to a survey.
 
         Args:
@@ -472,7 +481,7 @@ class Client:  # noqa: PLR0904
     def add_responses(
         self,
         survey_id: int,
-        responses: t.Iterable[t.Mapping[str, t.Any]],
+        responses: Iterable[Mapping[str, Any]],
     ) -> list[int]:
         """Add multiple responses to a survey.
 
@@ -493,7 +502,7 @@ class Client:  # noqa: PLR0904
             ids.append(response_id)
         return ids
 
-    def update_response(self, survey_id: int, response_data: dict[str, t.Any]) -> bool:
+    def update_response(self, survey_id: int, response_data: dict[str, Any]) -> bool:
         """Update a response.
 
         Calls :rpc_method:`update_response`.
@@ -518,7 +527,7 @@ class Client:  # noqa: PLR0904
         name: str,
         *,
         destination_survey_id: int | None = None,
-    ) -> dict[str, t.Any]:
+    ) -> dict[str, Any]:
         """Copy a survey.
 
         Calls :rpc_method:`copy_survey`.
@@ -541,7 +550,7 @@ class Client:  # noqa: PLR0904
 
     def import_cpdb_participants(
         self,
-        participants: t.Sequence[Participant],
+        participants: Sequence[Participant],
         *,
         update: bool = False,
     ) -> types.CPDBParticipantImportResult:
@@ -672,7 +681,7 @@ class Client:  # noqa: PLR0904
         response_type: str | enums.ResponseType = "short",
         from_response_id: int | None = None,
         to_response_id: int | None = None,
-        fields: t.Sequence[str] | None = None,
+        fields: Sequence[str] | None = None,
         additional_options: types.ExporAdditionalOptions | None = None,
     ) -> bytes:
         """Export responses to a file-like object.
@@ -748,7 +757,7 @@ class Client:  # noqa: PLR0904
         response_type: str = "short",
         from_response_id: int | None = None,
         to_response_id: int | None = None,
-        fields: t.Sequence[str] | None = None,
+        fields: Sequence[str] | None = None,
         additional_options: types.ExporAdditionalOptions | None = None,
     ) -> int:
         """Save responses to a file.
@@ -868,7 +877,7 @@ class Client:  # noqa: PLR0904
     def export_timeline(
         self,
         survey_id: int,
-        period: t.Literal["day", "hour"] | enums.TimelineAggregationPeriod,
+        period: Literal["day", "hour"] | enums.TimelineAggregationPeriod,
         start: datetime.datetime,
         end: datetime.datetime | None = None,
     ) -> dict[str, int]:
@@ -945,9 +954,9 @@ class Client:  # noqa: PLR0904
     def get_participant_properties(
         self,
         survey_id: int,
-        query: dict[str, t.Any] | int,
-        properties: t.Sequence[str] | None = None,
-    ) -> dict[str, t.Any]:
+        query: dict[str, Any] | int,
+        properties: Sequence[str] | None = None,
+    ) -> dict[str, Any]:
         """Get properties a single survey participant.
 
         Calls :rpc_method:`get_participant_properties`.
@@ -1156,7 +1165,7 @@ class Client:  # noqa: PLR0904
     def get_survey_properties(
         self,
         survey_id: int,
-        properties: t.Sequence[str] | None = None,
+        properties: Sequence[str] | None = None,
     ) -> types.SurveyProperties:
         """Get properties of a survey.
 
@@ -1177,7 +1186,7 @@ class Client:  # noqa: PLR0904
         self,
         survey_id: int,
         token: str | None = None,
-    ) -> dict[str, dict[str, t.Any]]:
+    ) -> dict[str, dict[str, Any]]:
         """Get a dictionary of files uploaded in a survey response.
 
         Calls :rpc_method:`get_uploaded_files`.
@@ -1197,7 +1206,7 @@ class Client:  # noqa: PLR0904
         self,
         survey_id: int,
         token: str | None = None,
-    ) -> t.Generator[UploadedFile, None, None]:
+    ) -> Generator[UploadedFile, None, None]:
         """Iterate over uploaded files in a survey response.
 
         Args:
@@ -1211,8 +1220,8 @@ class Client:  # noqa: PLR0904
         """
         files_data = self.get_uploaded_files(survey_id, token)
         for file in files_data:
-            metadata: dict[str, t.Any] = files_data[file]["meta"]
-            question: dict[str, t.Any] = metadata.pop("question")
+            metadata: dict[str, Any] = files_data[file]["meta"]
+            question: dict[str, Any] = metadata.pop("question")
             content = base64.b64decode(files_data[file]["content"])
 
             yield UploadedFile(
@@ -1256,7 +1265,7 @@ class Client:  # noqa: PLR0904
 
     def import_group(
         self,
-        file: t.IO[bytes],
+        file: IO[bytes],
         survey_id: int,
         file_type: str | enums.ImportGroupType = "lsg",
         *,
@@ -1299,7 +1308,7 @@ class Client:  # noqa: PLR0904
 
     def import_question(
         self,
-        file: t.IO[bytes],
+        file: IO[bytes],
         survey_id: int,
         group_id: int,
     ) -> int:
@@ -1331,7 +1340,7 @@ class Client:  # noqa: PLR0904
 
     def import_survey(
         self,
-        file: t.IO[bytes],
+        file: IO[bytes],
         file_type: str | enums.ImportSurveyType = "lss",
         survey_name: str | None = None,
         survey_id: int | None = None,
@@ -1378,9 +1387,9 @@ class Client:  # noqa: PLR0904
         start: int = 0,
         limit: int = 10,
         unused: bool = False,
-        attributes: t.Sequence[str] | bool = False,
-        conditions: t.Mapping[str, t.Any] | None = None,
-    ) -> list[dict[str, t.Any]]:
+        attributes: Sequence[str] | bool = False,
+        conditions: Mapping[str, Any] | None = None,
+    ) -> list[dict[str, Any]]:
         """Get participants in a survey.
 
         Calls :rpc_method:`list_participants`.
@@ -1428,7 +1437,7 @@ class Client:  # noqa: PLR0904
             conditions or {},
         )
 
-    def list_users(self) -> list[dict[str, t.Any]]:
+    def list_users(self) -> list[dict[str, Any]]:
         """Get LimeSurvey users.
 
         Calls :rpc_method:`list_users`.
@@ -1444,7 +1453,7 @@ class Client:  # noqa: PLR0904
         self,
         survey_id: int,
         language: str | None = None,
-    ) -> list[dict[str, t.Any]]:
+    ) -> list[dict[str, Any]]:
         """Get the IDs and all attributes of all question groups in a Survey.
 
         Calls :rpc_method:`list_groups`.
@@ -1531,7 +1540,7 @@ class Client:  # noqa: PLR0904
     def list_survey_groups(
         self,
         username: str | None = None,
-    ) -> list[dict[str, t.Any]]:
+    ) -> list[dict[str, Any]]:
         """Get all survey groups or only those owned by a user.
 
         Calls :rpc_method:`list_survey_groups`.
@@ -1571,7 +1580,7 @@ class Client:  # noqa: PLR0904
         survey_id: int,
         language: str | None = None,
         **properties: Unpack[types.LanguageProperties],
-    ) -> dict[str, t.Any]:
+    ) -> dict[str, Any]:
         """Set properties of a survey language.
 
         Calls :rpc_method:`set_language_properties`.
@@ -1591,9 +1600,9 @@ class Client:  # noqa: PLR0904
     def set_participant_properties(
         self,
         survey_id: int,
-        token_query_properties: t.Mapping[str, t.Any] | int,
-        **token_data: t.Any,
-    ) -> dict[str, t.Any]:
+        token_query_properties: Mapping[str, Any] | int,
+        **token_data: Any,
+    ) -> dict[str, Any]:
         """Set properties of a participant. Only one participant can be updated.
 
         Calls :rpc_method:`set_participant_properties`.
@@ -1683,7 +1692,7 @@ class Client:  # noqa: PLR0904
         survey_id: int,
         field: str,
         filename: str,
-        file: t.IO[bytes],
+        file: IO[bytes],
     ) -> types.FileUploadResult:
         """Upload a file to a LimeSurvey survey.
 

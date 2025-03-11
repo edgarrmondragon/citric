@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import json
 import os
-import typing as t
 from importlib.metadata import version
+from typing import Any, ClassVar, Mapping
 
 import pytest
 import requests
@@ -188,7 +188,7 @@ class LimeSurveyMockAdapter(BaseAdapter):
     status_ok_methods = ("__status_ok", "activate_tokens", "delete_survey")
 
     session_key = "123456"
-    status_ok: t.ClassVar[dict[str, t.Any]] = {"status": "OK"}
+    status_ok: ClassVar[dict[str, Any]] = {"status": "OK"}
     rpc_interface = "json"
 
     ldap_session_key = "ldap-key"
@@ -196,12 +196,12 @@ class LimeSurveyMockAdapter(BaseAdapter):
     def _handle_json_response(
         self,
         method: str,
-        params: list[t.Any],
+        params: list[Any],
         request_id: int,
     ) -> requests.Response:
         response = requests.Response()
         response.status_code = 200
-        output: dict[str, t.Any] = {"result": None, "error": None, "id": request_id}
+        output: dict[str, Any] = {"result": None, "error": None, "id": request_id}
 
         if method in self.api_error_methods:
             output["error"] = "API Error!"
@@ -233,7 +233,7 @@ class LimeSurveyMockAdapter(BaseAdapter):
         timeout: float | tuple[float, float] | tuple[float, None] | None = None,
         verify: bool | str = True,  # noqa: FBT001, FBT002
         cert: bytes | str | tuple[bytes | str, bytes | str] | None = None,
-        proxies: t.Mapping[str, str] | None = None,
+        proxies: Mapping[str, str] | None = None,
     ):
         """Send a mocked request."""
         request_data = json.loads(request.body or "{}")

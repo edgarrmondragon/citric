@@ -7,10 +7,10 @@ import io
 import json
 import operator
 import random
-import typing as t
 import uuid
 from datetime import datetime
 from pathlib import Path
+from typing import TYPE_CHECKING, Any
 from urllib.parse import quote
 
 import pytest
@@ -22,7 +22,7 @@ from citric import enums
 from citric.exceptions import LimeSurveyStatusError
 from citric.objects import Participant
 
-if t.TYPE_CHECKING:
+if TYPE_CHECKING:
     from faker import Faker
     from pytest_subtests import SubTests
 
@@ -32,7 +32,7 @@ NEW_SURVEY_NAME = "New Survey"
 
 
 @pytest.fixture
-def participants(faker: Faker) -> list[dict[str, t.Any]]:
+def participants(faker: Faker) -> list[dict[str, Any]]:
     """Create participants for a survey."""
     return [
         {

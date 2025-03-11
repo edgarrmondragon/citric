@@ -11,7 +11,7 @@ import argparse
 import json
 import pathlib
 import re
-import typing as t
+from typing import Generator, Iterable
 
 import requests
 import requests_cache
@@ -56,7 +56,7 @@ def _extract_version(tag: dict) -> tuple[int, ...]:
     return _version_parts(tag["name"])
 
 
-def get_tags() -> t.Generator[dict, None, None]:
+def get_tags() -> Generator[dict, None, None]:
     """Get all tags from the Docker Hub.
 
     Yields:
@@ -75,10 +75,10 @@ def get_tags() -> t.Generator[dict, None, None]:
 
 
 def filter_tags(
-    tags: t.Iterable[dict],
+    tags: Iterable[dict],
     *,
     max_tags: int = 3,
-) -> t.Generator[str, None, None]:
+) -> Generator[str, None, None]:
     """Filter tags.
 
     Args:

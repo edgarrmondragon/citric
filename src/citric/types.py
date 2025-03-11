@@ -2,13 +2,13 @@
 
 from __future__ import annotations
 
-import typing as t
+from typing import TYPE_CHECKING, Any, Literal, TypedDict
 
-if t.TYPE_CHECKING:
+if TYPE_CHECKING:
     import sys
 
     if sys.version_info >= (3, 10):
-        from typing import TypeAlias  # noqa: ICN003
+        from typing import TypeAlias
     else:
         from typing_extensions import TypeAlias
 
@@ -33,13 +33,13 @@ __all__ = [
     "SurveyUserActivationSettings",
 ]
 
-Result: TypeAlias = t.Any
+Result: TypeAlias = Any
 
 #: Yes/No/Inherit type alias.
-YesNo: TypeAlias = t.Literal["Y", "N", "I"]
+YesNo: TypeAlias = Literal["Y", "N", "I"]
 
 
-class FileUploadResult(t.TypedDict):
+class FileUploadResult(TypedDict):
     """File upload result."""
 
     success: bool
@@ -61,7 +61,7 @@ class FileUploadResult(t.TypedDict):
     """The message of the file."""
 
 
-class GroupProperties(t.TypedDict, total=False):
+class GroupProperties(TypedDict, total=False):
     """Group properties."""
 
     gid: int
@@ -86,7 +86,7 @@ class GroupProperties(t.TypedDict, total=False):
     """The group description."""
 
 
-class LanguageProperties(t.TypedDict, total=False):
+class LanguageProperties(TypedDict, total=False):
     """Language properties."""
 
     surveyls_survey_id: int
@@ -174,14 +174,14 @@ class LanguageProperties(t.TypedDict, total=False):
     """The attachments."""
 
 
-class OperationStatus(t.TypedDict):
+class OperationStatus(TypedDict):
     """Delete language result."""
 
     status: str
     """The status of the operation."""
 
 
-class QuestionsListElement(t.TypedDict):
+class QuestionsListElement(TypedDict):
     """List questions result."""
 
     id: int
@@ -242,7 +242,7 @@ class QuestionsListElement(t.TypedDict):
     """The question same script."""
 
 
-class QuestionProperties(t.TypedDict, total=False):
+class QuestionProperties(TypedDict, total=False):
     """Question properties result."""
 
     qid: int
@@ -266,7 +266,7 @@ class QuestionProperties(t.TypedDict, total=False):
     script: str
     """The question script."""
 
-    questionl10ns: dict[str, t.Any]
+    questionl10ns: dict[str, Any]
     """The question language-specific attributes."""
 
     type: str
@@ -308,26 +308,26 @@ class QuestionProperties(t.TypedDict, total=False):
     same_script: int
     """The question same script."""
 
-    available_answers: t.Any
+    available_answers: Any
     """The available answers."""
 
-    answer_options: t.Any
+    answer_options: Any
     """The answer options."""
 
-    subquestions: t.Any
+    subquestions: Any
     """The subquestions."""
 
-    default_values: t.Any
+    default_values: Any
     """The default values."""
 
-    attributes: dict[str, t.Any]
+    attributes: dict[str, Any]
     """The question attributes."""
 
-    attributes_lang: dict[str, t.Any]
+    attributes_lang: dict[str, Any]
     """The question attributes language."""
 
 
-class QuotaListElement(t.TypedDict):
+class QuotaListElement(TypedDict):
     """List quotas result."""
 
     id: int
@@ -349,7 +349,7 @@ class QuotaListElement(t.TypedDict):
     """Whether the quota autoload URL is active."""
 
 
-class QuotaProperties(t.TypedDict, total=False):
+class QuotaProperties(TypedDict, total=False):
     """Quota properties result."""
 
     id: int
@@ -388,7 +388,7 @@ class QuotaProperties(t.TypedDict, total=False):
     """Quota end-URL description for this language."""
 
 
-class RPCResponse(t.TypedDict):
+class RPCResponse(TypedDict):
     """RPC response payload."""
 
     id: int
@@ -401,7 +401,7 @@ class RPCResponse(t.TypedDict):
     """The error message of the RPC call."""
 
 
-class SetQuotaPropertiesResult(t.TypedDict):
+class SetQuotaPropertiesResult(TypedDict):
     """Set quota properties result."""
 
     success: bool
@@ -411,7 +411,7 @@ class SetQuotaPropertiesResult(t.TypedDict):
     """The quota properties."""
 
 
-class SurveyListElement(t.TypedDict, total=False):
+class SurveyListElement(TypedDict, total=False):
     """List surveys result."""
 
     sid: int
@@ -436,7 +436,7 @@ class SurveyListElement(t.TypedDict, total=False):
     """Whether the survey is active."""
 
 
-class SurveyProperties(t.TypedDict, total=False):
+class SurveyProperties(TypedDict, total=False):
     """Survey properties result."""
 
     sid: int
@@ -626,7 +626,7 @@ class SurveyProperties(t.TypedDict, total=False):
     """The survey additional languages."""
 
 
-class CPDBParticipantImportResult(t.TypedDict):
+class CPDBParticipantImportResult(TypedDict):
     """CPDB participant import result."""
 
     ImportCount: int
@@ -636,7 +636,7 @@ class CPDBParticipantImportResult(t.TypedDict):
     """The number of participants updated."""
 
 
-class SurveyUserActivationSettings(t.TypedDict, total=False):
+class SurveyUserActivationSettings(TypedDict, total=False):
     """User settings for survey activation."""
 
     anonymized: bool
@@ -658,7 +658,7 @@ class SurveyUserActivationSettings(t.TypedDict, total=False):
     """Whether the survey saves response timings."""
 
 
-class ExporAdditionalOptions(t.TypedDict, total=False):
+class ExporAdditionalOptions(TypedDict, total=False):
     """Export formatting options."""
 
     convertY: bool
@@ -668,7 +668,7 @@ class ExporAdditionalOptions(t.TypedDict, total=False):
     be converted to another value that is specified by ``yValue``.
     """
 
-    yValue: t.Any
+    yValue: Any
     """The value to convert ``Y`` responses to."""
 
     convertN: bool
@@ -678,7 +678,7 @@ class ExporAdditionalOptions(t.TypedDict, total=False):
     be converted to another value that is specified by ``nValue``.
     """
 
-    nValue: t.Any
+    nValue: Any
     """The value to convert ``N`` responses to."""
 
     headerSpacesToUnderscores: bool
@@ -699,7 +699,7 @@ class ExporAdditionalOptions(t.TypedDict, total=False):
     csvMaskEquations: bool
     """Mask CSV/Excel equation fields to prevent CSV injection attacks."""
 
-    stripHtmlCode: t.Literal["1", "0"]
+    stripHtmlCode: Literal["1", "0"]
     """Strip HTML code from the responses.
 
     - ``1``: Strip HTML code.

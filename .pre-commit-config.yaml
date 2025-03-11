@@ -74,7 +74,7 @@ repos:
   - id: uv-export
     name: Export Docs Dependencies
     files: ^uv\.lock$
-    args: ["--frozen", "--no-editable", "--output-file=requirements/requirements-docs.txt", "--only-group=docs"]
+    args: ["--frozen", "--no-editable", "--output-file=requirements/requirements-docs.txt", "--only-group=docs", "--no-hashes"]
   - id: uv-export
     name: Export Test Dependencies
     files: ^uv\.lock$

@@ -2,12 +2,12 @@
 
 from __future__ import annotations
 
-import typing as t
+from typing import TYPE_CHECKING, Any
 
 from docutils import nodes
 from docutils.parsers.rst import Directive
 
-if t.TYPE_CHECKING:
+if TYPE_CHECKING:
     from sphinx.application import Sphinx
 
 __all__ = [
@@ -76,7 +76,7 @@ class Attribute(Feature):
     admonition_type = nodes.warning
 
 
-def setup(app: Sphinx) -> dict[str, t.Any]:
+def setup(app: Sphinx) -> dict[str, Any]:
     app.add_directive("minlimesurvey", Feature)
     app.add_directive("minlimesurveyparam", Parameter)
     app.add_directive("minlimesurveyattribute", Attribute)

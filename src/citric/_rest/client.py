@@ -2,17 +2,17 @@
 
 from __future__ import annotations
 
-import typing as t
 from importlib import metadata
+from typing import TYPE_CHECKING, Any, Mapping
 
 import requests
 
-if t.TYPE_CHECKING:
+if TYPE_CHECKING:
     import sys
     from types import TracebackType
 
     if sys.version_info >= (3, 11):
-        from typing import Self  # noqa: ICN003
+        from typing import Self
     else:
         from typing_extensions import Self
 
@@ -107,8 +107,8 @@ class RESTClient:
         method: str,
         path: str,
         *,
-        params: t.Mapping[str, t.Any] | None = None,
-        json: t.Any | None = None,  # noqa: ANN401
+        params: Mapping[str, Any] | None = None,
+        json: Any | None = None,  # noqa: ANN401
     ) -> requests.Response:
         """Make a request to the REST API.
 
@@ -153,7 +153,7 @@ class RESTClient:
         """
         self.close()
 
-    def get_surveys(self) -> list[dict[str, t.Any]]:
+    def get_surveys(self) -> list[dict[str, Any]]:
         """Get all surveys.
 
         Returns:
@@ -162,7 +162,7 @@ class RESTClient:
         response = self.make_request("GET", "/rest/v1/survey")
         return response.json()["surveys"]
 
-    def get_survey_details(self, survey_id: int) -> dict[str, t.Any]:
+    def get_survey_details(self, survey_id: int) -> dict[str, Any]:
         """Get survey details.
 
         Args:
@@ -177,8 +177,8 @@ class RESTClient:
     def update_survey_details(
         self,
         survey_id: int,
-        **data: t.Any,
-    ) -> dict[str, t.Any] | bool:
+        **data: Any,
+    ) -> dict[str, Any] | bool:
         """Update survey details.
 
         Args:

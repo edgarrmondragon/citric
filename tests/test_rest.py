@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import json
-import typing as t
+from typing import TYPE_CHECKING, Callable, Generator
 
 import pytest
 import tinydb
@@ -12,18 +12,18 @@ from werkzeug.wrappers import Response
 
 from citric._rest import RESTClient  # noqa: PLC2701
 
-if t.TYPE_CHECKING:
+if TYPE_CHECKING:
     import sys
 
     from pytest_httpserver import HTTPServer
     from werkzeug.wrappers import Request
 
     if sys.version_info >= (3, 10):
-        from typing import TypeAlias  # noqa: ICN003
+        from typing import TypeAlias
     else:
         from typing_extensions import TypeAlias
 
-    APIHandler: TypeAlias = t.Callable[[Request], Response]
+    APIHandler: TypeAlias = Callable[[Request], Response]
 
 
 @pytest.fixture(scope="module")
@@ -118,7 +118,7 @@ def rest_client(
     username: str,
     password: str,
     httpserver: HTTPServer,
-) -> t.Generator[RESTClient, None, None]:
+) -> Generator[RESTClient, None, None]:
     """LimeSurvey REST API client."""
     httpserver.expect_request(
         "/rest/v1/session",
