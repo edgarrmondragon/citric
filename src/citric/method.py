@@ -2,14 +2,14 @@
 
 from __future__ import annotations
 
-import typing as t
+from typing import Any, Callable, Generic, TypeVar
 
 __all__ = ["Method"]
 
-T = t.TypeVar("T")
+T = TypeVar("T")
 
 
-class Method(t.Generic[T]):
+class Method(Generic[T]):
     """RPC method.
 
     Args:
@@ -17,7 +17,7 @@ class Method(t.Generic[T]):
         name: RPC method name.
     """
 
-    def __init__(self, caller: t.Callable[[str], T], name: str) -> None:
+    def __init__(self, caller: Callable[[str], T], name: str) -> None:
         self.__caller = caller
         self.__name = name
 
@@ -36,7 +36,7 @@ class Method(t.Generic[T]):
         """
         return Method(self.__caller, f"{self.__name}.{name}")
 
-    def __call__(self, *params: t.Any) -> T:
+    def __call__(self, *params: Any) -> T:
         """Call RPC method.
 
         Args:

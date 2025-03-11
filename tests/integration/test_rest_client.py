@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import typing as t
+from typing import Generator
 
 import pytest
 import requests
@@ -17,7 +17,7 @@ def rest_client(
     integration_username: str,
     integration_password: str,
     server_version: semver.Version,
-) -> t.Generator[RESTClient, None, None]:
+) -> Generator[RESTClient, None, None]:
     """LimeSurvey REST API client."""
     if server_version < (6, 2, 0):
         pytest.xfail(

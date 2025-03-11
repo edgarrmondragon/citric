@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
-import typing as t
 from dataclasses import dataclass, field
+from typing import TYPE_CHECKING, Any
 
-if t.TYPE_CHECKING:
+if TYPE_CHECKING:
     from uuid import UUID
 
     from citric.types import YesNo
@@ -26,9 +26,9 @@ class Participant:
     participant_id: UUID | None = None
     language: str | None = "en"
     blacklisted: bool = False
-    attributes: dict[str, t.Any] = field(default_factory=dict)
+    attributes: dict[str, Any] = field(default_factory=dict)
 
-    def to_dict(self) -> dict[str, t.Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary.
 
         Returns:

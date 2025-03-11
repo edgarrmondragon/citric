@@ -5,8 +5,8 @@ from __future__ import annotations
 import json
 import logging
 import random
-import typing as t
 from importlib import metadata
+from typing import TYPE_CHECKING, Any
 
 import requests
 
@@ -19,14 +19,14 @@ from citric.exceptions import (
 )
 from citric.method import Method
 
-if t.TYPE_CHECKING:
+if TYPE_CHECKING:
     import sys
     from types import TracebackType
 
     from citric.types import Result, RPCResponse
 
     if sys.version_info >= (3, 11):
-        from typing import Self  # noqa: ICN003
+        from typing import Self
     else:
         from typing_extensions import Self
 
@@ -139,7 +139,7 @@ class Session:
         """
         return Method(self.rpc, name)
 
-    def call(self, method: str, *params: t.Any) -> RPCResponse:
+    def call(self, method: str, *params: Any) -> RPCResponse:
         """Get the raw response from an RPC method.
 
         Args:
@@ -155,7 +155,7 @@ class Session:
         # Methods requiring authentication
         return self._invoke(method, self.key, *params)
 
-    def rpc(self, method: str, *params: t.Any) -> Result:
+    def rpc(self, method: str, *params: Any) -> Result:
         """Execute a LimeSurvey RPC call with error handling.
 
         Args:
@@ -169,7 +169,7 @@ class Session:
         handle_rpc_errors(response["result"], response["error"])
         return response["result"]
 
-    def _invoke(self, method: str, *params: t.Any) -> RPCResponse:
+    def _invoke(self, method: str, *params: Any) -> RPCResponse:
         """Execute a LimeSurvey RPC with a JSON payload.
 
         Args:

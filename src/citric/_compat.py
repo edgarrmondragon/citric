@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
-import typing as t
 import warnings
 from functools import wraps
+from typing import Any, Callable
 
 __all__ = ["FutureVersionWarning", "future", "future_parameter"]
 
@@ -29,7 +29,7 @@ class FutureVersionWarning(UserWarning):
     """Warning for features only available in an unreleased version of LimeSurvey."""
 
 
-def future(version: str) -> t.Callable:
+def future(version: str) -> Callable:
     """Mark a function as only available in the current development build of LimeSurvey.
 
     Args:
@@ -41,9 +41,9 @@ def future(version: str) -> t.Callable:
     """
     message = _warning_message(version)
 
-    def decorate(fn: t.Callable) -> t.Callable:
+    def decorate(fn: Callable) -> Callable:
         @wraps(fn)
-        def wrapper(*args: t.Any, **kwargs: t.Any) -> t.Callable:
+        def wrapper(*args: Any, **kwargs: Any) -> Callable:
             warnings.warn(
                 f"Method {fn.__name__} {''.join(message)}",
                 FutureVersionWarning,
@@ -56,7 +56,7 @@ def future(version: str) -> t.Callable:
     return decorate
 
 
-def future_parameter(version: str, parameter: str) -> t.Callable:
+def future_parameter(version: str, parameter: str) -> Callable:
     """Mark a function as only available in the current development build of LimeSurvey.
 
     Args:
@@ -70,9 +70,9 @@ def future_parameter(version: str, parameter: str) -> t.Callable:
     """
     message = _warning_message(version)
 
-    def decorate(fn: t.Callable) -> t.Callable:
+    def decorate(fn: Callable) -> Callable:
         @wraps(fn)
-        def wrapper(*args: t.Any, **kwargs: t.Any) -> t.Callable:
+        def wrapper(*args: Any, **kwargs: Any) -> Callable:
             if parameter in kwargs:
                 warnings.warn(
                     f"Parameter {parameter} {''.join(message)}",

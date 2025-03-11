@@ -3,14 +3,14 @@
 from __future__ import annotations
 
 import sys
-import typing as t
 from pathlib import Path
+from typing import TYPE_CHECKING, Any
 
 import citric
 
 sys.path.append(str(Path("./_ext").resolve()))
 
-if t.TYPE_CHECKING:
+if TYPE_CHECKING:
     from sphinx.application import Sphinx
 
 # -- Project information ---------------------------------------------------------------
@@ -181,9 +181,9 @@ def skip_member_filter(
     app: Sphinx,  # noqa: ARG001
     what: str,  # noqa: ARG001
     name: str,
-    obj: t.Any,  # noqa: ARG001, ANN401
+    obj: Any,  # noqa: ARG001, ANN401
     skip: bool,  # noqa: FBT001
-    options: t.Any,  # noqa: ARG001, ANN401
+    options: Any,  # noqa: ARG001, ANN401
 ) -> bool | None:
     """Filter autoapi members.
 

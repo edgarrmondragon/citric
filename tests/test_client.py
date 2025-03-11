@@ -5,8 +5,8 @@ from __future__ import annotations
 import base64
 import datetime
 import sys
-import typing as t
 from pathlib import Path
+from typing import TYPE_CHECKING, Any, ClassVar, Generator
 
 import pytest
 
@@ -23,7 +23,7 @@ else:
         return getrandbits(n * 8).to_bytes(n, "little")
 
 
-if t.TYPE_CHECKING:
+if TYPE_CHECKING:
     from _pytest._py.path import LocalPath
     from faker import Faker
 
@@ -38,7 +38,7 @@ DUMMY_FILE_CONTENTS = b"FILE CONTENTS"
 class MockSession(Session):
     """Mock RPC session with some hardcoded methods for testing."""
 
-    settings: t.ClassVar[dict[str, t.Any]] = {
+    settings: ClassVar[dict[str, Any]] = {
         "defaulttheme": "mock-theme",
         "sitename": "mock-site",
         "defaultlang": "mock-lang",
@@ -47,7 +47,7 @@ class MockSession(Session):
         "dbversionnumber": 321,
     }
 
-    def rpc(self, method: str, *params: t.Any) -> dict[str, t.Any]:
+    def rpc(self, method: str, *params: Any) -> dict[str, Any]:
         """Process a mock RPC call."""
         return {"method": method, "params": [*params]}
 
@@ -82,7 +82,7 @@ class MockSession(Session):
         file_type: str = "lss",
         survey_name: str | None = None,
         survey_id: int | None = None,
-    ) -> dict[str, t.Any]:
+    ) -> dict[str, Any]:
         """Mock result from importing a survey file."""
         return {"content": base64.b64decode(content.encode()), "type": file_type}
 
@@ -90,31 +90,31 @@ class MockSession(Session):
         self,
         survey_id: int,
         group_id: int | None = None,
-        *args: t.Any,
-    ) -> list[dict[str, t.Any]]:
+        *args: Any,
+    ) -> list[dict[str, Any]]:
         """Mock questions."""
         return [
             {"title": "Q1", "qid": 1, "gid": group_id or 1, "sid": survey_id},
             {"title": "Q2", "qid": 2, "gid": group_id or 1, "sid": survey_id},
         ]
 
-    def add_response(self, *args: t.Any) -> str:
+    def add_response(self, *args: Any) -> str:
         """Mock result from adding a response."""
         return "1"
 
-    def export_responses(self, *args: t.Any) -> bytes:
+    def export_responses(self, *args: Any) -> bytes:
         """Mock responses file content."""
         return base64.b64encode(DUMMY_FILE_CONTENTS)
 
-    def export_responses_by_token(self, *args: t.Any) -> bytes:
+    def export_responses_by_token(self, *args: Any) -> bytes:
         """Mock responses file content."""
         return base64.b64encode(DUMMY_FILE_CONTENTS)
 
-    def export_statistics(self, *args: t.Any) -> bytes:
+    def export_statistics(self, *args: Any) -> bytes:
         """Mock statistics file content."""
         return base64.b64encode(DUMMY_FILE_CONTENTS)
 
-    def export_timeline(self, *args: t.Any) -> dict[str, int]:
+    def export_timeline(self, *args: Any) -> dict[str, int]:
         """Mock submission timeline."""
         return {"2022-01-01": 4, "2022-01-02": 2}
 
@@ -122,7 +122,7 @@ class MockSession(Session):
         """Return the setting value or an empty string."""
         return self.settings.get(setting_name, "")
 
-    def get_uploaded_files(self, *args: t.Any) -> dict[str, dict[str, t.Any]]:
+    def get_uploaded_files(self, *args: Any) -> dict[str, dict[str, Any]]:
         """Return uploaded files fake metadata."""
         return {
             "1234": {
@@ -171,8 +171,8 @@ class MockClient(Client):
 def assert_client_session_call(
     client: Client,
     method: str,
-    *args: t.Any,
-    **kwargs: t.Any,
+    *args: Any,
+    **kwargs: Any,
 ):
     """Assert client makes RPC call with the right arguments.
 
@@ -189,7 +189,7 @@ def assert_client_session_call(
 
 
 @pytest.fixture(scope="session")
-def client() -> t.Generator[Client, None, None]:
+def client() -> Generator[Client, None, None]:
     """RemoteControl2 API client."""
     with MockClient("mock://lime.com", "user", "secret") as client:
         yield client

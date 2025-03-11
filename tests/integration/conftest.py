@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import contextlib
 import hashlib
-import typing as t
 from pathlib import Path
+from typing import TYPE_CHECKING, Generator
 
 import dotenv
 import pytest
@@ -16,7 +16,7 @@ import citric
 from citric.exceptions import LimeSurveyStatusError
 from tests.fixtures import MailpitClient
 
-if t.TYPE_CHECKING:
+if TYPE_CHECKING:
     from pytest_docker.plugin import Services
 
 
@@ -123,7 +123,7 @@ def client(
     integration_url: str,
     integration_username: str,
     integration_password: str,
-) -> t.Generator[citric.Client, None, None]:
+) -> Generator[citric.Client, None, None]:
     """RemoteControl2 API client."""
     with citric.Client(
         f"{integration_url}/index.php/admin/remotecontrol",
@@ -141,7 +141,7 @@ def client(
 def survey_id(
     client: citric.Client,
     request: pytest.FixtureRequest,
-) -> t.Generator[int, None, None]:
+) -> Generator[int, None, None]:
     """Import a survey from a file and return its ID."""
     with Path("./examples/survey.lss").open("rb") as f:
         survey_id = client.import_survey(f, survey_id=request.node.nodeid)
