@@ -51,6 +51,7 @@
     }
   ],
 
+  # https://docs.renovatebot.com/configuration-options/#rebasewhen
   "rebaseWhen": "conflicted",
 
   // https://docs.renovatebot.com/configuration-options/#packagerules
