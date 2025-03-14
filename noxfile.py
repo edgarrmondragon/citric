@@ -33,7 +33,7 @@ python_versions = [
     "3.10",
     "3.9",
 ]
-pypy_versions = ["pypy3.10"]
+pypy_versions = ["pypy3.11"]
 all_python_versions = python_versions + pypy_versions
 
 locations = "src", "tests", "noxfile.py", "docs/conf.py"
