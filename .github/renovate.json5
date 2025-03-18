@@ -3,39 +3,15 @@
 
   // https://docs.renovatebot.com/configuration-options/#extends
   "extends": [
-    // https://docs.renovatebot.com/presets-config/#configbase
-    "config:recommended",
+    // https://github.com/edgarrmondragon/.github/blob/main/renovate/python.json5
+    "edgarrmondragon/.github//renovate/python.json5",
 
-    // https://docs.renovatebot.com/presets-default/#enableprecommit
-    ":enablePreCommit",
-
-    // https://docs.renovatebot.com/presets-default/#prhourlylimitnone
-    ":prHourlyLimitNone",
-
-    // https://docs.renovatebot.com/presets-customManagers/#custommanagersgithubactionsversions
-    "customManagers:githubActionsVersions"
+    // https://github.com/edgarrmondragon/.github/blob/main/renovate/uv.json5
+    "edgarrmondragon/.github//renovate/uv.json5",
   ],
-
-  // https://docs.renovatebot.com/configuration-options/#labels
-  "labels": ["dependencies"],
-
-  // https://docs.renovatebot.com/configuration-options/#schedule
-  "schedule": ["* * * * 0,6"],
-
-  // https://docs.renovatebot.com/configuration-options/#platformautomerge
-  "platformAutomerge": true,
-
-  // https://docs.renovatebot.com/configuration-options/#lockfilemaintenance
-  "lockFileMaintenance": {
-    "enabled": true,
-    "schedule": ["* * * * 0,6"]
-  },
 
   // https://docs.renovatebot.com/configuration-options/#reviewers
   "reviewers": ["edgarrmondragon"],
-
-  // https://docs.renovatebot.com/configuration-options/#assigneesfromcodeowners
-  "assigneesFromCodeOwners": true,
 
   "ignorePaths": [
     "requirements/requirements-*.txt",
@@ -53,16 +29,4 @@
 
   // https://docs.renovatebot.com/configuration-options/#rebasewhen
   "rebaseWhen": "conflicted",
-
-  // https://docs.renovatebot.com/configuration-options/#packagerules
-  "packageRules": [
-    {
-      "matchPackageNames": ["uv", "astral-sh/uv-pre-commit"],
-      "groupName": "uv-version",
-    },
-    {
-      "matchPackageNames": ["actions/upload-artifact", "actions/download-artifact"],
-      "groupName": "GitHub artifact actions",
-    },
-  ]
 }
