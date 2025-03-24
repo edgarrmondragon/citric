@@ -12,7 +12,7 @@ env:
   # renovate: datasource=pypi depName=uv
   UV_VERSION: 0.6.5
 
-permissions: read-all
+permissions: {}
 
 jobs:
   update-tags:

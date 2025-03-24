@@ -13,7 +13,7 @@ on:
         description: "Tag to use for release"
         required: true
 
-permissions: read-all
+permissions: {}
 
 jobs:
   build:
@@ -28,26 +28,6 @@ jobs:
         persist-credentials: false
     - uses: hynek/build-and-inspect-python-package@b5076c307dc91924a82ad150cdd1533b444d3310 # v2.12.0
       id: baipp
-
-  upload-to-release:
-    name: Upload to GitHub Release
-    if: startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch'
-    runs-on: ubuntu-24.04
-    needs: [build]
-    permissions:
-      contents: write # IMPORTANT: mandatory for making GitHub Releases
-
-    steps:
-    - uses: actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806 # v4.1.9
-      with:
-        name: Packages
-        path: dist
-    - uses: svenstaro/upload-release-action@04733e069f2d7f7f0b4aebc4fbdbce8613b03ccd # 2.9.0
-      with:
-        file: dist/**
-        tag: ${{ github.event.inputs.tag || github.ref }}
-        overwrite: false
-        file_glob: true
 
   publish:
     name: Publish to PyPI
