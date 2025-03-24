@@ -12,6 +12,8 @@ env:
   # renovate: datasource=pypi depName=zizmor
   ZIZMOR_VERSION: 1.5.0
 
+permissions: {}
+
 jobs:
   zizmor:
     runs-on: ubuntu-24.04
@@ -31,7 +33,7 @@ jobs:
       - name: Run zizmor 🌈
         run: >
           uvx --with zizmor==${{ env.ZIZMOR_VERSION }}
-          zizmor --format sarif . > results.sarif
+          zizmor --pedantic --format sarif . > results.sarif
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

@@ -1,12 +1,14 @@
 name: Read the Docs Pull Request Preview
 
-on:
+on:  # zizmor: ignore[dangerous-triggers]
   pull_request_target:
     types:
     - opened
     paths:
     - .github/workflows/pr-preview-links.yml
     - docs/**
+
+permissions: {}
 
 jobs:
   pr-preview-links:
