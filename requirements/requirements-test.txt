@@ -3,9 +3,15 @@
 attrs==25.1.0 \
     --hash=sha256:1c97078a80c814273a76b2a298a932eb681c87415c11dee0a6921de7f1b02c3e \
     --hash=sha256:c75a69e28a550a7e93789579c22aa26b0f5b83b75dc4e08fe092980051e1090a
+    # via
+    #   pytest-docker
+    #   pytest-subtests
 colorama==0.4.6 ; sys_platform == 'win32' \
     --hash=sha256:08695f5cb7ed6e0531a20572697297273c47b8cae5a63ffc6d6ed5c201be6e44 \
     --hash=sha256:4f1d9991f5acc0ca119f9d443620b77f9d6b33703e51011c16baf57afb285fc6
+    # via
+    #   pytest
+    #   xdoctest
 coverage==7.6.1 ; python_full_version < '3.9' \
     --hash=sha256:06a737c882bd26d0d6ee7269b20b12f14a8704807a01056c80bb881a4b2ce6ca \
     --hash=sha256:07e2ca0ad381b91350c0ed49d52699b625aab2b44b65e1b4e02fa9df0e92ad2d \
@@ -146,6 +152,7 @@ coverage==7.6.12 ; python_full_version >= '3.9' \
 exceptiongroup==1.2.2 ; python_full_version < '3.11' \
     --hash=sha256:3111b9d131c238bec2f8f516e123e14ba243563fb135d3fe885990585aa7795b \
     --hash=sha256:47c2edf7c6738fafb49fd34290706d1a1a2f4d1c6df275526b62cbb4aa5393cc
+    # via pytest
 faker==35.2.2 ; python_full_version < '3.9' \
     --hash=sha256:0a79ebe8f0ea803f7bd288d51e2d445b86035a2480e048daee1bffbd4d69b32b \
     --hash=sha256:94216ce3d8affdc0a8fd0ea8219c184c346a1dcf07b03f193e52f3116186621e
@@ -155,6 +162,7 @@ faker==37.0.0 ; python_full_version >= '3.9' \
 iniconfig==2.0.0 \
     --hash=sha256:2d91e135bf72d31a410b17c16da610a82cb55f6b0477d1a902134b24a455b8b3 \
     --hash=sha256:b6a85871a79d2e3b22d2d1b94ac2824226a63c6b741c88f7ae975f18b6778374
+    # via pytest
 markupsafe==2.1.5 ; python_full_version < '3.9' \
     --hash=sha256:00e046b6dd71aa03a41079792f8473dc494d564611a8f89bbbd7cb93295ebdcf \
     --hash=sha256:075202fa5b72c86ad32dc7d0b56024ebdbcf2048c0ba09f1cde31bfdd57bcfff \
@@ -207,6 +215,7 @@ markupsafe==2.1.5 ; python_full_version < '3.9' \
     --hash=sha256:fa9db3f79de01457b03d4f01b34cf91bc0048eb2c3846ff26f66687c2f6d16ab \
     --hash=sha256:fce659a462a1be54d2ffcacea5e3ba2d74daa74f30f5f143fe0c58636e355fdd \
     --hash=sha256:ffee1f21e5ef0d712f9033568f8344d5da8cc2869dbd08d87c84656e6a2d2f68
+    # via werkzeug
 markupsafe==3.0.2 ; python_full_version >= '3.9' \
     --hash=sha256:0bff5e0ae4ef2e1ae4fdf2dfd5b76c75e5c2fa4132d05fc1b0dabcd20c7e28c4 \
     --hash=sha256:0f4ca02bea9a23221c0182836703cbf8930c5e9454bacce27e767509fa286a30 \
@@ -269,18 +278,27 @@ markupsafe==3.0.2 ; python_full_version >= '3.9' \
     --hash=sha256:f3818cb119498c0678015754eba762e0d61e5b52d34c8b13d770f0719f7b1d79 \
     --hash=sha256:f8b3d067f2e40fe93e1ccdd6b2e1d16c43140e76f02fb1319a05cf2b79d99430 \
     --hash=sha256:fcabf5ff6eea076f859677f5f0b6b5c1a51e70a376b0579e0eadef8db48c6b50
+    # via werkzeug
 packaging==24.2 \
     --hash=sha256:09abb1bccd265c01f4a3aa3f7a7db064b36514d2cba19a2f694fe6150451a759 \
     --hash=sha256:c228a6dc5e932d346bc5739379109d49e8853dd8223571c7c5b55260edc0b97f
+    # via pytest
 pluggy==1.5.0 \
     --hash=sha256:2cffa88e94fdc978c4c574f15f9e59b7f4201d439195c3715ca9e2486f1d0cf1 \
     --hash=sha256:44e1ad92c8ca002de6377e165f3e0f1be63266ab4d554740532335b9d75ea669
+    # via pytest
 pygments==2.19.1 \
     --hash=sha256:61c16d2a8576dc0649d9f39e089b5f02bcd27fba10d8fb4dcc28173f7a45151f \
     --hash=sha256:9ea1544ad55cecf4b8242fab6dd35a93bbce657034b0611ee383099054ab6d8c
+    # via xdoctest
 pytest==8.3.5 \
     --hash=sha256:c69214aa47deac29fad6c2a4f590b9c4a9fdb16a403176fe154b79c0b4d4d820 \
     --hash=sha256:f4efe70cc14e511565ac476b57c279e12a855b11f48f212af1080ef2263d3845
+    # via
+    #   pytest-docker
+    #   pytest-github-actions-annotate-failures
+    #   pytest-reverse
+    #   pytest-subtests
 pytest-docker==3.2.0 \
     --hash=sha256:3d6537564e1582cab39e6cc3d6f3d931e92398af62f8313fc826e436f8233e21 \
     --hash=sha256:3e266db66887aa3611b2dfd86fb2a3b42f25f3a29d3f14b6e57a831e93a64f60
@@ -308,6 +326,7 @@ pytest-subtests==0.14.1 ; python_full_version >= '3.9' \
 python-dateutil==2.9.0.post0 ; python_full_version < '3.9' \
     --hash=sha256:37dd54208da7e1cd875388217d5e00ebd4179249f90fb72437e91a35459a0ad3 \
     --hash=sha256:a8b2bc7bffae282281c8140a97d3aa9c14da0b136dfe83f850eea9a5f7470427
+    # via faker
 python-dotenv==1.0.1 \
     --hash=sha256:e324ee90a023d808f1959c46bcbc04446a10ced277783dc6ee09987c37ec10ca \
     --hash=sha256:f7b63ef50f1b690dddf550d03497b66d609393b40b564ed0d674909a68ebf16a
@@ -317,6 +336,7 @@ semver==3.0.4 \
 six==1.17.0 ; python_full_version < '3.9' \
     --hash=sha256:4721f391ed90541fddacab5acf947aa0d3dc7d27b2e1e8eda2be8970586c3274 \
     --hash=sha256:ff70335d468e7eb6ec65b95b99d3a2836546063f63acc5171de367e834932a81
+    # via python-dateutil
 tinydb==4.8.2 \
     --hash=sha256:f7dfc39b8d7fda7a1ca62a8dbb449ffd340a117c1206b68c50b1a481fb95181d \
     --hash=sha256:f97030ee5cbc91eeadd1d7af07ab0e48ceb04aa63d4a983adbaca4cba16e86c3
@@ -353,18 +373,25 @@ tomli==2.2.1 ; python_full_version <= '3.11' \
     --hash=sha256:e85e99945e688e32d5a35c1ff38ed0b3f41f43fad8df0bdf79f72b2ba7bc5272 \
     --hash=sha256:ece47d672db52ac607a3d9599a9d48dcb2f2f735c6c2d1f34130085bb12b112a \
     --hash=sha256:f4039b9cbc3048b2416cc57ab3bda989a6fcf9b36cf8937f01a6e731b64f80d7
+    # via
+    #   coverage
+    #   pytest
 typing-extensions==4.12.2 ; python_full_version < '3.9' \
     --hash=sha256:04e5ca0351e0f3f85c6853954072df659d0d13fac324d0072316b67d7794700d \
     --hash=sha256:1a7ead55c7e559dd4dee8856e3a88b41225abfe1ce8df57b7c13915fe121ffb8
+    # via faker
 tzdata==2025.1 ; python_full_version >= '3.9' \
     --hash=sha256:24894909e88cdb28bd1636c6887801df64cb485bd593f2fd83ef29075a81d694 \
     --hash=sha256:7e127113816800496f027041c570f50bcd464a020098a3b6b199517772303639
+    # via faker
 werkzeug==3.0.6 ; python_full_version < '3.9' \
     --hash=sha256:1bc0c2310d2fbb07b1dd1105eba2f7af72f322e1e455f2f93c993bee8c8a5f17 \
     --hash=sha256:a8dd59d4de28ca70471a34cba79bed5f7ef2e036a76b3ab0835474246eb41f8d
+    # via pytest-httpserver
 werkzeug==3.1.3 ; python_full_version >= '3.9' \
     --hash=sha256:54b78bf3716d19a65be4fceccc0d1d7b89e608834989dfae50ea87564639213e \
     --hash=sha256:60723ce945c19328679790e3282cc758aa4a6040e4bb330f53d30fa546d44746
+    # via pytest-httpserver
 xdoctest==1.2.0 \
     --hash=sha256:0f1ecf5939a687bd1fc8deefbff1743c65419cce26dff908f8b84c93fbe486bc \
     --hash=sha256:d8cfca6d8991e488d33f756e600d35b9fdf5efd5c3a249d644efcbbbd2ed5863
