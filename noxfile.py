@@ -11,6 +11,8 @@ import nox
 GH_ACTIONS_ENV_VAR = "GITHUB_ACTIONS"
 FORCE_COLOR = "FORCE_COLOR"
 
+PYPROJECT = nox.project.load_toml()
+
 nox.options.sessions = [
     "xdoctest",
     "mypy",
@@ -20,19 +22,12 @@ nox.options.sessions = [
     "tests",
     "integration",
 ]
-nox.needs_version = ">=2024.4.15"
+nox.needs_version = ">=2025.2.9"
 nox.options.default_venv_backend = "uv"
 
 package = "citric"
 
-python_versions = [
-    "3.14",
-    "3.13",
-    "3.12",
-    "3.11",
-    "3.10",
-    "3.9",
-]
+python_versions = nox.project.python_versions(PYPROJECT)
 pypy_versions = ["pypy3.11"]
 all_python_versions = python_versions + pypy_versions
 
