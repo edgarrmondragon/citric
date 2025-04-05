@@ -99,7 +99,7 @@ jobs:
 
         - python-version: "3.13"
         # renovate: datasource=github-runners depName=windows
-          os: windows-2022
+          os: windows-2025
 
         - python-version: "3.13"
           # renovate: datasource=github-runners depName=macos

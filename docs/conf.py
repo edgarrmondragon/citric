@@ -37,7 +37,6 @@ extensions = [
     "autoapi.extension",
     "myst_parser",
     "sphinx_copybutton",
-    "hoverxref.extension",
     "notfound.extension",
     # Custom extensions
     "minlimesurvey",
@@ -158,23 +157,6 @@ autoapi_root = "_api"
 # https://myst-parser.readthedocs.io/en/latest/configuration.html
 
 myst_heading_anchors = 2
-
-# -- Options for hoverxref -------------------------------------------------------------
-# https://sphinx-hoverxref.readthedocs.io/en/latest/configuration.html
-
-hoverxref_role_types = {
-    "hoverxref": "tooltip",
-    "ref": "modal",
-    "mod": "modal",
-    "class": "tooltip",
-}
-hoverxref_default_type = "tooltip"
-hoverxref_domains = [
-    "py",
-]
-hoverxref_intersphinx = [
-    "requests",
-]
 
 
 def skip_member_filter(
