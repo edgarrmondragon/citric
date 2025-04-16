@@ -7,8 +7,8 @@
     <tr>
       <td>Project Health</td>
       <td>
-        <a href="https://polar.sh/edgarrmondragon/citric">
-          <img src="https://polar.sh/embed/seeks-funding-shield.svg?org=edgarrmondragon&repo=citric"/>
+        <a href="https://buy.polar.sh/polar_cl_q4XE5nfuUOK8JwiUz3iuDDVN7nxxNiMpNzgGF2diFeP">
+          <img src="https://img.shields.io/badge/polar.sh-Support%20My%20Work-red"/>
         </a>
         <a href="https://results.pre-commit.ci/latest/github/edgarrmondragon/citric/main">
           <img alt="pre-commit.ci status" src="https://results.pre-commit.ci/badge/github/edgarrmondragon/citric/main.svg"/>
