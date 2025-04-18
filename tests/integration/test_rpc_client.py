@@ -1007,9 +1007,24 @@ def test_cpdb(faker: Faker, client: citric.Client):
 
 
 @pytest.mark.integration_test
-def test_users(client: citric.Client):
+def test_users(client: citric.Client, integration_username: str):
     """Test user methods."""
-    assert len(client.list_users()) == 1
+    all_users = client.list_users()
+    assert len(all_users) == 1
+
+    user_username = client.list_users(username=integration_username)
+    assert len(user_username) == 1
+    assert user_username[0]["uid"] == 1
+
+    user_id = client.list_users(user_id=1)
+    assert len(user_id) == 1
+    assert user_id[0]["uid"] == 1
+
+    with pytest.raises(LimeSurveyStatusError, match="Invalid username"):
+        client.list_users(username="not_a_valid_username")
+
+    with pytest.raises(LimeSurveyStatusError, match=r"Invalid user (ID|id)"):
+        client.list_users(user_id=999999999)
 
 
 @pytest.mark.integration_test

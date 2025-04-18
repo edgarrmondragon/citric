@@ -21,6 +21,7 @@ __all__ = [
     "GroupProperties",
     "LanguageProperties",
     "OperationStatus",
+    "Permission",
     "QuestionProperties",
     "QuestionsListElement",
     "QuotaListElement",
@@ -31,6 +32,7 @@ __all__ = [
     "SurveyListElement",
     "SurveyProperties",
     "SurveyUserActivationSettings",
+    "UserDetails",
 ]
 
 Result: TypeAlias = Any
@@ -705,3 +707,89 @@ class ExporAdditionalOptions(TypedDict, total=False):
     - ``1``: Strip HTML code.
     - ``0``: No stripping.
     """
+
+
+class Permission(TypedDict, total=False):
+    """Permission."""
+
+    id: int
+    """The permission ID."""
+
+    entity: str
+    """The permission entity."""
+
+    entity_id: int
+    """The permission entity ID."""
+
+    permission: str
+    """The permission."""
+
+    create_p: int
+    """Whether the permission can create."""
+
+    read_p: int
+    """Whether the permission can read."""
+
+    update_p: int
+    """Whether the permission can update."""
+
+
+class UserDetails(TypedDict, total=False):
+    """User details."""
+
+    uid: int
+    """The user ID."""
+
+    users_name: str
+    """The user name."""
+
+    full_name: str
+    """The user full name."""
+
+    parent_id: int
+    """The user parent ID."""
+
+    lang: str
+    """The user preferred language."""
+
+    email: str
+    """The user email."""
+
+    htmleditormode: str
+    """The user preferred HTML editor mode."""
+
+    templateeditormode: str
+    """The user preferred template editor mode."""
+
+    questionselectormode: str
+    """The user preferred question type selector."""
+
+    one_time_pw: str
+    """The user one-time password."""
+
+    dateformat: int
+    """The user date format."""
+
+    created: str
+    """The user creation date."""
+
+    modified: str
+    """The user modification date."""
+
+    validation_key: str
+    """The user validation key."""
+
+    validation_key_expiration: str
+    """The user validation key expiration."""
+
+    last_forgot_email_password: str
+    """The user last forgot email password."""
+
+    permissions: list[Permission]
+    """The user permissions."""
+
+    last_login: str
+    """The user last login."""
+
+    user_status: enums.UserStatus
+    """The user status."""
