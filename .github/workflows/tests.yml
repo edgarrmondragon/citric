@@ -51,9 +51,8 @@ env:
 
 jobs:
   tests:
-    name: "Test ${{ matrix.python-version }} ${{ matrix.nightly && '(nightly) ' || '' }}/ ${{ matrix.os }}"
+    name: "Test ${{ matrix.python-version }} / ${{ matrix.os }}"
     runs-on: ${{ matrix.os }}
-    continue-on-error: ${{ matrix.experimental || false }}
     permissions:
       contents: read
     env:
@@ -94,11 +93,9 @@ jobs:
         - python-version: "3.14"
           # renovate: datasource=github-runners depName=ubuntu
           os: ubuntu-24.04
-          experimental: true
-          nightly: true
 
         - python-version: "3.13"
-        # renovate: datasource=github-runners depName=windows
+          # renovate: datasource=github-runners depName=windows
           os: windows-2022
 
         - python-version: "3.13"
@@ -112,18 +109,11 @@ jobs:
         persist-credentials: false
 
     - name: Setup Python ${{ matrix.python-version }}
-      if: "${{ !matrix.nightly }}"
-      uses: actions/setup-python@42375524e23c412d93fb67b49958b491fce71c38 # v5.4.0
+      uses: actions/setup-python@8d9ed9ac5c53483de85588cdf95a591a75ab9f55 # v5.5.0
       with:
         python-version: ${{ matrix.python-version }}
         architecture: x64
         allow-prereleases: true
-
-    - name: Setup Python ${{ matrix.python-version }} (nightly)
-      if: "${{ matrix.nightly }}"
-      uses: deadsnakes/action@e640ac8743173a67cca4d7d77cd837e514bf98e8 # v3.2.0
-      with:
-        python-version: "${{ matrix.python-version }}-dev"
 
     - name: Install tools
       uses: ./.github/actions/install-tools
@@ -139,7 +129,7 @@ jobs:
       uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4.6.1
       with:
         include-hidden-files: true
-        name: "coverage-unit-${{ matrix.os }}-${{ matrix.python-version }}-${{ matrix.nightly && 'nightly' || 'stable' }}"
+        name: "coverage-unit-${{ matrix.os }}-${{ matrix.python-version }}"
         path: ".coverage.*"
 
     - name: Upload test results to Codecov
@@ -148,7 +138,7 @@ jobs:
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         file: tests.xml
-        flags: unit-${{ matrix.os }}-${{ matrix.python-version }}-${{ matrix.nightly && 'nightly' || 'stable' }}
+        flags: unit-${{ matrix.os }}-${{ matrix.python-version }}
 
     - name: Run Doctests
       run: |
@@ -166,7 +156,7 @@ jobs:
       with:
         persist-credentials: false
 
-    - uses: actions/setup-python@42375524e23c412d93fb67b49958b491fce71c38 # v5.4.0
+    - uses: actions/setup-python@8d9ed9ac5c53483de85588cdf95a591a75ab9f55 # v5.5.0
       with:
         python-version: 3.x
 
@@ -305,7 +295,7 @@ jobs:
         persist-credentials: false
 
     - name: Setup Python ${{ matrix.python-version }}
-      uses: actions/setup-python@42375524e23c412d93fb67b49958b491fce71c38 # v5.4.0
+      uses: actions/setup-python@8d9ed9ac5c53483de85588cdf95a591a75ab9f55 # v5.5.0
       with:
         python-version: ${{ matrix.python-version }}
         architecture: x64
@@ -373,7 +363,7 @@ jobs:
         persist-credentials: false
 
     - name: Set up Python
-      uses: actions/setup-python@42375524e23c412d93fb67b49958b491fce71c38 # v5.4.0
+      uses: actions/setup-python@8d9ed9ac5c53483de85588cdf95a591a75ab9f55 # v5.5.0
       with:
         python-version: "3.x"
 

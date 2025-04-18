@@ -372,6 +372,7 @@ def test_question(
     assert int(props["sid"]) == survey_id
     assert props["type"] == "T"
     assert props["title"] == "FREETEXTEXAMPLE"
+    assert props["mandatory"] == "N"
 
     # Update question properties
     response = client.set_question_properties(question_id, mandatory="Y")
@@ -385,6 +386,27 @@ def test_question(
 
     with pytest.raises(LimeSurveyStatusError, match="No questions found"):
         client.list_questions(survey_id, group_id)
+
+    # Import a question from a lsq file and apply some overrides
+    with Path("./examples/free_text.lsq").open("rb") as f:
+        new_title = f"NEW{uuid.uuid4().hex[:6].upper()}"
+        new_text = f"New Text: {uuid.uuid4()}"
+        new_help = f"New Help: {uuid.uuid4()}"
+        question_id = client.import_question(
+            f,
+            survey_id,
+            group_id,
+            mandatory=True,
+            new_question_title=new_title,
+            new_question_text=new_text,
+            new_question_help=new_help,
+        )
+
+    props = client.get_question_properties(question_id)
+    assert props["question"] == new_text
+    assert props["help"] == new_help
+    assert props["title"] == new_title
+    assert props["mandatory"] == "Y"
 
 
 @pytest.mark.integration_test
