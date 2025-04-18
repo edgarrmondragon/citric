@@ -1311,6 +1311,11 @@ class Client:  # noqa: PLR0904
         file: IO[bytes],
         survey_id: int,
         group_id: int,
+        *,
+        mandatory: bool = False,
+        new_question_title: str | None = None,
+        new_question_text: str | None = None,
+        new_question_help: str | None = None,
     ) -> int:
         """Import question from a file.
 
@@ -1324,11 +1329,18 @@ class Client:  # noqa: PLR0904
             file: File object.
             survey_id: The ID of the Survey that the question will belong to.
             group_id: The ID of the Group that the question will belong to.
+            mandatory: Whether the question is mandatory.
+            new_question_title: Optional title override for the imported question.
+            new_question_text: Optional text override for the imported question.
+            new_question_help: Optional help override text for the imported question.
 
         Returns:
             The ID of the new question.
 
         .. versionadded:: 0.0.8
+        .. versionadded:: NEXT_VERSION
+           Added the ``mandatory``, ``new_question_title``, ``new_question_text``,
+           and ``new_question_help`` optional parameters.
         """
         contents = base64.b64encode(file.read()).decode()
         return self.session.import_question(
@@ -1336,6 +1348,10 @@ class Client:  # noqa: PLR0904
             group_id,
             contents,
             "lsq",
+            "Y" if mandatory else "N",
+            new_question_title,
+            new_question_text,
+            new_question_help,
         )
 
     def import_survey(
