@@ -20,10 +20,13 @@
   "customManagers": [
     {
       "customType": "regex",
-      "fileMatch": ["\\.github/workflows/tests\\.yml"],
+      "fileMatch": [
+        "\\.github/workflows/tests\\.yml",
+      ],
       "matchStrings": [
-        "# renovate: datasource=(?<datasource>[a-zA-Z0-9-._]+?) depName=(?<depName>[^\s]+?)\\s+os:\\s+[\"']?[a-zA-Z]+?-(?<currentValue>.+?)[\"']?\\s+"
-      ]
+        "os:\\s+[\"']?(?<depName>[^\s]+?)-(?<currentValue>[^\s]+?)[\"']?\\s"
+      ],
+      "datasourceTemplate": "github-runners"
     }
   ],
 
