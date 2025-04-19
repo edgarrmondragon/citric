@@ -136,7 +136,7 @@ jobs:
 
   lint:
     name: Lint
-    runs-on: macos-13
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
 
