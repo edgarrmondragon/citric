@@ -63,44 +63,34 @@ jobs:
       matrix:
         include:
         - python-version: "3.13"
-          # renovate: datasource=github-runners depName=ubuntu
-          os: ubuntu-24.04
-
-        - python-version: "3.12"
-          # renovate: datasource=github-runners depName=ubuntu
-          os: ubuntu-24.04
-
-        - python-version: "3.11"
-          # renovate: datasource=github-runners depName=ubuntu
-          os: ubuntu-24.04
-
-        - python-version: "3.10"
-          # renovate: datasource=github-runners depName=ubuntu
-          os: ubuntu-24.04
-
-        - python-version: "3.9"
-          # renovate: datasource=github-runners depName=ubuntu
-          os: ubuntu-24.04
-
-        - python-version: "3.8"
-          # renovate: datasource=github-runners depName=ubuntu
-          os: ubuntu-24.04
-
-        - python-version: "pypy3.11"
-          # renovate: datasource=github-runners depName=ubuntu
-          os: ubuntu-24.04
-
-        - python-version: "3.14"
-          # renovate: datasource=github-runners depName=ubuntu
-          os: ubuntu-24.04
-
-        - python-version: "3.13"
-          # renovate: datasource=github-runners depName=windows
           os: windows-2022
 
         - python-version: "3.13"
-          # renovate: datasource=github-runners depName=macos
           os: macos-15
+
+        - python-version: "3.13"
+          os: ubuntu-24.04
+
+        - python-version: "3.12"
+          os: ubuntu-24.04
+
+        - python-version: "3.11"
+          os: ubuntu-24.04
+
+        - python-version: "3.10"
+          os: ubuntu-24.04
+
+        - python-version: "3.9"
+          os: ubuntu-24.04
+
+        - python-version: "3.8"
+          os: ubuntu-24.04
+
+        - python-version: "pypy3.11"
+          os: ubuntu-24.04
+
+        - python-version: "3.14"
+          os: ubuntu-24.04
 
     steps:
     - name: Check out the repository
