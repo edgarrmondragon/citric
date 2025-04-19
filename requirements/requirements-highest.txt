@@ -10,5 +10,5 @@ requests==2.32.3
     # via citric
 urllib3==2.2.3 ; python_full_version < '3.9'
     # via requests
-urllib3==2.3.0 ; python_full_version >= '3.9'
+urllib3==2.4.0 ; python_full_version >= '3.9'
     # via requests
