@@ -22,7 +22,7 @@
       "customType": "regex",
       "fileMatch": ["\\.github/workflows/tests\\.yml"],
       "matchStrings": [
-        "# renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)\\s+os: \"?(?<currentValue>\\S+?)\"?\\s+"
+        "# renovate: datasource=(?<datasource>[a-zA-Z0-9-._]+?) depName=(?<depName>[^\s]+?)\\s+os:\\s+[\"']?(?<currentValue>.+?)[\"']?\\s+"
       ]
     }
   ],
