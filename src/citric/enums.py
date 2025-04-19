@@ -17,6 +17,7 @@ __all__ = [
     "StringEnum",
     "SurveyCompletionStatus",
     "TimelineAggregationPeriod",
+    "UserStatus",
 ]
 
 
@@ -153,3 +154,10 @@ class EmailSendStrategy(enum.IntEnum):
     def to_flag(cls: type[EmailSendStrategy], value: int) -> bool:
         """Return the flag for this email send enum."""
         return value == cls.PENDING
+
+
+class UserStatus(enum.IntEnum):
+    """User status."""
+
+    ACTIVATED = 1
+    DEACTIVATED = 0

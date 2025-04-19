@@ -349,7 +349,7 @@ def test_get_survey_properties(client: MockClient):
 
 def test_list_users(client: MockClient):
     """Test list_users client method."""
-    assert_client_session_call(client, "list_users")
+    assert_client_session_call(client, "list_users", user_id=None, username=None)
 
 
 def test_list_questions(client: MockClient):

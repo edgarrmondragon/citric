@@ -1453,17 +1453,28 @@ class Client:  # noqa: PLR0904
             conditions or {},
         )
 
-    def list_users(self) -> list[dict[str, Any]]:
+    def list_users(
+        self,
+        *,
+        user_id: int | None = None,
+        username: str | None = None,
+    ) -> list[types.UserDetails]:
         """Get LimeSurvey users.
 
         Calls :rpc_method:`list_users`.
+
+        Args:
+            user_id: Get details for a specific user ID.
+            username: Get details for a specific username.
 
         Returns:
             List of users.
 
         .. versionadded:: 0.0.3
+        .. versionadded:: NEXT_VERSION
+           The ``user_id`` and ``username`` parameters.
         """
-        return self.session.list_users()
+        return self.session.list_users(user_id, username)
 
     def list_groups(
         self,
