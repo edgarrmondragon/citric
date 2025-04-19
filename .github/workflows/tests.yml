@@ -126,7 +126,7 @@ jobs:
         nox --verbose -s tests -- --junit-xml=tests.xml
 
     - name: Upload coverage data
-      uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4.6.1
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
       with:
         include-hidden-files: true
         name: "coverage-unit-${{ matrix.os }}-${{ matrix.python-version }}"
@@ -338,7 +338,7 @@ jobs:
 
     - name: Upload coverage data
       if: always()
-      uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4.6.1
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
       with:
         include-hidden-files: true
         name: "coverage-integration-${{ matrix.python-version }}-${{ matrix.image_tag || env.CLEAN_REF }}-${{ matrix.database }}"
@@ -374,7 +374,7 @@ jobs:
         uv-version: ${{ env.UV_VERSION }}
 
     - name: Download coverage data
-      uses: actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806 # v4.1.9
+      uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e # v4.2.1
       with:
         pattern: "coverage-${{ matrix.flag }}-*"
         merge-multiple: true
