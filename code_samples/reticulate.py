@@ -1,7 +1,5 @@
 """Use reticulate to export LimeSurvey data to R."""
 
-# ruff: noqa: T201
-
 from __future__ import annotations
 
 # start example

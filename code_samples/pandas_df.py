@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-# ruff: noqa: PD901, S106
+# ruff: noqa: PD901
 # start example
 import io
 
