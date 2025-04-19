@@ -24,7 +24,7 @@
         "\\.github/workflows/tests\\.yml",
       ],
       "matchStrings": [
-        "os:\\s+[\"']?(?<depName>[^\s]+?)-(?<currentValue>[^\s]+?)[\"']?\\s"
+        "os: (?<depName>[^\\s]+?)-(?<currentValue>[^\\s]+?)\\n"
       ],
       "datasourceTemplate": "github-runners"
     }

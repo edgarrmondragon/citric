@@ -63,12 +63,6 @@ jobs:
       matrix:
         include:
         - python-version: "3.13"
-          os: windows-2022
-
-        - python-version: "3.13"
-          os: macos-15
-
-        - python-version: "3.13"
           os: ubuntu-24.04
 
         - python-version: "3.12"
@@ -91,6 +85,12 @@ jobs:
 
         - python-version: "3.14"
           os: ubuntu-24.04
+
+        - python-version: "3.13"
+          os: windows-2022
+
+        - python-version: "3.13"
+          os: macos-15
 
     steps:
     - name: Check out the repository
