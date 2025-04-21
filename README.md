@@ -8,7 +8,7 @@
       <td>Project Health</td>
       <td>
         <a href="https://buy.polar.sh/polar_cl_q4XE5nfuUOK8JwiUz3iuDDVN7nxxNiMpNzgGF2diFeP">
-          <img src="https://img.shields.io/badge/polar.sh-Support%20My%20Work-red"/>
+          <img src="https://img.shields.io/badge/polar.sh-Support%20My%20Work-black"/>
         </a>
         <a href="https://results.pre-commit.ci/latest/github/edgarrmondragon/citric/main">
           <img alt="pre-commit.ci status" src="https://results.pre-commit.ci/badge/github/edgarrmondragon/citric/main.svg"/>
@@ -40,14 +40,14 @@
     <tr>
       <td>Misc</td>
       <td>
+        <a href="https://github.com/astral-sh/uv">
+          <img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json" alt="uv" style="max-width:100%;">
+        </a>
         <a href="https://github.com/astral-sh/ruff">
           <img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/charliermarsh/ruff/main/assets/badge/v2.json" alt="Ruff" style="max-width:100%;">
         </a>
         <a href="https://github.com/wntrblm/nox">
           <img alt="Nox" src="https://img.shields.io/badge/%F0%9F%A6%8A-Nox-D85E00.svg"/>
-        </a>
-        <a href="https://github.com/pypa/hatch">
-          <img alt="Hatch project" src="https://img.shields.io/badge/%F0%9F%A5%9A-Hatch-4051b5.svg"/>
         </a>
         <a href="https://github.com/edgarrmondragon/citric/blob/main/LICENSE">
           <img alt="License" src="https://img.shields.io/github/license/edgarrmondragon/citric"/>
@@ -58,9 +58,6 @@
         <br />
         <a href="https://www.bestpractices.dev/projects/8144">
           <img src="https://www.bestpractices.dev/projects/8144/badge">
-        </a>
-        <a href="https://securityscorecards.dev/viewer/?uri=github.com/edgarrmondragon/citric">
-          <img src="https://api.securityscorecards.dev/projects/github.com/edgarrmondragon/citric/badge", alt="OpenSSF Scorecard">
         </a>
       </td>
     </tr>
