@@ -1036,11 +1036,11 @@ def test_users(client: citric.Client, integration_username: str):
 
     user_username = client.list_users(username=integration_username)
     assert len(user_username) == 1
-    assert user_username[0]["uid"] == 1
+    assert int(user_username[0]["uid"]) == 1
 
     user_id = client.list_users(user_id=1)
     assert len(user_id) == 1
-    assert user_id[0]["uid"] == 1
+    assert int(user_id[0]["uid"]) == 1
 
     with pytest.raises(LimeSurveyStatusError, match="Invalid username"):
         client.list_users(username="not_a_valid_username")
