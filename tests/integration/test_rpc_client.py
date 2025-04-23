@@ -26,6 +26,7 @@ if TYPE_CHECKING:
     from faker import Faker
     from pytest_subtests import SubTests
 
+    from citric.types import QuestionsListElement
     from tests.fixtures import MailpitClient
 
 NEW_SURVEY_NAME = "New Survey"
@@ -853,10 +854,31 @@ def test_responses(
         client.update_response(survey_id, responses[0])
 
 
+@pytest.fixture
+def file_upload_question(
+    client: citric.Client,
+    survey_id: int,
+) -> QuestionsListElement:
+    """Create a file upload question."""
+    client.activate_survey(survey_id)
+    groups = client.list_groups(survey_id)
+    group = next(filter(lambda g: g["group_name"] == "Second Group", groups), None)
+    assert group is not None
+
+    questions = client.list_questions(survey_id, group["gid"])
+    question = next(
+        filter(lambda q: q["title"] == "G02Q03", questions),
+        None,
+    )
+    assert question is not None
+
+    return question
+
+
 @pytest.mark.integration_test
 def test_file_upload(
     client: citric.Client,
-    survey_id: int,
+    file_upload_question: QuestionsListElement,
     tmp_path: Path,
     faker: Faker,
 ):
@@ -864,22 +886,12 @@ def test_file_upload(
     filepath = tmp_path / "file.zip"
     filepath.write_bytes(faker.zip())
 
-    client.activate_survey(survey_id)
-    groups = client.list_groups(survey_id)
-    group = next(filter(lambda g: g["group_name"] == "Second Group", groups), None)
-    assert group is not None
-
-    questions = client.list_questions(survey_id, group["gid"])
-    question = next(filter(lambda q: q["title"] == "G02Q03", questions), None)
-    assert question is not None
+    sid = file_upload_question["sid"]
+    gid = file_upload_question["gid"]
+    qid = file_upload_question["qid"]
 
     filename = "upload.zip"
-    result = client.upload_file(
-        survey_id,
-        f"{survey_id}X{group['gid']}X{question['qid']}",
-        filepath,
-        filename=filename,
-    )
+    result = client.upload_file(sid, f"{sid}X{gid}X{qid}", filepath, filename=filename)
     assert result["success"]
     assert result["size"] == pytest.approx(filepath.stat().st_size / 1000, rel=5e-2)
     assert result["name"] == filename
@@ -891,7 +903,7 @@ def test_file_upload(
 @pytest.mark.integration_test
 def test_file_upload_no_filename(
     client: citric.Client,
-    survey_id: int,
+    file_upload_question: QuestionsListElement,
     tmp_path: Path,
     faker: Faker,
 ):
@@ -899,20 +911,11 @@ def test_file_upload_no_filename(
     filepath = tmp_path / "file.zip"
     filepath.write_bytes(faker.zip())
 
-    client.activate_survey(survey_id)
-    groups = client.list_groups(survey_id)
-    group = next(filter(lambda g: g["group_name"] == "Second Group", groups), None)
-    assert group is not None
+    sid = file_upload_question["sid"]
+    gid = file_upload_question["gid"]
+    qid = file_upload_question["qid"]
 
-    questions = client.list_questions(survey_id, group["gid"])
-    question = next(filter(lambda q: q["title"] == "G02Q03", questions), None)
-    assert question is not None
-
-    result_no_filename = client.upload_file(
-        survey_id,
-        f"{survey_id}X{group['gid']}X{question['qid']}",
-        filepath,
-    )
+    result_no_filename = client.upload_file(sid, f"{sid}X{gid}X{qid}", filepath)
     assert result_no_filename["success"]
     assert result_no_filename["size"] == pytest.approx(
         filepath.stat().st_size / 1000,
@@ -927,7 +930,7 @@ def test_file_upload_no_filename(
 @pytest.mark.integration_test
 def test_file_upload_invalid_extension(
     client: citric.Client,
-    survey_id: int,
+    file_upload_question: QuestionsListElement,
     tmp_path: Path,
     faker: Faker,
 ):
@@ -935,24 +938,15 @@ def test_file_upload_invalid_extension(
     filepath = tmp_path / "file.abc"
     filepath.write_bytes(faker.zip())
 
-    client.activate_survey(survey_id)
-    groups = client.list_groups(survey_id)
-    group = next(filter(lambda g: g["group_name"] == "Second Group", groups), None)
-    assert group is not None
-
-    questions = client.list_questions(survey_id, group["gid"])
-    question = next(filter(lambda q: q["title"] == "G02Q03", questions), None)
-    assert question is not None
+    sid = file_upload_question["sid"]
+    gid = file_upload_question["gid"]
+    qid = file_upload_question["qid"]
 
     with pytest.raises(
         LimeSurveyStatusError,
         match="The extension abc is not valid\\. Valid extensions are: zip",
     ):
-        client.upload_file(
-            survey_id,
-            f"{survey_id}X{group['gid']}X{question['qid']}",
-            filepath,
-        )
+        client.upload_file(sid, f"{sid}X{gid}X{qid}", filepath)
 
 
 @pytest.mark.integration_test
