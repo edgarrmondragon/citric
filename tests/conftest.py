@@ -93,7 +93,7 @@ def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item
     integration_enabled = config.getoption("--integration")
     backend = config.getoption("--limesurvey-database-type")
 
-    xfail_mysql = pytest.mark.xfail(reason="This test fails on MySQL", strict=False)
+    xfail_mysql = pytest.mark.xfail(reason="This test fails on MySQL")
 
     for item in items:
         if backend == "mysql" and "xfail_mysql" in item.keywords:

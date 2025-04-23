@@ -854,7 +854,6 @@ def test_responses(
 
 
 @pytest.mark.integration_test
-@pytest.mark.xfail_mysql
 def test_file_upload(
     client: citric.Client,
     survey_id: int,
@@ -866,8 +865,13 @@ def test_file_upload(
     filepath.write_bytes(faker.zip())
 
     client.activate_survey(survey_id)
-    group = client.list_groups(survey_id)[1]
-    question = client.list_questions(survey_id, group["gid"])[0]
+    groups = client.list_groups(survey_id)
+    group = next(filter(lambda g: g["group_name"] == "Second Group", groups), None)
+    assert group is not None
+
+    questions = client.list_questions(survey_id, group["gid"])
+    question = next(filter(lambda q: q["title"] == "G02Q03", questions), None)
+    assert question is not None
 
     filename = "upload.zip"
     result = client.upload_file(
@@ -885,7 +889,6 @@ def test_file_upload(
 
 
 @pytest.mark.integration_test
-@pytest.mark.xfail_mysql
 def test_file_upload_no_filename(
     client: citric.Client,
     survey_id: int,
@@ -897,8 +900,13 @@ def test_file_upload_no_filename(
     filepath.write_bytes(faker.zip())
 
     client.activate_survey(survey_id)
-    group = client.list_groups(survey_id)[1]
-    question = client.list_questions(survey_id, group["gid"])[0]
+    groups = client.list_groups(survey_id)
+    group = next(filter(lambda g: g["group_name"] == "Second Group", groups), None)
+    assert group is not None
+
+    questions = client.list_questions(survey_id, group["gid"])
+    question = next(filter(lambda q: q["title"] == "G02Q03", questions), None)
+    assert question is not None
 
     result_no_filename = client.upload_file(
         survey_id,
@@ -917,7 +925,6 @@ def test_file_upload_no_filename(
 
 
 @pytest.mark.integration_test
-@pytest.mark.xfail_mysql
 def test_file_upload_invalid_extension(
     client: citric.Client,
     survey_id: int,
@@ -929,8 +936,13 @@ def test_file_upload_invalid_extension(
     filepath.write_bytes(faker.zip())
 
     client.activate_survey(survey_id)
-    group = client.list_groups(survey_id)[1]
-    question = client.list_questions(survey_id, group["gid"])[0]
+    groups = client.list_groups(survey_id)
+    group = next(filter(lambda g: g["group_name"] == "Second Group", groups), None)
+    assert group is not None
+
+    questions = client.list_questions(survey_id, group["gid"])
+    question = next(filter(lambda q: q["title"] == "G02Q03", questions), None)
+    assert question is not None
 
     with pytest.raises(
         LimeSurveyStatusError,
