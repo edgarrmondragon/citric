@@ -2,17 +2,23 @@
 
 from __future__ import annotations
 
-from typing import Generator
+import contextlib
+from typing import TYPE_CHECKING, Generator
 
 import pytest
 import requests
 import semver
 
 from citric._rest import RESTClient  # noqa: PLC2701
+from citric.exceptions import LimeSurveyStatusError
+
+if TYPE_CHECKING:
+    from citric import Client
 
 
 @pytest.fixture(scope="module")
 def rest_client(
+    client: Client,
     integration_url: str,
     integration_username: str,
     integration_password: str,
@@ -27,8 +33,12 @@ def rest_client(
         integration_url,
         integration_username,
         integration_password,
-    ) as client:
-        yield client
+    ) as api_client:
+        yield api_client
+
+    with contextlib.suppress(LimeSurveyStatusError):
+        for survey in client.list_surveys(integration_username):
+            client.delete_survey(survey["sid"])
 
 
 @pytest.mark.integration_test
