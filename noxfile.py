@@ -47,18 +47,32 @@ def _run_tests(session: nox.Session, *args: str) -> None:
 @nox.parametrize("constraints", ["highest", "lowest-direct"])
 def tests(session: nox.Session, constraints: str) -> None:
     """Execute pytest tests and compute coverage."""
-    session.install(
-        "citric @ .",
-        f"-c=requirements/requirements-{constraints}.txt",
-        "-r=requirements/requirements-test.txt",
+    session.run_install(
+        "uv",
+        "sync",
+        "--frozen",
+        "--no-dev",
+        "--group=test",
+        f"--python={session.virtualenv.location}",
+        env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
     )
+    if constraints == "lowest-direct":
+        session.install("-r=requirements/requirements-lowest-direct.txt")
     _run_tests(session, "-m", "not integration_test", *session.posargs)
 
 
 @nox.session(tags=["test"])
 def integration(session: nox.Session) -> None:
     """Execute integration tests and compute coverage."""
-    session.install("citric @ .", "-r=requirements/requirements-test.txt")
+    session.run_install(
+        "uv",
+        "sync",
+        "--frozen",
+        "--no-dev",
+        "--group=test",
+        f"--python={session.virtualenv.location}",
+        env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
+    )
     _run_tests(session, "--integration", "-m", "integration_test", *session.posargs)
 
 
@@ -72,7 +86,15 @@ def xdoctest(session: nox.Session) -> None:
         if FORCE_COLOR in os.environ:
             args.append("--colored=1")
 
-    session.install("citric @ .", "-r", "requirements/requirements-test.txt")
+    session.run_install(
+        "uv",
+        "sync",
+        "--frozen",
+        "--no-dev",
+        "--group=test",
+        f"--python={session.virtualenv.location}",
+        env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
+    )
     session.run("python", "-m", "xdoctest", *args)
 
 
@@ -105,7 +127,15 @@ def dependencies(session: nox.Session) -> None:
 def mypy(session: nox.Session) -> None:
     """Type-check using mypy."""
     args = session.posargs or locations
-    session.install("citric @ .", "-r", "requirements/requirements-typing.txt")
+    session.run_install(
+        "uv",
+        "sync",
+        "--frozen",
+        "--no-dev",
+        "--group=typing",
+        f"--python={session.virtualenv.location}",
+        env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
+    )
     session.run("mypy", *args)
 
 
@@ -116,8 +146,15 @@ def docs_build(session: nox.Session) -> None:
     if not session.posargs and FORCE_COLOR in os.environ:
         args.insert(0, "--color")
 
-    session.install("citric @ .", "-r", "requirements/requirements-docs.txt")
-
+    session.run_install(
+        "uv",
+        "sync",
+        "--frozen",
+        "--no-dev",
+        "--group=docs",
+        f"--python={session.virtualenv.location}",
+        env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
+    )
     build_dir = Path("build")
     if build_dir.exists():
         shutil.rmtree(build_dir)
@@ -139,12 +176,16 @@ def docs_serve(session: nox.Session) -> None:
         "docs",
         "build",
     ]
-    session.install(
-        "citric @ .",
-        "sphinx-autobuild",
-        "-r",
-        "requirements/requirements-docs.txt",
+    session.run_install(
+        "uv",
+        "sync",
+        "--frozen",
+        "--no-dev",
+        "--group=docs",
+        f"--python={session.virtualenv.location}",
+        env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
     )
+    session.install("sphinx-autobuild")
 
     build_dir = Path("build")
     if build_dir.exists():
