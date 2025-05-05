@@ -68,7 +68,10 @@ def test_refresh_token(
 def test_get_surveys(rest_client: RESTClient, survey_id: int) -> None:
     """Test getting surveys."""
     surveys = rest_client.get_surveys()
-    assert surveys[0]["sid"] == survey_id
+    assert len(surveys) > 0
+
+    survey = next(filter(lambda s: s["sid"] == survey_id, surveys), None)
+    assert survey is not None
 
 
 @pytest.mark.integration_test
@@ -97,14 +100,16 @@ def test_patch_survey_details(
     expected = (
         True
         if server_version < semver.Version(6, 4, prerelease="dev")
-        else {
-            "operationsApplied": 1,
-            "erronousOperations": [],
-        }
-        if server_version < semver.Version(6, 5, prerelease="dev")
-        else {
-            "operationsApplied": 1,
-        }
+        else (
+            {
+                "operationsApplied": 1,
+                "erronousOperations": [],
+            }
+            if server_version < semver.Version(6, 5, prerelease="dev")
+            else {
+                "operationsApplied": 1,
+            }
+        )
     )
     assert result == expected
 
