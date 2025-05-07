@@ -88,17 +88,12 @@ def filter_tags(
     Yields:
         Tag names.
     """
-    count_5 = 0
     count_6 = 0
     for tag in tags:
         name = tag["name"]
 
         if name in {"6-apache", "5-apache"}:
             yield name
-
-        if re.match(PATTERN_5x, name) and count_5 < max_tags:
-            yield name
-            count_5 += 1
 
         if re.match(PATTERN_6x, name) and count_6 < max_tags:
             yield name
