@@ -6,6 +6,7 @@ on:
   pull_request:
     types: [opened, reopened, synchronize]
     paths:
+    - examples/**
     - src/**
     - tests/**
     - docker-compose*.yml
@@ -20,6 +21,7 @@ on:
     branches:
     - 'main'
     paths:
+    - examples/**
     - src/**
     - tests/**
     - docker-compose*.yml
