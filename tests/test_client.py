@@ -37,18 +37,6 @@ class MockSession(Session):
         """Process a mock RPC call."""
         return {"method": method, "params": [*params]}
 
-    def list_questions(
-        self,
-        survey_id: int,
-        group_id: int | None = None,
-        *args: Any,
-    ) -> list[dict[str, Any]]:
-        """Mock questions."""
-        return [
-            {"title": "Q1", "qid": 1, "gid": group_id or 1, "sid": survey_id},
-            {"title": "Q2", "qid": 2, "gid": group_id or 1, "sid": survey_id},
-        ]
-
     def export_statistics(self, *args: Any) -> bytes:
         """Mock statistics file content."""
         return base64.b64encode(DUMMY_FILE_CONTENTS)
@@ -105,20 +93,6 @@ def test_export_timeline(client: MockClient):
     ) == {
         "2022-01-01": 4,
         "2022-01-02": 2,
-    }
-
-
-def test_map_response_data(client: MockClient):
-    """Test question keys get mapped to LimeSurvey's internal representation."""
-    question_mapping = client._get_question_mapping(1)
-    mapped_responses = client._map_response_keys(
-        {"Q1": "foo", "Q2": "bar", "BAZ": "qux"},
-        question_mapping,
-    )
-    assert mapped_responses == {
-        "1X1X1": "foo",
-        "1X1X2": "bar",
-        "BAZ": "qux",
     }
 
 
