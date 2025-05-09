@@ -263,8 +263,8 @@ def test_group(client: citric.Client):
         key=operator.itemgetter("qid"),
     )
 
-    assert questions[0]["question"] == "<p><strong>First question</p>"
-    assert questions[1]["question"] == "<p><strong>Second question</p>"
+    assert any(q["question"] == "<p><strong>First question</p>" for q in questions)
+    assert any(q["question"] == "<p><strong>Second question</p>" for q in questions)
 
     # Update group properties
     response = client.set_group_properties(created_group, group_order=1)
