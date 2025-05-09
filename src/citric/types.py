@@ -814,7 +814,7 @@ class FileMetadata(FileUploadResult):
     """Uploaded file metadata."""
 
     question: QuestionReference
-    """:class:`~citric.client.QuestionReference` object."""
+    """Reference to the question that the file was uploaded to."""
 
     index: int
     """File index."""
@@ -824,7 +824,7 @@ class EncodedFile(TypedDict):
     """A file uploaded to a survey response."""
 
     meta: FileMetadata
-    """:class:`~citric.client.FileMetadata` object."""
+    """Metadata about the file."""
 
     content: str
     """File content as base64 encoded string."""
@@ -834,7 +834,7 @@ class ReadableFile(TypedDict):
     """A file uploaded to a survey response."""
 
     meta: FileMetadata
-    """:class:`~citric.client.FileMetadata` object."""
+    """Metadata about the file."""
 
     content: io.BytesIO
     """File content as :py:class:`io.BytesIO <io.BytesIO>`."""

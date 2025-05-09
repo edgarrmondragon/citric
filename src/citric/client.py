@@ -1158,9 +1158,12 @@ class Client:  # noqa: PLR0904
             token: Optional participant token to filter uploaded files.
 
         Yields:
-            :class:`~citric.client.UploadedFile` objects.
+            :class:`~citric.types.ReadableFile` dictionaries.
 
         .. versionadded:: 0.0.13
+        .. versionchanged:: NEXT_VERSION
+           Yield :class:`~citric.types.ReadableFile` dictionaries instead of
+           dataclass instances.
         """
         files_data = self.get_uploaded_files(survey_id, token)
         for file in files_data:
