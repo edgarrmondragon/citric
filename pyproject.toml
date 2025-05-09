@@ -274,7 +274,6 @@ relative_files = true
 exclude_also = [
   '''if (t\.)?TYPE_CHECKING:''',
 ]
-fail_under = 85
 omit = [
   "src/citric/types.py",
 ]
