@@ -21,7 +21,6 @@ from typing import (
 import requests
 
 from citric import enums
-from citric._compat import future_parameter
 from citric.exceptions import LimeSurveyStatusError
 from citric.session import Session
 
@@ -464,7 +463,6 @@ class Client:  # noqa: PLR0904
         data = self._map_response_keys(response_data, questions)
         return self.session.update_response(survey_id, data)
 
-    @future_parameter("6.4.0", "destination_survey_id")
     def copy_survey(
         self,
         survey_id: int,
