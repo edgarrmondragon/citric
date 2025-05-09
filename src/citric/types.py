@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, Literal, TypedDict
 
 if TYPE_CHECKING:
+    import io
     import sys
 
     if sys.version_info >= (3, 10):
@@ -17,12 +18,14 @@ if TYPE_CHECKING:
 __all__ = [
     "CPDBParticipantImportResult",
     "ExporAdditionalOptions",
+    "FileMetadata",
     "FileUploadResult",
     "GroupProperties",
     "LanguageProperties",
     "OperationStatus",
     "Permission",
     "QuestionProperties",
+    "QuestionReference",
     "QuestionsListElement",
     "QuotaListElement",
     "QuotaProperties",
@@ -32,6 +35,7 @@ __all__ = [
     "SurveyListElement",
     "SurveyProperties",
     "SurveyUserActivationSettings",
+    "UploadedFile",
     "UserDetails",
 ]
 
@@ -793,3 +797,52 @@ class UserDetails(TypedDict, total=False):
 
     user_status: enums.UserStatus
     """The user status."""
+
+
+class QuestionReference(TypedDict):
+    """Uploaded file question reference."""
+
+    title: str
+    """Question title."""
+
+    qid: int
+    """Question ID."""
+
+
+class FileMetadata(TypedDict):
+    """Uploaded file metadata."""
+
+    name: str
+    """File name."""
+
+    filename: str
+    """LimeSurvey internal file name."""
+
+    size: float
+    """File size in bytes."""
+
+    ext: str
+    """File extension."""
+
+    question: QuestionReference
+    """:class:`~citric.client.QuestionReference` object."""
+
+    index: int
+    """File index."""
+
+    success: bool
+    """Whether the file was uploaded successfully."""
+
+    msg: str
+    """Message from the upload."""
+
+
+class UploadedFile(TypedDict):
+    """A file uploaded to a survey response."""
+
+    meta: FileMetadata
+    """:class:`~citric.client.FileMetadata` object."""
+
+    content: io.BytesIO
+    """File content as :py:class:`io.BytesIO <io.BytesIO>`.
+    """

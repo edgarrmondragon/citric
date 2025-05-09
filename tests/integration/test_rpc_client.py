@@ -923,17 +923,17 @@ def test_response_files(
     files = list(client.get_uploaded_file_objects(survey_id, token))
     assert len(files) == 2
 
-    assert files[0].meta.filename == result1["filename"]
-    assert files[0].meta.size == result1["size"]
-    assert files[0].meta.ext == result1["ext"]
-    assert files[0].meta.name == result1["name"]
-    assert files[0].content.read() == content1
+    assert files[0]["meta"]["filename"] == result1["filename"]
+    assert files[0]["meta"]["size"] == result1["size"]
+    assert files[0]["meta"]["ext"] == result1["ext"]
+    assert files[0]["meta"]["name"] == result1["name"]
+    assert files[0]["content"].read() == content1
 
-    assert files[1].meta.filename == result2["filename"]
-    assert files[1].meta.size == result2["size"]
-    assert files[1].meta.ext == result2["ext"]
-    assert files[1].meta.name == result2["name"]
-    assert files[1].content.read() == content2
+    assert files[1]["meta"]["filename"] == result2["filename"]
+    assert files[1]["meta"]["size"] == result2["size"]
+    assert files[1]["meta"]["ext"] == result2["ext"]
+    assert files[1]["meta"]["name"] == result2["name"]
+    assert files[1]["content"].read() == content2
 
     # Download files to a directory
     download_dir = tmp_path / "downloads"

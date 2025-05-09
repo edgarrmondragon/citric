@@ -6,7 +6,6 @@ import base64
 import datetime
 import io
 import re
-from dataclasses import dataclass
 from pathlib import Path
 from typing import (
     IO,
@@ -41,64 +40,9 @@ if TYPE_CHECKING:
 
 __all__ = [
     "Client",
-    "FileMetadata",
-    "QuestionReference",
-    "UploadedFile",
 ]
 
 EMAILS_SENT_STATUS_PATTERN = re.compile(r"(-?\d+) left to send")
-
-
-@dataclass
-class QuestionReference:
-    """Uploaded file question reference."""
-
-    title: str
-    """Question title."""
-
-    qid: int
-    """Question ID."""
-
-
-@dataclass
-class FileMetadata:
-    """Uploaded file metadata."""
-
-    name: str
-    """File name."""
-
-    filename: str
-    """LimeSurvey internal file name."""
-
-    size: float
-    """File size in bytes."""
-
-    ext: str
-    """File extension."""
-
-    question: QuestionReference
-    """:class:`~citric.client.QuestionReference` object."""
-
-    index: int
-    """File index."""
-
-    success: bool
-    """Whether the file was uploaded successfully."""
-
-    msg: str
-    """Message from the upload."""
-
-
-@dataclass
-class UploadedFile:
-    """A file uploaded to a survey response."""
-
-    meta: FileMetadata
-    """:class:`~citric.client.FileMetadata` object."""
-
-    content: io.BytesIO
-    """File content as :py:class:`io.BytesIO <io.BytesIO>`.
-    """
 
 
 class Client:  # noqa: PLR0904
@@ -1206,7 +1150,7 @@ class Client:  # noqa: PLR0904
         self,
         survey_id: int,
         token: str | None = None,
-    ) -> Generator[UploadedFile, None, None]:
+    ) -> Generator[types.UploadedFile, None, None]:
         """Iterate over uploaded files in a survey response.
 
         Args:
@@ -1224,13 +1168,13 @@ class Client:  # noqa: PLR0904
             question: dict[str, Any] = metadata.pop("question")
             content = base64.b64decode(files_data[file]["content"])
 
-            yield UploadedFile(
-                meta=FileMetadata(
+            yield {
+                "meta": {
                     **metadata,
-                    question=QuestionReference(**question),
-                ),
-                content=io.BytesIO(content),
-            )
+                    "question": question,
+                },
+                "content": io.BytesIO(content),
+            }
 
     def download_files(
         self,
@@ -1256,10 +1200,10 @@ class Client:  # noqa: PLR0904
         uploaded_files = self.get_uploaded_file_objects(survey_id, token=token)
 
         for file in uploaded_files:
-            filepath = dirpath / file.meta.filename
+            filepath = dirpath / file["meta"]["filename"]
             filepaths.append(filepath)
             with Path(filepath).open("wb") as f:
-                f.write(file.content.read())
+                f.write(file["content"].read())
 
         return filepaths
 
