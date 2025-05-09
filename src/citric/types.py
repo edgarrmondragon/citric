@@ -17,6 +17,7 @@ if TYPE_CHECKING:
 
 __all__ = [
     "CPDBParticipantImportResult",
+    "EncodedFile",
     "ExporAdditionalOptions",
     "FileMetadata",
     "FileUploadResult",
@@ -30,12 +31,12 @@ __all__ = [
     "QuotaListElement",
     "QuotaProperties",
     "RPCResponse",
+    "ReadableFile",
     "Result",
     "SetQuotaPropertiesResult",
     "SurveyListElement",
     "SurveyProperties",
     "SurveyUserActivationSettings",
-    "UploadedFile",
     "UserDetails",
 ]
 
@@ -809,20 +810,8 @@ class QuestionReference(TypedDict):
     """Question ID."""
 
 
-class FileMetadata(TypedDict):
+class FileMetadata(FileUploadResult):
     """Uploaded file metadata."""
-
-    name: str
-    """File name."""
-
-    filename: str
-    """LimeSurvey internal file name."""
-
-    size: float
-    """File size in bytes."""
-
-    ext: str
-    """File extension."""
 
     question: QuestionReference
     """:class:`~citric.client.QuestionReference` object."""
@@ -830,19 +819,22 @@ class FileMetadata(TypedDict):
     index: int
     """File index."""
 
-    success: bool
-    """Whether the file was uploaded successfully."""
 
-    msg: str
-    """Message from the upload."""
+class EncodedFile(TypedDict):
+    """A file uploaded to a survey response."""
+
+    meta: FileMetadata
+    """:class:`~citric.client.FileMetadata` object."""
+
+    content: str
+    """File content as base64 encoded string."""
 
 
-class UploadedFile(TypedDict):
+class ReadableFile(TypedDict):
     """A file uploaded to a survey response."""
 
     meta: FileMetadata
     """:class:`~citric.client.FileMetadata` object."""
 
     content: io.BytesIO
-    """File content as :py:class:`io.BytesIO <io.BytesIO>`.
-    """
+    """File content as :py:class:`io.BytesIO <io.BytesIO>`."""

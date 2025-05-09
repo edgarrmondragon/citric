@@ -1130,7 +1130,7 @@ class Client:  # noqa: PLR0904
         self,
         survey_id: int,
         token: str | None = None,
-    ) -> dict[str, dict[str, Any]]:
+    ) -> dict[str, types.EncodedFile]:
         """Get a dictionary of files uploaded in a survey response.
 
         Calls :rpc_method:`get_uploaded_files`.
@@ -1150,7 +1150,7 @@ class Client:  # noqa: PLR0904
         self,
         survey_id: int,
         token: str | None = None,
-    ) -> Generator[types.UploadedFile, None, None]:
+    ) -> Generator[types.ReadableFile, None, None]:
         """Iterate over uploaded files in a survey response.
 
         Args:
@@ -1164,16 +1164,9 @@ class Client:  # noqa: PLR0904
         """
         files_data = self.get_uploaded_files(survey_id, token)
         for file in files_data:
-            metadata: dict[str, Any] = files_data[file]["meta"]
-            question: dict[str, Any] = metadata.pop("question")
-            content = base64.b64decode(files_data[file]["content"])
-
             yield {
-                "meta": {
-                    **metadata,
-                    "question": question,
-                },
-                "content": io.BytesIO(content),
+                "meta": files_data[file]["meta"],
+                "content": io.BytesIO(base64.b64decode(files_data[file]["content"])),
             }
 
     def download_files(
