@@ -64,12 +64,6 @@ class QuestionReference:
 class FileMetadata:
     """Uploaded file metadata."""
 
-    title: str
-    """File title."""
-
-    comment: str
-    """File comment."""
-
     name: str
     """File name."""
 
@@ -87,6 +81,12 @@ class FileMetadata:
 
     index: int
     """File index."""
+
+    success: bool
+    """Whether the file was uploaded successfully."""
+
+    msg: str
+    """Message from the upload."""
 
 
 @dataclass

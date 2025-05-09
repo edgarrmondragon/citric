@@ -876,6 +876,80 @@ def file_upload_question(
 
 
 @pytest.mark.integration_test
+def test_response_files(
+    request: pytest.FixtureRequest,
+    client: citric.Client,
+    server_version: semver.VersionInfo,
+    survey_id: int,
+    file_upload_question: QuestionsListElement,
+    tmp_path: Path,
+    faker: Faker,
+):
+    """Test response files."""
+    request.applymarker(
+        pytest.mark.xfail(
+            server_version < (6, 14, 0),
+            reason=(
+                "A bug in LimeSurvey < 6.14.0 causes files uploaded before 6.14.0 "
+                "to be unavailable when adding responses"
+            ),
+            strict=True,
+        ),
+    )
+
+    token = "T00000"
+    sid = file_upload_question["sid"]
+    gid = file_upload_question["gid"]
+    qid = file_upload_question["qid"]
+    field_name = f"{sid}X{gid}X{qid}"
+
+    # Upload two files
+    with io.BytesIO() as file:
+        content1 = faker.zip()
+        file.write(content1)
+        file.seek(0)
+        result1 = client.upload_file_object(survey_id, field_name, "file1.zip", file)
+
+    with io.BytesIO() as file:
+        content2 = faker.zip()
+        file.write(content2)
+        file.seek(0)
+        result2 = client.upload_file_object(survey_id, field_name, "file2.zip", file)
+
+    # Add a response
+    response_files = [result1, result2]
+    responses = [
+        {
+            "token": token,
+            field_name: json.dumps(response_files),
+            f"{field_name}_filecount": len(response_files),
+        },
+    ]
+    assert client.add_responses(survey_id, responses) == [1]
+
+    responses = json.loads(client.export_responses(survey_id, token=token))
+    assert len(responses["responses"]) == 1
+    assert len(json.loads(responses["responses"][0]["G02Q03"])) == 2
+    assert responses["responses"][0]["G02Q03[filecount]"] == 2
+
+    # Download files
+    files = list(client.get_uploaded_file_objects(survey_id, token))
+    assert len(files) == 2
+
+    assert files[0].meta.filename == result1["filename"]
+    assert files[0].meta.size == result1["size"]
+    assert files[0].meta.ext == result1["ext"]
+    assert files[0].meta.name == result1["name"]
+    assert files[0].content.read() == content1
+
+    assert files[1].meta.filename == result2["filename"]
+    assert files[1].meta.size == result2["size"]
+    assert files[1].meta.ext == result2["ext"]
+    assert files[1].meta.name == result2["name"]
+    assert files[1].content.read() == content2
+
+
+@pytest.mark.integration_test
 def test_file_upload(
     client: citric.Client,
     file_upload_question: QuestionsListElement,
