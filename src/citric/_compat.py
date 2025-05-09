@@ -4,7 +4,10 @@ from __future__ import annotations
 
 import warnings
 from functools import wraps
-from typing import Any, Callable
+from typing import TYPE_CHECKING, Any, Callable
+
+if TYPE_CHECKING:
+    from types import FunctionType
 
 __all__ = ["FutureVersionWarning", "future", "future_parameter"]
 
@@ -41,9 +44,9 @@ def future(version: str) -> Callable:
     """
     message = _warning_message(version)
 
-    def decorate(fn: Callable) -> Callable:
+    def decorate(fn: FunctionType) -> FunctionType:
         @wraps(fn)
-        def wrapper(*args: Any, **kwargs: Any) -> Callable:
+        def wrapper(*args: Any, **kwargs: Any) -> FunctionType:
             warnings.warn(
                 f"Method {fn.__name__} {''.join(message)}",
                 FutureVersionWarning,
