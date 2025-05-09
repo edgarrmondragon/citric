@@ -977,6 +977,7 @@ def test_site_settings(client: citric.Client):
     assert client.get_default_language() == "en"
     assert client.get_default_theme() == "vanilla"
     assert client.get_site_name() == "Citric - Test"
+    assert isinstance(client.get_db_version(), int)
 
 
 @pytest.mark.integration_test
