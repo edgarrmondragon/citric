@@ -1237,6 +1237,8 @@ class Client:  # noqa: PLR0904
         directory: str | Path,
         survey_id: int,
         token: str | None = None,
+        *,
+        create_dir: bool = True,
     ) -> list[Path]:
         """Download files uploaded in survey response.
 
@@ -1244,13 +1246,18 @@ class Client:  # noqa: PLR0904
             directory: Where to store the files.
             survey_id: Survey for which to download files.
             token: Optional participant token to filter uploaded files.
+            create_dir: Whether to create the directory if it doesn't exist.
 
         Returns:
             List with the paths of downloaded files.
 
         .. versionadded:: 0.0.1
+        .. versionchanged:: NEXT_VERSION
+           Added the ``create_dir`` optional parameter.
         """
         dirpath = Path(directory)
+        if create_dir:
+            dirpath.mkdir(parents=True, exist_ok=True)
 
         filepaths = []
         uploaded_files = self.get_uploaded_file_objects(survey_id, token=token)
