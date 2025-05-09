@@ -6,7 +6,6 @@ from __future__ import annotations
 
 # start example
 import json
-from pathlib import Path
 
 from citric import Client
 
@@ -50,5 +49,4 @@ with Client(LS_URL, PARTICIPANT_TOKEN) as client:
     ]
 
     # Download files
-    for file in client.get_uploaded_file_objects(survey_id, field_name):
-        Path(file.meta.filename).write_bytes(file.content.read())
+    paths = client.download_files("./downloads", survey_id, PARTICIPANT_TOKEN)

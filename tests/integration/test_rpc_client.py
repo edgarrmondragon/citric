@@ -877,26 +877,13 @@ def file_upload_question(
 
 @pytest.mark.integration_test
 def test_response_files(
-    request: pytest.FixtureRequest,
     client: citric.Client,
-    server_version: semver.VersionInfo,
     survey_id: int,
     file_upload_question: QuestionsListElement,
     tmp_path: Path,
     faker: Faker,
 ):
     """Test response files."""
-    request.applymarker(
-        pytest.mark.xfail(
-            server_version < (6, 14, 0),
-            reason=(
-                "A bug in LimeSurvey < 6.14.0 causes files uploaded before 6.14.0 "
-                "to be unavailable when adding responses"
-            ),
-            strict=True,
-        ),
-    )
-
     token = "T00000"
     sid = file_upload_question["sid"]
     gid = file_upload_question["gid"]
@@ -932,7 +919,7 @@ def test_response_files(
     assert len(json.loads(responses["responses"][0]["G02Q03"])) == 2
     assert responses["responses"][0]["G02Q03[filecount]"] == 2
 
-    # Download files
+    # Get uploaded files
     files = list(client.get_uploaded_file_objects(survey_id, token))
     assert len(files) == 2
 
@@ -947,6 +934,14 @@ def test_response_files(
     assert files[1].meta.ext == result2["ext"]
     assert files[1].meta.name == result2["name"]
     assert files[1].content.read() == content2
+
+    # Download files to a directory
+    download_dir = tmp_path / "downloads"
+    download_dir.mkdir(parents=True, exist_ok=True)
+    paths = client.download_files(download_dir, survey_id, token)
+    assert len(paths) == 2
+    assert paths[0].read_bytes() == content1
+    assert paths[1].read_bytes() == content2
 
 
 @pytest.mark.integration_test
