@@ -50,3 +50,4 @@ with Client(LS_URL, PARTICIPANT_TOKEN) as client:
 
     # Download files
     paths = client.download_files("./downloads", survey_id, PARTICIPANT_TOKEN)
+# end example

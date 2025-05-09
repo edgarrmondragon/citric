@@ -63,6 +63,13 @@ By default, this client uses the internal database for authentication but
 
 Common plugins are `Authdb` (default), `AuthLDAP` and `Authwebserver`.
 
+## Upload files and use them to update a response
+
+```{literalinclude} ../code_samples/uploaded_to_response.py
+:start-after: start example
+:end-before: end example
+```
+
 ## Get files uploaded to a survey and move them to S3
 
 ```{literalinclude} ../code_samples/upload_s3.py
