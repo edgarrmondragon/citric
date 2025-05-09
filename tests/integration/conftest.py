@@ -157,12 +157,6 @@ def server_version(client: citric.Client) -> semver.Version:
     return semver.Version.parse(client.get_server_version())
 
 
-@pytest.fixture(scope="session")
-def database_version(client: citric.Client) -> int:
-    """Get the LimeSurvey database schema version."""
-    return client.get_db_version()
-
-
 @pytest.fixture
 def mailpit(integration_mailpit_url: str) -> MailpitClient:
     """Get the LimeSurvey database schema version."""

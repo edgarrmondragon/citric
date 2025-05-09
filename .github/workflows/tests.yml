@@ -55,7 +55,7 @@ env:
 
 jobs:
   tests:
-    name: "Test ${{ matrix.python-version }} / ${{ matrix.os }}"
+    name: "Python ${{ matrix.python-version }} / ${{ matrix.os }}"
     runs-on: ${{ matrix.os }}
     permissions:
       contents: read
@@ -187,7 +187,7 @@ jobs:
         echo "tags=$(cat .github/workflows/resources/tags.json | jq -c .)" >> $GITHUB_OUTPUT
 
   integration:
-    name: "integration ${{ matrix.python-version }} / ${{ matrix.image_tag || matrix.ref }} / ${{ matrix.database }}"
+    name: "Python ${{ matrix.python-version }} / ${{ matrix.image_tag || matrix.ref }} / ${{ matrix.database }}"
     runs-on: ubuntu-24.04
     continue-on-error: true
     needs: [docker_tags]

@@ -34,15 +34,6 @@ all_python_versions = python_versions + pypy_versions
 locations = "src", "tests", "noxfile.py", "docs/conf.py"
 
 
-def _run_tests(session: nox.Session, *args: str) -> None:
-    env = {"COVERAGE_CORE": "sysmon"}
-    try:
-        session.run("coverage", "run", "-m", "pytest", *args, env=env)
-    finally:
-        if session.interactive:
-            session.notify("coverage", posargs=[])
-
-
 @nox.session(python=python_versions, tags=["test"])
 @nox.parametrize("constraints", ["highest", "lowest-direct"])
 def tests(session: nox.Session, constraints: str) -> None:
@@ -58,7 +49,16 @@ def tests(session: nox.Session, constraints: str) -> None:
     )
     if constraints == "lowest-direct":
         session.install("-r=requirements/requirements-lowest-direct.txt")
-    _run_tests(session, "-m", "not integration_test", *session.posargs)
+
+    session.run(
+        "coverage",
+        "run",
+        "-m",
+        "pytest",
+        "-m",
+        "not integration_test",
+        env={"COVERAGE_CORE": "sysmon"},
+    )
 
 
 @nox.session(tags=["test"])
@@ -73,7 +73,20 @@ def integration(session: nox.Session) -> None:
         f"--python={session.virtualenv.location}",
         env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
     )
-    _run_tests(session, "--integration", "-m", "integration_test", *session.posargs)
+    try:
+        session.run(
+            "coverage",
+            "run",
+            "-m",
+            "pytest",
+            "--integration",
+            "-m",
+            "integration_test",
+            env={"COVERAGE_CORE": "sysmon"},
+        )
+    finally:
+        if session.interactive:
+            session.notify("coverage", posargs=[])
 
 
 @nox.session(tags=["test"])
