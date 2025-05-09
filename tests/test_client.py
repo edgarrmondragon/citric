@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import base64
 import datetime
-from typing import TYPE_CHECKING, Any, ClassVar, Generator
+from typing import TYPE_CHECKING, Any, Generator
 
 import pytest
 
@@ -14,24 +14,11 @@ from citric.session import Session
 if TYPE_CHECKING:
     from _pytest._py.path import LocalPath
 
-
-NEW_GROUP_ID = 300
-NEW_QUESTION_ID = 400
-NEW_SURVEY_NAME = "New Survey"
 DUMMY_FILE_CONTENTS = b"FILE CONTENTS"
 
 
 class MockSession(Session):
     """Mock RPC session with some hardcoded methods for testing."""
-
-    settings: ClassVar[dict[str, Any]] = {
-        "defaulttheme": "mock-theme",
-        "sitename": "mock-site",
-        "defaultlang": "mock-lang",
-        "restrictToLanguages": "en fr es",
-        "versionnumber": "6.0.0",
-        "dbversionnumber": 321,
-    }
 
     def rpc(self, method: str, *params: Any) -> dict[str, Any]:
         """Process a mock RPC call."""
