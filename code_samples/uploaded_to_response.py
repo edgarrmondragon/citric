@@ -16,19 +16,10 @@ survey_id = 12
 group_id = 34
 question_id = 56
 
+# You can also find the field name by using client.get_fieldmap(survey_id)
 field_name = f"{survey_id}X{group_id}X{question_id}"
 
 with Client(LS_URL, PARTICIPANT_TOKEN) as client:
-    survey_id = 1
-    file_upload_question = client.get_question(survey_id, 1)
-
-    sid = file_upload_question["sid"]
-    gid = file_upload_question["gid"]
-    qid = file_upload_question["qid"]
-
-    # You can also find the field name by using client.get_fieldmap(survey_id)
-    field_name = f"{sid}X{gid}X{qid}"
-
     # Upload files to the question using the field name
     with open("image_1.png", "rb") as file:
         content1 = file.read()
