@@ -917,7 +917,7 @@ def test_response_files(
     export = json.loads(client.export_responses(survey_id, token=token))
     assert len(export["responses"]) == 1
     assert len(json.loads(export["responses"][0]["G02Q03"])) == 2
-    assert export["responses"][0]["G02Q03[filecount]"] == 2
+    assert int(export["responses"][0]["G02Q03[filecount]"]) == 2
 
     # Get uploaded files
     files = list(client.get_uploaded_file_objects(survey_id, token))
