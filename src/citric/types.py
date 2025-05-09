@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, Literal, TypedDict
 
 if TYPE_CHECKING:
+    import io
     import sys
 
     if sys.version_info >= (3, 10):
@@ -16,17 +17,21 @@ if TYPE_CHECKING:
 
 __all__ = [
     "CPDBParticipantImportResult",
+    "EncodedFile",
     "ExporAdditionalOptions",
+    "FileMetadata",
     "FileUploadResult",
     "GroupProperties",
     "LanguageProperties",
     "OperationStatus",
     "Permission",
     "QuestionProperties",
+    "QuestionReference",
     "QuestionsListElement",
     "QuotaListElement",
     "QuotaProperties",
     "RPCResponse",
+    "ReadableFile",
     "Result",
     "SetQuotaPropertiesResult",
     "SurveyListElement",
@@ -793,3 +798,43 @@ class UserDetails(TypedDict, total=False):
 
     user_status: enums.UserStatus
     """The user status."""
+
+
+class QuestionReference(TypedDict):
+    """Uploaded file question reference."""
+
+    title: str
+    """Question title."""
+
+    qid: int
+    """Question ID."""
+
+
+class FileMetadata(FileUploadResult):
+    """Uploaded file metadata."""
+
+    question: QuestionReference
+    """Reference to the question that the file was uploaded to."""
+
+    index: int
+    """File index."""
+
+
+class EncodedFile(TypedDict):
+    """A file uploaded to a survey response."""
+
+    meta: FileMetadata
+    """Metadata about the file."""
+
+    content: str
+    """File content as base64 encoded string."""
+
+
+class ReadableFile(TypedDict):
+    """A file uploaded to a survey response."""
+
+    meta: FileMetadata
+    """Metadata about the file."""
+
+    content: io.BytesIO
+    """File content as :py:class:`io.BytesIO <io.BytesIO>`."""
