@@ -864,6 +864,11 @@ def test_summary(
     subtests: SubTests,
 ):
     """Test get_summary client method."""
+    with subtests.test(msg="Use get_summary"), pytest.raises(
+        ValueError, match="Use get_summary"
+    ):
+        client.get_summary_stat(survey_id, "all")
+
     with subtests.test(msg="Invalid stat name"), pytest.raises(
         LimeSurveyStatusError, match="Invalid summary key"
     ):
