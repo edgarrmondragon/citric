@@ -867,12 +867,12 @@ def test_summary(
     with subtests.test(msg="Use get_summary"), pytest.raises(
         ValueError, match="Use get_summary"
     ):
-        client.get_summary_stat(survey_id, "all")
+        client.get_summary_stat(survey_id, "all")  # type: ignore[arg-type]
 
     with subtests.test(msg="Invalid stat name"), pytest.raises(
         LimeSurveyStatusError, match="Invalid summary key"
     ):
-        client.get_summary_stat(survey_id, "not_valid")
+        client.get_summary_stat(survey_id, "not_valid")  # type: ignore[arg-type]
 
     with subtests.test(msg="Without a participants table"):
         assert client.get_summary(survey_id) is None

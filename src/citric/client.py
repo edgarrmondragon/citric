@@ -1126,8 +1126,7 @@ class Client:  # noqa: PLR0904
             "completed_responses",
             "incomplete_responses",
             "full_responses",
-        ]
-        | str,
+        ],
     ) -> int:
         """Get a specific survey summary statistic.
 
@@ -1146,7 +1145,7 @@ class Client:  # noqa: PLR0904
         .. versionadded:: NEXT_VERSION
         """  # noqa: DOC502
         if stat_name == "all":
-            msg = "Use get_summary instead to get all summary statistics"
+            msg = "Use get_summary instead to get all summary statistics"  # type: ignore[unreachable]
             raise ValueError(msg)
 
         return int(self.session.get_summary(survey_id, stat_name))
