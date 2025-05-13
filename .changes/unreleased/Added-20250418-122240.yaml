@@ -1,5 +1,5 @@
 kind: Added
-body: 'feat: Added `mandatory`, `new_question_title`, `new_question_text` and `new_question_help` parameters to `import_question` method'
+body: 'Added `mandatory`, `new_question_title`, `new_question_text` and `new_question_help` parameters to `import_question` method'
 time: 2025-04-18T12:22:40.378702-06:00
 custom:
     Issue: "1329"

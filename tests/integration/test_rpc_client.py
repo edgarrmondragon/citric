@@ -847,11 +847,58 @@ def test_responses(
 
     # Delete a response and then fail to export it or update it
     client.delete_response(survey_id, 1)
+
     with pytest.raises(LimeSurveyStatusError, match="No Response found for Token"):
         client.export_responses(survey_id, token="T00000")
 
     with pytest.raises(LimeSurveyStatusError, match="No matching Response"):
         client.update_response(survey_id, responses[0])
+
+
+@pytest.mark.integration_test
+def test_summary(
+    client: citric.Client,
+    survey_id: int,
+    participants: list[dict],
+    responses: list[dict],
+    subtests: SubTests,
+):
+    """Test get_summary client method."""
+    with subtests.test(msg="Invalid stat name"), pytest.raises(
+        LimeSurveyStatusError, match="Invalid summary key"
+    ):
+        client.get_summary_stat(survey_id, "not_valid")
+
+    with subtests.test(msg="Without a participants table"):
+        assert client.get_summary(survey_id) is None
+
+        with pytest.raises(LimeSurveyStatusError, match="No available data"):
+            client.get_summary_stat(survey_id, "token_count")
+
+    with subtests.test(msg="Without responses"):
+        client.activate_tokens(survey_id, [1, 2])
+        client.add_participants(
+            survey_id,
+            participant_data=participants,
+            create_tokens=False,
+        )
+        summary = client.get_summary(survey_id)
+        assert summary is not None
+        assert summary["token_count"] == 2
+        assert "completed_responses" not in summary
+        assert client.get_summary_stat(survey_id, "token_count") == 2
+
+        with pytest.raises(LimeSurveyStatusError, match="No available data"):
+            client.get_summary_stat(survey_id, "completed_responses")
+
+    with subtests.test(msg="With responses"):
+        client.activate_survey(survey_id)
+        client.add_responses(survey_id, responses)
+        summary = client.get_summary(survey_id)
+        assert summary is not None
+        assert summary["completed_responses"] == 3
+        assert summary["incomplete_responses"] == 0
+        assert client.get_summary_stat(survey_id, "completed_responses") == 3
 
 
 @pytest.fixture

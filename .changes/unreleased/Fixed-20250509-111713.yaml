@@ -1,5 +1,5 @@
 kind: Fixed
-body: 'fix: Added missing fields and removed bad ones from schema of uploaded files response'
+body: 'Added missing fields and removed bad ones from schema of uploaded files response'
 time: 2025-05-09T11:17:13.177869-06:00
 custom:
     Issue: "1351"

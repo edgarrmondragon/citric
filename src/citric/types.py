@@ -36,6 +36,7 @@ __all__ = [
     "SetQuotaPropertiesResult",
     "SurveyListElement",
     "SurveyProperties",
+    "SurveySummary",
     "SurveyUserActivationSettings",
     "UserDetails",
 ]
@@ -838,3 +839,34 @@ class ReadableFile(TypedDict):
 
     content: io.BytesIO
     """File content as :py:class:`io.BytesIO <io.BytesIO>`."""
+
+
+class SurveySummary(TypedDict, total=False):
+    """Survey summary."""
+
+    token_count: int
+    """The number of tokens."""
+
+    token_invalid: int
+    """The number of invalid tokens."""
+
+    token_sent: int
+    """The number of tokens sent."""
+
+    token_opted_out: int
+    """The number of tokens opted out."""
+
+    token_completed: int
+    """The number of tokens completed."""
+
+    token_screenout: int
+    """The number of tokens screenout."""
+
+    completed_responses: int
+    """The number of completed responses."""
+
+    incomplete_responses: int
+    """The number of incomplete responses."""
+
+    full_responses: int
+    """The number of full responses."""

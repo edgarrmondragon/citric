@@ -39,36 +39,11 @@ class MockClient(Client):
     session_class = MockSession
 
 
-def assert_client_session_call(
-    client: Client,
-    method: str,
-    *args: Any,
-    **kwargs: Any,
-):
-    """Assert client makes RPC call with the right arguments.
-
-    Args:
-        client: LSRC2 API client.
-        method: RPC method name.
-        args: RPC method arguments.
-        kwargs: Client keyword arguments.
-    """
-    assert getattr(client, method)(*args, **kwargs) == getattr(client.session, method)(
-        *args,
-        *kwargs.values(),
-    )
-
-
 @pytest.fixture(scope="session")
 def client() -> Generator[Client, None, None]:
     """RemoteControl2 API client."""
     with MockClient("mock://lime.com", "user", "secret") as client:
         yield client
-
-
-def test_get_summary(client: MockClient):
-    """Test get_summary client method."""
-    assert_client_session_call(client, "get_summary", 1)
 
 
 def test_export_timeline(client: MockClient):
