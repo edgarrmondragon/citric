@@ -1149,7 +1149,7 @@ class Client:  # noqa: PLR0904
             msg = "Use get_summary instead to get all summary statistics"
             raise ValueError(msg)
 
-        return self.session.get_summary(survey_id, stat_name)
+        return int(self.session.get_summary(survey_id, stat_name))
 
     def get_survey_properties(
         self,
