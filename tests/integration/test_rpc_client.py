@@ -884,7 +884,7 @@ def test_summary(
         )
         summary = client.get_summary(survey_id)
         assert summary is not None
-        assert summary["token_count"] == 2
+        assert int(summary["token_count"]) == 2
         assert "completed_responses" not in summary
         assert client.get_summary_stat(survey_id, "token_count") == 2
 
@@ -896,8 +896,8 @@ def test_summary(
         client.add_responses(survey_id, responses)
         summary = client.get_summary(survey_id)
         assert summary is not None
-        assert summary["completed_responses"] == 3
-        assert summary["incomplete_responses"] == 0
+        assert int(summary["completed_responses"]) == 3
+        assert int(summary["incomplete_responses"]) == 0
         assert client.get_summary_stat(survey_id, "completed_responses") == 3
 
 
