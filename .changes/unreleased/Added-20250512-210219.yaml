@@ -2,4 +2,4 @@ kind: Added
 body: Added `get_summary_stat` to get a specific survey stat
 time: 2025-05-12T21:02:19.186332-06:00
 custom:
-    Issue: "9999"
+    Issue: "1369"
