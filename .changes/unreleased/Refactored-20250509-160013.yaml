@@ -1,5 +1,5 @@
 kind: Refactored
-body: 'refactor: Remove LimeSurvey version compatibility helpers and rely and good method documentation'
+body: 'Remove LimeSurvey version compatibility helpers and rely and good method documentation'
 time: 2025-05-09T16:00:13.941116-06:00
 custom:
     Issue: "1354"

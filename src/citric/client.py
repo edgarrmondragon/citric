@@ -1089,7 +1089,7 @@ class Client:  # noqa: PLR0904
         """
         return self._get_site_setting("dbversionnumber")
 
-    def get_summary(self, survey_id: int) -> dict[str, int]:
+    def get_summary(self, survey_id: int) -> types.SurveySummary | None:
         """Get survey summary.
 
         Calls :rpc_method:`get_summary`.
@@ -1098,11 +1098,57 @@ class Client:  # noqa: PLR0904
             survey_id: ID of the survey to get summary of.
 
         Returns:
-            Mapping of survey statistics.
+            Mapping of survey statistics or None if stats are not available.
 
         .. versionadded:: 0.0.10
+        .. versionchanged:: NEXT_VERSION
+           Return None if the survey doesn't have a participants table or has no
+           responses.
         """
-        return self.session.get_summary(survey_id)
+        summary = self.session.get_summary(survey_id)
+
+        # An empty list is returned if the survey is not active
+        if isinstance(summary, list):
+            return None
+
+        return summary
+
+    def get_summary_stat(
+        self,
+        survey_id: int,
+        stat_name: Literal[
+            "token_count",
+            "token_invalid",
+            "token_sent",
+            "token_opted_out",
+            "token_completed",
+            "token_screenout",
+            "completed_responses",
+            "incomplete_responses",
+            "full_responses",
+        ],
+    ) -> int:
+        """Get a specific survey summary statistic.
+
+        Calls :rpc_method:`get_summary_stat`.
+
+        Args:
+            survey_id: Survey to get summary of.
+            stat_name: Name of the summary option.
+
+        Returns:
+            The requested summary statistic.
+
+        Raises:
+            ValueError: If ``stat_name`` is ``all``.
+
+        .. versionadded:: NEXT_VERSION
+        """  # noqa: DOC502
+        if stat_name == "all":
+            msg = "Use get_summary instead to get all summary statistics"  # type: ignore[unreachable]
+            raise ValueError(msg)
+
+        return int(self.session.get_summary(survey_id, stat_name))
 
     def get_survey_properties(
         self,
