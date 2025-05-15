@@ -13,6 +13,11 @@ if TYPE_CHECKING:
     else:
         from typing_extensions import TypeAlias
 
+    if sys.version_info >= (3, 11):
+        from typing import Required
+    else:
+        from typing_extensions import Required
+
     from citric import enums
 
 __all__ = [
@@ -24,6 +29,8 @@ __all__ = [
     "GroupProperties",
     "LanguageProperties",
     "OperationStatus",
+    "ParticipantInfo",
+    "ParticipantListElement",
     "Permission",
     "QuestionProperties",
     "QuestionReference",
@@ -870,3 +877,59 @@ class SurveySummary(TypedDict, total=False):
 
     full_responses: int
     """The number of full responses."""
+
+
+class ParticipantInfo(TypedDict):
+    """Participant info."""
+
+    firstname: str
+    """The participant first name."""
+
+    lastname: str
+    """The participant last name."""
+
+    email: str
+    """The participant email."""
+
+
+class ParticipantListElement(TypedDict, total=False):
+    """Participant list element."""
+
+    tid: Required[int]
+    """The participant access code ID."""
+
+    token: Required[str]
+    """The participant access code."""
+
+    participant_info: Required[ParticipantInfo]
+    """The participant info."""
+
+    emailstatus: str
+    """The participant email status."""
+
+    language: str
+    """The participant language."""
+
+    blacklisted: YesNo
+    """Whether the participant is blacklisted."""
+
+    sent: YesNo
+    """Whether the participant invitation was sent."""
+
+    remindersent: YesNo
+    """Whether the participant reminder was sent."""
+
+    remindercount: int
+    """The total number of reminders sent."""
+
+    completed: YesNo
+    """Whether the participant completed the survey."""
+
+    usesleft: int
+    """How many uses left to fill questionnaire for this participant."""
+
+    validfrom: str
+    """Start date of the participant access code."""
+
+    validuntil: str
+    """End date of the participant access code."""

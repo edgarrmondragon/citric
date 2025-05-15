@@ -641,13 +641,13 @@ def test_participants(
     assert len(participants_list) == 2
 
     # Check added participant properties
-    for p, d in zip(participants_list, participants[:2]):
-        with subtests.test(msg="test new participants properties", token=p["tid"]):
-            assert p["participant_info"]["email"] == d["email"]
-            assert p["participant_info"]["firstname"] == d["firstname"]
-            assert p["participant_info"]["lastname"] == d["lastname"]
-            assert p["attribute_1"] == d["attribute_1"]
-            assert p["attribute_2"] == d["attribute_2"]
+    for ple, d in zip(participants_list, participants[:2]):
+        with subtests.test(msg="test new participants properties", token=ple["tid"]):
+            assert ple["participant_info"]["email"] == d["email"]
+            assert ple["participant_info"]["firstname"] == d["firstname"]
+            assert ple["participant_info"]["lastname"] == d["lastname"]
+            assert ple["attribute_1"] == d["attribute_1"]  # type: ignore[typeddict-item]
+            assert ple["attribute_2"] == d["attribute_2"]  # type: ignore[typeddict-item]
 
     # Get participant properties
     for p, d in zip(added, participants[:2]):
