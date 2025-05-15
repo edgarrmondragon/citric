@@ -1389,7 +1389,7 @@ class Client:  # noqa: PLR0904
         unused: bool = False,
         attributes: Sequence[str] | bool = False,
         conditions: Mapping[str, Any] | None = None,
-    ) -> list[dict[str, Any]]:
+    ) -> list[types.ParticipantListElement]:
         """Get participants in a survey.
 
         Calls :rpc_method:`list_participants`.
