@@ -1,5 +1,5 @@
 kind: Typing
-body: 'refactor: Remove `TYPE_CHECKING` guards in modules that define types'
+body: Remove `TYPE_CHECKING` guards in modules that define types
 time: 2025-05-15T16:30:03.054978-06:00
 custom:
     Issue: "1375"
