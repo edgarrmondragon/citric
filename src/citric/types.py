@@ -901,7 +901,7 @@ class ParticipantListElement(TypedDict, total=False):
     token: Required[str]
     """The participant access code."""
 
-    participant_info: ParticipantInfo
+    participant_info: Required[ParticipantInfo]
     """The participant info."""
 
     emailstatus: str
