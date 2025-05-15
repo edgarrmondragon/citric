@@ -245,6 +245,7 @@ version = "1.4.0"
 source = { editable = "." }
 dependencies = [
     { name = "requests" },
+    { name = "typing-extensions", marker = "python_full_version < '3.12'" },
 ]
 
 [package.dev-dependencies]
@@ -358,7 +359,10 @@ typing = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "requests", specifier = ">=2.25.1" }]
+requires-dist = [
+    { name = "requests", specifier = ">=2.25.1" },
+    { name = "typing-extensions", marker = "python_full_version < '3.12'", specifier = ">=4.6" },
+]
 
 [package.metadata.requires-dev]
 dev = [

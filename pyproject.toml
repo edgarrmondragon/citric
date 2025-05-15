@@ -41,6 +41,7 @@ classifiers = [
 ]
 dependencies = [
   "requests>=2.25.1",
+  "typing-extensions>=4.6; python_version<'3.12'",
 ]
 urls.Documentation = "https://citric.readthedocs.io"
 urls.Funding = "https://github.com/sponsors/edgarrmondragon"
