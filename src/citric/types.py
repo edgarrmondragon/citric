@@ -29,6 +29,8 @@ __all__ = [
     "GroupProperties",
     "LanguageProperties",
     "OperationStatus",
+    "ParticipantInfo",
+    "ParticipantListElement",
     "Permission",
     "QuestionProperties",
     "QuestionReference",
