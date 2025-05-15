@@ -6,7 +6,7 @@ from importlib import metadata
 
 from citric.client import Client
 
-__version__ = metadata.version(__package__)
+__version__ = metadata.version("citric")
 """Package version"""
 
 del annotations, metadata
