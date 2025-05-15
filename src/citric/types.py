@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 __all__ = [
     "CPDBParticipantImportResult",
     "EncodedFile",
-    "ExporAdditionalOptions",
+    "ExportAdditionalOptions",
     "FileMetadata",
     "FileUploadResult",
     "GroupProperties",
@@ -666,7 +666,7 @@ class SurveyUserActivationSettings(TypedDict, total=False):
     """Whether the survey saves response timings."""
 
 
-class ExporAdditionalOptions(TypedDict, total=False):
+class ExportAdditionalOptions(TypedDict, total=False):
     """Export formatting options."""
 
     convertY: bool
