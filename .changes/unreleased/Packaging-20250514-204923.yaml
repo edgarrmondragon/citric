@@ -1,0 +1,5 @@
+kind: Packaging
+body: Removed license trove classifier and rely on PEP 639 (
+time: 2025-05-14T20:49:23.919247-06:00
+custom:
+    Issue: "1371"
