@@ -1,0 +1,5 @@
+kind: Packaging
+body: Make `typing-extensions` a runtime dependency
+time: 2025-05-15T16:43:57.026621-06:00
+custom:
+    Issue: "1375"

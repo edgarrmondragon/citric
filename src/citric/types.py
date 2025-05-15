@@ -2,23 +2,21 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Literal, TypedDict
+import io
+import sys
+from typing import Any, Literal, TypedDict
 
-if TYPE_CHECKING:
-    import io
-    import sys
+from citric import enums
 
-    if sys.version_info >= (3, 10):
-        from typing import TypeAlias
-    else:
-        from typing_extensions import TypeAlias
+if sys.version_info >= (3, 10):
+    from typing import TypeAlias
+else:
+    from typing_extensions import TypeAlias
 
-    if sys.version_info >= (3, 11):
-        from typing import Required
-    else:
-        from typing_extensions import Required
-
-    from citric import enums
+if sys.version_info >= (3, 11):
+    from typing import Required
+else:
+    from typing_extensions import Required
 
 __all__ = [
     "CPDBParticipantImportResult",
