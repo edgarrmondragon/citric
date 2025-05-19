@@ -1,0 +1,5 @@
+kind: Changed
+body: Fixed typo `ExporAdditionalOptions` -> `ExportAdditionalOptions`
+time: 2025-05-14T20:47:43.36295-06:00
+custom:
+    Issue: "1372"

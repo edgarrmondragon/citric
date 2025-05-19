@@ -33,16 +33,20 @@ all_python_versions = python_versions + pypy_versions
 
 locations = "src", "tests", "noxfile.py", "docs/conf.py"
 
+UV_SYNC_COMMAND = (
+    "uv",
+    "sync",
+    "--locked",
+    "--no-dev",
+)
+
 
 @nox.session(python=python_versions, tags=["test"])
 @nox.parametrize("constraints", ["highest", "lowest-direct"])
 def tests(session: nox.Session, constraints: str) -> None:
     """Execute pytest tests and compute coverage."""
     session.run_install(
-        "uv",
-        "sync",
-        "--frozen",
-        "--no-dev",
+        *UV_SYNC_COMMAND,
         "--group=test",
         f"--python={session.virtualenv.location}",
         env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
@@ -65,10 +69,7 @@ def tests(session: nox.Session, constraints: str) -> None:
 def integration(session: nox.Session) -> None:
     """Execute integration tests and compute coverage."""
     session.run_install(
-        "uv",
-        "sync",
-        "--frozen",
-        "--no-dev",
+        *UV_SYNC_COMMAND,
         "--group=test",
         f"--python={session.virtualenv.location}",
         env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
@@ -100,10 +101,7 @@ def xdoctest(session: nox.Session) -> None:
             args.append("--colored=1")
 
     session.run_install(
-        "uv",
-        "sync",
-        "--frozen",
-        "--no-dev",
+        *UV_SYNC_COMMAND,
         "--group=test",
         f"--python={session.virtualenv.location}",
         env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
@@ -141,10 +139,7 @@ def mypy(session: nox.Session) -> None:
     """Type-check using mypy."""
     args = session.posargs or locations
     session.run_install(
-        "uv",
-        "sync",
-        "--frozen",
-        "--no-dev",
+        *UV_SYNC_COMMAND,
         "--group=typing",
         f"--python={session.virtualenv.location}",
         env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
@@ -160,10 +155,7 @@ def docs_build(session: nox.Session) -> None:
         args.insert(0, "--color")
 
     session.run_install(
-        "uv",
-        "sync",
-        "--frozen",
-        "--no-dev",
+        *UV_SYNC_COMMAND,
         "--group=docs",
         f"--python={session.virtualenv.location}",
         env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},

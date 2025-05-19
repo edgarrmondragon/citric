@@ -28,7 +28,6 @@ classifiers = [
   "Intended Audience :: Information Technology",
   "Intended Audience :: Science/Research",
   "Intended Audience :: System Administrators",
-  "License :: OSI Approved :: MIT License",
   "Programming Language :: Python :: 3 :: Only",
   "Programming Language :: Python :: 3.8",
   "Programming Language :: Python :: 3.9",
@@ -42,6 +41,7 @@ classifiers = [
 ]
 dependencies = [
   "requests>=2.25.1",
+  "typing-extensions>=4.6; python_version<'3.12'",
 ]
 urls.Documentation = "https://citric.readthedocs.io"
 urls.Funding = "https://github.com/sponsors/edgarrmondragon"
@@ -178,6 +178,9 @@ lint.per-file-ignores."docs/notebooks/*" = [
 ]
 lint.per-file-ignores."src/*" = [
   "PD", # pandas-vet
+]
+lint.per-file-ignores."src/citric/types.py" = [
+  "TC", # type-checking
 ]
 lint.per-file-ignores."tests/*" = [
   "ANN201",  # missing-return-type-undocumented-public-function

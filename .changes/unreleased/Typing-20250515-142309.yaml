@@ -1,0 +1,5 @@
+kind: Typing
+body: Annotate the participant fields in the response from `list_participants`
+time: 2025-05-15T14:23:09.677699-06:00
+custom:
+    Issue: "1374"

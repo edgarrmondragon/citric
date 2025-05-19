@@ -624,7 +624,7 @@ class Client:  # noqa: PLR0904
         from_response_id: int | None = None,
         to_response_id: int | None = None,
         fields: Sequence[str] | None = None,
-        additional_options: types.ExporAdditionalOptions | None = None,
+        additional_options: types.ExportAdditionalOptions | None = None,
     ) -> bytes:
         """Export responses to a file-like object.
 
@@ -700,7 +700,7 @@ class Client:  # noqa: PLR0904
         from_response_id: int | None = None,
         to_response_id: int | None = None,
         fields: Sequence[str] | None = None,
-        additional_options: types.ExporAdditionalOptions | None = None,
+        additional_options: types.ExportAdditionalOptions | None = None,
     ) -> int:
         """Save responses to a file.
 
@@ -1389,7 +1389,7 @@ class Client:  # noqa: PLR0904
         unused: bool = False,
         attributes: Sequence[str] | bool = False,
         conditions: Mapping[str, Any] | None = None,
-    ) -> list[dict[str, Any]]:
+    ) -> list[types.ParticipantListElement]:
         """Get participants in a survey.
 
         Calls :rpc_method:`list_participants`.

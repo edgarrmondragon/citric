@@ -2,28 +2,33 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Literal, TypedDict
+import io
+import sys
+from typing import Any, Literal, TypedDict
 
-if TYPE_CHECKING:
-    import io
-    import sys
+from citric import enums
 
-    if sys.version_info >= (3, 10):
-        from typing import TypeAlias
-    else:
-        from typing_extensions import TypeAlias
+if sys.version_info >= (3, 10):
+    from typing import TypeAlias
+else:
+    from typing_extensions import TypeAlias
 
-    from citric import enums
+if sys.version_info >= (3, 11):
+    from typing import Required
+else:
+    from typing_extensions import Required
 
 __all__ = [
     "CPDBParticipantImportResult",
     "EncodedFile",
-    "ExporAdditionalOptions",
+    "ExportAdditionalOptions",
     "FileMetadata",
     "FileUploadResult",
     "GroupProperties",
     "LanguageProperties",
     "OperationStatus",
+    "ParticipantInfo",
+    "ParticipantListElement",
     "Permission",
     "QuestionProperties",
     "QuestionReference",
@@ -666,7 +671,7 @@ class SurveyUserActivationSettings(TypedDict, total=False):
     """Whether the survey saves response timings."""
 
 
-class ExporAdditionalOptions(TypedDict, total=False):
+class ExportAdditionalOptions(TypedDict, total=False):
     """Export formatting options."""
 
     convertY: bool
@@ -870,3 +875,59 @@ class SurveySummary(TypedDict, total=False):
 
     full_responses: int
     """The number of full responses."""
+
+
+class ParticipantInfo(TypedDict):
+    """Participant info."""
+
+    firstname: str
+    """The participant first name."""
+
+    lastname: str
+    """The participant last name."""
+
+    email: str
+    """The participant email."""
+
+
+class ParticipantListElement(TypedDict, total=False):
+    """Participant list element."""
+
+    tid: Required[int]
+    """The participant access code ID."""
+
+    token: Required[str]
+    """The participant access code."""
+
+    participant_info: Required[ParticipantInfo]
+    """The participant info."""
+
+    emailstatus: str
+    """The participant email status."""
+
+    language: str
+    """The participant language."""
+
+    blacklisted: YesNo
+    """Whether the participant is blacklisted."""
+
+    sent: YesNo
+    """Whether the participant invitation was sent."""
+
+    remindersent: YesNo
+    """Whether the participant reminder was sent."""
+
+    remindercount: int
+    """The total number of reminders sent."""
+
+    completed: YesNo
+    """Whether the participant completed the survey."""
+
+    usesleft: int
+    """How many uses left to fill questionnaire for this participant."""
+
+    validfrom: str
+    """Start date of the participant access code."""
+
+    validuntil: str
+    """End date of the participant access code."""
