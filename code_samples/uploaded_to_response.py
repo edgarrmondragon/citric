@@ -19,15 +19,11 @@ question_id = 56
 field_name = f"{survey_id}X{group_id}X{question_id}"
 
 # Connection parameters
-CLIENT_URL = "http://localhost:8001/index.php/admin/remotecontrol"
-CLIENT_USERNAME = "iamadmin"
-CLIENT_PASSWORD = "secret"
+URL = "http://localhost:8001/index.php/admin/remotecontrol"
+USERNAME = "iamadmin"
+PASSWORD = "secret"
 
-with Client(
-    CLIENT_URL,
-    CLIENT_USERNAME,
-    CLIENT_PASSWORD,
-) as client:
+with Client(URL, USERNAME, PASSWORD) as client:
     # Upload files to the question using the field name
     with open("image_1.png", "rb") as file:
         content1 = file.read()
