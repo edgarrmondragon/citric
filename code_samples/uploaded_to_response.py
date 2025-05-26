@@ -9,7 +9,6 @@ import json
 
 from citric import Client
 
-LS_URL = "http://localhost:8001/index.php/admin/remotecontrol"
 PARTICIPANT_TOKEN = "T00000"
 
 survey_id = 12
@@ -19,7 +18,12 @@ question_id = 56
 # You can also find the field name by using client.get_fieldmap(survey_id)
 field_name = f"{survey_id}X{group_id}X{question_id}"
 
-with Client(LS_URL, PARTICIPANT_TOKEN) as client:
+# Connection parameters
+URL = "http://localhost:8001/index.php/admin/remotecontrol"
+USERNAME = "iamadmin"
+PASSWORD = "secret"
+
+with Client(URL, USERNAME, PASSWORD) as client:
     # Upload files to the question using the field name
     with open("image_1.png", "rb") as file:
         content1 = file.read()
