@@ -18,10 +18,15 @@ question_id = 56
 # You can also find the field name by using client.get_fieldmap(survey_id)
 field_name = f"{survey_id}X{group_id}X{question_id}"
 
+# Connection parameters
+CLIENT_URL = "http://localhost:8001/index.php/admin/remotecontrol"
+CLIENT_USERNAME = "iamadmin"
+CLIENT_PASSWORD = "secret"
+
 with Client(
-    "http://localhost:8001/index.php/admin/remotecontrol",
-    "iamadmin",
-    "secret",
+    CLIENT_URL,
+    CLIENT_USERNAME,
+    CLIENT_PASSWORD,
 ) as client:
     # Upload files to the question using the field name
     with open("image_1.png", "rb") as file:
