@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-# ruff: noqa: PD901
 # start example
 import io
 
