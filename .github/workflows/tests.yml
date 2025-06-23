@@ -91,7 +91,7 @@ jobs:
           os: ubuntu-24.04
 
         - python-version: "3.13"
-          os: windows-2022
+          os: windows-2025
 
         - python-version: "3.13"
           os: macos-15
