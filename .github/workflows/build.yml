@@ -66,7 +66,7 @@ jobs:
         id: attest
         with:
           subject-path: "./dist/citric*"
-      - uses: svenstaro/upload-release-action@04733e069f2d7f7f0b4aebc4fbdbce8613b03ccd # 2.9.0
+      - uses: svenstaro/upload-release-action@cd8e7cbf67456e30da904d9dd06c146632cb868c # 2.9.1
         with:
           file: ${{ steps.attest.outputs.bundle-path }}
           tag: ${{ github.event.inputs.tag || github.ref }}
