@@ -326,6 +326,7 @@ dependencies = [
 [package.dev-dependencies]
 dev = [
     { name = "autodocsumm" },
+    { name = "beautifulsoup4" },
     { name = "colorama" },
     { name = "coverage", version = "7.6.1", source = { registry = "https://pypi.org/simple" }, extra = ["toml"], marker = "python_full_version < '3.9'" },
     { name = "coverage", version = "7.8.2", source = { registry = "https://pypi.org/simple" }, extra = ["toml"], marker = "python_full_version >= '3.9'" },
@@ -391,6 +392,7 @@ samples = [
     { name = "pandas", version = "2.2.3", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.9'" },
 ]
 test = [
+    { name = "beautifulsoup4" },
     { name = "coverage", version = "7.6.1", source = { registry = "https://pypi.org/simple" }, extra = ["toml"], marker = "python_full_version < '3.9'" },
     { name = "coverage", version = "7.8.2", source = { registry = "https://pypi.org/simple" }, extra = ["toml"], marker = "python_full_version >= '3.9'" },
     { name = "faker", version = "35.2.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.9'" },
@@ -411,6 +413,7 @@ test = [
     { name = "xdoctest", extra = ["colors"] },
 ]
 typing = [
+    { name = "beautifulsoup4" },
     { name = "coverage", version = "7.6.1", source = { registry = "https://pypi.org/simple" }, extra = ["toml"], marker = "python_full_version < '3.9'" },
     { name = "coverage", version = "7.8.2", source = { registry = "https://pypi.org/simple" }, extra = ["toml"], marker = "python_full_version >= '3.9'" },
     { name = "faker", version = "35.2.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.9'" },
@@ -449,6 +452,7 @@ requires-dist = [
 [package.metadata.requires-dev]
 dev = [
     { name = "autodocsumm", specifier = ">=0.2.5" },
+    { name = "beautifulsoup4", specifier = ">=4.13.4" },
     { name = "colorama", specifier = ">=0.4.6" },
     { name = "coverage", extras = ["toml"], specifier = ">=7.4.2" },
     { name = "deptry", specifier = ">=0.12" },
@@ -492,6 +496,7 @@ samples = [
     { name = "pandas", specifier = ">=2.0.3" },
 ]
 test = [
+    { name = "beautifulsoup4", specifier = ">=4.13.4" },
     { name = "coverage", extras = ["toml"], specifier = ">=7.4.2" },
     { name = "faker", specifier = ">=19" },
     { name = "pytest", specifier = ">=8" },
@@ -506,6 +511,7 @@ test = [
     { name = "xdoctest", extras = ["colors"], specifier = ">=1.1.1" },
 ]
 typing = [
+    { name = "beautifulsoup4", specifier = ">=4.13.4" },
     { name = "coverage", extras = ["toml"], specifier = ">=7.4.2" },
     { name = "faker", specifier = ">=19" },
     { name = "mypy", specifier = ">=1.9" },

@@ -785,7 +785,7 @@ class Client:  # noqa: PLR0904
         filename: PathLike[str],
         survey_id: int,
         *,
-        file_format: str = "pdf",
+        file_format: str | enums.StatisticsExportFormat = "pdf",
         language: str | None = None,
         graph: bool = False,
         group_ids: list[int] | None = None,
