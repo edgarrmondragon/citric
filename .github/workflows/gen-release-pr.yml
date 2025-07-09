@@ -22,6 +22,7 @@ permissions: {}
 
 jobs:
   generate-pr:
+    name: Generate release Pull Request
     runs-on: ubuntu-24.04
     permissions:
       contents: write       # to create a github release
