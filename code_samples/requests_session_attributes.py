@@ -8,9 +8,9 @@ from citric import Client
 
 session = requests.Session()
 
-# Set to False to accept any TLS certificate presented by the server
-# https://requests.readthedocs.io/en/latest/api/#requests.Session.verify
-session.verify = False
+# Set custom headers to be sent on each request
+# https://requests.readthedocs.io/en/latest/api/#requests.Session.headers
+session.headers["My-Custom-Header"] = "My-Custom-Value"
 
 client = Client(
     "https://mylimeserver.com/index.php/admin/remotecontrol",
