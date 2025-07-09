@@ -2,4 +2,4 @@ kind: Documentation
 body: Update code sample for custom session attributes to set custom headers
 time: 2025-07-08T21:46:01.664503-06:00
 custom:
-    Issue: "9999"
+    Issue: "1423"
