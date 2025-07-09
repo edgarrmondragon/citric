@@ -49,9 +49,12 @@ jobs:
 
     - name: Install tools
       run: |
-        uv tool install --with nox==${{ env.NOX_VERSION }} nox
-        uv tool install --with griffe==${{ env.GRIFFE_VERSION }} griffe
+        uv tool install --with nox==${NOX_VERSION} nox
+        uv tool install --with griffe==${GRIFFE_VERSION} griffe
         uv tool list
+      env:
+        NOX_VERSION: ${{ env.NOX_VERSION }}
+        GRIFFE_VERSION: ${{ env.GRIFFE_VERSION }}
 
     - name: Set REF
       id: set-ref
