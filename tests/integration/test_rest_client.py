@@ -83,11 +83,27 @@ def test_get_survey_details(rest_client: RESTClient, survey_id: int) -> None:
 
 @pytest.mark.integration_test
 def test_patch_survey_details(
+    request: pytest.FixtureRequest,
     server_version: semver.Version,
     rest_client: RESTClient,
     survey_id: int,
 ) -> None:
     """Test getting surveys."""
+    if server_version >= (6, 15, 0):
+        # TODO(edgarrmondragon): Investigate this
+        # https://github.com/edgarrmondragon/citric/issues/1420
+        request.applymarker(
+            pytest.mark.xfail(
+                reason=(
+                    "The REST API seems to be broken in LimeSurvey >= 6.15.0 "
+                    "and updating survey details fails with "
+                    "'Failed saving general settings for survey'. "
+                    f"The current server version is {server_version}."
+                ),
+                strict=True,
+            )
+        )
+
     original = rest_client.get_survey_details(survey_id=survey_id)
     anonymized = original["anonymized"]
     token_length = original["tokenLength"]

@@ -83,6 +83,7 @@ def integration(session: nox.Session) -> None:
             "--integration",
             "-m",
             "integration_test",
+            *session.posargs,
             env={"COVERAGE_CORE": "sysmon"},
         )
     finally:
