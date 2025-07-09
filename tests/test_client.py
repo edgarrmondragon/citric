@@ -2,17 +2,13 @@
 
 from __future__ import annotations
 
-import base64
 import datetime
-from typing import TYPE_CHECKING, Any, Generator
+from typing import Any, Generator
 
 import pytest
 
 from citric.client import Client
 from citric.session import Session
-
-if TYPE_CHECKING:
-    from _pytest._py.path import LocalPath
 
 DUMMY_FILE_CONTENTS = b"FILE CONTENTS"
 
@@ -23,10 +19,6 @@ class MockSession(Session):
     def rpc(self, method: str, *params: Any) -> dict[str, Any]:
         """Process a mock RPC call."""
         return {"method": method, "params": [*params]}
-
-    def export_statistics(self, *args: Any) -> bytes:
-        """Mock statistics file content."""
-        return base64.b64encode(DUMMY_FILE_CONTENTS)
 
     def export_timeline(self, *args: Any) -> dict[str, int]:
         """Mock submission timeline."""
@@ -56,13 +48,6 @@ def test_export_timeline(client: MockClient):
         "2022-01-01": 4,
         "2022-01-02": 2,
     }
-
-
-def test_save_statistics(client: MockClient, tmpdir: LocalPath):
-    """Test save_statistics and export_responses_by_token client methods."""
-    filename = tmpdir / "example.html"
-    client.save_statistics(filename, 1, file_format="html")
-    assert filename.read_binary() == DUMMY_FILE_CONTENTS
 
 
 def test_invite_participants_unknown_status(client: MockClient):

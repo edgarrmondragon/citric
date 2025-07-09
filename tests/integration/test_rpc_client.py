@@ -13,13 +13,14 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any
 from urllib.parse import quote
 
+import bs4
 import pytest
 import requests
 import semver
 
 import citric
 from citric import enums
-from citric.exceptions import LimeSurveyStatusError
+from citric.exceptions import LimeSurveyApiError, LimeSurveyStatusError
 from citric.objects import Participant
 
 if TYPE_CHECKING:
@@ -1263,3 +1264,32 @@ def test_remind_participants(
 
     with subtests.test(msg="2 reminders sent"):
         assert mailpit.get_all()["total"] == 2
+
+
+@pytest.mark.integration_test
+def test_save_statistics(client: citric.Client, survey_id: int, tmp_path: Path):
+    """Test save_statistics."""
+    file_path = tmp_path / "statistics.csv"
+
+    with pytest.raises(
+        LimeSurveyApiError,
+        match="cannot be found in the database",
+    ):
+        client.save_statistics(file_path, survey_id)
+
+    client.activate_survey(survey_id)
+    assert (
+        client.save_statistics(
+            file_path,
+            survey_id,
+            file_format=enums.StatisticsExportFormat.HTML,
+        )
+        > 0
+    )
+    # Check that the contents are valid HTML
+    content = file_path.read_bytes()
+    soup = bs4.BeautifulSoup(content, "html.parser")
+
+    # Find the table elements
+    tables = soup.find_all("table")
+    assert len(tables) == 4  # One for each question

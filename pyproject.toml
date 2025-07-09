@@ -59,6 +59,7 @@ dev = [
   { include-group = "typing" },
 ]
 test = [
+  "beautifulsoup4>=4.13.4",
   "coverage[toml]>=7.4.2",
   "faker>=19",
   "pytest>=8",
