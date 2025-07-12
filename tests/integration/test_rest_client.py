@@ -89,15 +89,12 @@ def test_patch_survey_details(
     survey_id: int,
 ) -> None:
     """Test getting surveys."""
-    if server_version >= (6, 15, 0):
-        # TODO(edgarrmondragon): Investigate this
-        # https://github.com/edgarrmondragon/citric/issues/1420
+    if (6, 15, 0) <= server_version < (6, 15, 2):
         request.applymarker(
             pytest.mark.xfail(
                 reason=(
-                    "The REST API seems to be broken in LimeSurvey >= 6.15.0 "
-                    "and updating survey details fails with "
-                    "'Failed saving general settings for survey'. "
+                    "Saving survey details is broken in `6.15.0` and "
+                    "`6.15.1`. "
                     f"The current server version is {server_version}."
                 ),
                 strict=True,
