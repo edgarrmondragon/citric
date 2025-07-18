@@ -148,6 +148,19 @@ def mypy(session: nox.Session) -> None:
     session.run("mypy", *args)
 
 
+@nox.session(tags=["lint"])
+def ty(session: nox.Session) -> None:
+    """Type-check using mypy."""
+    args = session.posargs or locations
+    session.run_install(
+        *UV_SYNC_COMMAND,
+        "--group=typing",
+        f"--python={session.virtualenv.location}",
+        env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
+    )
+    session.run("ty", "check", *args)
+
+
 @nox.session(name="docs-build")
 def docs_build(session: nox.Session) -> None:
     """Build the documentation."""

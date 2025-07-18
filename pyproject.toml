@@ -86,6 +86,7 @@ docs = [
 typing = [
   "mypy>=1.9",
   "sphinx",
+  "ty>=0.0.1a15",
   "types-requests>=2.31.0.2",
   "typing-extensions>=4.6; python_version<'3.12'",
   { include-group = "test" },
