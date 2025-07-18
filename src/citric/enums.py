@@ -24,8 +24,6 @@ __all__ = [
 class StringEnum(str, enum.Enum):
     """Enum with string values."""
 
-    __slots__ = ()
-
 
 class ImportGroupType(StringEnum):
     """Group file type."""
