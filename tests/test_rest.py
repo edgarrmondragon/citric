@@ -7,6 +7,8 @@ from typing import TYPE_CHECKING, Callable, Generator
 
 import pytest
 import tinydb
+import tinydb.database
+import tinydb.storages
 from tinydb.table import Document
 from werkzeug.wrappers import Response
 
