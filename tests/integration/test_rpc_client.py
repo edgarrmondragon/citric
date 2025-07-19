@@ -16,6 +16,7 @@ from urllib.parse import quote
 import bs4
 import pytest
 import requests
+import requests.exceptions
 import semver
 
 import citric

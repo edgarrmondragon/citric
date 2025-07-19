@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING, Generator
 
 import pytest
 import requests
+import requests.exceptions
 import semver
 
 from citric._rest import RESTClient  # noqa: PLC2701

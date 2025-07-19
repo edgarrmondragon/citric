@@ -31,7 +31,7 @@ python_versions = nox.project.python_versions(PYPROJECT)
 pypy_versions = ["pypy3.11"]
 all_python_versions = python_versions + pypy_versions
 
-locations = "src", "tests", "noxfile.py", "docs/conf.py"
+locations = "src", "tests", "docs/conf.py"
 
 UV_SYNC_COMMAND = (
     "uv",
@@ -123,7 +123,7 @@ def coverage(session: nox.Session) -> None:
     session.run("coverage", *args)
 
 
-@nox.session(name="deps")
+@nox.session(name="deps", tags=["lint"])
 def dependencies(session: nox.Session) -> None:
     """Check issues with dependencies."""
     install_env = {}
@@ -138,7 +138,7 @@ def dependencies(session: nox.Session) -> None:
 @nox.session(tags=["lint"])
 def mypy(session: nox.Session) -> None:
     """Type-check using mypy."""
-    args = session.posargs or locations
+    args = session.posargs or [*locations, "noxfile.py"]
     session.run_install(
         *UV_SYNC_COMMAND,
         "--group=typing",
@@ -146,6 +146,19 @@ def mypy(session: nox.Session) -> None:
         env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
     )
     session.run("mypy", *args)
+
+
+@nox.session(tags=["lint"])
+def ty(session: nox.Session) -> None:
+    """Type-check using mypy."""
+    args = session.posargs or locations
+    session.run_install(
+        *UV_SYNC_COMMAND,
+        "--group=typing",
+        f"--python={session.virtualenv.location}",
+        env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
+    )
+    session.run("ty", "check", *args)
 
 
 @nox.session(name="docs-build")

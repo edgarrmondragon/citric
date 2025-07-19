@@ -160,13 +160,7 @@ jobs:
         nox-version: ${{ env.NOX_VERSION }}
         uv-version: ${{ env.UV_VERSION }}
 
-    - name: Run Dependency Checks
-      run: |
-        nox -s deps
-
-    - name: Run Mypy
-      run: |
-        nox -s mypy
+    - run: nox -t lint
 
   docker_tags:
     name: Get Docker tags
