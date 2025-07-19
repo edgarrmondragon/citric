@@ -310,3 +310,13 @@ ignore_missing_imports = true
 module = [
   "nox.*",
 ]
+
+[tool.ty.src]
+include = [
+  "src",
+  "tests",
+  "docs/conf.py",
+]
+
+[tool.ty.terminal]
+error-on-warning = true
