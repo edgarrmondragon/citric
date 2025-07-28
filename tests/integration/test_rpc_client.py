@@ -595,11 +595,21 @@ def test_activate_survey_with_settings(
 
 
 @pytest.mark.integration_test
-def test_activate_tokens(client: citric.Client, survey_id: int):
+def test_activate_tokens(
+    client: citric.Client,
+    survey_id: int,
+    server_version: semver.VersionInfo,
+):
     """Test whether the participants table gets activated."""
     client.activate_survey(survey_id)
 
-    with pytest.raises(LimeSurveyStatusError, match="No survey participants table"):
+    # LimeSurvey 6.15.4+ changed the error message
+    if server_version >= (6, 15, 4):
+        expected_pattern = "Error: No survey participant list"
+    else:
+        expected_pattern = "No survey participants table"
+
+    with pytest.raises(LimeSurveyStatusError, match=expected_pattern):
         client.list_participants(survey_id)
 
     client.activate_tokens(survey_id, [1, 2, 3, 4, 5])
