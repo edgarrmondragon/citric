@@ -301,8 +301,10 @@ jobs:
         flags: integration-${{ matrix.python-version }}-${{ matrix.image_tag || matrix.ref }}-${{ matrix.database }}
 
     - if: always()
+      env:
+        REF: ${{ matrix.ref }}
       run: |
-        echo "CLEAN_REF=$(echo ${{ matrix.ref }} | tr / -)" >> $GITHUB_ENV
+        echo "CLEAN_REF=$(echo "$REF" | tr / -)" >> $GITHUB_ENV
 
     - name: Upload coverage data
       if: always()
