@@ -1,0 +1,5 @@
+kind: Fixed
+body: Use 6.6.0+ `v1/auth` REST endpoints
+time: 2025-08-03T23:13:57.563968-06:00
+custom:
+    Issue: "1445"

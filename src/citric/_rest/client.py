@@ -35,6 +35,7 @@ class RESTClient:
     """
 
     USER_AGENT = f"citric/{metadata.version('citric')}"
+    AUTH_ENDPOINT = "/rest/v1/auth"
 
     def __init__(
         self,
@@ -57,6 +58,11 @@ class RESTClient:
         """Session ID."""
         return self.__session_id
 
+    @session_id.setter
+    def session_id(self, value: str | None) -> None:
+        """Set the session ID."""
+        self.__session_id = value
+
     def authenticate(self, username: str, password: str) -> None:
         """Authenticate with the REST API.
 
@@ -65,26 +71,26 @@ class RESTClient:
             password: LimeSurvey password.
         """
         response = self._session.post(
-            url=f"{self.url}/rest/v1/session",
+            url=f"{self.url}{self.AUTH_ENDPOINT}",
             json={
                 "username": username,
                 "password": password,
             },
         )
         response.raise_for_status()
-        self.__session_id = response.json()
+        self.session_id = response.json()["token"]
 
     def refresh_token(self) -> None:
         """Refresh the session token."""
-        response = self._session.put(url=f"{self.url}/rest/v1/session")
+        response = self._session.put(url=f"{self.url}{self.AUTH_ENDPOINT}")
         response.raise_for_status()
-        self.__session_id = response.json()["token"]
+        self.session_id = response.json()["token"]
 
     def close(self) -> None:
         """Delete the session."""
-        response = self._session.delete(f"{self.url}/rest/v1/session")
+        response = self._session.delete(f"{self.url}{self.AUTH_ENDPOINT}")
         response.raise_for_status()
-        self.__session_id = None
+        self.session_id = None
         self._session.auth = None
 
     def _auth(self, request: requests.PreparedRequest) -> requests.PreparedRequest:
@@ -99,7 +105,7 @@ class RESTClient:
         Returns:
             The prepared request with the ``Authorization`` header set.
         """
-        request.headers["Authorization"] = f"Bearer {self.__session_id}"
+        request.headers["Authorization"] = f"Bearer {self.session_id}"
         return request
 
     def make_request(
