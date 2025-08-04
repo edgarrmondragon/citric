@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import contextlib
+import sys
 from typing import TYPE_CHECKING, Generator
 
 import pytest
@@ -13,8 +14,32 @@ import semver
 from citric._rest import RESTClient  # noqa: PLC2701
 from citric.exceptions import LimeSurveyStatusError
 
+if sys.version_info >= (3, 12):
+    from typing import override
+else:
+    from typing_extensions import override
+
 if TYPE_CHECKING:
     from citric import Client
+
+
+class LegacyRESTClient(RESTClient):
+    """Legacy REST client."""
+
+    AUTH_ENDPOINT = "/rest/v1/session"
+
+    @override
+    def authenticate(self, username: str, password: str) -> None:
+        """Authenticate with the REST API."""
+        response = self._session.post(
+            url=f"{self.url}{self.AUTH_ENDPOINT}",
+            json={
+                "username": username,
+                "password": password,
+            },
+        )
+        response.raise_for_status()
+        self.session_id = response.json()
 
 
 @pytest.fixture(scope="module")
@@ -30,7 +55,8 @@ def rest_client(
         pytest.xfail(
             f"The REST API is not supported in LimeSurvey {server_version} < 6.2.0",
         )
-    with RESTClient(
+    client_class = LegacyRESTClient if server_version < (6, 6, 0) else RESTClient
+    with client_class(
         integration_url,
         integration_username,
         integration_password,
