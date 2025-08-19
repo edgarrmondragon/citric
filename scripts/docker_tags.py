@@ -113,9 +113,6 @@ def main() -> None:
         markdown_block_file: pathlib.Path
 
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.suggest_on_error = True
-    parser.color = True
-
     parser.add_argument(
         "--max-tags",
         type=int,
