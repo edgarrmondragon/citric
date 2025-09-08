@@ -51,7 +51,7 @@ env:
   # renovate: datasource=pypi depName=nox
   NOX_VERSION: 2025.5.1
   # renovate: datasource=pypi depName=uv
-  UV_VERSION: 0.8.14
+  UV_VERSION: 0.8.15
 
 jobs:
   tests:
