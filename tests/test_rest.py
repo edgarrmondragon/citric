@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import json
-from typing import TYPE_CHECKING, Callable, Generator
+from typing import TYPE_CHECKING, Callable
 
 import pytest
 import tinydb
@@ -16,6 +16,7 @@ from citric._rest import RESTClient  # noqa: PLC2701
 
 if TYPE_CHECKING:
     import sys
+    from collections.abc import Generator
 
     from pytest_httpserver import HTTPServer
     from werkzeug.wrappers import Request

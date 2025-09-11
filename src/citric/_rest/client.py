@@ -3,12 +3,13 @@
 from __future__ import annotations
 
 from importlib import metadata
-from typing import TYPE_CHECKING, Any, Mapping
+from typing import TYPE_CHECKING, Any
 
 import requests
 
 if TYPE_CHECKING:
     import sys
+    from collections.abc import Mapping
     from types import TracebackType
 
     if sys.version_info >= (3, 11):

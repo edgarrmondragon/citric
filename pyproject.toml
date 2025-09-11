@@ -21,7 +21,7 @@ maintainers = [
 authors = [
   { name = "Edgar Ramírez-Mondragón", email = "edgarrm358@gmail.com" },
 ]
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 classifiers = [
   "Development Status :: 5 - Production/Stable",
   "Intended Audience :: Developers",
@@ -29,7 +29,6 @@ classifiers = [
   "Intended Audience :: Science/Research",
   "Intended Audience :: System Administrators",
   "Programming Language :: Python :: 3 :: Only",
-  "Programming Language :: Python :: 3.8",
   "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
@@ -151,6 +150,7 @@ lint.select = [
   "PLW",  # pylint
   "PT",   # flake8-pytest-style
   "PTH",  # flake8-use-pathlib
+  "PYI",  # flake8-pyi
   "Q",    # flake8-quotes
   "RET",  # flake8-return
   "RSE",  # flake8-raise

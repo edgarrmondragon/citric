@@ -5,7 +5,7 @@ from __future__ import annotations
 import contextlib
 import hashlib
 from pathlib import Path
-from typing import TYPE_CHECKING, Generator
+from typing import TYPE_CHECKING
 
 import dotenv
 import pytest
@@ -17,6 +17,8 @@ from citric.exceptions import LimeSurveyStatusError
 from tests.fixtures import MailpitClient
 
 if TYPE_CHECKING:
+    from collections.abc import Generator
+
     from pytest_docker.plugin import Services
 
 

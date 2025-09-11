@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 import os
 from importlib.metadata import version
-from typing import Any, ClassVar, Mapping
+from typing import TYPE_CHECKING, Any, ClassVar
 
 import pytest
 import requests
@@ -13,6 +13,9 @@ from dotenv import load_dotenv
 from requests.adapters import BaseAdapter
 
 from citric.session import Session
+
+if TYPE_CHECKING:
+    from collections.abc import Mapping
 
 load_dotenv()
 
