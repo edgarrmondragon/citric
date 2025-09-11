@@ -6,7 +6,7 @@ requires = [
 
 [project]
 name = "citric"
-version = "1.4.0"
+version = "2.0.0dev0"
 description = "A client to the LimeSurvey Remote Control API 2, written in modern Python."
 readme = "README.md"
 keywords = [
