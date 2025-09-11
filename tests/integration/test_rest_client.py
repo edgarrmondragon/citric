@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import contextlib
 import sys
-from typing import TYPE_CHECKING, Generator
+from typing import TYPE_CHECKING
 
 import pytest
 import requests
@@ -20,6 +20,8 @@ else:
     from typing_extensions import override
 
 if TYPE_CHECKING:
+    from collections.abc import Generator
+
     from citric import Client
 
 

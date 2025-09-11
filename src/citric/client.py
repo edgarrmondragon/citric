@@ -11,11 +11,7 @@ from typing import (
     IO,
     TYPE_CHECKING,
     Any,
-    Generator,
-    Iterable,
     Literal,
-    Mapping,
-    Sequence,
 )
 
 import requests
@@ -26,6 +22,7 @@ from citric.session import Session
 
 if TYPE_CHECKING:
     import sys
+    from collections.abc import Generator, Iterable, Mapping, Sequence
     from os import PathLike
     from types import TracebackType
 

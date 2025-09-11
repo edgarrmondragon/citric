@@ -3,12 +3,15 @@
 from __future__ import annotations
 
 import datetime
-from typing import Any, Generator
+from typing import TYPE_CHECKING, Any
 
 import pytest
 
 from citric.client import Client
 from citric.session import Session
+
+if TYPE_CHECKING:
+    from collections.abc import Generator
 
 DUMMY_FILE_CONTENTS = b"FILE CONTENTS"
 

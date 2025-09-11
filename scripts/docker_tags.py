@@ -11,10 +11,13 @@ import argparse
 import json
 import pathlib
 import re
-from typing import Generator, Iterable
+from typing import TYPE_CHECKING
 
 import requests
 import requests_cache
+
+if TYPE_CHECKING:
+    from collections.abc import Generator, Iterable
 
 DEFAULT_TAGS = (
     "6.0.0-230405-apache",
