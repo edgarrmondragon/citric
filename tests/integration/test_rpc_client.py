@@ -636,7 +636,7 @@ def test_participants(
         participant_data=participants,
         create_tokens=False,
     )
-    for p, d in zip(added, participants):
+    for p, d in zip(added, participants, strict=False):
         with subtests.test(msg="test new participants properties", token=d["token"]):
             assert p["email"] == d["email"]
             assert p["firstname"] == d["firstname"]
@@ -653,7 +653,7 @@ def test_participants(
     assert len(participants_list) == 2
 
     # Check added participant properties
-    for ple, d in zip(participants_list, participants[:2]):
+    for ple, d in zip(participants_list, participants[:2], strict=False):
         with subtests.test(msg="test new participants properties", token=ple["tid"]):
             assert ple["participant_info"]["email"] == d["email"]
             assert ple["participant_info"]["firstname"] == d["firstname"]
@@ -662,7 +662,7 @@ def test_participants(
             assert ple["attribute_2"] == d["attribute_2"]  # type: ignore[typeddict-item]
 
     # Get participant properties
-    for p, d in zip(added, participants[:2]):
+    for p, d in zip(added, participants[:2], strict=False):
         with subtests.test(msg="test updated participants properties", token=p["tid"]):
             properties = client.get_participant_properties(survey_id, p["tid"])
             assert properties["email"] == d["email"]
