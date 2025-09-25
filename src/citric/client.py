@@ -1302,8 +1302,6 @@ class Client:  # noqa: PLR0904
 
         Create a new question from an exported LSQ file.
 
-        TODO: Check support for additional fields like custom title, text, etc.
-
         Calls :rpc_method:`import_question`.
 
         Args:
