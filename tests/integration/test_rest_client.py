@@ -7,7 +7,6 @@ import sys
 from typing import TYPE_CHECKING
 
 import pytest
-import requests
 import requests.exceptions
 import semver
 
