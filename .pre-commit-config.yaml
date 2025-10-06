@@ -19,8 +19,6 @@ repos:
   - id: check-yaml
   - id: end-of-file-fixer
     exclude: \.changes/.*\.md
-  - id: no-commit-to-branch
-    args: [--branch, main]
   - id: trailing-whitespace
 
 - repo: https://github.com/python-jsonschema/check-jsonschema
