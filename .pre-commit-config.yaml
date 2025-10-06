@@ -34,7 +34,7 @@ repos:
     - pyjson5==1.6.9
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.13.2
+  rev: v0.13.3
   hooks:
   - id: ruff-check
     args: [--fix, --exit-non-zero-on-fix, --show-fixes]
@@ -62,12 +62,12 @@ repos:
     args: [--all]
 
 - repo: https://github.com/tox-dev/pyproject-fmt
-  rev: "v2.6.0"
+  rev: "v2.7.0"
   hooks:
   - id: pyproject-fmt
 
 - repo: https://github.com/astral-sh/uv-pre-commit
-  rev: 0.8.22
+  rev: 0.8.23
   hooks:
   - id: uv-lock
   - id: uv-sync
