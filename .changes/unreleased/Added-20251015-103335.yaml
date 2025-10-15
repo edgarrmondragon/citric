@@ -1,0 +1,5 @@
+kind: Added
+body: Official support for Python 3.14 and 3.15
+time: 2025-10-15T10:33:35.634805-06:00
+custom:
+    Issue: "1546"
