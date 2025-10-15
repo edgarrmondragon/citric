@@ -39,6 +39,7 @@ classifiers = [
   "Typing :: Typed",
 ]
 dependencies = [
+  "backports-strenum>=1.3.1; python_version<'3.11'",
   "requests>=2.25.1",
   "typing-extensions>=4.6; python_version<'3.12'",
 ]
@@ -83,6 +84,7 @@ docs = [
   "sphinx-notfound-page>=1",
 ]
 typing = [
+  "backports-strenum",
   "mypy>=1.9",
   "sphinx",
   "ty>=0.0.1a15",
@@ -225,6 +227,7 @@ pep621_dev_dependency_groups = [
 ]
 
 [tool.deptry.package_module_name_map]
+backports-strenum = [ "backports", "strenum" ]
 types-requests = "requests"
 typing-extensions = "typing_extensions"
 

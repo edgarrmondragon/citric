@@ -3,6 +3,12 @@
 from __future__ import annotations
 
 import enum
+import sys
+
+if sys.version_info >= (3, 11):
+    from enum import StrEnum
+else:
+    from backports.strenum import StrEnum
 
 __all__ = [
     "EmailSendStrategy",
@@ -14,25 +20,20 @@ __all__ = [
     "ResponseType",
     "ResponsesExportFormat",
     "StatisticsExportFormat",
-    "StringEnum",
     "SurveyCompletionStatus",
     "TimelineAggregationPeriod",
     "UserStatus",
 ]
 
 
-class StringEnum(str, enum.Enum):
-    """Enum with string values."""
-
-
-class ImportGroupType(StringEnum):
+class ImportGroupType(StrEnum):
     """Group file type."""
 
     LSG = "lsg"
     CSV = "csv"
 
 
-class ImportSurveyType(StringEnum):
+class ImportSurveyType(StrEnum):
     """Survey file type."""
 
     LSS = "lss"
@@ -41,7 +42,7 @@ class ImportSurveyType(StringEnum):
     LSA = "lsa"
 
 
-class NewSurveyType(StringEnum):
+class NewSurveyType(StrEnum):
     """New survey type."""
 
     ALL_ON_ONE_PAGE = "A"
@@ -49,7 +50,7 @@ class NewSurveyType(StringEnum):
     SINGLE_QUESTIONS = "S"
 
 
-class StatisticsExportFormat(StringEnum):
+class StatisticsExportFormat(StrEnum):
     """Statistics export type."""
 
     PDF = "pdf"
@@ -57,7 +58,7 @@ class StatisticsExportFormat(StringEnum):
     HTML = "html"
 
 
-class ResponsesExportFormat(StringEnum):
+class ResponsesExportFormat(StrEnum):
     """Responses export type."""
 
     PDF = "pdf"
@@ -67,7 +68,7 @@ class ResponsesExportFormat(StringEnum):
     JSON = "json"
 
 
-class SurveyCompletionStatus(StringEnum):
+class SurveyCompletionStatus(StrEnum):
     """Survey completion status values."""
 
     #: Include only incomplete answers
@@ -80,7 +81,7 @@ class SurveyCompletionStatus(StringEnum):
     ALL = "all"
 
 
-class HeadingType(StringEnum):
+class HeadingType(StrEnum):
     """Types of heading in responses export."""
 
     CODE = "code"
@@ -88,21 +89,21 @@ class HeadingType(StringEnum):
     ABBREVIATED = "abbreviated"
 
 
-class ResponseType(StringEnum):
+class ResponseType(StrEnum):
     """Types of responses in export."""
 
     LONG = "long"
     SHORT = "short"
 
 
-class TimelineAggregationPeriod(StringEnum):
+class TimelineAggregationPeriod(StrEnum):
     """Timeline aggregation level."""
 
     HOUR = "hour"
     DAY = "day"
 
 
-class QuotaAction(StringEnum):
+class QuotaAction(StrEnum):
     """Quota action."""
 
     TERMINATE = "terminate"

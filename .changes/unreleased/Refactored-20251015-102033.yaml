@@ -1,0 +1,5 @@
+kind: Refactored
+body: Use `enum.StrEnum` to get enum members with the correct `repr()` value
+time: 2025-10-15T10:20:33.903411-06:00
+custom:
+    Issue: "1547"
