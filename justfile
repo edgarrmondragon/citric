@@ -1,6 +1,6 @@
 # Justfile
 
-py := '3.13'
+py := '3.14'
 
 build: update-all test
 

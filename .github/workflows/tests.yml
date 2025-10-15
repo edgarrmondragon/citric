@@ -66,6 +66,9 @@ jobs:
       fail-fast: false
       matrix:
         include:
+        - python-version: "3.14"
+          os: ubuntu-24.04
+
         - python-version: "3.13"
           os: ubuntu-24.04
 
@@ -84,13 +87,13 @@ jobs:
         - python-version: "pypy3.11"
           os: ubuntu-24.04
 
-        - python-version: "3.14"
+        - python-version: "3.15"
           os: ubuntu-24.04
 
-        - python-version: "3.13"
+        - python-version: "3.14"
           os: windows-2025
 
-        - python-version: "3.13"
+        - python-version: "3.14"
           os: macos-15
 
     steps:
@@ -195,7 +198,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.13"]
+        python-version: ["3.14"]
         database: ["postgres"]
         ref: [""]
         context: [""]
@@ -218,7 +221,11 @@ jobs:
           image_tag: "6-apache"
           database: postgres
 
-        - python-version: "3.14"
+        - python-version: "3.13"
+          image_tag: "6-apache"
+          database: postgres
+
+        - python-version: "3.15"
           image_tag: "6-apache"
           database: postgres
 
@@ -226,21 +233,21 @@ jobs:
           image_tag: "6-apache"
           database: postgres
 
-        - python-version: "3.13"
+        - python-version: "3.14"
           image_tag: "6-apache"
           database: mysql
 
-        - python-version: "3.13"
+        - python-version: "3.14"
           image_tag: "5-apache"
           database: mysql
 
         # Test Limesurvey/LimeSurvey branches
-        - python-version: "3.13"
+        - python-version: "3.14"
           ref: refs/heads/develop
           context: https://github.com/martialblog/docker-limesurvey.git#master:6.0/apache
           database: postgres
 
-        - python-version: "3.13"
+        - python-version: "3.14"
           ref: refs/heads/master
           context: https://github.com/martialblog/docker-limesurvey.git#master:6.0/apache
           database: postgres
