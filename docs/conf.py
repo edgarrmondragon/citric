@@ -149,7 +149,6 @@ autoapi_options = [
     "show-module-summary",
     "special-members",
     "imported-members",
-    "private-members",
 ]
 autoapi_root = "_api"
 
@@ -181,7 +180,7 @@ def skip_member_filter(
     Returns:
         Whether to skip the member.
     """
-    if name == "citric.rest.client":
+    if name in {"citric.client", "citric.rest"}:
         skip = True
     return skip
 

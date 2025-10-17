@@ -42,7 +42,7 @@ EMAILS_SENT_STATUS_PATTERN = re.compile(r"(-?\d+) left to send")
 
 
 class Client:  # noqa: PLR0904
-    """LimeSurvey Remote Control client.
+    """LimeSurvey RemoteControl 2 API client.
 
     Offers explicit wrappers for RPC methods and simplifies common workflows.
 
