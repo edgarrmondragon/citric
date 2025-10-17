@@ -1,5 +1,0 @@
-kind: Added
-body: Made the `RESTClient` public
-time: 2025-10-17T01:19:17.057568-06:00
-custom:
-    Issue: "1549"
