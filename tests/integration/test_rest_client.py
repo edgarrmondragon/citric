@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 import contextlib
+import operator
 import sys
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 import pytest
 import requests.exceptions
@@ -157,3 +158,70 @@ def test_patch_survey_details(
     updated = rest_client.get_survey_details(survey_id=survey_id)
     assert updated["anonymized"] is (not anonymized)
     assert updated["tokenLength"] == token_length + 10
+
+
+@pytest.mark.integration_test
+def test_update_question_answers(
+    server_version: semver.Version,
+    request: pytest.FixtureRequest,
+    rest_client: RESTClient,
+    survey_with_question_answers: int,
+) -> None:
+    """Test updating question answers."""
+    if server_version <= (6, 2):
+        request.applymarker(
+            pytest.mark.xfail(
+                reason=(
+                    "At some point after 6.2, `questionGroups` changed from a dict "
+                    "to a list. We don't bother to test for older versions."
+                ),
+                raises=KeyError,
+                strict=True,
+            )
+        )
+
+    def _question_answers(survey: dict[str, Any]) -> tuple[int | None, list]:
+        for question in survey["questionGroups"][0]["questions"]:
+            if answers := question.get("answers"):
+                return question["qid"], answers
+
+        return None, []
+
+    survey = rest_client.get_survey_details(survey_id=survey_with_question_answers)
+    qid, answers = _question_answers(survey)
+    sorted_answers = sorted(answers, key=operator.itemgetter("sortOrder"))
+    assert len(sorted_answers) == 5
+    assert sorted_answers[0]["l10ns"]["en"]["answer"] == "Too much"
+    assert sorted_answers[2]["l10ns"]["en"]["answer"] == "Just Right"
+    assert sorted_answers[4]["l10ns"]["en"]["answer"] == "Too little"
+
+    # Update text of answers
+    sorted_answers[0]["l10ns"]["en"]["answer"] = "TOO MUCH!"
+    sorted_answers[2]["l10ns"]["en"]["answer"] = "JAR"
+    sorted_answers[4]["l10ns"]["en"]["answer"] = "TOO LITTLE!"
+
+    operations = rest_client.patch_survey(
+        survey_id=survey_with_question_answers,
+        patch_operations=[
+            {
+                "entity": "answer",
+                "op": "update",
+                "id": qid,
+                "props": [
+                    # This removes the other answers
+                    sorted_answers[0],
+                    sorted_answers[2],
+                    sorted_answers[4],
+                ],
+            },
+        ],
+    )
+    assert operations["operationsApplied"] == 1
+
+    survey = rest_client.get_survey_details(survey_id=survey_with_question_answers)
+    qid, question_answers = _question_answers(survey)
+    sorted_answers = sorted(question_answers, key=operator.itemgetter("sortOrder"))
+    assert len(sorted_answers) == 3
+    assert sorted_answers[0]["l10ns"]["en"]["answer"] == "TOO MUCH!"
+    assert sorted_answers[1]["l10ns"]["en"]["answer"] == "JAR"
+    assert sorted_answers[2]["l10ns"]["en"]["answer"] == "TOO LITTLE!"

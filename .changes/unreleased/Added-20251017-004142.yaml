@@ -1,0 +1,5 @@
+kind: Added
+body: Support updating answers using the REST API
+time: 2025-10-17T00:41:42.568962-06:00
+custom:
+    Issue: "1540"

@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import contextlib
 import hashlib
-from pathlib import Path
 from typing import TYPE_CHECKING
 
 import dotenv
@@ -18,6 +17,7 @@ from tests.fixtures import MailpitClient
 
 if TYPE_CHECKING:
     from collections.abc import Generator
+    from pathlib import Path
 
     from pytest_docker.plugin import Services
 
@@ -145,7 +145,23 @@ def survey_id(
     request: pytest.FixtureRequest,
 ) -> Generator[int, None, None]:
     """Import a survey from a file and return its ID."""
-    with Path("./examples/survey.lss").open("rb") as f:
+    filepath = request.config.rootpath / "examples" / "survey.lss"
+    with filepath.open("rb") as f:
+        survey_id = client.import_survey(f, survey_id=request.node.nodeid)
+
+    yield survey_id
+
+    client.delete_survey(survey_id)
+
+
+@pytest.fixture
+def survey_with_question_answers(
+    client: citric.Client,
+    request: pytest.FixtureRequest,
+) -> Generator[int, None, None]:
+    """Survey with question answers."""
+    filepath = request.config.rootpath / "examples" / "answers.lss"
+    with filepath.open("rb") as f:
         survey_id = client.import_survey(f, survey_id=request.node.nodeid)
 
     yield survey_id

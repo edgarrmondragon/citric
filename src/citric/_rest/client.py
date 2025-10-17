@@ -181,6 +181,57 @@ class RESTClient:
         response = self.make_request("GET", f"/rest/v1/survey-detail/{survey_id}")
         return response.json()["survey"]
 
+    def patch_survey(
+        self,
+        survey_id: int,
+        patch_operations: list[dict[str, Any]],
+    ) -> dict[str, Any]:
+        """Apply RFC 6902-based patch operations to a survey.
+
+        This method provides low-level access to the survey patch endpoint,
+        allowing updates to any survey entity (questions, answers, groups, etc.).
+
+        Args:
+            survey_id: Survey ID.
+            patch_operations: List of patch operations. Each operation should have:
+                - entity: Entity type (e.g., "question", "questionAnswer", etc.)
+                - op: Operation type (e.g., "update", "create", "delete")
+                - id: Entity identifier (format varies by entity type)
+                - props: Properties to update
+
+        Returns:
+            Patch operation result with operationsApplied and erronousOperations.
+
+        Examples:
+            >>> # Update multiple question answers at once
+            >>> client.patch_survey(  # xdoctest: +SKIP
+            ...     12345,
+            ...     [
+            ...         {
+            ...             "entity": "questionAnswer",
+            ...             "op": "update",
+            ...             "id": {"aid": 15},
+            ...             "props": {"sortOrder": 1000},
+            ...         },
+            ...         {
+            ...             "entity": "questionAnswer",
+            ...             "op": "update",
+            ...             "id": {"aid": 16},
+            ...             "props": {"sortOrder": 2000},
+            ...         },
+            ...     ],
+            ... )
+            {'operationsApplied': 2, 'erronousOperations': []}
+
+        .. versionadded:: NEXT_VERSION
+        """
+        response = self.make_request(
+            "PATCH",
+            f"/rest/v1/survey-detail/{survey_id}",
+            json={"patch": patch_operations},
+        )
+        return response.json()
+
     def update_survey_details(
         self,
         survey_id: int,
@@ -195,18 +246,14 @@ class RESTClient:
         Returns:
             Updated survey details.
         """
-        response = self.make_request(
-            "PATCH",
-            f"/rest/v1/survey-detail/{survey_id}",
-            json={
-                "patch": [
-                    {
-                        "entity": "survey",
-                        "op": "update",
-                        "id": survey_id,
-                        "props": data,
-                    },
-                ],
-            },
+        return self.patch_survey(
+            survey_id,
+            [
+                {
+                    "entity": "survey",
+                    "op": "update",
+                    "id": survey_id,
+                    "props": data,
+                },
+            ],
         )
-        return response.json()
