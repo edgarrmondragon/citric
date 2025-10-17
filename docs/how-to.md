@@ -18,6 +18,13 @@ Otherwise, you can manually close the session with {meth}`client.close() <citric
 :end-before: end example
 ```
 
+## Update question answers using the REST API
+
+```{literalinclude} ../code_samples/update_question_answer_rest.py
+:start-after: start example
+:end-before: end example
+```
+
 ## Export responses to a `pandas` dataframe
 
 ```{literalinclude} ../code_samples/pandas_df.py
