@@ -5,7 +5,7 @@
 from __future__ import annotations
 
 # start example
-from citric._rest import RESTClient  # noqa: PLC2701
+from citric.rest import RESTClient
 
 # Create REST client
 client = RESTClient(

@@ -11,8 +11,8 @@ import pytest
 import requests.exceptions
 import semver
 
-from citric._rest import RESTClient  # noqa: PLC2701
 from citric.exceptions import LimeSurveyStatusError
+from citric.rest import RESTClient
 
 if sys.version_info >= (3, 12):
     from typing import override
