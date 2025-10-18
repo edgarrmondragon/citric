@@ -7,7 +7,6 @@ from __future__ import annotations
 # start example
 from citric.rest import RESTClient
 
-# Create REST client
 client = RESTClient(
     "https://example.com/rest/v1",
     "your_username",
@@ -77,5 +76,5 @@ operations = [
 
 
 result = client.patch_survey(survey_id, operations)
-print(f"Operations applied: {result['operationsApplied']}")
+print(f"Operations applied: {result['operationsApplied']}")  # Operations applied: 1
 # end example

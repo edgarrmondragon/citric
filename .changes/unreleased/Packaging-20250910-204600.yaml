@@ -1,5 +1,0 @@
-kind: Packaging
-body: Dropped support for Python 3.8
-time: 2025-09-10T20:46:00.414565-06:00
-custom:
-    Issue: "1501"

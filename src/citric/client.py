@@ -1098,7 +1098,7 @@ class Client:  # noqa: PLR0904
             Mapping of survey statistics or None if stats are not available.
 
         .. versionadded:: 0.0.10
-        .. versionchanged:: NEXT_VERSION
+        .. versionchanged:: 2.0.0
            Return None if the survey doesn't have a participants table or has no
            responses.
         """
@@ -1139,7 +1139,7 @@ class Client:  # noqa: PLR0904
         Raises:
             ValueError: If ``stat_name`` is ``all``.
 
-        .. versionadded:: NEXT_VERSION
+        .. versionadded:: 2.0.0
         """  # noqa: DOC502
         if stat_name == "all":
             msg = "Use get_summary instead to get all summary statistics"  # type: ignore[unreachable]
@@ -1202,7 +1202,7 @@ class Client:  # noqa: PLR0904
             :class:`~citric.types.ReadableFile` dictionaries.
 
         .. versionadded:: 0.0.13
-        .. versionchanged:: NEXT_VERSION
+        .. versionchanged:: 2.0.0
            Yield :class:`~citric.types.ReadableFile` dictionaries instead of
            dataclass instances.
         """
@@ -1317,7 +1317,7 @@ class Client:  # noqa: PLR0904
             The ID of the new question.
 
         .. versionadded:: 0.0.8
-        .. versionadded:: NEXT_VERSION
+        .. versionadded:: 2.0.0
            Added the ``mandatory``, ``new_question_title``, ``new_question_text``,
            and ``new_question_help`` optional parameters.
         """
@@ -1450,7 +1450,7 @@ class Client:  # noqa: PLR0904
             List of users.
 
         .. versionadded:: 0.0.3
-        .. versionadded:: NEXT_VERSION
+        .. versionadded:: 2.0.0
            The ``user_id`` and ``username`` parameters.
         """
         return self.session.list_users(user_id, username)
