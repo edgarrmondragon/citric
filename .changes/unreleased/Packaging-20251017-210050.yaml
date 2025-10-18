@@ -1,0 +1,5 @@
+kind: Packaging
+body: The `tests` directory is now included in the source distribution
+time: 2025-10-17T21:00:50.274294-06:00
+custom:
+    Issue: "1553"

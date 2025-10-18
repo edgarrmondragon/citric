@@ -99,6 +99,12 @@ samples = [
   "pandas>=2.0.3",
 ]
 
+[tool.hatch.build.targets.sdist]
+packages = [ "src/citric", "tests" ]
+
+[tool.hatch.build.targets.wheel]
+packages = [ "src/citric" ]
+
 [tool.ruff]
 line-length = 88
 src = [
@@ -106,7 +112,6 @@ src = [
   "src",
   "tests",
 ]
-
 include = [
   "**/pyproject.toml",
   "*.ipynb",
