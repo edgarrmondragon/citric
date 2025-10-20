@@ -75,7 +75,7 @@ repos:
     args: ["pyproject.toml", "--universal", "--resolution=lowest-direct", "-o=requirements/requirements-lowest-direct.txt"]
 
 - repo: https://github.com/executablebooks/mdformat
-  rev: 0.7.22
+  rev: 1.0.0
   hooks:
   - id: mdformat
     exclude: \.github/pull_request_template\.md
