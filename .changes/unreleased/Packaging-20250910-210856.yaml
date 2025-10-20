@@ -1,0 +1,5 @@
+kind: Packaging
+body: Dropped support for Python 3.9
+time: 2025-09-10T21:08:56.618511-06:00
+custom:
+    Issue: "1503"

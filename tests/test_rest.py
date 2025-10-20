@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import json
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING
 
 import pytest
 import tinydb
@@ -15,16 +15,11 @@ from werkzeug.wrappers import Response
 from citric.rest import RESTClient
 
 if TYPE_CHECKING:
-    import sys
-    from collections.abc import Generator
+    from collections.abc import Callable, Generator
+    from typing import TypeAlias
 
     from pytest_httpserver import HTTPServer
     from werkzeug.wrappers import Request
-
-    if sys.version_info >= (3, 10):
-        from typing import TypeAlias
-    else:
-        from typing_extensions import TypeAlias
 
     APIHandler: TypeAlias = Callable[[Request], Response]
 
