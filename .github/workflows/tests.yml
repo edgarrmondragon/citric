@@ -191,6 +191,7 @@ jobs:
     env:
       COVERAGE_FILE: ".coverage.integration"
       LS_IMAGE_TAG: ${{ matrix.image_tag }}
+      LS_REF: ${{ matrix.ref }}
       LS_USER: citric_ci
       LS_PASSWORD: notverysecret
       NOXSESSION: integration
