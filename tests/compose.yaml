@@ -36,7 +36,7 @@ services:
       POSTGRES_DB: limesurvey
       POSTGRES_PASSWORD: secret
     volumes:
-      - "limedb:/var/lib/postgresql/data"
+      - "limedb:/var/lib/postgresql/18/docker"
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "limesurvey"]
       interval: 15s
