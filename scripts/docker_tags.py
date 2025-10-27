@@ -24,6 +24,11 @@ DEFAULT_TAGS = (
     "6.2.0-230732-apache",
     "6.6.0-240729-apache",
 )
+SKIP_TAGS = (
+    "6.15.18-251016-apache",  # PATCH for question answers is broken
+    "6.15.19-251017-apache",  # PATCH for question answers is broken
+    "6.15.20-251021-apache",  # PATCH for question answers is broken
+)
 PATTERN_VERSION = re.compile(r"(\d+\.\d+\.\d+)-\d{6}-apache")
 PATTERN_5x = re.compile(r"5\.\d+.\d+-\d{6}-apache")
 PATTERN_6x = re.compile(r"6\.\d+.\d+-\d{6}-apache")
@@ -94,6 +99,9 @@ def filter_tags(
     count_6 = 0
     for tag in tags:
         name = tag["name"]
+
+        if name in SKIP_TAGS:
+            continue
 
         if name in {"6-apache", "5-apache"}:
             yield name
