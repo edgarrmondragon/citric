@@ -180,6 +180,18 @@ def test_update_question_answers(
             )
         )
 
+    if (6, 15, 18) <= server_version <= (6, 15, 20):
+        request.applymarker(
+            pytest.mark.xfail(
+                reason=(
+                    "PATCH for question answers is broken in 6.15.18, "
+                    "6.15.19 and 6.15.20. "
+                    f"The current server version is {server_version}."
+                ),
+                strict=True,
+            )
+        )
+
     def _question_answers(survey: dict[str, Any]) -> tuple[int | None, list]:
         for question in survey["questionGroups"][0]["questions"]:
             if answers := question.get("answers"):
