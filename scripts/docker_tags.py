@@ -23,6 +23,7 @@ DEFAULT_TAGS = (
     "6.0.0-230405-apache",
     "6.2.0-230732-apache",
     "6.6.0-240729-apache",
+    "6.15.20-251021-apache",
 )
 SKIP_TAGS = (
     "6.15.18-251016-apache",  # PATCH for question answers is broken
