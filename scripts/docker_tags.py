@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import logging
 import pathlib
 import re
 from typing import TYPE_CHECKING
@@ -20,6 +21,8 @@ if TYPE_CHECKING:
     from collections.abc import Generator, Iterable
 
 DEFAULT_TAGS = (
+    "6-apache",
+    "5-apache",
     "6.0.0-230405-apache",
     "6.2.0-230732-apache",
     "6.6.0-240729-apache",
@@ -33,6 +36,9 @@ SKIP_TAGS = (
 PATTERN_VERSION = re.compile(r"(\d+\.\d+\.\d+)-\d{6}-apache")
 PATTERN_5x = re.compile(r"5\.\d+.\d+-\d{6}-apache")
 PATTERN_6x = re.compile(r"6\.\d+.\d+-\d{6}-apache")
+
+logging.basicConfig(level=logging.INFO, format="[%(levelname)s] %(message)s")
+logger = logging.getLogger(__name__)
 
 requests_cache.install_cache("docker_tags")
 
@@ -75,6 +81,7 @@ def get_tags() -> Generator[dict, None, None]:
         "https://hub.docker.com/v2/namespaces/martialblog/repositories/limesurvey/tags"
     )
     while True:
+        logger.info("Getting tags from %s", url)
         data = requests.get(url, timeout=30).json()
         yield from data["results"]
 
@@ -104,12 +111,12 @@ def filter_tags(
         if name in SKIP_TAGS:
             continue
 
-        if name in {"6-apache", "5-apache"}:
-            yield name
-
         if re.match(PATTERN_6x, name) and count_6 < max_tags:
             yield name
             count_6 += 1
+
+        if count_6 >= max_tags:
+            break
 
     yield from DEFAULT_TAGS
 
