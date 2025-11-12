@@ -24,11 +24,19 @@ from citric.exceptions import LimeSurveyApiError, LimeSurveyStatusError
 from citric.objects import Participant
 
 if TYPE_CHECKING:
+    import sys
+
     from faker import Faker
-    from pytest_subtests import SubTests
 
     from citric.types import QuestionsListElement
     from tests.fixtures import MailpitClient
+
+    if sys.version_info >= (3, 10):
+        from pytest import Subtests as SubtestsFixture  # noqa: PT013
+    else:
+        from pytest_subtests import (  # ty: ignore[unresolved-import]
+            SubTests as SubtestsFixture,
+        )
 
 NEW_SURVEY_NAME = "New Survey"
 
@@ -65,7 +73,7 @@ def participants(faker: Faker) -> list[dict[str, Any]]:
 
 
 @pytest.mark.integration_test
-def test_fieldmap(client: citric.Client, survey_id: int, subtests: SubTests):
+def test_fieldmap(client: citric.Client, survey_id: int, subtests: SubtestsFixture):
     """Test fieldmap."""
     fieldmap = client.get_fieldmap(survey_id)
     for key, value in fieldmap.items():
@@ -79,7 +87,7 @@ def test_fieldmap(client: citric.Client, survey_id: int, subtests: SubTests):
 
 
 @pytest.mark.integration_test
-def test_language(client: citric.Client, survey_id: int, subtests: SubTests):
+def test_language(client: citric.Client, survey_id: int, subtests: SubtestsFixture):
     """Test language methods."""
     # Add a new language
     assert client.add_language(survey_id, "es")["status"] == "OK"
@@ -125,7 +133,7 @@ def test_language(client: citric.Client, survey_id: int, subtests: SubTests):
 def test_survey(
     client: citric.Client,
     server_version: semver.VersionInfo,
-    subtests: SubTests,
+    subtests: SubtestsFixture,
 ):
     """Test survey methods."""
     # Try to get a survey that doesn't exist
@@ -179,7 +187,7 @@ def test_survey(
 
 
 @pytest.mark.integration_test
-def test_import_survey(client: citric.Client, subtests: SubTests):
+def test_import_survey(client: citric.Client, subtests: SubtestsFixture):
     """Test importing a survey with a custom ID and name."""
     survey_id = random.randint(10000, 20000)  # noqa: S311
     with Path("./examples/survey.lss").open("rb") as f:
@@ -417,7 +425,7 @@ def test_quota(
     client: citric.Client,
     server_version: semver.VersionInfo,
     survey_id: int,
-    subtests: SubTests,
+    subtests: SubtestsFixture,
 ):
     """Test quota methods."""
     request.applymarker(
@@ -623,7 +631,7 @@ def test_participants(
     client: citric.Client,
     survey_id: int,
     participants: list[dict[str, str]],
-    subtests: SubTests,
+    subtests: SubtestsFixture,
 ):
     """Test participants methods."""
     client.activate_survey(survey_id)
@@ -762,7 +770,7 @@ def test_responses(
     survey_id: int,
     responses: list[dict],
     tmp_path: Path,
-    subtests: SubTests,
+    subtests: SubtestsFixture,
 ):
     """Test adding and exporting responses."""
     client.activate_survey(survey_id)
@@ -872,7 +880,7 @@ def test_summary(
     survey_id: int,
     participants: list[dict],
     responses: list[dict],
-    subtests: SubTests,
+    subtests: SubtestsFixture,
 ):
     """Test get_summary client method."""
     with (
@@ -1202,7 +1210,7 @@ def test_mail_registered_participants(
     survey_id: int,
     participants: list[dict[str, str]],
     mailpit: MailpitClient,
-    subtests: SubTests,
+    subtests: SubtestsFixture,
 ):
     """Test mail_registered_participants."""
     client.activate_survey(survey_id)
@@ -1246,7 +1254,7 @@ def test_remind_participants(
     survey_id: int,
     participants: list[dict[str, str]],
     mailpit: MailpitClient,
-    subtests: SubTests,
+    subtests: SubtestsFixture,
 ):
     """Test remind_participants."""
     client.activate_survey(survey_id)
