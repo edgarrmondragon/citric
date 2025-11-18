@@ -1140,7 +1140,7 @@ class Client:  # noqa: PLR0904
             ValueError: If ``stat_name`` is ``all``.
 
         .. versionadded:: 2.0.0
-        """  # noqa: DOC502
+        """
         if stat_name == "all":
             msg = "Use get_summary instead to get all summary statistics"  # type: ignore[unreachable]
             raise ValueError(msg)
@@ -1772,7 +1772,7 @@ class Client:  # noqa: PLR0904
             RuntimeError: If an unexpected error occurs.
 
         .. versionadded:: 0.8.0
-        """  # noqa: DOC502
+        """
         email_flag = enums.EmailSendStrategy.to_flag(strategy)
         try:
             self.session.invite_participants(survey_id, token_ids, email_flag)
