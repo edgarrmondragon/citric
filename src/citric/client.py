@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-import base64
-import datetime
 import io
 import re
 from pathlib import Path
@@ -27,7 +25,7 @@ if TYPE_CHECKING:
     from types import TracebackType
 
     from citric import types
-    from citric.objects import Participant
+    from citric.objects import Participant, Survey
 
     if sys.version_info >= (3, 11):
         from typing import Self, Unpack
@@ -1373,6 +1371,40 @@ class Client:  # noqa: PLR0904
             enums.ImportSurveyType(file_type),
             survey_name,
             survey_id,
+        )
+
+    def import_survey_object(
+        self,
+        survey_object: Survey,
+        file_type: str | enums.ImportSurveyType = "lss",
+        survey_name: str | None = None,
+        survey_id: int | None = None,
+    ) -> int:
+        """Import survey from a Survey object.
+
+        This method takes a Survey object, converts it to an LSS XML string,
+        base64 encodes it, and then calls the underlying `import_survey` method.
+
+        Args:
+            survey_object: The Survey object to import.
+            file_type: Type of file. One of LSS, CSV, TXT and LSA.
+            survey_name: Override the new survey name.
+            survey_id: Desired ID of the new survey. A different ID will be used if
+                there is already a survey with this ID.
+
+        Returns:
+            The ID of the new survey.
+
+        .. versionadded:: 2.1.0
+        """
+        xml_string = survey_object.to_xml()
+        # The import_survey method expects a file-like object, so we wrap the string in BytesIO
+        file_like_object = io.BytesIO(xml_string.encode("utf-8"))
+        return self.import_survey(
+            file=file_like_object,
+            file_type=file_type,
+            survey_name=survey_name,
+            survey_id=survey_id,
         )
 
     def list_participants(
