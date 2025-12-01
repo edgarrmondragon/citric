@@ -98,13 +98,13 @@ def api_handler(backend: tinydb.TinyDB) -> APIHandler:
                 surveys.update_multiple(
                     [
                         (patch["props"], tinydb.where("sid") == patch["id"])
-                        for patch in request.json["patch"]  # type: ignore[index]
+                        for patch in request.json["patch"]
                     ],
                 )
                 return Response(
                     json.dumps(
                         {
-                            "operationsApplied": len(request.json["patch"]),  # type: ignore[index]
+                            "operationsApplied": len(request.json["patch"]),
                             "erronousOperations": [],
                         },
                     ),
