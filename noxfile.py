@@ -1,3 +1,7 @@
+# /// script
+# dependencies = ["nox"]
+# ///
+
 """Nox configuration."""
 
 from __future__ import annotations
@@ -161,7 +165,7 @@ def ty(session: nox.Session) -> None:
     session.run("ty", "check", *args)
 
 
-@nox.session(name="docs-build")
+@nox.session(name="docs-build", python=python_versions[-1])
 def docs_build(session: nox.Session) -> None:
     """Build the documentation."""
     args = session.posargs or ["docs", "build"]
@@ -181,7 +185,7 @@ def docs_build(session: nox.Session) -> None:
     session.run("sphinx-build", "-W", *args)
 
 
-@nox.session(name="docs-serve")
+@nox.session(name="docs-serve", python=python_versions[-1])
 def docs_serve(session: nox.Session) -> None:
     """Build the documentation."""
     args = session.posargs or [
@@ -263,3 +267,7 @@ def notebook(session: nox.Session) -> None:
 def tags(session: nox.Session) -> None:
     """Print tags."""
     session.run("uv", "run", "scripts/docker_tags.py")
+
+
+if __name__ == "__main__":
+    nox.main()
