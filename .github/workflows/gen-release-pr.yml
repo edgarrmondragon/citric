@@ -27,7 +27,7 @@ permissions: {}
 env:
   FORCE_COLOR: "1"
   # renovate: datasource=pypi depName=uv
-  UV_VERSION: 0.9.13
+  UV_VERSION: 0.9.16
 
 jobs:
   generate-pr:
