@@ -7,13 +7,13 @@ build: update-all test
 # Command to update all dependencies
 update-all: update-github-actions update-pre-commit-hooks refresh-uv-lock update-lock-files
 
-# Command to update GitHub actions using gha-update
+# Command to update GitHub actions using pinact
 update-github-actions:
-    -uvx --python={{py}} gha-update
+    -pinact run --update --min-age=7
 
 # Command to update pre-commit hooks
 update-pre-commit-hooks:
-    -uvx --python={{py}} pre-commit autoupdate
+    -uvx --python={{py}} prek autoupdate --cooldown-days=7
 
 # Command to refresh uv.lock
 refresh-uv-lock:
@@ -21,15 +21,14 @@ refresh-uv-lock:
 
 # Update lock files
 update-lock-files:
-    -uvx --python={{py}} pre-commit run uv-export --all-files
-    -uvx --python={{py}} pre-commit run pip-compile --all-files
+    -uvx --python={{py}} prek run pip-compile --all-files
 
 test: pre-commit nox
 
 # Run pre-commit checks
 pre-commit:
-    -uvx --python={{py}} pre-commit run --all-files
+    -uvx --python={{py}} prek run --all-files
 
 # Run all nox sessions
 nox:
-    uvx --python={{py}} nox -r
+    uvx --python={{py}} nox --reuse-existing-virtualenvs
