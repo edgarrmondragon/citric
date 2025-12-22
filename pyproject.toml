@@ -99,6 +99,11 @@ samples = [
   "pandas>=2.0.3",
 ]
 
+[tool.uv]
+exclude-newer = "7 days"
+preview = true
+required-version = ">=0.9.17"
+
 [tool.ruff]
 line-length = 88
 src = [
