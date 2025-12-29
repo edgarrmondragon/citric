@@ -222,10 +222,6 @@ lint.pydocstyle.convention = "google"
 lint.pylint.max-args = 10
 lint.preview = true
 
-[tool.codespell]
-ignore-words-list = "socio-economic"
-skip = ".mypy_cache,.nox,.ruff_cache,build,docs/index.md"
-
 [tool.deptry]
 pep621_dev_dependency_groups = [
   "dev",
@@ -329,3 +325,7 @@ include = [
 
 [tool.ty.terminal]
 error-on-warning = true
+
+[tool.typos.default.extend-words]
+erronous = "erronous" # This is a typo in a LimeSurvey API field name
+intoto = "intoto"     # https://in-toto.io/

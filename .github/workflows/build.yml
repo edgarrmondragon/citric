@@ -75,4 +75,4 @@ jobs:
           file: ${{ steps.attest.outputs.bundle-path }}
           tag: ${{ github.event.inputs.tag || github.ref }}
           overwrite: false
-          asset_name: attestations.intoto.jsonl  # codespell:ignore intoto
+          asset_name: attestations.intoto.jsonl

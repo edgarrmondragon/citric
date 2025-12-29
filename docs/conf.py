@@ -73,6 +73,7 @@ html_theme_options = {
     "source_directory": "docs/",
 }
 html_title = "Citric, a Python client for LimeSurvey"
+html_short_title = "Citric"
 html_extra_path = [
     "googled10b55fb460af091.html",
     "code.png",
