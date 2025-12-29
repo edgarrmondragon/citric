@@ -204,7 +204,7 @@ class RESTClient:
                 - props: Properties to update
 
         Returns:
-            Patch operation result with operationsApplied and erronousOperations.
+            Patch operation result with operationsApplied.
 
         Examples:
             >>> # Update multiple question answers at once
@@ -225,7 +225,7 @@ class RESTClient:
             ...         },
             ...     ],
             ... )
-            {'operationsApplied': 2, 'erronousOperations': []}
+            {'operationsApplied': 2}
 
         .. versionadded:: NEXT_VERSION
         """

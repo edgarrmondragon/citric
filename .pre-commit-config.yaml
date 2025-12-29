@@ -38,15 +38,11 @@ repos:
     args: [--fix, --exit-non-zero-on-fix, --show-fixes]
   - id: ruff-format
 
-- repo: https://github.com/codespell-project/codespell
-  rev: v2.4.1
+- repo: https://github.com/crate-ci/typos
+  rev: v1.40.0
   hooks:
-  - id: codespell
-    exclude: |
-      (?x)^(
-        uv\.lock|
-        requirements/requirements.*\.txt
-      )$
+  - id: typos
+    args: []
 
 - repo: https://github.com/pre-commit/pre-commit
   rev: v4.5.0
