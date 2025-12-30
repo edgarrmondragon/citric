@@ -135,6 +135,7 @@ lint.select = [
   "E",    # pycodestyle (error)
   "EM",   # flake8-errmsg
   "ERA",  # flake8-eradicate
+  "EXE",  # flake8-executable
   "F",    # Pyflakes
   "FA",   # flake8-future-annotations
   "FBT",  # flake8-boolean-trap
@@ -152,10 +153,7 @@ lint.select = [
   "PERF", # perflint
   "PGH",  # pygrep-hooks
   "PIE",  # flake8-pie
-  "PLC",  # pylint
-  "PLE",  # pylint
-  "PLR",  # pylint
-  "PLW",  # pylint
+  "PL",   # pylint
   "PT",   # flake8-pytest-style
   "PTH",  # flake8-use-pathlib
   "PYI",  # flake8-pyi
