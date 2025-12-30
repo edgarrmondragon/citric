@@ -258,6 +258,7 @@ filterwarnings = [
   "error",
 ]
 junit_suite_name = "citric"
+log_level = "INFO"
 log_cli_level = "INFO"
 markers = [
   "integration_test: Integration and end-to-end tests",
