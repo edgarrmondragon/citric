@@ -10,9 +10,6 @@
         <a href="https://buy.polar.sh/polar_cl_q4XE5nfuUOK8JwiUz3iuDDVN7nxxNiMpNzgGF2diFeP">
           <img src="https://img.shields.io/badge/polar.sh-Support%20My%20Work-black"/>
         </a>
-        <a href="https://results.pre-commit.ci/latest/github/edgarrmondragon/citric/main">
-          <img alt="pre-commit.ci status" src="https://results.pre-commit.ci/badge/github/edgarrmondragon/citric/main.svg"/>
-        </a>
         <a href="https://citric.readthedocs.io/en/latest/?badge=latest">
           <img alt="Documentation Status" src="https://readthedocs.org/projects/citric/badge/?version=latest"/>
         </a>
