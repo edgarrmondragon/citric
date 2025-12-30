@@ -70,7 +70,7 @@ repos:
     files: ^pyproject\.toml$
     args: ["pyproject.toml", "--universal", "--resolution=lowest-direct", "-o=requirements/requirements-lowest-direct.txt"]
 
-- repo: https://github.com/executablebooks/mdformat
+- repo: https://github.com/hukkin/mdformat
   rev: 1.0.0
   hooks:
   - id: mdformat
