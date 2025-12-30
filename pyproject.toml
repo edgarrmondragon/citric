@@ -84,6 +84,10 @@ docs = [
   "sphinx-copybutton>=0.5.2",
   "sphinx-notfound-page>=1",
 ]
+docs-serve = [
+  "sphinx-autobuild>=2024.10.3",
+  { include-group = "docs" },
+]
 typing = [
   "backports-strenum",
   "mypy>=1.9",

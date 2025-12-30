@@ -195,15 +195,11 @@ def docs_serve(session: nox.Session) -> None:
         "build",
     ]
     session.run_install(
-        "uv",
-        "sync",
-        "--frozen",
-        "--no-dev",
-        "--group=docs",
+        *UV_SYNC_COMMAND,
+        "--group=docs-serve",
         f"--python={session.virtualenv.location}",
         env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
     )
-    session.install("sphinx-autobuild")
 
     build_dir = Path("build")
     if build_dir.exists():
