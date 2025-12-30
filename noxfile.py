@@ -1,3 +1,5 @@
+#!/usr/bin/env -S uv run --script
+
 # /// script
 # dependencies = ["nox"]
 # ///
@@ -15,19 +17,12 @@ import nox
 GH_ACTIONS_ENV_VAR = "GITHUB_ACTIONS"
 FORCE_COLOR = "FORCE_COLOR"
 
+DOCS_PYTHON = "3.14"  # NOTE: Keep this in sync with .readthedocs.yaml
 PYPROJECT = nox.project.load_toml()
 
-nox.options.sessions = [
-    "xdoctest",
-    "mypy",
-    "deps",
-    "docs-build",
-    "api",
-    "tests",
-    "integration",
-]
 nox.needs_version = ">=2025.2.9"
 nox.options.default_venv_backend = "uv"
+nox.options.reuse_venv = "yes"
 
 package = "citric"
 
@@ -114,7 +109,7 @@ def xdoctest(session: nox.Session) -> None:
     session.run("python", "-m", "xdoctest", *args)
 
 
-@nox.session()
+@nox.session(default=False)
 def coverage(session: nox.Session) -> None:
     """Upload coverage data."""
     args = session.posargs or ["report"]
@@ -165,7 +160,7 @@ def ty(session: nox.Session) -> None:
     session.run("ty", "check", *args)
 
 
-@nox.session(name="docs-build", python=python_versions[-1])
+@nox.session(name="docs-build", python=DOCS_PYTHON)
 def docs_build(session: nox.Session) -> None:
     """Build the documentation."""
     args = session.posargs or ["docs", "build"]
@@ -185,7 +180,7 @@ def docs_build(session: nox.Session) -> None:
     session.run("sphinx-build", "-W", *args)
 
 
-@nox.session(name="docs-serve", python=python_versions[-1])
+@nox.session(name="docs-serve", python=DOCS_PYTHON, default=False)
 def docs_serve(session: nox.Session) -> None:
     """Build the documentation."""
     args = session.posargs or [
@@ -236,7 +231,7 @@ def api_changes(session: nox.Session) -> None:
     session.run(*args, external=True)
 
 
-@nox.session()
+@nox.session(default=False)
 def notebook(session: nox.Session) -> None:
     """Start a Jupyter notebook."""
     session.install(
@@ -263,7 +258,7 @@ def notebook(session: nox.Session) -> None:
     )
 
 
-@nox.session(name="generate-tags", tags=["status"])
+@nox.session(name="generate-tags", tags=["status"], default=False)
 def tags(session: nox.Session) -> None:
     """Print tags."""
     session.run("uv", "run", "scripts/docker_tags.py")
