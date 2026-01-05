@@ -723,22 +723,21 @@ class Client:  # noqa: PLR0904
         .. versionadded:: 1.4.0
            The ``additional_options`` parameter.
         """
-        with Path(filename).open("wb") as f:
-            return f.write(
-                self.export_responses(
-                    survey_id,
-                    token=token,
-                    file_format=file_format,
-                    language=language,
-                    completion_status=completion_status,
-                    heading_type=heading_type,
-                    response_type=response_type,
-                    from_response_id=from_response_id,
-                    to_response_id=to_response_id,
-                    fields=fields,
-                    additional_options=additional_options,
-                ),
-            )
+        return Path(filename).write_bytes(
+            self.export_responses(
+                survey_id,
+                token=token,
+                file_format=file_format,
+                language=language,
+                completion_status=completion_status,
+                heading_type=heading_type,
+                response_type=response_type,
+                from_response_id=from_response_id,
+                to_response_id=to_response_id,
+                fields=fields,
+                additional_options=additional_options,
+            ),
+        )
 
     def export_statistics(
         self,
@@ -802,16 +801,15 @@ class Client:  # noqa: PLR0904
         Returns:
             Bytes length written to file.
         """
-        with Path(filename).open("wb") as f:
-            return f.write(
-                self.export_statistics(
-                    survey_id,
-                    file_format=file_format,
-                    language=language,
-                    graph=graph,
-                    group_ids=group_ids,
-                ),
-            )
+        return Path(filename).write_bytes(
+            self.export_statistics(
+                survey_id,
+                file_format=file_format,
+                language=language,
+                graph=graph,
+                group_ids=group_ids,
+            ),
+        )
 
     def export_timeline(
         self,
@@ -1239,8 +1237,7 @@ class Client:  # noqa: PLR0904
         for file in uploaded_files:
             filepath = dirpath / file["meta"]["filename"]
             filepaths.append(filepath)
-            with Path(filepath).open("wb") as f:
-                f.write(file["content"].read())
+            Path(filepath).write_bytes(file["content"].read())
 
         return filepaths
 
