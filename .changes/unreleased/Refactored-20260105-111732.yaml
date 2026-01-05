@@ -1,0 +1,5 @@
+kind: Refactored
+body: Use `Path.write_bytes` where possible
+time: 2026-01-05T11:17:32.401037-06:00
+custom:
+    Issue: "1633"
