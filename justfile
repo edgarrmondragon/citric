@@ -29,6 +29,6 @@ test: pre-commit nox
 pre-commit:
     -uvx --python={{py}} prek run --all-files
 
-# Run all nox sessions
+# Run all default nox sessions
 nox:
-    uvx --python={{py}} nox --reuse-existing-virtualenvs
+    uvx --python={{py}} nox

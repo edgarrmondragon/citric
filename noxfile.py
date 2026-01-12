@@ -1,7 +1,7 @@
 #!/usr/bin/env -S uv run --script
 
 # /// script
-# dependencies = ["nox"]
+# dependencies = ["nox>=2025.2.9"]
 # ///
 
 """Nox configuration."""
