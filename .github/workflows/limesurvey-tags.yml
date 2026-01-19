@@ -10,7 +10,7 @@ env:
   # renovate: datasource=pypi depName=nox
   NOX_VERSION: 2025.11.12
   # renovate: datasource=pypi depName=uv
-  UV_VERSION: 0.9.21
+  UV_VERSION: 0.9.24
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
