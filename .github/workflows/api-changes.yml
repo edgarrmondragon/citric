@@ -65,6 +65,8 @@ jobs:
         echo "ref=$BASE_SHA" >> $GITHUB_OUTPUT
 
     # Check API against the latest commit on the base branch
-    - name: Run Nox  # zizmor: ignore[template-injection]
+    - name: Run Nox
+      env:
+        REF: ${{ steps.set-ref.outputs.ref }}
       run: |
-        nox -- ${{ steps.set-ref.outputs.ref }}
+        nox -- ${REF}
