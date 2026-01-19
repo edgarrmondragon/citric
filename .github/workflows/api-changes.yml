@@ -19,7 +19,7 @@ env:
   # renovate: datasource=pypi depName=nox
   NOX_VERSION: 2025.11.12
   # renovate: datasource=pypi depName=uv
-  UV_VERSION: 0.9.21
+  UV_VERSION: 0.9.24
 
 permissions:  # added using https://github.com/step-security/secure-repo
   contents: read
@@ -65,6 +65,8 @@ jobs:
         echo "ref=$BASE_SHA" >> $GITHUB_OUTPUT
 
     # Check API against the latest commit on the base branch
-    - name: Run Nox  # zizmor: ignore[template-injection]
+    - name: Run Nox
+      env:
+        REF: ${{ steps.set-ref.outputs.ref }}
       run: |
-        nox -- ${{ steps.set-ref.outputs.ref }}
+        nox -- ${REF}

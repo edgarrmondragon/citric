@@ -17,8 +17,10 @@ runs:
     with:
       version: ${{ inputs.uv-version }}
 
-  - name: Install Nox  # zizmor: ignore[template-injection]
+  - name: Install Nox
+    env:
+      NOX_VERSION: ${{ inputs.nox-version }}
     shell: bash
     run: |
-      uv tool install --with nox==${{ inputs.nox-version }} nox
+      uv tool install --with nox==${NOX_VERSION} nox
       nox --version

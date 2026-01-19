@@ -10,6 +10,6 @@ from citric.rest import RESTClient
 __version__ = metadata.version("citric")
 """Package version"""
 
-del annotations, metadata
+del annotations, metadata  # noqa: RUF067
 
 __all__ = ["Client", "RESTClient"]
