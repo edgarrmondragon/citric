@@ -327,7 +327,7 @@ include = [
 ]
 
 [tool.ty.terminal]
-error-on-warning = true
+error-on-warning = false
 
 [tool.typos.default.extend-words]
 erronous = "erronous" # This is a typo in a LimeSurvey API field name

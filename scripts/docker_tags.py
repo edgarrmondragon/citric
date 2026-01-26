@@ -1,3 +1,5 @@
+#!/usr/bin/env -S uv run --script
+
 # /// script
 # dependencies = ["requests", "requests-cache"]
 # requires-python = ">=3.9"

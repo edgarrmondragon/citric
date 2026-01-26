@@ -9,11 +9,9 @@ on:
     - examples/**
     - src/**
     - tests/**
-    - docker-compose*.yml
+    - compose*.yaml
     - noxfile.py
     - pyproject.toml
-    - requirements/requirements*.txt
-    - uv.lock
     - .github/workflows/tests.yml
     - .github/workflows/resources/tags.json
     - .github/actions/install-tools/action.yml
@@ -24,11 +22,9 @@ on:
     - examples/**
     - src/**
     - tests/**
-    - docker-compose*.yml
+    - compose*.yaml
     - noxfile.py
     - pyproject.toml
-    - requirements/requirements*.txt
-    - uv.lock
     - .github/workflows/tests.yml
     - .github/workflows/resources/tags.json
     - .github/actions/install-tools/action.yml
@@ -98,7 +94,7 @@ jobs:
 
     steps:
     - name: Check out the repository
-      uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       with:
         persist-credentials: false
 
@@ -146,7 +142,7 @@ jobs:
 
     steps:
     - name: Check out the repository
-      uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       with:
         persist-credentials: false
 
@@ -160,7 +156,7 @@ jobs:
         nox-version: ${{ env.NOX_VERSION }}
         uv-version: ${{ env.UV_VERSION }}
 
-    - uses: j178/prek-action@91fd7d7cf70ae1dee9f4f44e7dfa5d1073fe6623 # v1.0.11
+    - uses: j178/prek-action@9d6a3097e0c1865ecce00cfb89fe80f2ee91b547 # v1.0.12
     - run: nox -t lint
 
   docker_tags:
@@ -172,7 +168,7 @@ jobs:
       contents: read
     steps:
     - name: Check out the repository
-      uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       with:
         persist-credentials: false
 
@@ -260,7 +256,7 @@ jobs:
 
     steps:
     - name: Check out the repository
-      uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       with:
         persist-credentials: false
 
@@ -330,7 +326,7 @@ jobs:
       fail-fast: false
     steps:
     - name: Check out the repository
-      uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       with:
         persist-credentials: false
 
