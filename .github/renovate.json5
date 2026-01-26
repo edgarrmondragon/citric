@@ -5,9 +5,6 @@
   "extends": [
     // https://github.com/edgarrmondragon/.github/blob/main/renovate/python.json5
     "edgarrmondragon/.github//renovate/python.json5",
-
-    // https://github.com/edgarrmondragon/.github/blob/main/renovate/uv.json5
-    "edgarrmondragon/.github//renovate/uv.json5",
   ],
 
   // https://docs.renovatebot.com/configuration-options/#reviewers
@@ -29,6 +26,14 @@
       "datasourceTemplate": "github-runners"
     }
   ],
+
+  "pip-compile": {
+    "managerFilePatterns": ["/(^|/)(.*\\.)?requirements\\.txt$/"],
+  },
+
+  "pip_requirements": {
+    "enabled": false,
+  },
 
   // https://docs.renovatebot.com/configuration-options/#rebasewhen
   "rebaseWhen": "conflicted",

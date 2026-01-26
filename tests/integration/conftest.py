@@ -68,7 +68,7 @@ def docker_compose_file(
     database_type: str,
     git_reference: str | None,
 ) -> list[Path | str] | Path | str:
-    """Get an absolute path to the  `docker-compose.yml` file."""
+    """Get an absolute path to the Docker Compose file."""
     files = ["compose.yaml"]
 
     if database_type == "mysql":

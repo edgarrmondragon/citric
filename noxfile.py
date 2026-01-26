@@ -32,26 +32,16 @@ all_python_versions = python_versions + pypy_versions
 
 locations = "src", "tests", "docs/conf.py"
 
-UV_SYNC_COMMAND = (
-    "uv",
-    "sync",
-    "--locked",
-    "--no-dev",
-)
-
 
 @nox.session(python=python_versions, tags=["test"])
 @nox.parametrize("constraints", ["highest", "lowest-direct"])
 def tests(session: nox.Session, constraints: str) -> None:
     """Execute pytest tests and compute coverage."""
-    session.run_install(
-        *UV_SYNC_COMMAND,
-        "--group=test",
-        f"--python={session.virtualenv.location}",
-        env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
-    )
+    install_args = [".", "--group=test"]
     if constraints == "lowest-direct":
-        session.install("-r=requirements/requirements-lowest-direct.txt")
+        install_args.append("--resolution=lowest-direct")
+
+    session.install(*install_args)
 
     session.run(
         "coverage",
@@ -67,12 +57,7 @@ def tests(session: nox.Session, constraints: str) -> None:
 @nox.session(tags=["test"])
 def integration(session: nox.Session) -> None:
     """Execute integration tests and compute coverage."""
-    session.run_install(
-        *UV_SYNC_COMMAND,
-        "--group=test",
-        f"--python={session.virtualenv.location}",
-        env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
-    )
+    session.install(".", "--group=test", f"--python={session.virtualenv.location}")
     try:
         session.run(
             "coverage",
@@ -100,12 +85,7 @@ def xdoctest(session: nox.Session) -> None:
         if FORCE_COLOR in os.environ:
             args.append("--colored=1")
 
-    session.run_install(
-        *UV_SYNC_COMMAND,
-        "--group=test",
-        f"--python={session.virtualenv.location}",
-        env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
-    )
+    session.install(".", "--group=test")
     session.run("python", "-m", "xdoctest", *args)
 
 
@@ -138,12 +118,7 @@ def dependencies(session: nox.Session) -> None:
 def mypy(session: nox.Session) -> None:
     """Type-check using mypy."""
     args = session.posargs or [*locations, "noxfile.py"]
-    session.run_install(
-        *UV_SYNC_COMMAND,
-        "--group=typing",
-        f"--python={session.virtualenv.location}",
-        env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
-    )
+    session.install(".", "--group=typing")
     session.run("mypy", *args)
 
 
@@ -151,12 +126,7 @@ def mypy(session: nox.Session) -> None:
 def ty(session: nox.Session) -> None:
     """Type-check using mypy."""
     args = session.posargs or locations
-    session.run_install(
-        *UV_SYNC_COMMAND,
-        "--group=typing",
-        f"--python={session.virtualenv.location}",
-        env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
-    )
+    session.install(".", "--group=typing")
     session.run("ty", "check", *args)
 
 
@@ -167,12 +137,8 @@ def docs_build(session: nox.Session) -> None:
     if not session.posargs and FORCE_COLOR in os.environ:
         args.insert(0, "--color")
 
-    session.run_install(
-        *UV_SYNC_COMMAND,
-        "--group=docs",
-        f"--python={session.virtualenv.location}",
-        env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
-    )
+    session.install(".", "--group=docs")
+
     build_dir = Path("build")
     if build_dir.exists():
         shutil.rmtree(build_dir)
@@ -194,12 +160,7 @@ def docs_serve(session: nox.Session) -> None:
         "docs",
         "build",
     ]
-    session.run_install(
-        *UV_SYNC_COMMAND,
-        "--group=docs-serve",
-        f"--python={session.virtualenv.location}",
-        env={"UV_PROJECT_ENVIRONMENT": session.virtualenv.location},
-    )
+    session.install(".", "--group=docs-serve")
 
     build_dir = Path("build")
     if build_dir.exists():
@@ -252,12 +213,6 @@ def notebook(session: nox.Session) -> None:
             "AWS_SECRET_ACCESS_KEY": "minioadmin",
         },
     )
-
-
-@nox.session(name="generate-tags", tags=["status"], default=False)
-def tags(session: nox.Session) -> None:
-    """Print tags."""
-    session.run("uv", "run", "scripts/docker_tags.py")
 
 
 if __name__ == "__main__":

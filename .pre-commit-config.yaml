@@ -1,78 +1,76 @@
 ci:
-  autofix_commit_msg: 'chore: pre-commit auto fixes'
+  autofix_commit_msg: "chore: pre-commit auto fixes"
   autofix_prs: true
-  autoupdate_commit_msg: 'chore(deps): pre-commit autoupdate'
+  autoupdate_commit_msg: "chore(deps): pre-commit autoupdate"
   autoupdate_schedule: quarterly
   skip:
-  - pip-compile
-  - uv-lock
+    - pip-compile
 
 default_language_version:
-    python: python3.14
+  python: python3.14
 
 repos:
-- repo: https://github.com/pre-commit/pre-commit-hooks
-  rev: v6.0.0
-  hooks:
-  - id: check-added-large-files
-  - id: check-json
-  - id: check-toml
-  - id: check-yaml
-  - id: end-of-file-fixer
-    exclude: \.changes/.*\.md
-  - id: trailing-whitespace
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: check-added-large-files
+      - id: check-json
+      - id: check-toml
+      - id: check-yaml
+      - id: end-of-file-fixer
+        exclude: \.changes/.*\.md
+      - id: trailing-whitespace
 
-- repo: https://github.com/python-jsonschema/check-jsonschema
-  rev: 0.36.0
-  hooks:
-  - id: check-github-workflows
-  - id: check-readthedocs
-  - id: check-renovate
-    language: python
-    additional_dependencies:
-    - pyjson5==2.0.0
+  - repo: https://github.com/python-jsonschema/check-jsonschema
+    rev: 0.36.0
+    hooks:
+      - id: check-github-workflows
+      - id: check-readthedocs
+      - id: check-renovate
+        language: python
+        additional_dependencies:
+          - pyjson5==2.0.0
 
-- repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.14.11
-  hooks:
-  - id: ruff-check
-    args: [--fix, --exit-non-zero-on-fix, --show-fixes]
-  - id: ruff-format
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.14.13
+    hooks:
+      - id: ruff-check
+      - id: ruff-format
 
-- repo: https://github.com/crate-ci/typos
-  rev: v1.42.0
-  hooks:
-  - id: typos
-    args: []
+  - repo: https://github.com/crate-ci/typos
+    rev: v1.42.0
+    hooks:
+      - id: typos
+        args: []
 
-- repo: https://github.com/pre-commit/pre-commit
-  rev: v4.5.1
-  hooks:
-  - id: validate_manifest
+  - repo: https://github.com/hadialqattan/pycln
+    rev: v2.6.0
+    hooks:
+      - id: pycln
+        args: [--all]
 
-- repo: https://github.com/hadialqattan/pycln
-  rev: v2.6.0
-  hooks:
-  - id: pycln
-    args: [--all]
+  - repo: https://github.com/tox-dev/pyproject-fmt
+    rev: v2.11.1
+    hooks:
+      - id: pyproject-fmt
 
-- repo: https://github.com/tox-dev/pyproject-fmt
-  rev: v2.11.1
-  hooks:
-  - id: pyproject-fmt
+  - repo: https://github.com/astral-sh/uv-pre-commit
+    rev: 0.9.26
+    hooks:
+      - id: pip-compile
+        files: |
+          (?x)^(
+            pyproject.toml|
+            requirements/docs.requirements.txt
+          )$
+        args:
+          - pyproject.toml
+          - "--group=docs"
+          - "--python-version=3.14"
+          - "--output-file=requirements/docs.requirements.txt"
 
-- repo: https://github.com/astral-sh/uv-pre-commit
-  rev: 0.9.24
-  hooks:
-  - id: uv-lock
-  - id: uv-sync
-  - id: pip-compile
-    name: pip-compile Lowest Direct
-    files: ^pyproject\.toml$
-    args: ["pyproject.toml", "--universal", "--resolution=lowest-direct", "-o=requirements/requirements-lowest-direct.txt"]
-
-- repo: https://github.com/hukkin/mdformat
-  rev: 1.0.0
-  hooks:
-  - id: mdformat
-    exclude: \.github/pull_request_template\.md
+  - repo: https://github.com/hukkin/mdformat
+    rev: 1.0.0
+    hooks:
+      - id: mdformat
+        exclude: \.github/pull_request_template\.md

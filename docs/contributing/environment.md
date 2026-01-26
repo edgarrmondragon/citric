@@ -13,34 +13,27 @@ Ready to contribute? Here's how to set up `citric` for local development.
    cd citric
    ```
 
-1. Optional: install [`uv`][uv].
+1. Install [`uv`][uv].
 
-1. Install [`nox`][nox] (used for automation):
-
-   ```shell
-   pipx install 'nox[uv]'
-   nox -l
-   ```
-
-   Or use `uv` to install `nox`:
+1. Check the available [Nox] sessions:
 
    ```shell
-   uv tool install nox
+   ./noxfile.py -l
    ```
 
 1. Create a branch for local development:
 
    ```shell
-   git checkout -b name-of-your-bugfix-or-feature
+   git switch -c name-of-your-bugfix-or-feature
    ```
 
    Now you can make your changes locally.
 
-1. To check that your changes pass the project style checks, use [`pre-commit`][pre-commit]:
+1. To check that your changes pass the project style checks, use [`prek`][prek]:
 
    ```shell
-   pre-commit install
-   pre-commit run --all-files
+   prek install
+   prek run --all-files
    ```
 
 1. Commit your changes and push your branch to GitHub:
@@ -61,5 +54,5 @@ Ready to contribute? Here's how to set up `citric` for local development.
 
 [changie]: https://changie.dev/
 [nox]: https://nox.thea.codes/en/stable/
-[pre-commit]: https://pre-commit.com/
-[uv]: https://docs.astral.sh/uv/
+[prek]: https://github.com/j178/prek
+[uv]: https://docs.astral.sh/uv/getting-started/installation/
