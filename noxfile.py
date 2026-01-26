@@ -27,8 +27,6 @@ nox.options.reuse_venv = "yes"
 package = "citric"
 
 python_versions = nox.project.python_versions(PYPROJECT)
-pypy_versions = ["pypy3.11"]
-all_python_versions = python_versions + pypy_versions
 
 locations = "src", "tests", "docs/conf.py"
 

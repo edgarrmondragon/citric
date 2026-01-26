@@ -80,9 +80,6 @@ jobs:
         - python-version: "3.9"
           os: ubuntu-24.04
 
-        - python-version: "pypy3.11"
-          os: ubuntu-24.04
-
         - python-version: "3.15"
           os: ubuntu-24.04
 
@@ -223,10 +220,6 @@ jobs:
           database: postgres
 
         - python-version: "3.15"
-          image_tag: "6-apache"
-          database: postgres
-
-        - python-version: "pypy3.11"
           image_tag: "6-apache"
           database: postgres
 
