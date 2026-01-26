@@ -24,19 +24,10 @@ from citric.exceptions import LimeSurveyApiError, LimeSurveyStatusError
 from citric.objects import Participant
 
 if TYPE_CHECKING:
-    import sys
-
     from faker import Faker
 
     from citric.types import QuestionsListElement
     from tests.fixtures import MailpitClient
-
-    if sys.version_info >= (3, 10):
-        from pytest import Subtests as SubtestsFixture  # noqa: PT013
-    else:
-        from pytest_subtests import (  # ty: ignore[unresolved-import]
-            SubTests as SubtestsFixture,
-        )
 
 NEW_SURVEY_NAME = "New Survey"
 
@@ -73,7 +64,7 @@ def participants(faker: Faker) -> list[dict[str, Any]]:
 
 
 @pytest.mark.integration_test
-def test_fieldmap(client: citric.Client, survey_id: int, subtests: SubtestsFixture):
+def test_fieldmap(client: citric.Client, survey_id: int, subtests: pytest.Subtests):
     """Test fieldmap."""
     fieldmap = client.get_fieldmap(survey_id)
     for key, value in fieldmap.items():
@@ -87,7 +78,7 @@ def test_fieldmap(client: citric.Client, survey_id: int, subtests: SubtestsFixtu
 
 
 @pytest.mark.integration_test
-def test_language(client: citric.Client, survey_id: int, subtests: SubtestsFixture):
+def test_language(client: citric.Client, survey_id: int, subtests: pytest.Subtests):
     """Test language methods."""
     # Add a new language
     assert client.add_language(survey_id, "es")["status"] == "OK"
@@ -133,7 +124,7 @@ def test_language(client: citric.Client, survey_id: int, subtests: SubtestsFixtu
 def test_survey(
     client: citric.Client,
     server_version: semver.VersionInfo,
-    subtests: SubtestsFixture,
+    subtests: pytest.Subtests,
 ):
     """Test survey methods."""
     # Try to get a survey that doesn't exist
@@ -187,7 +178,7 @@ def test_survey(
 
 
 @pytest.mark.integration_test
-def test_import_survey(client: citric.Client, subtests: SubtestsFixture):
+def test_import_survey(client: citric.Client, subtests: pytest.Subtests):
     """Test importing a survey with a custom ID and name."""
     survey_id = random.randint(10000, 20000)  # noqa: S311
     with Path("./examples/survey.lss").open("rb") as f:
@@ -425,7 +416,7 @@ def test_quota(
     client: citric.Client,
     server_version: semver.VersionInfo,
     survey_id: int,
-    subtests: SubtestsFixture,
+    subtests: pytest.Subtests,
 ):
     """Test quota methods."""
     request.applymarker(
@@ -631,7 +622,7 @@ def test_participants(
     client: citric.Client,
     survey_id: int,
     participants: list[dict[str, str]],
-    subtests: SubtestsFixture,
+    subtests: pytest.Subtests,
 ):
     """Test participants methods."""
     client.activate_survey(survey_id)
@@ -643,7 +634,7 @@ def test_participants(
         participant_data=participants,
         create_tokens=False,
     )
-    for p, d in zip(added, participants):
+    for p, d in zip(added, participants, strict=False):
         with subtests.test(msg="test new participants properties", token=d["token"]):
             assert p["email"] == d["email"]
             assert p["firstname"] == d["firstname"]
@@ -660,7 +651,7 @@ def test_participants(
     assert len(participants_list) == 2
 
     # Check added participant properties
-    for ple, d in zip(participants_list, participants[:2]):
+    for ple, d in zip(participants_list, participants[:2], strict=False):
         with subtests.test(msg="test new participants properties", token=ple["tid"]):
             assert ple["participant_info"]["email"] == d["email"]
             assert ple["participant_info"]["firstname"] == d["firstname"]
@@ -669,7 +660,7 @@ def test_participants(
             assert ple["attribute_2"] == d["attribute_2"]  # type: ignore[typeddict-item]
 
     # Get participant properties
-    for p, d in zip(added, participants[:2]):
+    for p, d in zip(added, participants[:2], strict=False):
         with subtests.test(msg="test updated participants properties", token=p["tid"]):
             properties = client.get_participant_properties(survey_id, p["tid"])
             assert properties["email"] == d["email"]
@@ -770,7 +761,7 @@ def test_responses(
     survey_id: int,
     responses: list[dict],
     tmp_path: Path,
-    subtests: SubtestsFixture,
+    subtests: pytest.Subtests,
 ):
     """Test adding and exporting responses."""
     client.activate_survey(survey_id)
@@ -880,7 +871,7 @@ def test_summary(
     survey_id: int,
     participants: list[dict],
     responses: list[dict],
-    subtests: SubtestsFixture,
+    subtests: pytest.Subtests,
 ):
     """Test get_summary client method."""
     with (
@@ -1210,7 +1201,7 @@ def test_mail_registered_participants(
     survey_id: int,
     participants: list[dict[str, str]],
     mailpit: MailpitClient,
-    subtests: SubtestsFixture,
+    subtests: pytest.Subtests,
 ):
     """Test mail_registered_participants."""
     client.activate_survey(survey_id)
@@ -1254,7 +1245,7 @@ def test_remind_participants(
     survey_id: int,
     participants: list[dict[str, str]],
     mailpit: MailpitClient,
-    subtests: SubtestsFixture,
+    subtests: pytest.Subtests,
 ):
     """Test remind_participants."""
     client.activate_survey(survey_id)

@@ -77,9 +77,6 @@ jobs:
         - python-version: "3.10"
           os: ubuntu-24.04
 
-        - python-version: "3.9"
-          os: ubuntu-24.04
-
         - python-version: "3.15"
           os: ubuntu-24.04
 
@@ -199,10 +196,6 @@ jobs:
         image_tag: ${{ fromJson(needs.docker_tags.outputs.tags) }}
         include:
         # Test on other Python versions
-        - python-version: "3.9"
-          image_tag: "6-apache"
-          database: postgres
-
         - python-version: "3.10"
           image_tag: "6-apache"
           database: postgres
