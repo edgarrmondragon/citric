@@ -35,6 +35,10 @@
     "enabled": false,
   },
 
+  "poetry": {
+    "enabled": false
+  },
+
   // https://docs.renovatebot.com/configuration-options/#rebasewhen
   "rebaseWhen": "conflicted",
 }
