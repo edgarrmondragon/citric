@@ -3,7 +3,7 @@
 After you've [set up your environment][environment], you can run tests on available Python interpreters:
 
 ```shell
-nox -rs tests
+nox -s tests
 ```
 
 ## Integration tests
@@ -13,7 +13,7 @@ nox -rs tests
 To run integration tests, the [Docker] daemon must be running and the Docker CLI must be available.
 
 ```shell
-nox -rs integration
+nox -s integration
 ```
 
 You can customize the following settings:
@@ -61,19 +61,19 @@ as integration tests), so make sure your changes are tested..
 ### Doctests
 
 ```shell
-nox -rs xdoctest
+nox -s xdoctest
 ```
 
 ### Type checking
 
 ```shell
-nox -rs mypy
+nox -s mypy
 ```
 
 ### Dependency checks
 
 ```shell
-nox -rs deps
+nox -s deps
 ```
 
 [6.6.4]: https://hub.docker.com/layers/martialblog/limesurvey/6.6.4-240923-apache/images/sha256-4f5ebdd7ee321e4acd828e3800e7546d4bcabb5024c76f87e23a4bd85622e30e
