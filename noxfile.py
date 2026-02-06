@@ -48,6 +48,7 @@ def tests(session: nox.Session, constraints: str) -> None:
         "pytest",
         "-m",
         "not integration_test",
+        *session.posargs,
         env={"COVERAGE_CORE": "sysmon"},
     )
 
