@@ -123,6 +123,7 @@ jobs:
         token: ${{ secrets.CODECOV_TOKEN }}
         files: tests.xml
         flags: unit-${{ matrix.os }}-${{ matrix.python-version }}
+        report_type: test_results
 
     - name: Run Doctests
       run: |
@@ -275,6 +276,7 @@ jobs:
         token: ${{ secrets.CODECOV_TOKEN }}
         files: integration.xml
         flags: integration-${{ matrix.python-version }}-${{ matrix.image_tag || matrix.ref }}-${{ matrix.database }}
+        report_type: test_results
 
     - if: always()
       env:
