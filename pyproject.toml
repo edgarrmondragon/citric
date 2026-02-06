@@ -102,7 +102,7 @@ samples = [
 ]
 
 [tool.uv]
-exclude-newer = "7 days"
+exclude-newer = "P7D"
 preview = true
 required-version = ">=0.9.17"
 
