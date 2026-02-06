@@ -128,7 +128,7 @@ def ty(session: nox.Session) -> None:
     session.run(
         "ty",
         "check",
-        f"--output-format={'github' if os.getenv('GITHUB_ACTIONS') == 'true' else 'concise'}",
+        f"--output-format={'github' if os.getenv('GITHUB_ACTIONS') == 'true' else 'concise'}",  # noqa: E501
         *args,
     )
 
