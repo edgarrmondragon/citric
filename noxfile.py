@@ -125,7 +125,12 @@ def ty(session: nox.Session) -> None:
     """Type-check using mypy."""
     args = session.posargs or locations
     session.install(".", "--group=typing")
-    session.run("ty", "check", *args)
+    session.run(
+        "ty",
+        "check",
+        f"--output-format={'github' if os.getenv('GITHUB_ACTIONS') == 'true' else 'concise'}",
+        *args,
+    )
 
 
 @nox.session(name="docs-build", python=DOCS_PYTHON)
