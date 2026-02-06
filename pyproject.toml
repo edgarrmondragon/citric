@@ -317,15 +317,15 @@ module = [
   "nox.*",
 ]
 
+[tool.ty.rules]
+unused-type-ignore-comment = "ignore"
+
 [tool.ty.src]
 include = [
   "src",
   "tests",
   "docs/conf.py",
 ]
-
-[tool.ty.terminal]
-error-on-warning = false
 
 [tool.typos.default.extend-words]
 erronous = "erronous" # This is a typo in a LimeSurvey API field name
