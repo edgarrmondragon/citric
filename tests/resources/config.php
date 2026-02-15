@@ -33,7 +33,7 @@ return array(
     ),
     'config' => array(
         'publicurl' => '',
-        'debug' => 2,
+        'debug' => 0,
         'debugsql' => 1,
         'RPCInterface' => 'json',
         'sitename' => 'Citric - Test',
