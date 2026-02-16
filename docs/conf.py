@@ -40,6 +40,7 @@ extensions = [
     "notfound.extension",
     # Custom extensions
     "minlimesurvey",
+    "sphinx_llm.txt",
 ]
 
 source_suffix = {

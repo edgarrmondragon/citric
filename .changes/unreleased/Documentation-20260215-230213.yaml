@@ -1,0 +1,5 @@
+kind: Documentation
+body: Expose `/llms.txt` file
+time: 2026-02-15T23:02:13.837384-06:00
+custom:
+    Issue: "1666"
