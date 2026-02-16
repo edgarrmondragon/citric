@@ -21,6 +21,7 @@ docutils==0.21.2
     #   citric (pyproject.toml:docs)
     #   myst-parser
     #   sphinx
+    #   sphinx-markdown-builder
 furo==2025.12.19
     # via citric (pyproject.toml:docs)
 idna==3.11
@@ -76,6 +77,8 @@ sphinx==8.2.3
     #   sphinx-autoapi
     #   sphinx-basic-ng
     #   sphinx-copybutton
+    #   sphinx-llm
+    #   sphinx-markdown-builder
     #   sphinx-notfound-page
 sphinx-autoapi==3.6.1
     # via citric (pyproject.toml:docs)
@@ -83,6 +86,10 @@ sphinx-basic-ng==1.0.0b2
     # via furo
 sphinx-copybutton==0.5.2
     # via citric (pyproject.toml:docs)
+sphinx-llm==0.3.0
+    # via citric (pyproject.toml:docs)
+sphinx-markdown-builder==0.6.9
+    # via sphinx-llm
 sphinx-notfound-page==1.1.0
     # via citric (pyproject.toml:docs)
 sphinxcontrib-applehelp==2.0.0
@@ -97,6 +104,8 @@ sphinxcontrib-qthelp==2.0.0
     # via sphinx
 sphinxcontrib-serializinghtml==2.0.0
     # via sphinx
+tabulate==0.9.0
+    # via sphinx-markdown-builder
 typing-extensions==4.15.0
     # via beautifulsoup4
 urllib3==2.6.3
