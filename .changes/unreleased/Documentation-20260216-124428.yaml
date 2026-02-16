@@ -1,0 +1,5 @@
+kind: Documentation
+body: Put contributing documents in a dropdown to declutter the sidenav
+time: 2026-02-16T12:44:28.195941-06:00
+custom:
+    Issue: "1667"
