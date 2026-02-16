@@ -15,7 +15,7 @@ concurrency:
 env:
   FORCE_COLOR: 1
   # renovate: datasource=pypi depName=griffe
-  GRIFFE_VERSION: 1.15.0
+  GRIFFE_VERSION: 2.0.0
   # renovate: datasource=pypi depName=nox
   NOX_VERSION: 2025.11.12
   # renovate: datasource=pypi depName=uv
