@@ -15,12 +15,6 @@ keywords = [
 ]
 license = "MIT"
 license-files = [ "LICENSE", "AUTHORS.md" ]
-maintainers = [
-  { name = "Edgar Ramírez-Mondragón", email = "edgarrm358@gmail.com" },
-]
-authors = [
-  { name = "Edgar Ramírez-Mondragón", email = "edgarrm358@gmail.com" },
-]
 requires-python = ">=3.10"
 classifiers = [
   "Development Status :: 5 - Production/Stable",
@@ -43,11 +37,18 @@ dependencies = [
   "requests>=2.25.1",
   "typing-extensions>=4.6; python_version<'3.12'",
 ]
-urls.Documentation = "https://citric.readthedocs.io"
-urls.Funding = "https://github.com/sponsors/edgarrmondragon"
-urls.Homepage = 'https://github.com/edgarrmondragon/citric'
-urls."Issue Tracker" = "https://github.com/edgarrmondragon/citric/issues"
-urls.Repository = "https://github.com/edgarrmondragon/citric"
+[[project.authors]]
+name = "Edgar Ramírez-Mondragón"
+email = "edgarrm358@gmail.com"
+[[project.maintainers]]
+name = "Edgar Ramírez-Mondragón"
+email = "edgarrm358@gmail.com"
+[project.urls]
+Documentation = "https://citric.readthedocs.io"
+Funding = "https://github.com/sponsors/edgarrmondragon"
+Homepage = "https://github.com/edgarrmondragon/citric"
+"Issue Tracker" = "https://github.com/edgarrmondragon/citric/issues"
+Repository = "https://github.com/edgarrmondragon/citric"
 
 [dependency-groups]
 dev = [
@@ -87,6 +88,11 @@ docs-serve = [
   "sphinx-autobuild>=2024.10.3",
   { include-group = "docs" },
 ]
+samples = [
+  "boto3>=1.37.38",
+  "duckdb>=1.3",
+  "pandas>=2.0.3",
+]
 typing = [
   "backports-strenum",
   "mypy>=1.9",
@@ -96,16 +102,11 @@ typing = [
   "typing-extensions>=4.6; python_version<'3.12'",
   { include-group = "test" },
 ]
-samples = [
-  "boto3>=1.37.38",
-  "duckdb>=1.3",
-  "pandas>=2.0.3",
-]
 
 [tool.uv]
+required-version = ">=0.9.17"
 exclude-newer = "P7D"
 preview = true
-required-version = ">=0.9.17"
 
 [tool.ruff]
 line-length = 88
@@ -114,16 +115,17 @@ src = [
   "src",
   "tests",
 ]
-
 include = [
   "**/pyproject.toml",
   "*.ipynb",
   "*.py",
   "*.pyi",
 ]
-format.preview = true
-format.docstring-code-format = true
-lint.select = [
+[tool.ruff.format]
+preview = true
+docstring-code-format = true
+[tool.ruff.lint]
+select = [
   "A",    # flake8-builtins
   "ANN",  # flake8-annotations
   "ARG",  # flake8-unused-arguments
@@ -178,27 +180,27 @@ lint.select = [
   "W",    # pycodestyle (warning)
   "YTT",  # flake8-2020
 ]
-lint.ignore = [
+ignore = [
   "COM812", # missing-trailing-comma
   "D107",   # undocumented-public-init
   "DJ",     # flake8-django
   "FIX002", # line-contains-todo
   "ISC001", # single-line-implicit-string-concatenation
 ]
-lint.explicit-preview-rules = false
-lint.per-file-ignores."docs/notebooks/*" = [
+explicit-preview-rules = false
+per-file-ignores."docs/notebooks/*" = [
   "D100",   # undocumented-public-module
   "E402",   # module-import-not-at-top-of-file
   "I002",   # missing-required-import
   "INP001", # implicit-namespace-package
 ]
-lint.per-file-ignores."src/*" = [
+per-file-ignores."src/*" = [
   "PD", # pandas-vet
 ]
-lint.per-file-ignores."src/citric/types.py" = [
+per-file-ignores."src/citric/types.py" = [
   "TC", # type-checking
 ]
-lint.per-file-ignores."tests/*" = [
+per-file-ignores."tests/*" = [
   "ANN201",  # missing-return-type-undocumented-public-function
   "ARG00",   # unused-method-argument
   "C901",    # complex-structure
@@ -211,29 +213,27 @@ lint.per-file-ignores."tests/*" = [
   "S106",    # hardcoded-password-func-arg
   "SLF001",  # private-member-access
 ]
-lint.unfixable = [
+unfixable = [
   "ERA", # Don't remove commented out code
 ]
-lint.flake8-annotations.allow-star-arg-any = true
-lint.flake8-annotations.mypy-init-return = true
-lint.flake8-annotations.suppress-dummy-args = true
-lint.flake8-errmsg.max-string-length = 30
-lint.mccabe.max-complexity = 5
-lint.pydocstyle.convention = "google"
-lint.pylint.max-args = 10
-lint.preview = true
+flake8-annotations.allow-star-arg-any = true
+flake8-annotations.mypy-init-return = true
+flake8-annotations.suppress-dummy-args = true
+flake8-errmsg.max-string-length = 30
+mccabe.max-complexity = 5
+pydocstyle.convention = "google"
+pylint.max-args = 10
+preview = true
 
 [tool.deptry]
 pep621_dev_dependency_groups = [
   "dev",
   "docs",
 ]
-
 [tool.deptry.package_module_name_map]
 backports-strenum = [ "backports", "strenum" ]
 types-requests = "requests"
 typing-extensions = "typing_extensions"
-
 [tool.deptry.per_rule_ignores]
 DEP001 = [
   # Notebook dependencies
@@ -249,6 +249,12 @@ DEP004 = [
 
 [tool.pyproject-fmt]
 max_supported_python = "3.15"
+table_format = "long"
+
+[tool.typos]
+[tool.typos.default]
+extend-words.erronous = "erronous"  # This is a typo in a LimeSurvey API field name
+extend-words.intoto = "intoto"  # https://in-toto.io/
 
 [tool.pytest]
 addopts = [
@@ -273,23 +279,15 @@ testpaths = [
 ]
 xfail_strict = true
 
+[tool.coverage]
 [tool.coverage.paths]
 package = [
   "src/citric/",
   "*/site-packages/citric/",
 ]
-
-[tool.coverage.run]
-branch = true
-parallel = true
-source = [
-  "citric",
-]
-relative_files = true
-
 [tool.coverage.report]
 exclude_also = [
-  '''if (t\.)?TYPE_CHECKING:''',
+  "if (t\\.)?TYPE_CHECKING:",
 ]
 omit = [
   "src/citric/types.py",
@@ -297,6 +295,13 @@ omit = [
 precision = 2
 show_missing = true
 skip_covered = true
+[tool.coverage.run]
+branch = true
+parallel = true
+relative_files = true
+source = [
+  "citric",
+]
 
 [tool.mypy]
 enable_error_code = [
@@ -311,23 +316,16 @@ warn_redundant_casts = true
 warn_unreachable = true
 warn_unused_configs = true
 warn_unused_ignores = true
-
-[[tool.mypy.overrides]]
-ignore_missing_imports = true
-module = [
+overrides = [ { ignore_missing_imports = true, module = [
   "nox.*",
-]
+] } ]
 
+[tool.ty]
 [tool.ty.rules]
 unused-type-ignore-comment = "ignore"
-
 [tool.ty.src]
 include = [
   "src",
   "tests",
   "docs/conf.py",
 ]
-
-[tool.typos.default.extend-words]
-erronous = "erronous" # This is a typo in a LimeSurvey API field name
-intoto = "intoto"     # https://in-toto.io/
