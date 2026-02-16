@@ -75,16 +75,8 @@ license
 ```
 
 ```{toctree}
-:caption: Contributing
+:maxdepth: 1
 :hidden:
 
-contributing/code-of-conduct
-contributing/getting-started
-contributing/environment
-contributing/testing
-contributing/docs
-contributing/docker
-contributing/release
-contributing/new-limesurvey-features
-contributing/update-dependencies
+./contributing/index.md
 ```
