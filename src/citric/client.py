@@ -7,11 +7,12 @@ import datetime
 import io
 import re
 from pathlib import Path
-from typing import (
+from typing import (  # noqa: UP035
     IO,
     TYPE_CHECKING,
     Any,
     Literal,
+    Type,
 )
 
 import requests
@@ -94,7 +95,7 @@ class Client:  # noqa: PLR0904
 
     def __exit__(
         self,
-        exc_type: type[BaseException] | None,
+        exc_type: Type[BaseException] | None,  # noqa: UP006
         exc_value: BaseException | None,
         traceback: TracebackType | None,
     ) -> None:

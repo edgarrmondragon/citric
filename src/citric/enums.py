@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import enum
 import sys
+from typing import Type  # noqa: UP035
 
 if sys.version_info >= (3, 11):
     from enum import StrEnum
@@ -150,7 +151,7 @@ class EmailSendStrategy(enum.IntEnum):
     RESEND = 2
 
     @classmethod
-    def to_flag(cls: type[EmailSendStrategy], value: int) -> bool:
+    def to_flag(cls: Type[EmailSendStrategy], value: int) -> bool:  # noqa: UP006
         """Return the flag for this email send enum."""
         return value == cls.PENDING
 

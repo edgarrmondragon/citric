@@ -137,17 +137,28 @@ def ty(session: nox.Session) -> None:
 @nox.session(name="docs-build", python=DOCS_PYTHON)
 def docs_build(session: nox.Session) -> None:
     """Build the documentation."""
-    args = session.posargs or ["docs", "build"]
-    if not session.posargs and FORCE_COLOR in os.environ:
+    session.install(".", "-r=requirements/docs.requirements.txt")
+
+    if os.path.exists("build"):  # noqa: PTH110
+        shutil.rmtree("build")
+
+    args = ["docs", "build"]
+    if not args and FORCE_COLOR in os.environ:
         args.insert(0, "--color")
 
-    session.install(".", "--group=docs")
-
-    build_dir = Path("build")
-    if build_dir.exists():
-        shutil.rmtree(build_dir)
-
-    session.run("sphinx-build", "-W", *args)
+    session.run(
+        "python",
+        "-m",
+        "sphinx",
+        "-T",
+        "-W",
+        "--keep-going",
+        "-b",
+        "html",
+        "-D",
+        "language=en",
+        *args,
+    )
 
 
 @nox.session(name="docs-serve", python=DOCS_PYTHON, default=False)

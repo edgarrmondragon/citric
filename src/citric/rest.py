@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from importlib import metadata
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Type  # noqa: UP035
 
 import requests
 
@@ -151,7 +151,7 @@ class RESTClient:
 
     def __exit__(
         self,
-        exc_type: type[BaseException] | None,
+        exc_type: Type[BaseException] | None,  # noqa: UP006
         exc_value: BaseException | None,
         traceback: TracebackType | None,
     ) -> None:
