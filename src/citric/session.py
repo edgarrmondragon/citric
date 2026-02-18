@@ -6,7 +6,7 @@ import json
 import logging
 import random
 from importlib import metadata
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Type  # noqa: UP035
 
 import requests
 
@@ -103,7 +103,7 @@ class Session:
         *,
         auth_plugin: str = "Authdb",
         requests_session: requests.Session | None = None,
-        json_encoder: type[json.JSONEncoder] | None = None,
+        json_encoder: Type[json.JSONEncoder] | None = None,  # noqa: UP006
     ) -> None:
         self.url = url
         self._session = requests_session or requests.session()
@@ -241,7 +241,7 @@ class Session:
 
     def __exit__(
         self,
-        exc_type: type[BaseException] | None,
+        exc_type: Type[BaseException] | None,  # noqa: UP006
         exc_value: BaseException | None,
         traceback: TracebackType | None,
     ) -> None:
