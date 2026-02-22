@@ -8,6 +8,7 @@ import io
 import json
 import operator
 import random
+import string
 import uuid
 from datetime import datetime
 from pathlib import Path
@@ -546,6 +547,29 @@ def test_import_question_answer_options(
                 opt["answer"] == expected
                 for opt, expected in zip(options, expected_texts, strict=True)
             )
+
+
+@pytest.mark.integration_test
+def test_import_question_with_attributes(
+    client: citric.Client,
+    survey_id: int,
+    faker: Faker,
+):
+    """Test that question attributes are imported correctly."""
+    group_id = client.add_group(survey_id, "Attributes Test Group")
+
+    css_class = faker.lexify("cls_??????", letters=string.ascii_lowercase)
+    q = citric.objects.Question(
+        title=faker.lexify("Q??????", letters="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"),
+        type="T",
+        l10ns={"en": citric.objects.QuestionL10n(question=faker.sentence())},
+        attributes={"cssclass": css_class},
+    )
+
+    question_id = client.import_question(q.to_lsq(), survey_id, group_id)
+
+    props = client.get_question_properties(question_id, settings=["attributes"])
+    assert props["attributes"]["cssclass"] == css_class
 
 
 @pytest.mark.integration_test
