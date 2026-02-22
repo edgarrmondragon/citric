@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import csv
+import functools
 import io
 import json
 import operator
@@ -490,6 +491,61 @@ def test_import_question_with_subquestions(
     for sq in subquestions:
         assert sq["title"] in expected
         assert sq["question"] == expected[sq["title"]]
+
+
+@pytest.mark.integration_test
+def test_import_question_answer_options(
+    client: citric.Client,
+    survey_id: int,
+    faker: Faker,
+    subtests: pytest.Subtests,
+):
+    """Test importing a list question with answer options."""
+    group_id = client.add_group(survey_id, "Answer Options Test Group")
+
+    answer_options = [
+        citric.objects.AnswerOption(
+            code=f"A{i + 1}",
+            l10ns={"en": color_en, "es": color_es},
+            sort_order=i + 1,
+        )
+        for i, (color_en, color_es) in enumerate([
+            ("red", "rojo"),
+            ("green", "verde"),
+            ("blue", "azul"),
+        ])
+    ]
+
+    q = citric.objects.Question(
+        title=faker.lexify("L??????", letters="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"),
+        type="L",
+        l10ns={
+            "en": citric.objects.QuestionL10n(question="What's your favourite colour?"),
+            "es": citric.objects.QuestionL10n(question="¿Cuál es tu color favorito?"),
+        },
+        answer_options=answer_options,
+    )
+
+    question_id = client.import_question(q.to_lsq(), survey_id, group_id)
+    get_props = functools.partial(
+        client.get_question_properties,
+        question_id,
+        settings=["answeroptions"],
+    )
+
+    for language in ["en", "es"]:
+        with subtests.test(msg=f"{language=}"):
+            props = get_props(language=language)
+            options = sorted(
+                props["answeroptions"].values(),
+                key=operator.itemgetter("order"),
+            )
+
+            expected_texts = [option.l10ns[language] for option in answer_options]
+            assert all(
+                opt["answer"] == expected
+                for opt, expected in zip(options, expected_texts, strict=True)
+            )
 
 
 @pytest.mark.integration_test
