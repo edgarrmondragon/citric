@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from importlib import metadata
 
+from citric import objects
 from citric.client import Client
 from citric.rest import RESTClient
 
@@ -12,4 +13,4 @@ __version__ = metadata.version("citric")
 
 del annotations, metadata  # noqa: RUF067
 
-__all__ = ["Client", "RESTClient"]
+__all__ = ["Client", "RESTClient", "objects"]

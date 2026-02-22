@@ -1,0 +1,5 @@
+kind: Added
+body: New `Question`, `QuestionL10n`, and `AnswerOption` classes for composing LimeSurvey questions as Python objects and importing them via `client.import_question(q.to_lsq(), ...)`
+time: 2026-02-22T00:00:00.000000-06:00
+custom:
+    Issue: "1676"

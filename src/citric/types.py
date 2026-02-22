@@ -319,7 +319,7 @@ class QuestionProperties(TypedDict, total=False):
     available_answers: Any
     """The available answers."""
 
-    answer_options: Any
+    answeroptions: Any
     """The answer options."""
 
     subquestions: Any

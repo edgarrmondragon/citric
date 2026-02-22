@@ -3,10 +3,12 @@
 from __future__ import annotations
 
 import csv
+import functools
 import io
 import json
 import operator
 import random
+import string
 import uuid
 from datetime import datetime
 from pathlib import Path
@@ -17,15 +19,16 @@ import bs4
 import pytest
 import requests.exceptions
 import semver
+from dirty_equals import IsPositiveInt
+from faker import Faker
 
 import citric
+import citric.objects
 from citric import enums
 from citric.exceptions import LimeSurveyApiError, LimeSurveyStatusError
 from citric.objects import Participant
 
 if TYPE_CHECKING:
-    from faker import Faker
-
     from citric.types import QuestionsListElement
     from tests.fixtures import MailpitClient
 
@@ -61,6 +64,19 @@ def participants(faker: Faker) -> list[dict[str, Any]]:
             "attribute_2": "Night owl",
         },
     ]
+
+
+@pytest.fixture
+def question_with_free_text(faker: Faker) -> citric.objects.Question:
+    """Create a question of free-text (T) type."""
+    return citric.objects.Question(
+        title=faker.lexify("Q??????", letters="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"),
+        type="T",
+        l10ns={
+            "en": citric.objects.QuestionL10n(question=faker.sentence()),
+            "es": citric.objects.QuestionL10n(question=Faker("es").sentence()),
+        },
+    )
 
 
 @pytest.mark.integration_test
@@ -339,6 +355,7 @@ def test_question(
     client: citric.Client,
     server_version: semver.VersionInfo,
     survey_id: int,
+    question_with_free_text: citric.objects.Question,
 ):
     """Test question methods."""
     request.applymarker(
@@ -355,25 +372,53 @@ def test_question(
 
     group_id = client.add_group(survey_id, "Test Group")
 
-    # Import a question from a lsq file
-    with Path("./examples/free_text.lsq").open("rb") as f:
-        question_id = client.import_question(f, survey_id, group_id)
+    # Import a question from a Question object
+    question_id = client.import_question(
+        question_with_free_text.to_lsq(),
+        survey_id,
+        group_id,
+    )
 
     # Get question properties
-    props = client.get_question_properties(question_id)
+    l10n_en = "en"
+    props = client.get_question_properties(question_id, language=l10n_en)
 
     # test language-specific question properties
-    assert props["question"] == "<p>Text for <strong>first question</strong></p>"
+    assert question_with_free_text.l10ns[l10n_en].question == props["question"]
     assert not props["help"]
     assert not props["script"]
     assert isinstance(props["questionl10ns"], dict)
+    assert props["questionl10ns"] == {
+        "id": IsPositiveInt(),
+        "qid": question_id,
+        "question": question_with_free_text.l10ns[l10n_en].question,
+        "help": "",
+        "script": "",
+        "language": l10n_en,
+    }
 
     assert int(props["gid"]) == group_id
     assert int(props["qid"]) == question_id
     assert int(props["sid"]) == survey_id
     assert props["type"] == "T"
-    assert props["title"] == "FREETEXTEXAMPLE"
+    assert props["title"] == question_with_free_text.title
     assert props["mandatory"] == "N"
+
+    # test with another language
+    l10n_es = "es"
+    props = client.get_question_properties(question_id, language=l10n_es)
+    assert props["question"] == question_with_free_text.l10ns[l10n_es].question
+    assert not props["help"]
+    assert not props["script"]
+    assert isinstance(props["questionl10ns"], dict)
+    assert props["questionl10ns"] == {
+        "id": IsPositiveInt(),
+        "qid": question_id,
+        "question": question_with_free_text.l10ns[l10n_es].question,
+        "help": "",
+        "script": "",
+        "language": l10n_es,
+    }
 
     # Update question properties
     response = client.set_question_properties(question_id, mandatory="Y")
@@ -389,25 +434,142 @@ def test_question(
         client.list_questions(survey_id, group_id)
 
     # Import a question from a lsq file and apply some overrides
-    with Path("./examples/free_text.lsq").open("rb") as f:
-        new_title = f"NEW{uuid.uuid4().hex[:6].upper()}"
-        new_text = f"New Text: {uuid.uuid4()}"
-        new_help = f"New Help: {uuid.uuid4()}"
-        question_id = client.import_question(
-            f,
-            survey_id,
-            group_id,
-            mandatory=True,
-            new_question_title=new_title,
-            new_question_text=new_text,
-            new_question_help=new_help,
-        )
+    new_title = f"NEW{uuid.uuid4().hex[:6].upper()}"
+    new_text = f"New Text: {uuid.uuid4()}"
+    new_help = f"New Help: {uuid.uuid4()}"
+    question_id = client.import_question(
+        question_with_free_text.to_lsq(),
+        survey_id,
+        group_id,
+        mandatory=True,
+        new_question_title=new_title,
+        new_question_text=new_text,
+        new_question_help=new_help,
+    )
 
     props = client.get_question_properties(question_id)
     assert props["question"] == new_text
     assert props["help"] == new_help
     assert props["title"] == new_title
     assert props["mandatory"] == "Y"
+
+
+@pytest.mark.integration_test
+def test_import_question_with_subquestions(
+    client: citric.Client,
+    survey_id: int,
+    faker: Faker,
+):
+    """Test importing a multiple-choice question with subquestions."""
+    group_id = client.add_group(survey_id, "Subquestion Test Group")
+
+    sq_titles = ["SQ001", "SQ002", "SQ003"]
+    sq_texts = [faker.sentence() for _ in sq_titles]
+    q = citric.objects.Question(
+        title=faker.lexify("M??????", letters="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"),
+        type="M",
+        l10ns={"en": citric.objects.QuestionL10n(question=faker.sentence())},
+        subquestions=[
+            citric.objects.Question(
+                title=title,
+                type="T",
+                l10ns={"en": citric.objects.QuestionL10n(question=text)},
+            )
+            for title, text in zip(sq_titles, sq_texts, strict=True)
+        ],
+    )
+
+    question_id = client.import_question(q.to_lsq(), survey_id, group_id)
+
+    props = client.get_question_properties(question_id, settings=["subquestions"])
+    subquestions = sorted(
+        props["subquestions"].values(),
+        key=operator.itemgetter("title"),
+    )
+
+    expected = dict(zip(sq_titles, sq_texts, strict=True))
+    assert len(subquestions) == len(sq_titles)
+    for sq in subquestions:
+        assert sq["title"] in expected
+        assert sq["question"] == expected[sq["title"]]
+
+
+@pytest.mark.integration_test
+def test_import_question_answer_options(
+    client: citric.Client,
+    survey_id: int,
+    faker: Faker,
+    subtests: pytest.Subtests,
+):
+    """Test importing a list question with answer options."""
+    group_id = client.add_group(survey_id, "Answer Options Test Group")
+
+    answer_options = [
+        citric.objects.AnswerOption(
+            code=f"A{i + 1}",
+            l10ns={"en": color_en, "es": color_es},
+            sort_order=i + 1,
+        )
+        for i, (color_en, color_es) in enumerate([
+            ("red", "rojo"),
+            ("green", "verde"),
+            ("blue", "azul"),
+        ])
+    ]
+
+    q = citric.objects.Question(
+        title=faker.lexify("L??????", letters="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"),
+        type="L",
+        l10ns={
+            "en": citric.objects.QuestionL10n(question="What's your favourite colour?"),
+            "es": citric.objects.QuestionL10n(question="¿Cuál es tu color favorito?"),
+        },
+        answer_options=answer_options,
+    )
+
+    question_id = client.import_question(q.to_lsq(), survey_id, group_id)
+    get_props = functools.partial(
+        client.get_question_properties,
+        question_id,
+        settings=["answeroptions"],
+    )
+
+    for language in ["en", "es"]:
+        with subtests.test(msg=f"{language=}"):
+            props = get_props(language=language)
+            options = sorted(
+                props["answeroptions"].values(),
+                key=operator.itemgetter("order"),
+            )
+
+            expected_texts = [option.l10ns[language] for option in answer_options]
+            assert all(
+                opt["answer"] == expected
+                for opt, expected in zip(options, expected_texts, strict=True)
+            )
+
+
+@pytest.mark.integration_test
+def test_import_question_with_attributes(
+    client: citric.Client,
+    survey_id: int,
+    faker: Faker,
+):
+    """Test that question attributes are imported correctly."""
+    group_id = client.add_group(survey_id, "Attributes Test Group")
+
+    css_class = faker.lexify("cls_??????", letters=string.ascii_lowercase)
+    q = citric.objects.Question(
+        title=faker.lexify("Q??????", letters="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"),
+        type="T",
+        l10ns={"en": citric.objects.QuestionL10n(question=faker.sentence())},
+        attributes={"cssclass": css_class},
+    )
+
+    question_id = client.import_question(q.to_lsq(), survey_id, group_id)
+
+    props = client.get_question_properties(question_id, settings=["attributes"])
+    assert props["attributes"]["cssclass"] == css_class
 
 
 @pytest.mark.integration_test
