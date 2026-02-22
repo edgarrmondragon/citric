@@ -207,18 +207,18 @@ class Question:
                 l10n_id += 1
 
 
-def _add_question_row(
-    rows_elem: ET.Element,
+def _add_base_question_fields(
+    row: ET.Element,
     qid: int,
     parent_qid: int,
+    gid: str,
     question: Question,
     order: int,
 ) -> None:
-    row = ET.SubElement(rows_elem, "row")
     _add_val(row, "qid", str(qid))
     _add_val(row, "parent_qid", str(parent_qid))
     _add_val(row, "sid", "0")
-    _add_val(row, "gid", "0")
+    _add_val(row, "gid", gid)
     _add_val(row, "type", question.type)
     _add_val(row, "title", question.title)
     _add_val(row, "preg", question.preg)
@@ -232,6 +232,17 @@ def _add_question_row(
     _add_val(row, "question_theme_name", None)
     _add_val(row, "modulename", None)
     _add_val(row, "same_script", "0")
+
+
+def _add_question_row(
+    rows_elem: ET.Element,
+    qid: int,
+    parent_qid: int,
+    question: Question,
+    order: int,
+) -> None:
+    row = ET.SubElement(rows_elem, "row")
+    _add_base_question_fields(row, qid, parent_qid, "0", question, order)
 
 
 def _add_subquestion_row(
@@ -245,23 +256,14 @@ def _add_subquestion_row(
     l10n_id: int,
 ) -> None:
     row = ET.SubElement(rows_elem, "row")
-    _add_val(row, "qid", str(qid))
-    _add_val(row, "parent_qid", str(parent_qid))
-    _add_val(row, "sid", "0")
-    _add_val(row, "gid", "1")  # must be non-zero or LimeSurvey skips the row
-    _add_val(row, "type", question.type)
-    _add_val(row, "title", question.title)
-    _add_val(row, "preg", question.preg)
-    _add_val(row, "other", "Y" if question.other else "N")
-    _add_val(row, "mandatory", "Y" if question.mandatory else "N")
-    _add_val(row, "encrypted", "Y" if question.encrypted else "N")
-    _add_val(row, "question_order", str(order))
-    _add_val(row, "scale_id", str(question.scale_id))
-    _add_val(row, "same_default", "0")
-    _add_val(row, "relevance", question.relevance)
-    _add_val(row, "question_theme_name", None)
-    _add_val(row, "modulename", None)
-    _add_val(row, "same_script", "0")
+    _add_base_question_fields(
+        row,
+        qid,
+        parent_qid,
+        "1",  # must be non-zero or LimeSurvey skips the row
+        question,
+        order,
+    )
     _add_val(row, "id", str(l10n_id))
     _add_val(row, "question", l10n.question or None)
     _add_val(row, "help", l10n.help or None)
