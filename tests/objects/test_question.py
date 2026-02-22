@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import xml.etree.ElementTree as ET  # noqa: S405
 
-from citric.survey import AnswerOption, Question, QuestionL10n
+from citric.objects import AnswerOption, Question, QuestionL10n
 
 
 def _parse(q: Question) -> ET.Element:
@@ -122,24 +122,29 @@ def test_multiple_choice_with_subquestions():
     )
     root = _parse(q)
 
+    # Only the main question goes in <questions>
     question_rows = root.findall("questions/rows/row")
-    assert len(question_rows) == 3
-
+    assert len(question_rows) == 1
     assert question_rows[0].findtext("qid") == "1"
     assert question_rows[0].findtext("parent_qid") == "0"
     assert question_rows[0].findtext("title") == "Q1"
 
-    assert question_rows[1].findtext("parent_qid") == "1"
-    assert question_rows[1].findtext("title") == "SQ001"
+    # Subquestions go in a separate <subquestions> element with embedded l10n data
+    sq_rows = root.findall("subquestions/rows/row")
+    assert len(sq_rows) == 2
+    assert sq_rows[0].findtext("parent_qid") == "1"
+    assert sq_rows[0].findtext("title") == "SQ001"
+    assert sq_rows[0].findtext("question") == "Option A"
+    assert sq_rows[0].findtext("language") == "en"
+    assert sq_rows[1].findtext("parent_qid") == "1"
+    assert sq_rows[1].findtext("title") == "SQ002"
+    assert sq_rows[1].findtext("question") == "Option B"
+    assert sq_rows[1].findtext("language") == "en"
 
-    assert question_rows[2].findtext("parent_qid") == "1"
-    assert question_rows[2].findtext("title") == "SQ002"
-
+    # <question_l10ns> contains only the main question's l10n
     l10n_rows = root.findall("question_l10ns/rows/row")
-    assert len(l10n_rows) == 3
+    assert len(l10n_rows) == 1
     assert l10n_rows[0].findtext("question") == "Which apply?"
-    assert l10n_rows[1].findtext("question") == "Option A"
-    assert l10n_rows[2].findtext("question") == "Option B"
 
     assert root.find("answers") is None
 

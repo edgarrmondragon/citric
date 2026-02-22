@@ -38,10 +38,21 @@ _QUESTION_FIELDS = [
     "scale_id",
     "same_default",
     "relevance",
+    "question_theme_name",
     "modulename",
+    "same_script",
 ]
 
 _L10N_FIELDS = ["id", "qid", "question", "help", "script", "language"]
+
+_SUBQUESTION_FIELDS = [
+    *_QUESTION_FIELDS,
+    "id",
+    "question",
+    "help",
+    "script",
+    "language",
+]
 
 _ATTR_FIELDS = ["qid", "attribute", "value", "language"]
 
@@ -108,6 +119,10 @@ class Question:
             ET.SubElement(langs_elem, "language").text = lang
 
         self._build_questions(doc)
+
+        if self.subquestions:
+            self._build_subquestions(doc)
+
         self._build_question_l10ns(doc)
 
         if self.attributes:
@@ -127,21 +142,32 @@ class Question:
         _add_fields(questions_elem, _QUESTION_FIELDS)
         rows_elem = ET.SubElement(questions_elem, "rows")
         _add_question_row(rows_elem, qid=1, parent_qid=0, question=self, order=1)
+
+    def _build_subquestions(self, doc: ET.Element) -> None:
+        subquestions_elem = ET.SubElement(doc, "subquestions")
+        _add_fields(subquestions_elem, _SUBQUESTION_FIELDS)
+        rows_elem = ET.SubElement(subquestions_elem, "rows")
+        l10n_id = 1
         for i, sq in enumerate(self.subquestions, start=2):
-            _add_question_row(rows_elem, qid=i, parent_qid=1, question=sq, order=i - 1)
+            for lang, l10n in sq.l10ns.items():
+                _add_subquestion_row(
+                    rows_elem,
+                    qid=i,
+                    parent_qid=1,
+                    question=sq,
+                    order=i - 2,
+                    lang=lang,
+                    l10n=l10n,
+                    l10n_id=l10n_id,
+                )
+                l10n_id += 1
 
     def _build_question_l10ns(self, doc: ET.Element) -> None:
         l10ns_elem = ET.SubElement(doc, "question_l10ns")
         _add_fields(l10ns_elem, _L10N_FIELDS)
         rows_elem = ET.SubElement(l10ns_elem, "rows")
-        row_id = 1
-        for lang, l10n in self.l10ns.items():
+        for row_id, (lang, l10n) in enumerate(self.l10ns.items(), start=1):
             _add_l10n_row(rows_elem, row_id=row_id, qid=1, lang=lang, l10n=l10n)
-            row_id += 1
-        for i, sq in enumerate(self.subquestions, start=2):
-            for lang, l10n in sq.l10ns.items():
-                _add_l10n_row(rows_elem, row_id=row_id, qid=i, lang=lang, l10n=l10n)
-                row_id += 1
 
     def _build_question_attributes(self, doc: ET.Element) -> None:
         attrs_elem = ET.SubElement(doc, "question_attributes")
@@ -202,7 +228,44 @@ def _add_question_row(
     _add_val(row, "scale_id", str(question.scale_id))
     _add_val(row, "same_default", "0")
     _add_val(row, "relevance", question.relevance)
+    _add_val(row, "question_theme_name", None)
     _add_val(row, "modulename", None)
+    _add_val(row, "same_script", "0")
+
+
+def _add_subquestion_row(
+    rows_elem: ET.Element,
+    qid: int,
+    parent_qid: int,
+    question: Question,
+    order: int,
+    lang: str,
+    l10n: QuestionL10n,
+    l10n_id: int,
+) -> None:
+    row = ET.SubElement(rows_elem, "row")
+    _add_val(row, "qid", str(qid))
+    _add_val(row, "parent_qid", str(parent_qid))
+    _add_val(row, "sid", "0")
+    _add_val(row, "gid", "1")  # must be non-zero or LimeSurvey skips the row
+    _add_val(row, "type", question.type)
+    _add_val(row, "title", question.title)
+    _add_val(row, "preg", question.preg)
+    _add_val(row, "other", "Y" if question.other else "N")
+    _add_val(row, "mandatory", "Y" if question.mandatory else "N")
+    _add_val(row, "encrypted", "Y" if question.encrypted else "N")
+    _add_val(row, "question_order", str(order))
+    _add_val(row, "scale_id", str(question.scale_id))
+    _add_val(row, "same_default", "0")
+    _add_val(row, "relevance", question.relevance)
+    _add_val(row, "question_theme_name", None)
+    _add_val(row, "modulename", None)
+    _add_val(row, "same_script", "0")
+    _add_val(row, "id", str(l10n_id))
+    _add_val(row, "question", l10n.question or None)
+    _add_val(row, "help", l10n.help or None)
+    _add_val(row, "script", l10n.script or None)
+    _add_val(row, "language", lang)
 
 
 def _add_l10n_row(

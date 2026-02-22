@@ -21,6 +21,7 @@ from dirty_equals import IsPositiveInt
 from faker import Faker
 
 import citric
+import citric.objects
 from citric import enums
 from citric.exceptions import LimeSurveyApiError, LimeSurveyStatusError
 from citric.objects import Participant
@@ -64,14 +65,14 @@ def participants(faker: Faker) -> list[dict[str, Any]]:
 
 
 @pytest.fixture
-def question_with_free_text(faker: Faker) -> citric.Question:
+def question_with_free_text(faker: Faker) -> citric.objects.Question:
     """Create a question of free-text (T) type."""
-    return citric.Question(
+    return citric.objects.Question(
         title=faker.lexify("Q??????", letters="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"),
         type="T",
         l10ns={
-            "en": citric.QuestionL10n(question=faker.sentence()),
-            "es": citric.QuestionL10n(question=Faker("es").sentence()),
+            "en": citric.objects.QuestionL10n(question=faker.sentence()),
+            "es": citric.objects.QuestionL10n(question=Faker("es").sentence()),
         },
     )
 
@@ -352,7 +353,7 @@ def test_question(
     client: citric.Client,
     server_version: semver.VersionInfo,
     survey_id: int,
-    question_with_free_text: citric.Question,
+    question_with_free_text: citric.objects.Question,
 ):
     """Test question methods."""
     request.applymarker(
@@ -476,15 +477,15 @@ def test_import_question_with_subquestions(
 
     sq_titles = ["SQ001", "SQ002", "SQ003"]
     sq_texts = [faker.sentence() for _ in sq_titles]
-    q = citric.Question(
+    q = citric.objects.Question(
         title=faker.lexify("M??????", letters="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"),
         type="M",
-        l10ns={"en": citric.QuestionL10n(question=faker.sentence())},
+        l10ns={"en": citric.objects.QuestionL10n(question=faker.sentence())},
         subquestions=[
-            citric.Question(
+            citric.objects.Question(
                 title=title,
                 type="T",
-                l10ns={"en": citric.QuestionL10n(question=text)},
+                l10ns={"en": citric.objects.QuestionL10n(question=text)},
             )
             for title, text in zip(sq_titles, sq_texts, strict=True)
         ],
@@ -493,9 +494,8 @@ def test_import_question_with_subquestions(
     question_id = client.import_question(q.to_lsq(), survey_id, group_id)
 
     props = client.get_question_properties(question_id, settings=["subquestions"])
-    # subquestions is {qid: {language: {merged question + l10n properties}}}
     subquestions = sorted(
-        [lang_props["en"] for lang_props in props["subquestions"].values()],
+        props["subquestions"].values(),
         key=operator.itemgetter("title"),
     )
 
