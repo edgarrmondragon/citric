@@ -452,6 +452,61 @@ def test_question(
 
 
 @pytest.mark.integration_test
+def test_import_question_with_subquestions(
+    request: pytest.FixtureRequest,
+    client: citric.Client,
+    server_version: semver.VersionInfo,
+    survey_id: int,
+    faker: Faker,
+):
+    """Test importing a multiple-choice question with subquestions."""
+    request.applymarker(
+        pytest.mark.xfail(
+            server_version < (6, 6, 4),
+            reason=(
+                "The question text property (`question`) is not available in "
+                f"LimeSurvey {server_version} < 6.6.4"
+            ),
+            raises=KeyError,
+            strict=True,
+        ),
+    )
+
+    group_id = client.add_group(survey_id, "Subquestion Test Group")
+
+    sq_titles = ["SQ001", "SQ002", "SQ003"]
+    sq_texts = [faker.sentence() for _ in sq_titles]
+    q = citric.Question(
+        title=faker.lexify("M??????", letters="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"),
+        type="M",
+        l10ns={"en": citric.QuestionL10n(question=faker.sentence())},
+        subquestions=[
+            citric.Question(
+                title=title,
+                type="T",
+                l10ns={"en": citric.QuestionL10n(question=text)},
+            )
+            for title, text in zip(sq_titles, sq_texts, strict=True)
+        ],
+    )
+
+    question_id = client.import_question(q.to_lsq(), survey_id, group_id)
+
+    props = client.get_question_properties(question_id, settings=["subquestions"])
+    # subquestions is {qid: {language: {merged question + l10n properties}}}
+    subquestions = sorted(
+        [lang_props["en"] for lang_props in props["subquestions"].values()],
+        key=operator.itemgetter("title"),
+    )
+
+    expected = dict(zip(sq_titles, sq_texts, strict=True))
+    assert len(subquestions) == len(sq_titles)
+    for sq in subquestions:
+        assert sq["title"] in expected
+        assert sq["question"] == expected[sq["title"]]
+
+
+@pytest.mark.integration_test
 def test_quota(
     request: pytest.FixtureRequest,
     client: citric.Client,
