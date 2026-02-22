@@ -454,25 +454,11 @@ def test_question(
 
 @pytest.mark.integration_test
 def test_import_question_with_subquestions(
-    request: pytest.FixtureRequest,
     client: citric.Client,
-    server_version: semver.VersionInfo,
     survey_id: int,
     faker: Faker,
 ):
     """Test importing a multiple-choice question with subquestions."""
-    request.applymarker(
-        pytest.mark.xfail(
-            server_version < (6, 6, 4),
-            reason=(
-                "The question text property (`question`) is not available in "
-                f"LimeSurvey {server_version} < 6.6.4"
-            ),
-            raises=KeyError,
-            strict=True,
-        ),
-    )
-
     group_id = client.add_group(survey_id, "Subquestion Test Group")
 
     sq_titles = ["SQ001", "SQ002", "SQ003"]
