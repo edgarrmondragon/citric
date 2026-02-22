@@ -56,7 +56,7 @@ _SUBQUESTION_FIELDS = [
 
 _ATTR_FIELDS = ["qid", "attribute", "value", "language"]
 
-_ANSWER_FIELDS = ["qid", "code", "sortorder", "assessment_value", "scale_id"]
+_ANSWER_FIELDS = ["aid", "qid", "code", "sortorder", "assessment_value", "scale_id"]
 
 _ANSWER_L10N_FIELDS = ["id", "aid", "answer", "language"]
 
@@ -192,6 +192,7 @@ class Question:
         l10n_id = 1
         for aid, option in enumerate(self.answer_options, start=1):
             row = ET.SubElement(answers_rows, "row")
+            _add_val(row, "aid", str(aid))
             _add_val(row, "qid", "1")
             _add_val(row, "code", option.code)
             _add_val(row, "sortorder", str(option.sort_order))

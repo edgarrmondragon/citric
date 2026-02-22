@@ -89,15 +89,19 @@ def test_list_question_with_answer_options():
 
     answer_rows = root.findall("answers/rows/row")
     assert len(answer_rows) == 2
+    assert answer_rows[0].findtext("aid") == "1"
     assert answer_rows[0].findtext("code") == "A1"
     assert answer_rows[0].findtext("sortorder") == "1"
+    assert answer_rows[1].findtext("aid") == "2"
     assert answer_rows[1].findtext("code") == "A2"
     assert answer_rows[1].findtext("sortorder") == "2"
 
     l10n_rows = root.findall("answer_l10ns/rows/row")
     assert len(l10n_rows) == 2
+    assert l10n_rows[0].findtext("aid") == "1"
     assert l10n_rows[0].findtext("answer") == "Yes"
     assert l10n_rows[0].findtext("language") == "en"
+    assert l10n_rows[1].findtext("aid") == "2"
     assert l10n_rows[1].findtext("answer") == "No"
 
 
