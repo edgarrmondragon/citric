@@ -26,6 +26,17 @@ def test_document_metadata():
     assert langs == ["en"]
 
 
+def test_custom_db_version():
+    """Test that the db_version parameter is reflected in the XML output."""
+    q = Question(
+        title="Q1",
+        type="T",
+        l10ns={"en": QuestionL10n(question="Hello")},
+    )
+    root = ET.parse(q.to_lsq(db_version=999)).getroot()  # noqa: S314
+    assert root.findtext("DBVersion") == "999"
+
+
 def test_simple_text_question():
     """Test a simple text question with no subquestions or answer options."""
     q = Question(
