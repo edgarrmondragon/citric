@@ -6,10 +6,11 @@ from importlib import metadata
 
 from citric.client import Client
 from citric.rest import RESTClient
+from citric.survey import AnswerOption, Question, QuestionL10n
 
 __version__ = metadata.version("citric")
 """Package version"""
 
 del annotations, metadata  # noqa: RUF067
 
-__all__ = ["Client", "RESTClient"]
+__all__ = ["AnswerOption", "Client", "Question", "QuestionL10n", "RESTClient"]
