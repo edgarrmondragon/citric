@@ -24,6 +24,7 @@ repos:
   - repo: https://github.com/python-jsonschema/check-jsonschema
     rev: 0.36.2
     hooks:
+      - id: check-citation-file-format
       - id: check-github-workflows
       - id: check-readthedocs
       - id: check-renovate
