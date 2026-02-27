@@ -117,14 +117,14 @@ class QuotaAction(StrEnum):
     TERMINATE_VISIBLE_HIDDEN = "terminate_visible_hidden"
     """Terminate after related visible and hidden questions were submitted.
 
-    .. versionadded:: NEXT_VERSION
+    .. versionadded:: 1.2.0
     .. minlimesurveyattribute:: 6.6.7
     """
 
     TERMINATE_PAGES = "terminate_pages"
     """Terminate after all page submissions.
 
-    .. versionadded:: NEXT_VERSION
+    .. versionadded:: 1.2.0
     .. minlimesurveyattribute:: 6.6.7
     """
 

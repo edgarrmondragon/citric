@@ -18,7 +18,10 @@ def to_yes_no(*, value: bool) -> YesNo:
 
 @dataclass
 class Participant:
-    """Participant data."""
+    """Participant data.
+
+    .. versionadded:: 0.7.0
+    """
 
     firstname: str
     lastname: str

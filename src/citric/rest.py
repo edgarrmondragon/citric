@@ -36,7 +36,7 @@ class RESTClient:
         password: LimeSurvey password.
         requests_session: A :py:class:`requests.Session <requests.Session>` object.
 
-    .. versionadded:: NEXT_VERSION
+    .. versionadded:: 0.10.0.post1
     """
 
     USER_AGENT = f"citric/{metadata.version('citric')}"
@@ -227,7 +227,7 @@ class RESTClient:
             ... )
             {'operationsApplied': 2}
 
-        .. versionadded:: NEXT_VERSION
+        .. versionadded:: 2.0.0
         """
         response = self.make_request(
             "PATCH",

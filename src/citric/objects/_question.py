@@ -63,7 +63,10 @@ _ANSWER_L10N_FIELDS = ["id", "aid", "answer", "language"]
 
 @dataclass(slots=True)
 class QuestionL10n:
-    """Localization data for a question in one language."""
+    """Localization data for a question in one language.
+
+    .. versionadded:: 2.1.0
+    """
 
     question: str = ""
     help: str = ""
@@ -72,7 +75,10 @@ class QuestionL10n:
 
 @dataclass(slots=True)
 class AnswerOption:
-    """A single answer option for a list or dropdown question."""
+    """A single answer option for a list or dropdown question.
+
+    .. versionadded:: 2.1.0
+    """
 
     code: str
     l10ns: dict[str, str]
@@ -85,7 +91,7 @@ class AnswerOption:
 class Question:
     """A LimeSurvey question that can export itself as an LSQ file.
 
-    .. versionadded:: NEXT_VERSION
+    .. versionadded:: 2.1.0
     """
 
     title: str
