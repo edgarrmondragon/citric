@@ -84,7 +84,7 @@ def get_tags() -> Generator[dict, None, None]:
     )
     while True:
         logger.info("Getting tags from %s", url)
-        data = requests.get(url, timeout=30).json()
+        data = requests.get(url, params={"page_size": 100}, timeout=30).json()
         yield from data["results"]
 
         url = data.get("next")
