@@ -237,3 +237,158 @@ def test_update_question_answers(
     assert sorted_answers[0]["l10ns"]["en"]["answer"] == "TOO MUCH!"
     assert sorted_answers[1]["l10ns"]["en"]["answer"] == "JAR"
     assert sorted_answers[2]["l10ns"]["en"]["answer"] == "TOO LITTLE!"
+
+
+@pytest.mark.integration_test
+def test_patch_question(
+    server_version: semver.Version,
+    request: pytest.FixtureRequest,
+    rest_client: RESTClient,
+    survey_with_question_answers: int,
+) -> None:
+    """Test patching a question's properties."""
+    if server_version <= (6, 2):
+        request.applymarker(
+            pytest.mark.xfail(
+                reason=(
+                    "At some point after 6.2, `questionGroups` changed from a dict "
+                    "to a list. We don't bother to test for older versions."
+                ),
+                raises=KeyError,
+                strict=True,
+            )
+        )
+
+    survey = rest_client.get_survey_details(survey_id=survey_with_question_answers)
+    question = survey["questionGroups"][0]["questions"][0]
+    qid = question["qid"]
+
+    result = rest_client.patch_survey(
+        survey_id=survey_with_question_answers,
+        patch_operations=[
+            {
+                "entity": "question",
+                "op": "update",
+                "id": qid,
+                "props": {"mandatory": True},
+            },
+        ],
+    )
+    assert result["operationsApplied"] == 1
+
+    updated_survey = rest_client.get_survey_details(
+        survey_id=survey_with_question_answers
+    )
+    updated_question = next(
+        q for q in updated_survey["questionGroups"][0]["questions"] if q["qid"] == qid
+    )
+    assert updated_question["mandatory"] is True
+
+
+@pytest.mark.integration_test
+def test_patch_question_l10n(
+    server_version: semver.Version,
+    request: pytest.FixtureRequest,
+    rest_client: RESTClient,
+    survey_with_question_answers: int,
+) -> None:
+    """Test patching question localizations."""
+    if server_version <= (6, 2):
+        request.applymarker(
+            pytest.mark.xfail(
+                reason=(
+                    "At some point after 6.2, `questionGroups` changed from a dict "
+                    "to a list. We don't bother to test for older versions."
+                ),
+                raises=KeyError,
+                strict=True,
+            )
+        )
+
+    survey = rest_client.get_survey_details(survey_id=survey_with_question_answers)
+    question = survey["questionGroups"][0]["questions"][0]
+    qid = question["qid"]
+    new_text = "Updated question text"
+
+    result = rest_client.patch_survey(
+        survey_id=survey_with_question_answers,
+        patch_operations=[
+            {
+                "entity": "questionL10n",
+                "op": "update",
+                "id": qid,
+                "props": {"en": {"question": new_text}},
+            },
+        ],
+    )
+    assert result["operationsApplied"] == 1
+
+    updated_survey = rest_client.get_survey_details(
+        survey_id=survey_with_question_answers
+    )
+    updated_question = next(
+        q for q in updated_survey["questionGroups"][0]["questions"] if q["qid"] == qid
+    )
+    assert updated_question["l10ns"]["en"]["question"] == new_text
+
+
+@pytest.mark.integration_test
+def test_patch_subquestions(
+    server_version: semver.Version,
+    request: pytest.FixtureRequest,
+    rest_client: RESTClient,
+    survey_with_question_answers: int,
+) -> None:
+    """Test patching subquestions."""
+    if server_version <= (6, 2):
+        request.applymarker(
+            pytest.mark.xfail(
+                reason=(
+                    "At some point after 6.2, `questionGroups` changed from a dict "
+                    "to a list. We don't bother to test for older versions."
+                ),
+                raises=KeyError,
+                strict=True,
+            )
+        )
+
+    def _subquestions(survey: dict[str, Any]) -> tuple[int | None, list]:
+        for question in survey["questionGroups"][0]["questions"]:
+            if subquestions := question.get("subquestions"):
+                return question["qid"], subquestions
+        return None, []
+
+    survey = rest_client.get_survey_details(survey_id=survey_with_question_answers)
+    qid, subquestions = _subquestions(survey)
+    assert subquestions
+
+    new_text = "First option - updated"
+
+    # Build updated props preserving all subquestions, modifying the first one
+    updated_subquestions = [
+        {**sq, "l10ns": {lang: {**l10n} for lang, l10n in sq["l10ns"].items()}}
+        for sq in subquestions
+    ]
+    updated_subquestions[0]["l10ns"]["en"]["question"] = new_text
+
+    result = rest_client.patch_survey(
+        survey_id=survey_with_question_answers,
+        patch_operations=[
+            {
+                "entity": "subquestion",
+                "op": "update",
+                "id": qid,
+                "props": {str(i): sq for i, sq in enumerate(updated_subquestions)},
+            },
+        ],
+    )
+    assert result["operationsApplied"] == 1
+
+    updated_survey = rest_client.get_survey_details(
+        survey_id=survey_with_question_answers
+    )
+    _, result_subquestions = _subquestions(updated_survey)
+    updated_first_sq = next(
+        sq for sq in result_subquestions if sq["qid"] == subquestions[0]["qid"]
+    )
+    assert updated_first_sq["l10ns"]["en"]["question"] == new_text
