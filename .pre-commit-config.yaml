@@ -76,3 +76,12 @@ repos:
     hooks:
       - id: mdformat
         exclude: \.github/pull_request_template\.md
+
+  - repo: https://github.com/henryiii/check-sdist
+    rev: v1.3.2
+    hooks:
+      - id: check-sdist
+        language: python
+        args: [--inject-junk]
+        additional_dependencies:
+          - hatchling==1.28.0
