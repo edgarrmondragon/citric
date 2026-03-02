@@ -239,6 +239,20 @@ def test_update_question_answers(
     assert sorted_answers[2]["l10ns"]["en"]["answer"] == "TOO LITTLE!"
 
 
+def _xfail(
+    condition: bool,  # noqa: FBT001
+    request: pytest.FixtureRequest,
+    *,
+    reason: str,
+    server_version: semver.Version,
+    **kwargs: Any,
+) -> None:
+    if condition:
+        kwargs.setdefault("strict", True)
+        message = f"{reason}\nCurrent server version is {server_version}."
+        request.applymarker(pytest.mark.xfail(reason=message, **kwargs))
+
+
 @pytest.mark.integration_test
 def test_patch_question(
     server_version: semver.Version,
@@ -247,17 +261,22 @@ def test_patch_question(
     survey_with_question_answers: int,
 ) -> None:
     """Test patching a question's properties."""
-    if server_version <= (6, 2):
-        request.applymarker(
-            pytest.mark.xfail(
-                reason=(
-                    "At some point after 6.2, `questionGroups` changed from a dict "
-                    "to a list. We don't bother to test for older versions."
-                ),
-                raises=KeyError,
-                strict=True,
-            )
-        )
+    _xfail(
+        server_version <= (6, 2),
+        request,
+        reason=(
+            "At some point after 6.2, `questionGroups` changed from a dict to a list. "
+            "We don't bother to test for older versions."
+        ),
+        server_version=server_version,
+        raises=KeyError,
+    )
+    _xfail(
+        (6, 15, 18) <= server_version <= (6, 15, 20),
+        request,
+        reason="PATCH for question answers is broken in 6.15.18, 6.15.19 and 6.15.20.",
+        server_version=server_version,
+    )
 
     survey = rest_client.get_survey_details(survey_id=survey_with_question_answers)
     question = survey["questionGroups"][0]["questions"][0]
@@ -293,17 +312,16 @@ def test_patch_question_l10n(
     survey_with_question_answers: int,
 ) -> None:
     """Test patching question localizations."""
-    if server_version <= (6, 2):
-        request.applymarker(
-            pytest.mark.xfail(
-                reason=(
-                    "At some point after 6.2, `questionGroups` changed from a dict "
-                    "to a list. We don't bother to test for older versions."
-                ),
-                raises=KeyError,
-                strict=True,
-            )
-        )
+    _xfail(
+        server_version <= (6, 2),
+        request,
+        reason=(
+            "At some point after 6.2, `questionGroups` changed from a dict to a list. "
+            "We don't bother to test for older versions."
+        ),
+        server_version=server_version,
+        raises=KeyError,
+    )
 
     survey = rest_client.get_survey_details(survey_id=survey_with_question_answers)
     question = survey["questionGroups"][0]["questions"][0]
@@ -340,17 +358,22 @@ def test_patch_subquestions(
     survey_with_question_answers: int,
 ) -> None:
     """Test patching subquestions."""
-    if server_version <= (6, 2):
-        request.applymarker(
-            pytest.mark.xfail(
-                reason=(
-                    "At some point after 6.2, `questionGroups` changed from a dict "
-                    "to a list. We don't bother to test for older versions."
-                ),
-                raises=KeyError,
-                strict=True,
-            )
-        )
+    _xfail(
+        server_version <= (6, 2),
+        request,
+        reason=(
+            "At some point after 6.2, `questionGroups` changed from a dict to a list. "
+            "We don't bother to test for older versions."
+        ),
+        server_version=server_version,
+        raises=KeyError,
+    )
+    _xfail(
+        (6, 15, 18) <= server_version <= (6, 15, 20),
+        request,
+        reason="PATCH for question answers is broken in 6.15.18, 6.15.19 and 6.15.20.",
+        server_version=server_version,
+    )
 
     def _subquestions(survey: dict[str, Any]) -> tuple[int | None, list]:
         for question in survey["questionGroups"][0]["questions"]:
