@@ -70,6 +70,20 @@ def rest_client(
             client.delete_survey(survey["sid"])
 
 
+def _xfail(
+    condition: bool,  # noqa: FBT001
+    request: pytest.FixtureRequest,
+    *,
+    reason: str,
+    server_version: semver.Version,
+    **kwargs: Any,
+) -> None:
+    if condition:
+        kwargs.setdefault("strict", True)
+        message = f"{reason}\nCurrent server version is {server_version}."
+        request.applymarker(pytest.mark.xfail(reason=message, **kwargs))
+
+
 @pytest.mark.integration_test
 def test_refresh_token(
     rest_client: RESTClient,
@@ -77,17 +91,13 @@ def test_refresh_token(
     request: pytest.FixtureRequest,
 ) -> None:
     """Test refreshing the token."""
-    if server_version < (6, 6, 0):
-        request.applymarker(
-            pytest.mark.xfail(
-                reason=(
-                    "The REST API does not support refreshing the token in "
-                    "LimeSurvey < 6.6.0"
-                ),
-                raises=requests.exceptions.HTTPError,
-                strict=True,
-            )
-        )
+    _xfail(
+        server_version < (6, 6, 0),
+        request,
+        reason="The REST API does not support refreshing a token in LimeSurvey < 6.6.0",
+        raises=requests.exceptions.HTTPError,
+        server_version=server_version,
+    )
     session_id = rest_client.session_id
     rest_client.refresh_token()
     assert session_id != rest_client.session_id
@@ -118,18 +128,12 @@ def test_patch_survey_details(
     survey_id: int,
 ) -> None:
     """Test getting surveys."""
-    if (6, 15, 0) <= server_version < (6, 15, 2):
-        request.applymarker(
-            pytest.mark.xfail(
-                reason=(
-                    "Saving survey details is broken in `6.15.0` and "
-                    "`6.15.1`. "
-                    f"The current server version is {server_version}."
-                ),
-                strict=True,
-            )
-        )
-
+    _xfail(
+        (6, 15, 0) <= server_version < (6, 15, 2),
+        request,
+        reason="Saving survey details is broken in `6.15.0` and `6.15.1`.",
+        server_version=server_version,
+    )
     original = rest_client.get_survey_details(survey_id=survey_id)
     anonymized = original["anonymized"]
     token_length = original["tokenLength"]
@@ -160,37 +164,45 @@ def test_patch_survey_details(
     assert updated["tokenLength"] == token_length + 10
 
 
+@pytest.fixture
+def ls_62_format_change(
+    request: pytest.FixtureRequest,
+    server_version: semver.Version,
+) -> None:
+    """Xfail tests affected by the format change in LimeSurvey 6.2."""
+    _xfail(
+        server_version <= (6, 2),
+        request,
+        reason=(
+            "At some point after 6.2, `questionGroups` changed from a dict to a list. "
+            "We don't bother to test for older versions."
+        ),
+        server_version=server_version,
+        raises=KeyError,
+    )
+
+
+@pytest.fixture
+def ls_61518_patch_issue(
+    request: pytest.FixtureRequest,
+    server_version: semver.Version,
+) -> None:
+    """XFail tests affected by the PATCH issue in LimeSurvey 6.15.18-6.15.20."""
+    _xfail(
+        (6, 15, 18) <= server_version <= (6, 15, 20),
+        request,
+        reason="PATCH for question answers is broken in 6.15.18, 6.15.19 and 6.15.20.",
+        server_version=server_version,
+    )
+
+
+@pytest.mark.usefixtures("ls_62_format_change", "ls_61518_patch_issue")
 @pytest.mark.integration_test
 def test_update_question_answers(
-    server_version: semver.Version,
-    request: pytest.FixtureRequest,
     rest_client: RESTClient,
     survey_with_question_answers: int,
 ) -> None:
     """Test updating question answers."""
-    if server_version <= (6, 2):
-        request.applymarker(
-            pytest.mark.xfail(
-                reason=(
-                    "At some point after 6.2, `questionGroups` changed from a dict "
-                    "to a list. We don't bother to test for older versions."
-                ),
-                raises=KeyError,
-                strict=True,
-            )
-        )
-
-    if (6, 15, 18) <= server_version <= (6, 15, 20):
-        request.applymarker(
-            pytest.mark.xfail(
-                reason=(
-                    "PATCH for question answers is broken in 6.15.18, "
-                    "6.15.19 and 6.15.20. "
-                    f"The current server version is {server_version}."
-                ),
-                strict=True,
-            )
-        )
 
     def _question_answers(survey: dict[str, Any]) -> tuple[int | None, list]:
         for question in survey["questionGroups"][0]["questions"]:
@@ -239,45 +251,13 @@ def test_update_question_answers(
     assert sorted_answers[2]["l10ns"]["en"]["answer"] == "TOO LITTLE!"
 
 
-def _xfail(
-    condition: bool,  # noqa: FBT001
-    request: pytest.FixtureRequest,
-    *,
-    reason: str,
-    server_version: semver.Version,
-    **kwargs: Any,
-) -> None:
-    if condition:
-        kwargs.setdefault("strict", True)
-        message = f"{reason}\nCurrent server version is {server_version}."
-        request.applymarker(pytest.mark.xfail(reason=message, **kwargs))
-
-
+@pytest.mark.usefixtures("ls_62_format_change", "ls_61518_patch_issue")
 @pytest.mark.integration_test
 def test_patch_question(
-    server_version: semver.Version,
-    request: pytest.FixtureRequest,
     rest_client: RESTClient,
     survey_with_question_answers: int,
 ) -> None:
     """Test patching a question's properties."""
-    _xfail(
-        server_version <= (6, 2),
-        request,
-        reason=(
-            "At some point after 6.2, `questionGroups` changed from a dict to a list. "
-            "We don't bother to test for older versions."
-        ),
-        server_version=server_version,
-        raises=KeyError,
-    )
-    _xfail(
-        (6, 15, 18) <= server_version <= (6, 15, 20),
-        request,
-        reason="PATCH for question answers is broken in 6.15.18, 6.15.19 and 6.15.20.",
-        server_version=server_version,
-    )
-
     survey = rest_client.get_survey_details(survey_id=survey_with_question_answers)
     question = survey["questionGroups"][0]["questions"][0]
     qid = question["qid"]
@@ -304,25 +284,13 @@ def test_patch_question(
     assert updated_question["mandatory"] is True
 
 
+@pytest.mark.usefixtures("ls_62_format_change")
 @pytest.mark.integration_test
 def test_patch_question_l10n(
-    server_version: semver.Version,
-    request: pytest.FixtureRequest,
     rest_client: RESTClient,
     survey_with_question_answers: int,
 ) -> None:
     """Test patching question localizations."""
-    _xfail(
-        server_version <= (6, 2),
-        request,
-        reason=(
-            "At some point after 6.2, `questionGroups` changed from a dict to a list. "
-            "We don't bother to test for older versions."
-        ),
-        server_version=server_version,
-        raises=KeyError,
-    )
-
     survey = rest_client.get_survey_details(survey_id=survey_with_question_answers)
     question = survey["questionGroups"][0]["questions"][0]
     qid = question["qid"]
@@ -350,30 +318,13 @@ def test_patch_question_l10n(
     assert updated_question["l10ns"]["en"]["question"] == new_text
 
 
+@pytest.mark.usefixtures("ls_62_format_change", "ls_61518_patch_issue")
 @pytest.mark.integration_test
 def test_patch_subquestions(
-    server_version: semver.Version,
-    request: pytest.FixtureRequest,
     rest_client: RESTClient,
     survey_with_question_answers: int,
 ) -> None:
     """Test patching subquestions."""
-    _xfail(
-        server_version <= (6, 2),
-        request,
-        reason=(
-            "At some point after 6.2, `questionGroups` changed from a dict to a list. "
-            "We don't bother to test for older versions."
-        ),
-        server_version=server_version,
-        raises=KeyError,
-    )
-    _xfail(
-        (6, 15, 18) <= server_version <= (6, 15, 20),
-        request,
-        reason="PATCH for question answers is broken in 6.15.18, 6.15.19 and 6.15.20.",
-        server_version=server_version,
-    )
 
     def _subquestions(survey: dict[str, Any]) -> tuple[int | None, list]:
         for question in survey["questionGroups"][0]["questions"]:
