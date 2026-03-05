@@ -176,14 +176,14 @@ class Session:
             method: Name of the method to call.
             params: Positional arguments of the RPC method.
 
+        Returns:
+            An RPC result.
+
         Raises:
             ResponseMismatchError: Request ID does not match the response ID.
             RPCInterfaceNotEnabledError: If the JSON RPC interface is not enabled
                 (empty response).
             InvalidJSONResponseError: If the response is not valid JSON.
-
-        Returns:
-            An RPC result.
         """
         request_id = random.randint(1, 999_999)  # noqa: S311
 
