@@ -22,7 +22,7 @@ repos:
       - id: trailing-whitespace
 
   - repo: https://github.com/python-jsonschema/check-jsonschema
-    rev: 0.36.2
+    rev: 0.37.0
     hooks:
       - id: check-circle-ci
       - id: check-citation-file-format
@@ -34,13 +34,13 @@ repos:
           - pyjson5==2.0.0
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.15.2
+    rev: v0.15.5
     hooks:
       - id: ruff-check
       - id: ruff-format
 
   - repo: https://github.com/crate-ci/typos
-    rev: v1.43.5
+    rev: v1.44.0
     hooks:
       - id: typos
         args: []
@@ -52,12 +52,12 @@ repos:
         args: [--all]
 
   - repo: https://github.com/tox-dev/pyproject-fmt
-    rev: v2.16.1
+    rev: v2.16.2
     hooks:
       - id: pyproject-fmt
 
   - repo: https://github.com/astral-sh/uv-pre-commit
-    rev: 0.10.4
+    rev: 0.10.9
     hooks:
       - id: pip-compile
         files: |
@@ -78,10 +78,10 @@ repos:
         exclude: \.github/pull_request_template\.md
 
   - repo: https://github.com/henryiii/check-sdist
-    rev: v1.3.2
+    rev: v1.4.0
     hooks:
       - id: check-sdist
         language: python
         args: [--inject-junk]
         additional_dependencies:
-          - hatchling==1.28.0
+          - hatchling==1.29.0
