@@ -15,7 +15,7 @@ body:
     attributes:
       label: Citric Version
       description: Version of the package you are using
-      placeholder: "2.1.1"
+      placeholder: "2.1.2"
     validations:
       required: true
   - type: input
