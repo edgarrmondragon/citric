@@ -4,15 +4,15 @@ accessible-pygments==0.0.5
     # via furo
 alabaster==1.0.0
     # via sphinx
-astroid==4.1.0
+astroid==4.1.1
     # via sphinx-autoapi
 babel==2.18.0
     # via sphinx
 beautifulsoup4==4.14.3
     # via furo
-certifi==2026.1.4
+certifi==2026.2.25
     # via requests
-charset-normalizer==3.4.4
+charset-normalizer==3.4.5
     # via requests
 docutils==0.22.4
     # via
@@ -24,7 +24,7 @@ furo==2025.12.19
     # via citric (pyproject.toml:docs)
 idna==3.11
     # via requests
-imagesize==1.4.1
+imagesize==2.0.0
     # via sphinx
 jinja2==3.1.6
     # via
@@ -99,7 +99,7 @@ sphinxcontrib-qthelp==2.0.0
     # via sphinx
 sphinxcontrib-serializinghtml==2.0.0
     # via sphinx
-tabulate==0.9.0
+tabulate==0.10.0
     # via sphinx-markdown-builder
 typing-extensions==4.15.0
     # via beautifulsoup4
