@@ -770,9 +770,6 @@ class UserDetails(TypedDict, total=False):
     questionselectormode: str
     """The user preferred question type selector."""
 
-    one_time_pw: str
-    """The user one-time password."""
-
     dateformat: int
     """The user date format."""
 
