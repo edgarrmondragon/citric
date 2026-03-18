@@ -2,4 +2,4 @@ kind: Fixed
 body: 'fix: Removed `one_time_pw` from `UserDetails` typed dict since it''s only exposed by mistake in older LimeSurvey versions and it''s a security bug'
 time: 2026-03-17T22:15:14.15932-06:00
 custom:
-    Issue: "9999"
+    Issue: "1698"
