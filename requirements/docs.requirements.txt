@@ -12,7 +12,7 @@ beautifulsoup4==4.14.3
     # via furo
 certifi==2026.2.25
     # via requests
-charset-normalizer==3.4.5
+charset-normalizer==3.4.6
     # via requests
 docutils==0.22.4
     # via
@@ -75,7 +75,7 @@ sphinx==9.1.0
     #   sphinx-llm
     #   sphinx-markdown-builder
     #   sphinx-notfound-page
-sphinx-autoapi==3.7.0
+sphinx-autoapi==3.8.0
     # via citric (pyproject.toml:docs)
 sphinx-basic-ng==1.0.0b2
     # via furo
@@ -83,7 +83,7 @@ sphinx-copybutton==0.5.2
     # via citric (pyproject.toml:docs)
 sphinx-llm==0.3.0
     # via citric (pyproject.toml:docs)
-sphinx-markdown-builder==0.6.9
+sphinx-markdown-builder==0.6.10
     # via sphinx-llm
 sphinx-notfound-page==1.1.0
     # via citric (pyproject.toml:docs)
