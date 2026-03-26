@@ -109,10 +109,10 @@ def test_closed_session(
     assert session.key is None
 
     with pytest.raises(AttributeError, match=SET_PROPERTY_MESSAGE_REGEX):
-        session.key = "123456"  # type: ignore[misc]
+        session.key = "123456"  # type: ignore[misc]  # ty:ignore[invalid-assignment]
 
     with pytest.raises(AttributeError, match=SET_PROPERTY_MESSAGE_REGEX):
-        session.closed = False  # type: ignore[misc]
+        session.closed = False  # type: ignore[misc]  # ty:ignore[invalid-assignment]
 
 
 def test_empty_response(session: Session):
