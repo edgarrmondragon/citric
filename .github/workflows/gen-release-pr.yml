@@ -34,7 +34,6 @@ jobs:
     permissions:
       contents: write       # to create a github release
       pull-requests: write  # to create and update PRs
-      discussions: write    # to create a discussion
     steps:
     - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       with:
@@ -71,40 +70,62 @@ jobs:
     - name: Draft Release
       id: draft-release
       if: ${{ github.event.inputs.prerelease == '' }}
-      uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
-      with:
-        draft: true
-        body_path: ".changes/${{ steps.latest.outputs.output }}.md"
-        tag_name: ${{ steps.latest.outputs.output }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        LATEST: ${{ steps.latest.outputs.output }}
+      run: |
+        url=$(gh release create "$LATEST" \
+          --draft \
+          --notes-file ".changes/${LATEST}.md")
+        echo "url=${url}" >> "$GITHUB_OUTPUT"
 
     - uses: actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf # v2.2.1
       id: generate-token
       with:
         app-id: ${{ vars.APP_ID }}
-        private-key: ${{ secrets.APP_PRIVATE_KEY }}
+        private-key: ${{ secrets.APP_PRIVATE_KEY }} # zizmor: ignore[secrets-outside-env]
+
+    - name: Get GitHub App User ID
+      id: get-user-id
+      run: echo "user-id=$(gh api "/users/${APP_USERNAME}[bot]" --jq .id)" >> "$GITHUB_OUTPUT"
+      env:
+        GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+        APP_USERNAME: ${{ steps.generate-token.outputs.app-slug }}
+
+    - name: Configure bot user
+      env:
+        APP_USER_ID: ${{ steps.get-user-id.outputs.user-id }}
+        APP_USERNAME: ${{ steps.generate-token.outputs.app-slug }}
+      run: |
+        git config --global user.name "${APP_USERNAME}[bot]"
+        git config --global user.email "${APP_USER_ID}+${APP_USERNAME}[bot]@users.noreply.github.com"
 
     - name: Create Pull Request
-      uses: peter-evans/create-pull-request@c0f553fe549906ede9cf27b5156039d195d2ece0 # v8.1.0
-      with:
-        token: ${{ steps.generate-token.outputs.token }}
-        title: "chore: Release ${{ steps.latest.outputs.output }}"
-        branch: release/${{ steps.latest.outputs.output }}
-        commit-message: "chore: Release ${{ steps.latest.outputs.output }}"
-        body: |
-          Prepare release for `${{ steps.latest.outputs.output }}`.
+      env:
+        GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+        VERSION: ${{ steps.latest.outputs.output }}
+        DRAFT_URL: ${{ steps.draft-release.outputs.url }}
+      run: |
+        branch_name="release/${VERSION}"
 
-          Checklist:
+        git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+        git checkout -b $branch_name
+        git add .
 
-          - [ ] Check that the right version is set in all the files.
-          - [ ] Groom the changelog for wording or missing entries.
-          - [ ] Check that the integration tests table is up to date.
+        if git diff --staged --quiet; then
+          echo "No changes to commit"
+          exit 0
+        fi
 
-          [Release Draft](${{ steps.draft-release.outputs.url }})
-        reviewers: |
-          edgarrmondragon
-        assignees: |
-          edgarrmondragon
-        delete-branch: true
-        labels: Release
+        git commit -m "chore: Release ${VERSION}"
+        git fetch origin $branch_name || true
+        git push --force-with-lease origin $branch_name
+
+        echo 'Checklist:\n\n- [ ] Check that the right version is set in all the files.\n- [ ] Groom the changelog for wording or missing entries.\n- [ ] Check that the integration tests table is up to date.' > /tmp/pr-body.md
+        printf '\n\n[Release Draft](%s)' "${DRAFT_URL}" >> /tmp/pr-body.md
+
+        gh pr create \
+          --title "chore: Release ${VERSION}" \
+          --body-file /tmp/pr-body.md \
+          --base main \
+          --label Release

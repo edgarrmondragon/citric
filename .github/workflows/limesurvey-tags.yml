@@ -28,36 +28,63 @@ jobs:
     - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       with:
         persist-credentials: false
+
     - name: Install tools
       uses: ./.github/actions/install-tools
       with:
         nox-version: ${{ env.NOX_VERSION }}
         uv-version: ${{ env.UV_VERSION }}
+
     - name: Update tags
       run: ./scripts/docker_tags.py
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
     - uses: actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf # v2.2.1
       id: generate-token
       with:
         app-id: ${{ vars.APP_ID }}
-        private-key: ${{ secrets.APP_PRIVATE_KEY }}
+        private-key: ${{ secrets.APP_PRIVATE_KEY }} # zizmor: ignore[secrets-outside-env]
+
+    - name: Get GitHub App User ID
+      id: get-user-id
+      run: echo "user-id=$(gh api "/users/${APP_USERNAME}[bot]" --jq .id)" >> "$GITHUB_OUTPUT"
+      env:
+        GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+        APP_USERNAME: ${{ steps.generate-token.outputs.app-slug }}
+
+    - name: Configure bot user
+      env:
+        APP_USER_ID: ${{ steps.get-user-id.outputs.user-id }}
+        APP_USERNAME: ${{ steps.generate-token.outputs.app-slug }}
+      run: |
+        git config --global user.name "${APP_USERNAME}[bot]"
+        git config --global user.email "${APP_USER_ID}+${APP_USERNAME}[bot]@users.noreply.github.com"
+
     - name: Create Pull Request
-      uses: peter-evans/create-pull-request@c0f553fe549906ede9cf27b5156039d195d2ece0 # v8.1.0
-      with:
-        token: ${{ steps.generate-token.outputs.token }}
-        title: "chore: Update LimeSurvey Docker tags"
-        branch: docker/update-tags
-        commit-message: "chore: Update LimeSurvey Docker tags"
-        body: |
-          This PR updates the tags for the LimeSurvey Docker images.
+      env:
+        GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+      run: |
+        branch_name="docker/update-tags"
 
-          Links:
+        git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+        git checkout -b $branch_name
+        git add .
 
-          - [Docker Hub](https://hub.docker.com/r/martialblog/limesurvey/tags)
-          - [LimeSurvey tags](https://github.com/LimeSurvey/LimeSurvey/tags)
-        reviewers: |
-          edgarrmondragon
-        assignees: |
-          edgarrmondragon
-        delete-branch: true
+        if git diff --staged --quiet; then
+          echo "No changes to commit"
+          exit 0
+        fi
+
+        git commit -m "chore: Update LimeSurvey Docker tags"
+        git fetch origin $branch_name || true
+        git push --force-with-lease origin $branch_name
+
+        echo 'This PR updates the tags for the LimeSurvey Docker images.\n\nLinks:\n\n- [Docker Hub](https://hub.docker.com/r/martialblog/limesurvey/tags)\n- [LimeSurvey tags](https://github.com/LimeSurvey/LimeSurvey/tags)' > /tmp/pr-body.md
+
+        # If a PR already exists the push already updated it, so creation is skipped.
+        if ! gh pr list --head "$branch_name" --json number --jq '.[0].number' | grep -q .; then
+          gh pr create \
+            --title "chore: Update LimeSurvey Docker tags" \
+            --body-file /tmp/pr-body.md
+        fi
