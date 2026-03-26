@@ -105,7 +105,6 @@ typing = [
 
 [tool.uv]
 required-version = ">=0.9.17"
-exclude-newer = "P7D"
 preview = true
 
 [tool.ruff]
