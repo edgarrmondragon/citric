@@ -188,7 +188,7 @@ def docs_serve(session: nox.Session) -> None:
 def api_changes(session: nox.Session) -> None:
     """Check for API changes."""
     args = [
-        "griffe",
+        "griffecli",
         "check",
         "citric",
         "-s=src",
