@@ -70,9 +70,9 @@ jobs:
         id: attest
         with:
           subject-path: "./dist/citric*"
-      - uses: svenstaro/upload-release-action@b98a3b12e86552593f3e4e577ca8a62aa2f3f22b # 2.11.4
-        with:
-          file: ${{ steps.attest.outputs.bundle-path }}
-          tag: ${{ github.event.inputs.tag || github.ref }}
-          overwrite: false
-          asset_name: attestations.intoto.jsonl
+      - name: Upload attestation bundle to release
+        env:
+          FILE_PATH: ${{ steps.attest.outputs.bundle-path }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ github.event.inputs.tag || github.ref_name }}
+        run: gh release upload "$TAG" "$FILE_PATH#attestations.intoto.jsonl"
