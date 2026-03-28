@@ -205,6 +205,7 @@ per-file-ignores."tests/*" = [
   "ANN201",  # missing-return-type-undocumented-public-function
   "ARG00",   # unused-method-argument
   "C901",    # complex-structure
+  "D103",    # undocumented-public-function
   "DOC201",  # docstring-missing-returns
   "DOC402",  # docstring-missing-yields
   "PLR2004", # magic-value-comparison
@@ -212,6 +213,8 @@ per-file-ignores."tests/*" = [
   "S101",    # assert
   "S105",    # hardcoded-password-string
   "S106",    # hardcoded-password-func-arg
+  "S314",    # suspicious-xml-element-tree-usage
+  "S405",    # suspicious-xml-element-tree-usage
   "SLF001",  # private-member-access
 ]
 unfixable = [

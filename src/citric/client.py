@@ -28,7 +28,7 @@ if TYPE_CHECKING:
     from types import TracebackType
 
     from citric import types
-    from citric.objects import Participant
+    from citric.objects import Participant, Survey
 
     if sys.version_info >= (3, 11):
         from typing import Self, Unpack
@@ -1687,9 +1687,39 @@ class Client:  # noqa: PLR0904
         Returns:
             Mapping of property names to whether they were set successfully.
 
+        .. note::
+
+           Prefer :meth:`update_survey`, which accepts a
+           :class:`~citric.types.SurveyProperties` mapping directly and is
+           more amenable to static type checking.
+
         .. versionadded:: 0.0.11
         """
         return self.session.set_survey_properties(survey_id, properties)
+
+    def update_survey(
+        self,
+        survey_id: int,
+        survey: Survey,
+    ) -> dict[str, bool]:
+        """Update properties of a survey.
+
+        Type-safe alternative to :meth:`set_survey_properties` that derives the
+        properties to update from a :class:`~citric.objects.Survey` object via
+        its :meth:`~citric.objects.Survey.to_dict` method.
+
+        Calls :rpc_method:`set_survey_properties`.
+
+        Args:
+            survey_id: ID of the survey to update.
+            survey: Survey object whose properties will be applied.
+
+        Returns:
+            Mapping of property names to whether they were set successfully.
+
+        .. versionadded:: NEXT_VERSION
+        """
+        return self.session.set_survey_properties(survey_id, survey.to_dict())
 
     def upload_file_object(
         self,
