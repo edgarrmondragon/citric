@@ -7,19 +7,16 @@ import xml.etree.ElementTree as ET
 from dataclasses import dataclass, field
 
 from citric.objects._question import (
-    Question, 
-    _add_fields, 
-    _add_val, 
-    DEFAULT_DB_VERSION, 
-    _QUESTION_FIELDS, 
-    _L10N_FIELDS, 
-    _SUBQUESTION_FIELDS, 
-    _ATTR_FIELDS, 
-    _ANSWER_FIELDS, 
+    Question,
+    _add_fields,
+    _add_val,
+    DEFAULT_DB_VERSION,
+    _QUESTION_FIELDS,
+    _L10N_FIELDS,
+    _SUBQUESTION_FIELDS,
+    _ANSWER_FIELDS,
     _ANSWER_L10N_FIELDS,
-    _add_question_row,
-    _add_subquestion_row,
-    _add_l10n_row
+    _add_l10n_row,
 )
 
 _SURVEY_FIELDS = [
@@ -114,7 +111,17 @@ _SURVEY_L10N_FIELDS = [
     "attachments",
 ]
 
-_GROUP_FIELDS = ["gid", "sid", "group_name", "group_order", "description", "language", "randomization_group", "grelevance"]
+_GROUP_FIELDS = [
+    "gid",
+    "sid",
+    "group_name",
+    "group_order",
+    "description",
+    "language",
+    "randomization_group",
+    "grelevance",
+]
+
 
 @dataclass(slots=True)
 class SurveyL10n:
@@ -125,12 +132,15 @@ class SurveyL10n:
     welcometext: str = ""
     endtext: str = ""
 
+
 @dataclass(slots=True)
 class QuestionGroup:
     """A LimeSurvey question group."""
+
     title: str
     description: str = ""
     questions: list[Question] = field(default_factory=list)
+
 
 @dataclass(slots=True)
 class Survey:
@@ -163,7 +173,7 @@ class Survey:
         self._build_subquestions(doc)
         self._build_question_l10ns(doc)
         self._build_answers(doc)
-        
+
         ET.indent(doc)
         buffer = io.BytesIO()
         ET.ElementTree(doc).write(buffer, encoding="UTF-8", xml_declaration=True)
@@ -186,10 +196,10 @@ class Survey:
         elem = ET.SubElement(doc, "surveys_languagesettings")
         _add_fields(elem, _SURVEY_L10N_FIELDS)
         rows_elem = ET.SubElement(elem, "rows")
-        
+
         base_l10n = self.l10ns.get(self.language, SurveyL10n(title=self.title))
         self._add_l10n_row(rows_elem, self.language, base_l10n)
-        
+
         for lang, l10n in self.l10ns.items():
             if lang != self.language:
                 self._add_l10n_row(rows_elem, lang, l10n)
@@ -222,12 +232,13 @@ class Survey:
         questions_elem = ET.SubElement(doc, "questions")
         _add_fields(questions_elem, _QUESTION_FIELDS)
         rows_elem = ET.SubElement(questions_elem, "rows")
-        
+
         qid = 1
         for gid, group in enumerate(self.groups, start=1):
             for order, question in enumerate(group.questions, start=1):
                 row = ET.SubElement(rows_elem, "row")
                 from citric.objects._question import _add_base_question_fields
+
                 _add_base_question_fields(row, qid, 0, str(gid), question, order)
                 # Ensure we set sid in the LSS export
                 row.find("sid").text = "1"
@@ -237,7 +248,7 @@ class Survey:
         subquestions_elem = ET.SubElement(doc, "subquestions")
         _add_fields(subquestions_elem, _SUBQUESTION_FIELDS)
         rows_elem = ET.SubElement(subquestions_elem, "rows")
-        
+
         qid = 1
         sqid = 1000  # Offset to avoid conflict
         l10n_id = 1
@@ -247,6 +258,7 @@ class Survey:
                     for lang, l10n in sq.l10ns.items():
                         row = ET.SubElement(rows_elem, "row")
                         from citric.objects._question import _add_base_question_fields
+
                         _add_base_question_fields(
                             row,
                             sqid,
@@ -269,13 +281,15 @@ class Survey:
         l10ns_elem = ET.SubElement(doc, "question_l10ns")
         _add_fields(l10ns_elem, _L10N_FIELDS)
         rows_elem = ET.SubElement(l10ns_elem, "rows")
-        
+
         qid = 1
         row_id = 1
         for group in self.groups:
             for question in group.questions:
                 for lang, l10n in question.l10ns.items():
-                    _add_l10n_row(rows_elem, row_id=row_id, qid=qid, lang=lang, l10n=l10n)
+                    _add_l10n_row(
+                        rows_elem, row_id=row_id, qid=qid, lang=lang, l10n=l10n
+                    )
                     row_id += 1
                 qid += 1
 
@@ -310,4 +324,3 @@ class Survey:
                         l10n_id += 1
                     aid += 1
                 qid += 1
-
