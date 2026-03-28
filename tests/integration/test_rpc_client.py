@@ -300,6 +300,69 @@ def test_import_survey(client: citric.Client, subtests: pytest.Subtests):
 
 
 @pytest.mark.integration_test
+def test_import_survey_from_object(client: citric.Client, subtests: pytest.Subtests):
+    """Test importing a survey composed with `citric.objects.Survey`."""
+    survey = citric.objects.Survey(
+        language="en",
+        title="Composed Survey",
+        groups=[
+            citric.objects.QuestionGroup(
+                title="First group",
+                questions=[
+                    citric.objects.Question(
+                        title="Q1",
+                        type=enums.QuestionType.LONG_FREE_TEXT,
+                        l10ns={"en": citric.objects.QuestionL10n(question="Tell us")},
+                    ),
+                    citric.objects.Question(
+                        title="Q2",
+                        type=enums.QuestionType.RADIO_BUTTONS_LIST,
+                        l10ns={"en": citric.objects.QuestionL10n(question="Pick one")},
+                        attributes={"answer_order": "random"},
+                        answer_options=[
+                            citric.objects.AnswerOption(code="A1", l10ns={"en": "One"}),
+                            citric.objects.AnswerOption(code="A2", l10ns={"en": "Two"}),
+                        ],
+                    ),
+                ],
+            ),
+            citric.objects.QuestionGroup(title="Second group"),
+        ],
+    )
+
+    survey_id = client.import_survey(survey.to_lss())
+    try:
+        with subtests.test(msg="survey title"):
+            props = client.get_language_properties(survey_id)
+            assert props["surveyls_title"] == "Composed Survey"
+
+        with subtests.test(msg="groups"):
+            groups = client.list_groups(survey_id)
+            assert {g["group_name"] for g in groups} == {"First group", "Second group"}
+
+        questions = client.list_questions(survey_id)
+        with subtests.test(msg="questions"):
+            assert sorted(q["title"] for q in questions) == ["Q1", "Q2"]
+
+        with subtests.test(msg="answer options"):
+            q2 = next(q for q in questions if q["title"] == "Q2")
+            question_props = client.get_question_properties(
+                q2["qid"],
+                settings=["answeroptions"],
+            )
+            assert set(question_props["answeroptions"]) == {"A1", "A2"}
+
+        with subtests.test(msg="question attributes"):
+            question_props = client.get_question_properties(
+                q2["qid"],  # pyright: ignore[reportPossiblyUnboundVariable]
+                settings=["attributes"],
+            )
+            assert question_props["attributes"]["answer_order"] == "random"
+    finally:
+        client.delete_survey(survey_id)
+
+
+@pytest.mark.integration_test
 def test_copy_survey_destination_id(client: citric.Client, survey_id: int):
     """Test copying a survey with a destination survey ID."""
     # Copy a survey, specifying a new survey ID
