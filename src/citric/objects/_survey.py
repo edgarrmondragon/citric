@@ -16,7 +16,10 @@ from citric.objects._question import (
     _SUBQUESTION_FIELDS,
     _ANSWER_FIELDS,
     _ANSWER_L10N_FIELDS,
+    _add_question_row,
+    _add_subquestion_row,
     _add_l10n_row,
+    _add_base_question_fields
 )
 
 _SURVEY_FIELDS = [
@@ -198,13 +201,13 @@ class Survey:
         rows_elem = ET.SubElement(elem, "rows")
 
         base_l10n = self.l10ns.get(self.language, SurveyL10n(title=self.title))
-        self._add_l10n_row(rows_elem, self.language, base_l10n)
-
+        self._add_survey_l10n_row(rows_elem, self.language, base_l10n)
+        
         for lang, l10n in self.l10ns.items():
             if lang != self.language:
-                self._add_l10n_row(rows_elem, lang, l10n)
+                self._add_survey_l10n_row(rows_elem, lang, l10n)
 
-    def _add_l10n_row(self, rows_elem: ET.Element, lang: str, l10n: SurveyL10n) -> None:
+    def _add_survey_l10n_row(self, rows_elem: ET.Element, lang: str, l10n: SurveyL10n) -> None:
         row = ET.SubElement(rows_elem, "row")
         _add_val(row, "surveyls_survey_id", "1")
         _add_val(row, "surveyls_language", lang)
@@ -237,8 +240,6 @@ class Survey:
         for gid, group in enumerate(self.groups, start=1):
             for order, question in enumerate(group.questions, start=1):
                 row = ET.SubElement(rows_elem, "row")
-                from citric.objects._question import _add_base_question_fields
-
                 _add_base_question_fields(row, qid, 0, str(gid), question, order)
                 # Ensure we set sid in the LSS export
                 row.find("sid").text = "1"
@@ -257,8 +258,6 @@ class Survey:
                 for i, sq in enumerate(question.subquestions, start=1):
                     for lang, l10n in sq.l10ns.items():
                         row = ET.SubElement(rows_elem, "row")
-                        from citric.objects._question import _add_base_question_fields
-
                         _add_base_question_fields(
                             row,
                             sqid,
@@ -274,7 +273,7 @@ class Survey:
                         _add_val(row, "script", l10n.script or None)
                         _add_val(row, "language", lang)
                         l10n_id += 1
-                        sqid += 1
+                    sqid += 1
                 qid += 1
 
     def _build_question_l10ns(self, doc: ET.Element) -> None:
