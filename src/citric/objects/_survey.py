@@ -16,10 +16,8 @@ from citric.objects._question import (
     _SUBQUESTION_FIELDS,
     _ANSWER_FIELDS,
     _ANSWER_L10N_FIELDS,
-    _add_question_row,
-    _add_subquestion_row,
     _add_l10n_row,
-    _add_base_question_fields
+    _add_base_question_fields,
 )
 
 _SURVEY_FIELDS = [
@@ -202,12 +200,14 @@ class Survey:
 
         base_l10n = self.l10ns.get(self.language, SurveyL10n(title=self.title))
         self._add_survey_l10n_row(rows_elem, self.language, base_l10n)
-        
+
         for lang, l10n in self.l10ns.items():
             if lang != self.language:
                 self._add_survey_l10n_row(rows_elem, lang, l10n)
 
-    def _add_survey_l10n_row(self, rows_elem: ET.Element, lang: str, l10n: SurveyL10n) -> None:
+    def _add_survey_l10n_row(
+        self, rows_elem: ET.Element, lang: str, l10n: SurveyL10n
+    ) -> None:
         row = ET.SubElement(rows_elem, "row")
         _add_val(row, "surveyls_survey_id", "1")
         _add_val(row, "surveyls_language", lang)
