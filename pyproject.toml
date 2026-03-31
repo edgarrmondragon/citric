@@ -255,6 +255,33 @@ table_format = "long"
 extend-words.erronous = "erronous"  # This is a typo in a LimeSurvey API field name
 extend-words.intoto = "intoto"  # https://in-toto.io/
 
+[tool.mypy]
+enable_error_code = [
+  "ignore-without-code",
+  "redundant-expr",
+  "truthy-bool",
+]
+local_partial_types = true
+strict = false
+warn_no_return = true
+warn_redundant_casts = true
+warn_unreachable = true
+warn_unused_configs = true
+warn_unused_ignores = true
+overrides = [ { ignore_missing_imports = true, module = [
+  "nox.*",
+] } ]
+
+[tool.ty]
+[tool.ty.rules]
+unused-type-ignore-comment = "ignore"
+[tool.ty.src]
+include = [
+  "src",
+  "tests",
+  "docs/conf.py",
+]
+
 [tool.pytest]
 addopts = [
   "--durations=5",
@@ -300,31 +327,4 @@ parallel = true
 relative_files = true
 source = [
   "citric",
-]
-
-[tool.mypy]
-enable_error_code = [
-  "ignore-without-code",
-  "redundant-expr",
-  "truthy-bool",
-]
-local_partial_types = true
-strict = false
-warn_no_return = true
-warn_redundant_casts = true
-warn_unreachable = true
-warn_unused_configs = true
-warn_unused_ignores = true
-overrides = [ { ignore_missing_imports = true, module = [
-  "nox.*",
-] } ]
-
-[tool.ty]
-[tool.ty.rules]
-unused-type-ignore-comment = "ignore"
-[tool.ty.src]
-include = [
-  "src",
-  "tests",
-  "docs/conf.py",
 ]
