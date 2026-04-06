@@ -304,7 +304,7 @@ class Client:  # noqa: PLR0904
         self,
         survey_id: int,
         participant_ids: Sequence[int],
-    ) -> list[dict[str, Any]]:
+    ) -> dict[str, Any]:
         """Add participants to a survey.
 
         Calls :rpc_method:`delete_participants`.
@@ -314,7 +314,7 @@ class Client:  # noqa: PLR0904
             participant_ids: Participant IDs to be deleted.
 
         Returns:
-            Information of removed participants.
+            Mapping of participant token IDs to deletion status.
 
         .. versionadded:: 0.0.1
         """
