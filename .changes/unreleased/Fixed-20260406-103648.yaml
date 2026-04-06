@@ -1,0 +1,5 @@
+kind: Fixed
+body: Updated the type annotation and docstring of `delete_participants` to reflect the actual type of the returned value
+time: 2026-04-06T10:36:48.335881-06:00
+custom:
+    Issue: "1727"
