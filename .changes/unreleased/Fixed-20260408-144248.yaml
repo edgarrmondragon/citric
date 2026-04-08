@@ -1,0 +1,5 @@
+kind: Fixed
+body: Fixed typos in `SurveyProperties` fields
+time: 2026-04-08T14:42:48.213064-06:00
+custom:
+    Issue: "1711"
