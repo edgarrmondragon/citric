@@ -285,9 +285,7 @@ include = [
 [tool.pytest]
 addopts = [
   "--durations=5",
-  "-ra",              # show extra test summary info for all except passed
-  "--strict-config",
-  "--strict-markers",
+  "-ra",           # show extra test summary info for all except passed
 ]
 filterwarnings = [
   "error",
@@ -300,10 +298,10 @@ markers = [
   "xfail_mysql: Mark a test as expected to fail on MySQL",
 ]
 minversion = "9"
+strict = true
 testpaths = [
   "tests",
 ]
-xfail_strict = true
 
 [tool.coverage]
 [tool.coverage.paths]
