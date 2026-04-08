@@ -163,10 +163,36 @@ def test_survey(
     copied = client.copy_survey(survey_id, NEW_SURVEY_NAME)
     assert copied["status"] == "OK"
 
-    # Get survey properties
+    # Get default properties
     survey_props = client.get_survey_properties(survey_id)
     assert survey_props["language"] == "es"
     assert survey_props["format"] == enums.NewSurveyType.GROUP_BY_GROUP
+
+    # Update survey properties
+    response = client.set_survey_properties(
+        survey_id,
+        format=enums.NewSurveyType.ALL_ON_ONE_PAGE,
+        savetimings="N",
+        datestamp="Y",
+    )
+    assert response == {
+        "format": True,
+        "savetimings": True,
+        "datestamp": True,
+    }
+
+    # Get updated survey properties
+    survey_props = client.get_survey_properties(
+        survey_id,
+        properties=[
+            "format",
+            "savetimings",
+            "datestamp",
+        ],
+    )
+    assert survey_props["format"] == enums.NewSurveyType.ALL_ON_ONE_PAGE
+    assert survey_props["savetimings"] == "N"
+    assert survey_props["datestamp"] == "Y"
 
     matched = next(s for s in client.list_surveys() if int(s["sid"]) == survey_id)
     assert matched["surveyls_title"] == NEW_SURVEY_NAME
@@ -181,16 +207,6 @@ def test_survey(
         gsid = matched["gsid"]
         surveys_in_group = client.list_surveys(survey_group_id=gsid)
         assert all(s["gsid"] == gsid for s in surveys_in_group)
-
-    # Update survey properties
-    response = client.set_survey_properties(
-        survey_id,
-        format=enums.NewSurveyType.ALL_ON_ONE_PAGE,
-    )
-    assert response == {"format": True}
-
-    new_props = client.get_survey_properties(survey_id, properties=["format"])
-    assert new_props["format"] == enums.NewSurveyType.ALL_ON_ONE_PAGE
 
 
 @pytest.mark.integration_test

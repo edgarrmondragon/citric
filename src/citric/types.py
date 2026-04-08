@@ -474,13 +474,13 @@ class SurveyProperties(TypedDict, total=False):
     format: enums.NewSurveyType
     """The survey format."""
 
-    savetiming: YesNo
+    savetimings: YesNo
     """Whether the survey saves timing."""
 
     template: str
     """The survey template."""
 
-    datesstamp: YesNo
+    datestamp: YesNo
     """Whether the survey stamps dates."""
 
     usecookie: YesNo
