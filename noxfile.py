@@ -123,7 +123,7 @@ def mypy(session: nox.Session) -> None:
 
 @nox.session(tags=["lint", "types"])
 def ty(session: nox.Session) -> None:
-    """Type-check using mypy."""
+    """Type-check using ty."""
     args = session.posargs or locations
     session.install(".", "--group=typing")
     session.run(
