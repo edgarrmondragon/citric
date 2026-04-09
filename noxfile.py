@@ -113,7 +113,7 @@ def dependencies(session: nox.Session) -> None:
     session.run("deptry", "src", "tests", "docs")
 
 
-@nox.session(tags=["lint"])
+@nox.session(tags=["lint", "types"])
 def mypy(session: nox.Session) -> None:
     """Type-check using mypy."""
     args = session.posargs or [*locations, "noxfile.py"]
@@ -121,7 +121,7 @@ def mypy(session: nox.Session) -> None:
     session.run("mypy", *args)
 
 
-@nox.session(tags=["lint"])
+@nox.session(tags=["lint", "types"])
 def ty(session: nox.Session) -> None:
     """Type-check using mypy."""
     args = session.posargs or locations
@@ -132,6 +132,14 @@ def ty(session: nox.Session) -> None:
         f"--output-format={'github' if os.getenv('GITHUB_ACTIONS') == 'true' else 'concise'}",  # noqa: E501
         *args,
     )
+
+
+@nox.session(tags=["lint", "types"])
+def pyright(session: nox.Session) -> None:
+    """Type-check using mypy."""
+    args = session.posargs or locations
+    session.install(".", "--group=typing")
+    session.run("pyright", *args)
 
 
 @nox.session(name="docs-build", python=DOCS_PYTHON)

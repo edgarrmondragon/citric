@@ -96,6 +96,7 @@ samples = [
 typing = [
   "backports-strenum",
   "mypy>=1.9",
+  "pyright>=1.1.408",
   "sphinx",
   "ty>=0.0.1a15",
   "types-requests>=2.31.0.2",

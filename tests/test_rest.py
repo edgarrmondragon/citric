@@ -7,8 +7,8 @@ from typing import TYPE_CHECKING
 
 import pytest
 import tinydb
-import tinydb.database
 import tinydb.storages
+import tinydb.table
 from tinydb.table import Document
 from werkzeug.wrappers import Response
 
@@ -37,7 +37,7 @@ def password() -> str:
 
 
 @pytest.fixture(scope="module")
-def backend() -> tinydb.database.Table:
+def backend() -> tinydb.table.Table:
     """TinyDB backend."""
     db = tinydb.TinyDB(storage=tinydb.storages.MemoryStorage)
     surveys = db.table("surveys")

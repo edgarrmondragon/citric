@@ -1,3 +1,5 @@
+# pyright: reportTypedDictNotRequiredAccess=none
+
 """Integration tests for the REST client."""
 
 from __future__ import annotations
