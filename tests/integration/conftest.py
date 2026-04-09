@@ -1,3 +1,5 @@
+# pyright: reportTypedDictNotRequiredAccess=none
+
 """Integration tests configuration."""
 
 from __future__ import annotations
