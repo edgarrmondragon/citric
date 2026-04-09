@@ -136,7 +136,7 @@ def ty(session: nox.Session) -> None:
 
 @nox.session(tags=["lint", "types"])
 def pyright(session: nox.Session) -> None:
-    """Type-check using mypy."""
+    """Type-check using pyright."""
     args = session.posargs or locations
     session.install(".", "--group=typing")
     session.run("pyright", *args)
