@@ -50,7 +50,7 @@ class RESTClient:
         *,
         requests_session: requests.Session | None = None,
     ) -> None:
-        self.url = url
+        self.url: str = url
         self._session = requests_session or requests.session()
         self._session.headers["User-Agent"] = self.USER_AGENT
         self.__session_id: str | None = None

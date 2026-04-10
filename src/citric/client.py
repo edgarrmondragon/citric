@@ -39,7 +39,7 @@ __all__ = [
     "Client",
 ]
 
-EMAILS_SENT_STATUS_PATTERN = re.compile(r"(-?\d+) left to send")
+EMAILS_SENT_STATUS_PATTERN: re.Pattern[str] = re.compile(r"(-?\d+) left to send")
 
 
 class Client:  # noqa: PLR0904
