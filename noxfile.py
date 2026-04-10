@@ -142,6 +142,14 @@ def pyright(session: nox.Session) -> None:
     session.run("pyright", *args)
 
 
+@nox.session(tags=["lint", "types"])
+def pyrefly(session: nox.Session) -> None:
+    """Type-check using pyrefly."""
+    args = session.posargs or locations
+    session.install(".", "--group=typing")
+    session.run("pyrefly", "check", *args)
+
+
 @nox.session(name="docs-build", python=DOCS_PYTHON)
 def docs_build(session: nox.Session) -> None:
     """Build the documentation."""

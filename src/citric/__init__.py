@@ -8,7 +8,7 @@ from citric import objects
 from citric.client import Client
 from citric.rest import RESTClient
 
-__version__ = metadata.version("citric")
+__version__: str = metadata.version("citric")
 """Package version"""
 
 del annotations, metadata  # noqa: RUF067

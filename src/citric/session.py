@@ -34,7 +34,7 @@ __all__ = ["Session"]
 
 GET_SESSION_KEY = "get_session_key"
 
-logger = logging.getLogger(__name__)
+logger: logging.Logger = logging.getLogger(__name__)
 
 
 def handle_rpc_errors(result: Result, error: str | None) -> None:
@@ -105,7 +105,7 @@ class Session:
         requests_session: requests.Session | None = None,
         json_encoder: Type[json.JSONEncoder] | None = None,  # noqa: UP006
     ) -> None:
-        self.url = url
+        self.url: str = url
         self._session = requests_session or requests.session()
         self._session.headers["User-Agent"] = self.USER_AGENT
         self._encoder = json_encoder or json.JSONEncoder

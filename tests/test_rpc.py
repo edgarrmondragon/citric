@@ -20,8 +20,7 @@ from citric.exceptions import (
 )
 from citric.method import Method
 from citric.session import Session
-
-from .conftest import LimeSurveyMockAdapter
+from tests.fixtures import LimeSurveyMockAdapter
 
 if sys.version_info >= (3, 11):
     SET_PROPERTY_MESSAGE_REGEX = "property .* of 'Session' object has no setter"
