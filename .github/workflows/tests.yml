@@ -120,7 +120,7 @@ jobs:
       if: ${{ !cancelled() }}
       uses: codecov/codecov-action@57e3a136b779b570ffcdbf80b3bdc90e7fab3de2 # v6.0.0
       with:
-        token: ${{ secrets.CODECOV_TOKEN }} # zizmor: ignore[secrets-outside-env]
+        token: ${{ secrets.CODECOV_TOKEN }}
         files: tests.xml
         flags: unit-${{ matrix.os }}-${{ matrix.python-version }}
         report_type: test_results
@@ -273,7 +273,7 @@ jobs:
       if: ${{ !cancelled() }}
       uses: codecov/codecov-action@57e3a136b779b570ffcdbf80b3bdc90e7fab3de2 # v6.0.0
       with:
-        token: ${{ secrets.CODECOV_TOKEN }} # zizmor: ignore[secrets-outside-env]
+        token: ${{ secrets.CODECOV_TOKEN }}
         files: integration.xml
         flags: integration-${{ matrix.python-version }}-${{ matrix.image_tag || matrix.ref }}-${{ matrix.database }}
         report_type: test_results
@@ -339,7 +339,7 @@ jobs:
     - name: Upload coverage report
       uses: codecov/codecov-action@57e3a136b779b570ffcdbf80b3bdc90e7fab3de2 # v6.0.0
       with:
-        token: ${{ secrets.CODECOV_TOKEN }} # zizmor: ignore[secrets-outside-env]
+        token: ${{ secrets.CODECOV_TOKEN }}
         files: ./coverage.xml
         fail_ci_if_error: true
         flags: ${{ matrix.flag }}
