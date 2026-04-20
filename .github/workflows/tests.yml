@@ -110,7 +110,7 @@ jobs:
         nox --verbose -s tests -- --junit-xml=tests.xml
 
     - name: Upload coverage data
-      uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
       with:
         include-hidden-files: true
         name: "coverage-unit-${{ matrix.os }}-${{ matrix.python-version }}"
@@ -151,7 +151,7 @@ jobs:
         nox-version: ${{ env.NOX_VERSION }}
         uv-version: ${{ env.UV_VERSION }}
 
-    - uses: j178/prek-action@53276d8b0d10f8b6672aa85b4588c6921d0370cc # v2.0.1
+    - uses: j178/prek-action@cbc2f23eb5539cf20d82d1aabd0d0ecbcc56f4e3 # v2.0.2
     - run: nox -t lint
 
   docker_tags:
@@ -286,7 +286,7 @@ jobs:
 
     - name: Upload coverage data
       if: always()
-      uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
       with:
         include-hidden-files: true
         name: "coverage-integration-${{ matrix.python-version }}-${{ matrix.image_tag || env.CLEAN_REF }}-${{ matrix.database }}"
