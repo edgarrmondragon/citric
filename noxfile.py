@@ -26,7 +26,7 @@ nox.options.reuse_venv = "yes"
 
 package = "citric"
 
-python_versions = nox.project.python_versions(PYPROJECT)
+python_versions = [*nox.project.python_versions(PYPROJECT), "3.14t"]
 
 locations = "src", "tests", "docs/conf.py"
 
@@ -35,9 +35,13 @@ locations = "src", "tests", "docs/conf.py"
 @nox.parametrize("constraints", ["highest", "lowest-direct"])
 def tests(session: nox.Session, constraints: str) -> None:
     """Execute pytest tests and compute coverage."""
+    env = {"COVERAGE_CORE": "sysmon"}
     install_args = [".", "--group=test"]
     if constraints == "lowest-direct":
         install_args.append("--resolution=lowest-direct")
+
+    if session.python.endswith("t"):
+        env["PYTHON_GIL"] = "0"
 
     session.install(*install_args)
 
@@ -49,7 +53,7 @@ def tests(session: nox.Session, constraints: str) -> None:
         "-m",
         "not integration_test",
         *session.posargs,
-        env={"COVERAGE_CORE": "sysmon"},
+        env=env,
     )
 
 

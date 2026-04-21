@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import os
+import sysconfig
 from importlib.metadata import version
 
 import pytest
@@ -131,7 +132,12 @@ def pytest_report_header(config: pytest.Config) -> list[str]:
             f"LimeSurvey image tag: {config.getoption('--limesurvey-image-tag')}"
         )
 
-    return env_vars + dependencies + integration
+    lines = env_vars + dependencies + integration
+
+    if sysconfig.get_config_var("Py_GIL_DISABLED"):
+        lines.append("free-threaded Python build")
+
+    return lines
 
 
 @pytest.fixture(scope="session")
