@@ -143,43 +143,43 @@ def pytest_report_header(config: pytest.Config) -> list[str]:
 @pytest.fixture(scope="session")
 def database_type(request: pytest.FixtureRequest) -> str:
     """Database type."""
-    return request.config.getoption("--limesurvey-database-type")
+    return request.config.getoption("--limesurvey-database-type")  # pyright: ignore[reportReturnType]
 
 
 @pytest.fixture(scope="session")
 def image_tag(request: pytest.FixtureRequest) -> str:
     """LimeSurvey URL."""
-    return request.config.getoption("--limesurvey-image-tag")
+    return request.config.getoption("--limesurvey-image-tag")  # pyright: ignore[reportReturnType]
 
 
 @pytest.fixture(scope="session")
 def integration_username(request: pytest.FixtureRequest) -> str:
     """LimeSurvey username."""
-    return request.config.getoption("--limesurvey-username")
+    return request.config.getoption("--limesurvey-username")  # pyright: ignore[reportReturnType]
 
 
 @pytest.fixture(scope="session")
 def integration_password(request: pytest.FixtureRequest) -> str:
     """LimeSurvey password."""
-    return request.config.getoption("--limesurvey-password")
+    return request.config.getoption("--limesurvey-password")  # pyright: ignore[reportReturnType]
 
 
 @pytest.fixture(scope="session")
 def git_reference(request: pytest.FixtureRequest) -> str:
     """LimeSurvey git reference."""
-    return request.config.getoption("--limesurvey-git-reference")
+    return request.config.getoption("--limesurvey-git-reference")  # pyright: ignore[reportReturnType]
 
 
 @pytest.fixture(scope="session")
 def docker_context(request: pytest.FixtureRequest) -> str:
     """Docker context."""
-    return request.config.getoption("--limesurvey-docker-context")
+    return request.config.getoption("--limesurvey-docker-context")  # pyright: ignore[reportReturnType]
 
 
 @pytest.fixture(scope="session")
 def dockerfile(request: pytest.FixtureRequest) -> str:
     """Dockerfile."""
-    return request.config.getoption("--limesurvey-dockerfile")
+    return request.config.getoption("--limesurvey-dockerfile")  # pyright: ignore[reportReturnType]
 
 
 @pytest.fixture(scope="session")
