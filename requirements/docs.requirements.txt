@@ -10,7 +10,7 @@ babel==2.18.0
     # via sphinx
 beautifulsoup4==4.14.3
     # via furo
-certifi==2026.2.25
+certifi==2026.4.22
     # via requests
 charset-normalizer==3.4.7
     # via requests
@@ -22,7 +22,7 @@ docutils==0.22.4
     #   sphinx-markdown-builder
 furo==2025.12.19
     # via citric (pyproject.toml:docs)
-idna==3.11
+idna==3.13
     # via requests
 imagesize==2.0.0
     # via sphinx
@@ -43,7 +43,7 @@ mdurl==0.1.2
     # via markdown-it-py
 myst-parser==5.0.0
     # via citric (pyproject.toml:docs)
-packaging==26.1
+packaging==26.2
     # via sphinx
 pygments==2.20.0
     # via
