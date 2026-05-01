@@ -34,7 +34,7 @@ repos:
           - pyjson5==2.0.0
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.15.10
+    rev: v0.15.12
     hooks:
       - id: ruff-check
       - id: ruff-format
@@ -57,7 +57,7 @@ repos:
       - id: pyproject-fmt
 
   - repo: https://github.com/astral-sh/uv-pre-commit
-    rev: 0.11.6
+    rev: 0.11.7
     hooks:
       - id: pip-compile
         files: |
