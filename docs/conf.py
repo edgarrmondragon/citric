@@ -50,6 +50,7 @@ source_suffix = {
 
 nitpicky = True
 nitpick_ignore = {
+    ("py:class", "citric.objects._question.Question"),
     ("py:class", "citric.types.Result"),
     ("py:class", "Result"),
     ("py:class", "YesNo"),

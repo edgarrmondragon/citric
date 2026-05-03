@@ -2,13 +2,13 @@
 
 from __future__ import annotations
 
-import xml.etree.ElementTree as ET  # noqa: S405
+import xml.etree.ElementTree as ET
 
 from citric.objects import AnswerOption, Question, QuestionL10n
 
 
 def _parse(q: Question) -> ET.Element:
-    return ET.parse(q.to_lsq()).getroot()  # noqa: S314
+    return ET.parse(q.to_lsq()).getroot()
 
 
 def test_document_metadata():
@@ -33,7 +33,7 @@ def test_custom_db_version():
         type="T",
         l10ns={"en": QuestionL10n(question="Hello")},
     )
-    root = ET.parse(q.to_lsq(db_version=999)).getroot()  # noqa: S314
+    root = ET.parse(q.to_lsq(db_version=999)).getroot()
     assert root.findtext("DBVersion") == "999"
 
 
