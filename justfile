@@ -38,8 +38,9 @@ lint:
 
 # Run all default nox sessions
 nox:
-    ./noxfile.py -s
+    -./noxfile.py -s
 
+# Clean build artifacts, coverage files, and nox venvs
 clean:
     rm -rf build .coverage.* .nox/
     find . -type d -name '__pycache__' -exec rm -r {} +
