@@ -76,7 +76,7 @@ jobs:
       run: |
         url=$(gh release create "$LATEST" \
           --draft \
-          --title ${LATEST} \
+          --title "${LATEST}" \
           --notes-file ".changes/${LATEST}.md")
         echo "url=${url}" >> "$GITHUB_OUTPUT"
 
