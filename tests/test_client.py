@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING, Any
 import pytest
 
 from citric.client import Client
+from citric.objects import Survey
 from citric.session import Session
 
 if TYPE_CHECKING:
@@ -57,3 +58,16 @@ def test_invite_participants_unknown_status(client: MockClient):
     """Test invite_participants client method."""
     with pytest.raises(RuntimeError, match="Could not determine invitation status"):
         client.invite_participants(1)
+
+
+def test_update_survey(client: MockClient):
+    """update_survey delegates to set_survey_properties via Survey.to_dict()."""
+    survey = Survey(
+        language="de",
+        title="Test",
+        admin="Jane",
+        adminemail="jane@example.com",
+        format="S",
+    )
+    result: dict[str, Any] = client.update_survey(123, survey)
+    assert result["params"][1] == survey.to_dict()  # ty:ignore[not-subscriptable]
