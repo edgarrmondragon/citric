@@ -143,7 +143,7 @@ def main() -> None:
     parser.add_argument(
         "--tags-file",
         type=pathlib.Path,
-        default=pathlib.Path(".github/workflows/resources/tags.json"),
+        default=pathlib.Path(".github/tags.json"),
         help="Path to the target tags file.",
     )
     parser.add_argument(

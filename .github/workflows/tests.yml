@@ -12,8 +12,8 @@ on:
     - compose*.yaml
     - noxfile.py
     - pyproject.toml
+    - .github/tags.json
     - .github/workflows/tests.yml
-    - .github/workflows/resources/tags.json
     - .github/actions/install-tools/action.yml
   push:
     branches:
@@ -25,8 +25,8 @@ on:
     - compose*.yaml
     - noxfile.py
     - pyproject.toml
+    - .github/tags.json
     - .github/workflows/tests.yml
-    - .github/workflows/resources/tags.json
     - .github/actions/install-tools/action.yml
   schedule:
   - cron: "25 7 * * 1"
@@ -173,7 +173,7 @@ jobs:
     - name: Output tags
       id: tags
       run: |
-        echo "tags=$(cat .github/workflows/resources/tags.json | jq -c .)" >> $GITHUB_OUTPUT
+        echo "tags=$(cat .github/tags.json | jq -c .)" >> $GITHUB_OUTPUT
 
   integration:
     name: "Python ${{ matrix.python-version }} / ${{ matrix.image_tag || matrix.ref }} / ${{ matrix.database }}"
