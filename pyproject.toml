@@ -259,21 +259,21 @@ extend-words.erronous = "erronous"  # This is a typo in a LimeSurvey API field n
 extend-words.intoto = "intoto"  # https://in-toto.io/
 
 [tool.mypy]
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+local_partial_types = true
 enable_error_code = [
   "ignore-without-code",
   "redundant-expr",
   "truthy-bool",
 ]
-local_partial_types = true
 strict = false
-warn_no_return = true
-warn_redundant_casts = true
-warn_unreachable = true
 warn_unused_configs = true
-warn_unused_ignores = true
-overrides = [ { ignore_missing_imports = true, module = [
+overrides = [ { module = [
   "nox.*",
-] } ]
+], ignore_missing_imports = true } ]
 
 [tool.pyrefly]
 search-path = [ "." ]
@@ -301,8 +301,8 @@ filterwarnings = [
   "error",
 ]
 junit_suite_name = "citric"
-log_level = "INFO"
 log_cli_level = "INFO"
+log_level = "INFO"
 markers = [
   "integration_test: Integration and end-to-end tests",
   "xfail_mysql: Mark a test as expected to fail on MySQL",
