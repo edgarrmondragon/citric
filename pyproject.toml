@@ -282,8 +282,8 @@ matches = "tests/**"
 [tool.pyrefly.sub-config.errors]
 no-access = false
 
-[tool.ty]
 [tool.ty.rules]
+missing-override-decorator = "error"
 unused-type-ignore-comment = "ignore"
 [tool.ty.src]
 include = [

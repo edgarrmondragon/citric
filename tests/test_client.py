@@ -3,12 +3,18 @@
 from __future__ import annotations
 
 import datetime
+import sys
 from typing import TYPE_CHECKING, Any
 
 import pytest
 
 from citric.client import Client
 from citric.session import Session
+
+if sys.version_info >= (3, 12):
+    from typing import override
+else:
+    from typing_extensions import override
 
 if TYPE_CHECKING:
     from collections.abc import Generator
@@ -19,6 +25,7 @@ DUMMY_FILE_CONTENTS = b"FILE CONTENTS"
 class MockSession(Session):
     """Mock RPC session with some hardcoded methods for testing."""
 
+    @override
     def rpc(self, method: str, *params: Any) -> dict[str, Any]:
         """Process a mock RPC call."""
         return {"method": method, "params": [*params]}

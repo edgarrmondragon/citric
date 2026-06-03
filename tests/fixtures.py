@@ -3,10 +3,16 @@
 from __future__ import annotations
 
 import json
+import sys
 from typing import TYPE_CHECKING, Any, ClassVar
 
 import requests
 from requests.adapters import BaseAdapter
+
+if sys.version_info >= (3, 12):
+    from typing import override
+else:
+    from typing_extensions import override
 
 if TYPE_CHECKING:
     from collections.abc import Mapping
@@ -79,12 +85,13 @@ class LimeSurveyMockAdapter(BaseAdapter):
 
         return response
 
+    @override
     def send(
         self,
         request: requests.PreparedRequest,
-        stream: bool = False,  # noqa: FBT001, FBT002
+        stream: bool = False,
         timeout: float | tuple[float, float] | tuple[float, None] | None = None,
-        verify: bool | str = True,  # noqa: FBT001, FBT002
+        verify: bool | str = True,
         cert: bytes | str | tuple[bytes | str, bytes | str] | None = None,
         proxies: Mapping[str, str] | None = None,
     ):
@@ -107,5 +114,6 @@ class LimeSurveyMockAdapter(BaseAdapter):
 
         return self._handle_json_response(method, params, request_id)
 
+    @override
     def close(self) -> None:
         """Clean up adapter specific items."""

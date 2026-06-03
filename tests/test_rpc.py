@@ -27,6 +27,11 @@ if sys.version_info >= (3, 11):
 else:
     SET_PROPERTY_MESSAGE_REGEX = "can't set attribute"
 
+if sys.version_info >= (3, 12):
+    from typing import override
+else:
+    from typing_extensions import override
+
 
 class RPCOffAdapter(LimeSurveyMockAdapter):
     """Mock adapter with RPC interface turned off."""
@@ -136,7 +141,8 @@ class NotSerializable:
 class CustomJSONEncoder(json.JSONEncoder):
     """Custom JSON encoder."""
 
-    def default(self, o: object) -> object:  # noqa: D102
+    @override
+    def default(self, o: object) -> object:
         return o.value if isinstance(o, NotSerializable) else super().default(o)
 
 
