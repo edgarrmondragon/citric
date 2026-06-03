@@ -204,18 +204,6 @@ jobs:
           image_tag: "6-apache"
           database: postgres
 
-        - python-version: "3.11"
-          image_tag: "6-apache"
-          database: postgres
-
-        - python-version: "3.12"
-          image_tag: "6-apache"
-          database: postgres
-
-        - python-version: "3.13"
-          image_tag: "6-apache"
-          database: postgres
-
         - python-version: "3.14t"
           image_tag: "6-apache"
           database: postgres
