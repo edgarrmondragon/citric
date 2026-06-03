@@ -40,7 +40,11 @@ lint:
 nox:
     -./noxfile.py -s
 
+venv:
+    uv venv --clear
+    uv pip install --python .venv/bin/python --group dev -e .
+
 # Clean build artifacts, coverage files, and nox venvs
 clean:
-    rm -rf build .coverage.* .nox/
+    rm -rf build docker_tags.sqlite .coverage.* .nox/
     find . -type d -name '__pycache__' -exec rm -r {} +
