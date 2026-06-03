@@ -12,6 +12,7 @@ import operator
 import random
 import string
 import uuid
+from contextlib import contextmanager
 from datetime import datetime
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
@@ -31,11 +32,34 @@ from citric.exceptions import LimeSurveyApiError, LimeSurveyStatusError
 from citric.objects import Participant
 
 if TYPE_CHECKING:
+    from collections.abc import Generator
+
     from citric.types import QuestionsListElement
     from tests.fixtures import MailpitClient
 
 NEW_SURVEY_NAME = "New Survey"
 LS7_FIELDNAME_CHANGE_VERSION = "7.0.0-beta1"
+
+
+@contextmanager
+def assert_status_error(
+    status: str,
+    server_version: semver.Version,
+    *,
+    error_code: str | None = None,
+) -> Generator[None, None, None]:
+    """Validate an RPC status error."""
+    is_ls7 = server_version >= LS7_FIELDNAME_CHANGE_VERSION
+    message = (
+        rf"{status} \(error code: {error_code}\)"
+        if is_ls7 and error_code is not None
+        else status
+    )
+    with pytest.raises(LimeSurveyStatusError, match=message) as exc_info:
+        yield
+
+    effective_error_code = error_code if is_ls7 else None
+    assert exc_info.value.error_code == effective_error_code
 
 
 @pytest.fixture
@@ -147,11 +171,24 @@ def test_survey(
 ):
     """Test survey methods."""
     # Try to get a survey that doesn't exist
-    with pytest.raises(LimeSurveyStatusError, match="Error: Invalid survey"):
+    if server_version >= "7.0.0-alpha0":
+        expected_status = "Error: Invalid survey ID"
+    else:
+        expected_status = "Error: Invalid survey"
+
+    with assert_status_error(
+        expected_status,
+        server_version,
+        error_code="ERR_INVALID_SURVEY",
+    ):
         client.get_survey_properties(99999)
 
     # Try to delete a survey that doesn't exist
-    with pytest.raises(LimeSurveyStatusError, match="No permission"):
+    with assert_status_error(
+        "No permission",
+        server_version,
+        error_code="ERR_NO_PERMISSION",
+    ):
         client.delete_survey(99999)
 
     # Add a new survey
@@ -262,7 +299,7 @@ def test_copy_survey_destination_id(
 
 
 @pytest.mark.integration_test
-def test_group(client: citric.Client):
+def test_group(client: citric.Client, server_version: semver.Version):
     """Test group methods."""
     # Create a new survey
     survey_id = client.add_survey(1234, "New Survey", "en")
@@ -308,12 +345,20 @@ def test_group(client: citric.Client):
     new_props = client.get_group_properties(created_group, settings=["group_order"])
     assert int(new_props["group_order"]) == 1
 
-    with pytest.raises(LimeSurveyStatusError, match="Error: Invalid group ID"):
+    with assert_status_error(
+        "Error: Invalid group ID",
+        server_version,
+        error_code="ERR_INVALID_GROUP",
+    ):
         client.set_group_properties(99999, group_order=1)
 
     # Delete group
     client.delete_group(survey_id, imported_group)
-    with pytest.raises(LimeSurveyStatusError, match="Error: Invalid group ID"):
+    with assert_status_error(
+        "Error: Invalid group ID",
+        server_version,
+        error_code="ERR_INVALID_GROUP",
+    ):
         client.get_group_properties(survey_id)
 
 
@@ -449,7 +494,11 @@ def test_question(
     # Delete question
     client.delete_question(question_id)
 
-    with pytest.raises(LimeSurveyStatusError, match="No questions found"):
+    with assert_status_error(
+        "No questions found",
+        server_version,
+        error_code="ERR_NO_DATA",
+    ):
         client.list_questions(survey_id, group_id)
 
     # Import a question from a lsq file and apply some overrides
@@ -612,7 +661,11 @@ def test_quota(
         ),
     )
 
-    with pytest.raises(LimeSurveyStatusError, match="No quotas found"):
+    with assert_status_error(
+        "No quotas found",
+        server_version,
+        error_code="ERR_NO_DATA",
+    ):
         client.list_quotas(survey_id)
 
     quota_id = client.add_quota(
@@ -659,7 +712,11 @@ def test_quota(
     delete_response = client.delete_quota(quota_id)
     assert delete_response["status"] == "OK"
 
-    with pytest.raises(LimeSurveyStatusError, match="Error: Invalid quota ID"):
+    with assert_status_error(
+        "Error: Invalid quota ID",
+        server_version,
+        error_code="ERR_INVALID_QUOTA",
+    ):
         client.get_quota_properties(quota_id)
 
 
@@ -784,16 +841,24 @@ def test_activate_tokens(
 
     # LimeSurvey 6.15.4+ changed the error message
     if server_version >= (6, 15, 4):
-        expected_pattern = "Error: No survey participant list"
+        expected_status = "Error: No survey participant list"
     else:
-        expected_pattern = "No survey participants table"
+        expected_status = "No survey participants table"
 
-    with pytest.raises(LimeSurveyStatusError, match=expected_pattern):
+    with assert_status_error(
+        expected_status,
+        server_version,
+        error_code="ERR_NO_PARTICIPANT_TABLE",
+    ):
         client.list_participants(survey_id)
 
     client.activate_tokens(survey_id, [1, 2, 3, 4, 5])
 
-    with pytest.raises(LimeSurveyStatusError, match="No survey participants found"):
+    with assert_status_error(
+        "No survey participants found.",
+        server_version,
+        error_code="ERR_NO_DATA",
+    ):
         client.list_participants(survey_id)
 
 
@@ -873,6 +938,7 @@ def test_participants(
 @pytest.mark.integration_test
 def test_invite_participants(
     client: citric.Client,
+    server_version: semver.VersionInfo,
     survey_id: int,
     participants: list[dict[str, str]],
 ):
@@ -890,7 +956,11 @@ def test_invite_participants(
     pending = enums.EmailSendStrategy.PENDING
     resend = enums.EmailSendStrategy.RESEND
 
-    with pytest.raises(LimeSurveyStatusError, match="Error: No candidate tokens"):
+    with assert_status_error(
+        "Error: No candidate tokens",
+        server_version,
+        error_code="ERR_NO_DATA",
+    ):
         client.invite_participants(survey_id, strategy=resend)
 
     participant_data = client.list_participants(survey_id, attributes=["sent"])
@@ -904,7 +974,11 @@ def test_invite_participants(
     datetime.strptime(participant_data[0]["sent"], date_format)  # noqa: DTZ007
     datetime.strptime(participant_data[1]["sent"], date_format)  # noqa: DTZ007
 
-    with pytest.raises(LimeSurveyStatusError, match="Error: No candidate tokens"):
+    with assert_status_error(
+        "Error: No candidate tokens",
+        server_version,
+        error_code="ERR_NO_DATA",
+    ):
         client.invite_participants(survey_id, strategy=pending)
 
     assert client.invite_participants(survey_id, strategy=resend) == -2
@@ -1039,16 +1113,25 @@ def test_responses(
     # Delete a response and then fail to export it or update it
     client.delete_response(survey_id, 1)
 
-    with pytest.raises(LimeSurveyStatusError, match="No Response found for Token"):
+    with assert_status_error(
+        "No Response found for Token",
+        server_version,
+        error_code="ERR_NOT_FOUND",
+    ):
         client.export_responses(survey_id, token="T00000")
 
-    with pytest.raises(LimeSurveyStatusError, match="No matching Response"):
+    with assert_status_error(
+        "No matching Response",
+        server_version,
+        error_code="ERR_NOT_FOUND",
+    ):
         client.update_response(survey_id, responses[0])
 
 
 @pytest.mark.integration_test
 def test_summary(
     client: citric.Client,
+    server_version: semver.VersionInfo,
     survey_id: int,
     participants: list[dict],
     responses: list[dict],
@@ -1063,14 +1146,20 @@ def test_summary(
 
     with (
         subtests.test(msg="Invalid stat name"),
-        pytest.raises(LimeSurveyStatusError, match="Invalid summary key"),
+        assert_status_error(
+            "Invalid summary key", server_version, error_code="ERR_INVALID_PARAMETERS"
+        ),
     ):
         client.get_summary_stat(survey_id, "not_valid")  # type: ignore[arg-type]  # ty:ignore[invalid-argument-type]
 
     with subtests.test(msg="Without a participants table"):
         assert client.get_summary(survey_id) is None
 
-        with pytest.raises(LimeSurveyStatusError, match="No available data"):
+        with assert_status_error(
+            "No available data",
+            server_version,
+            error_code="ERR_NO_DATA",
+        ):
             client.get_summary_stat(survey_id, "token_count")
 
     with subtests.test(msg="Without responses"):
@@ -1086,7 +1175,11 @@ def test_summary(
         assert "completed_responses" not in summary
         assert client.get_summary_stat(survey_id, "token_count") == 2
 
-        with pytest.raises(LimeSurveyStatusError, match="No available data"):
+        with assert_status_error(
+            "No available data",
+            server_version,
+            error_code="ERR_NO_DATA",
+        ):
             client.get_summary_stat(survey_id, "completed_responses")
 
     with subtests.test(msg="With responses"):
@@ -1244,6 +1337,7 @@ def test_file_upload_no_filename(
 def test_file_upload_invalid_extension(
     client: citric.Client,
     file_upload_question: QuestionsListElement,
+    server_version: semver.VersionInfo,
     tmp_path: Path,
     faker: Faker,
 ):
@@ -1254,9 +1348,10 @@ def test_file_upload_invalid_extension(
     sid = file_upload_question["sid"]
     fieldname = client._fieldname_from_question(file_upload_question)
 
-    with pytest.raises(
-        LimeSurveyStatusError,
-        match="The extension abc is not valid\\. Valid extensions are: zip",
+    with assert_status_error(
+        "The extension abc is not valid\\. Valid extensions are: zip",
+        server_version,
+        error_code="ERR_INVALID_EXTENSION",
     ):
         client.upload_file(sid, fieldname, filepath)
 
@@ -1293,9 +1388,13 @@ def test_site_settings(client: citric.Client):
 
 
 @pytest.mark.integration_test
-def test_missing_setting(client: citric.Client):
+def test_missing_setting(client: citric.Client, server_version: semver.VersionInfo):
     """Test getting site settings."""
-    with pytest.raises(LimeSurveyStatusError, match="Invalid setting"):
+    with assert_status_error(
+        "Invalid setting",
+        server_version,
+        error_code="ERR_INVALID_SETTING",
+    ):
         client._get_site_setting("not_a_valid_setting")
 
 
@@ -1348,7 +1447,11 @@ def test_cpdb(faker: Faker, client: citric.Client):
 
 
 @pytest.mark.integration_test
-def test_users(client: citric.Client, integration_username: str):
+def test_users(
+    client: citric.Client,
+    integration_username: str,
+    server_version: semver.VersionInfo,
+):
     """Test user methods."""
     all_users = client.list_users()
     assert len(all_users) == 1
@@ -1361,10 +1464,18 @@ def test_users(client: citric.Client, integration_username: str):
     assert len(user_id) == 1
     assert int(user_id[0]["uid"]) == 1
 
-    with pytest.raises(LimeSurveyStatusError, match="Invalid username"):
+    with assert_status_error(
+        "Invalid username",
+        server_version,
+        error_code="ERR_INVALID_USER",
+    ):
         client.list_users(username="not_a_valid_username")
 
-    with pytest.raises(LimeSurveyStatusError, match=r"Invalid user (ID|id)"):
+    with assert_status_error(
+        r"Invalid user (ID|id)",
+        server_version,
+        error_code="ERR_INVALID_USER",
+    ):
         client.list_users(user_id=999999999)
 
 
@@ -1377,6 +1488,7 @@ def test_survey_groups(client: citric.Client):
 @pytest.mark.integration_test
 def test_mail_registered_participants(
     client: citric.Client,
+    server_version: semver.VersionInfo,
     survey_id: int,
     participants: list[dict[str, str]],
     mailpit: MailpitClient,
@@ -1397,10 +1509,7 @@ def test_mail_registered_participants(
     # `mail_registered_participants` returns a non-error status messages even when
     # emails are sent successfully and that violates assumptions made by this
     # library about the meaning of `status` messages
-    with pytest.raises(
-        LimeSurveyStatusError,
-        match="0 left to send",
-    ):
+    with assert_status_error("0 left to send", server_version):
         client.session.mail_registered_participants(survey_id)
 
     with subtests.test(msg="2 emails sent"):
@@ -1408,9 +1517,10 @@ def test_mail_registered_participants(
 
     mailpit.delete()
 
-    with pytest.raises(
-        LimeSurveyStatusError,
-        match="Error: No candidate tokens",
+    with assert_status_error(
+        "Error: No candidate tokens",
+        server_version,
+        error_code="ERR_NO_DATA",
     ):
         client.session.mail_registered_participants(survey_id)
 
@@ -1421,6 +1531,7 @@ def test_mail_registered_participants(
 @pytest.mark.integration_test
 def test_remind_participants(
     client: citric.Client,
+    server_version: semver.VersionInfo,
     survey_id: int,
     participants: list[dict[str, str]],
     mailpit: MailpitClient,
@@ -1449,7 +1560,7 @@ def test_remind_participants(
     # `remind_participants` returns a non-error status messages even when emails are
     # sent successfully and that violates assumptions made by this library about the
     # meaning of `status` messages"
-    with pytest.raises(LimeSurveyStatusError, match="0 left to send"):
+    with assert_status_error("0 left to send", server_version):
         client.session.remind_participants(survey_id)
 
     with subtests.test(msg="2 reminders sent"):

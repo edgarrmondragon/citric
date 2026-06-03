@@ -42,6 +42,7 @@ class LimeSurveyMockAdapter(BaseAdapter):
 
     api_error_methods = ("__api_error",)
     status_error_methods = ("__status_error",)
+    status_with_error_code_methods = ("__status_with_error_code",)
     http_error_methods = ("__http_error",)
     ok_methods = ("__ok", "release_session_key")
     status_ok_methods = ("__status_ok", "activate_tokens", "delete_survey")
@@ -66,6 +67,8 @@ class LimeSurveyMockAdapter(BaseAdapter):
             output["error"] = "API Error!"
         elif method in self.status_error_methods:
             output["result"] = {"status": "Status Error!"}
+        elif method in self.status_with_error_code_methods:
+            output["result"] = {"status": "Status Error!", "error_code": "ERR_IM_SAD"}
         elif method in self.http_error_methods:
             response.status_code = 500
         elif method in self.ok_methods:
