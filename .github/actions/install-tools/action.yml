@@ -8,6 +8,9 @@ inputs:
   uv-version:
     description: "The version of uv to install"
     required: true
+  uv-cache-suffix:
+    description: "The unique cache suffix for setup-uv"
+    required: true
 
 runs:
   using: "composite"

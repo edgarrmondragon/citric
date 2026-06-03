@@ -83,6 +83,9 @@ jobs:
         - python-version: "3.15"
           os: ubuntu-24.04
 
+        - python-version: "3.15t"
+          os: ubuntu-24.04
+
         - python-version: "3.14"
           os: windows-2025
 
@@ -107,6 +110,7 @@ jobs:
       with:
         nox-version: ${{ env.NOX_VERSION }}
         uv-version: ${{ env.UV_VERSION }}
+        uv-cache-suffix: unit
 
     - name: Run Tests
       run: |
@@ -153,6 +157,7 @@ jobs:
       with:
         nox-version: ${{ env.NOX_VERSION }}
         uv-version: ${{ env.UV_VERSION }}
+        uv-cache-suffix: lint
 
     - uses: j178/prek-action@bdca6f102f98e2b4c7029491a53dfd366469e33d # v2.0.4
     - run: nox -t lint
@@ -222,7 +227,17 @@ jobs:
 
         # Test Limesurvey/LimeSurvey branches
         - python-version: "3.14"
-          ref: refs/heads/develop
+          ref: refs/heads/develop-minor
+          context: https://github.com/martialblog/docker-limesurvey.git#master:6.0/apache
+          database: postgres
+
+        - python-version: "3.14"
+          ref: refs/heads/develop-major
+          context: https://github.com/martialblog/docker-limesurvey.git#master:6.0/apache
+          database: postgres
+
+        - python-version: "3.14"
+          ref: refs/heads/6.x
           context: https://github.com/martialblog/docker-limesurvey.git#master:6.0/apache
           database: postgres
 
@@ -249,11 +264,18 @@ jobs:
         architecture: x64
         allow-prereleases: true
 
+    - if: always()
+      env:
+        REF: ${{ matrix.ref }}
+      run: |
+        echo "CLEAN_REF=$(echo "$REF" | tr / -)" >> $GITHUB_ENV
+
     - name: Install tools
       uses: ./.github/actions/install-tools
       with:
         nox-version: ${{ env.NOX_VERSION }}
         uv-version: ${{ env.UV_VERSION }}
+        uv-cache-suffix: integration-${{ matrix.image_tag || env.CLEAN_REF }}-${{ matrix.database }}
 
     - name: Run Nox
       id: nox-integration
@@ -272,12 +294,6 @@ jobs:
         files: integration.xml
         flags: integration-${{ matrix.python-version }}-${{ matrix.image_tag || matrix.ref }}-${{ matrix.database }}
         report_type: test_results
-
-    - if: always()
-      env:
-        REF: ${{ matrix.ref }}
-      run: |
-        echo "CLEAN_REF=$(echo "$REF" | tr / -)" >> $GITHUB_ENV
 
     - name: Upload coverage data
       if: always()
@@ -315,6 +331,7 @@ jobs:
       with:
         nox-version: ${{ env.NOX_VERSION }}
         uv-version: ${{ env.UV_VERSION }}
+        uv-cache-suffix: coverage
 
     - name: Download coverage data
       uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1

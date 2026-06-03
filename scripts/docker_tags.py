@@ -45,7 +45,7 @@ logger = logging.getLogger(__name__)
 requests_cache.install_cache("docker_tags")
 
 
-def _version_parts(tag: str) -> tuple[int, int, int]:
+def _version_parts(tag: str) -> tuple[int, ...]:
     """Extract version parts from tag.
 
     Args:
@@ -137,7 +137,7 @@ def main() -> None:
     parser.add_argument(
         "--max-tags",
         type=int,
-        default=3,
+        default=1,
         help="Maximum tags to present for each version.",
     )
     parser.add_argument(
