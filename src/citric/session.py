@@ -56,7 +56,10 @@ def handle_rpc_errors(result: Result, error: str | None) -> None:
         return
 
     if result.get("status") not in {"OK", None}:
-        raise LimeSurveyStatusError(result["status"])
+        raise LimeSurveyStatusError(
+            result["status"],
+            error_code=result.get("error_code"),
+        )
 
 
 class Session:

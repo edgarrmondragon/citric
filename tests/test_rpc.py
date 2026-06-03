@@ -189,8 +189,18 @@ def test_api_error(session: Session):
 
 def test_status_error(session: Session):
     """Test result with status key raises LimeSurveyStatusError."""
-    with pytest.raises(LimeSurveyStatusError, match="Status Error!"):
+    with pytest.raises(LimeSurveyStatusError, match="Status Error!") as exc_info:
         session.__status_error()
+
+    assert exc_info.value.error_code is None
+
+    with pytest.raises(
+        LimeSurveyStatusError,
+        match=r"Status Error! \(error code: ERR_IM_SAD\)",
+    ) as exc_info:
+        session.__status_with_error_code()
+
+    assert exc_info.value.error_code == "ERR_IM_SAD"
 
 
 def test_status_ok(session: Session):

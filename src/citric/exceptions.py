@@ -21,6 +21,17 @@ class LimeSurveyError(Exception):
 class LimeSurveyStatusError(LimeSurveyError):
     """Exception raised when LimeSurvey responds with an error status."""
 
+    def __init__(self, message: str, *, error_code: str | None = None) -> None:
+        """Initialize the exception.
+
+        Args:
+            message: The status message returned by LimeSurvey.
+            error_code: The error code returned by LimeSurvey, if any.
+        """
+        msg = message if error_code is None else f"{message} (error code: {error_code})"
+        self.error_code = error_code
+        super().__init__(msg)
+
 
 class LimeSurveyApiError(LimeSurveyError):
     """Exception raised when LimeSurvey responds with a non-null error."""
