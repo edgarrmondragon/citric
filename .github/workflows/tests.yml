@@ -237,7 +237,7 @@ jobs:
           database: postgres
 
         - python-version: "3.14"
-          ref: refs/heads/6.x
+          ref: refs/heads/v6.x
           context: https://github.com/martialblog/docker-limesurvey.git#master:6.0/apache
           database: postgres
 
