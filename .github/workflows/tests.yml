@@ -87,7 +87,7 @@ jobs:
           os: windows-2025
 
         - python-version: "3.14"
-          os: macos-15
+          os: macos-26
 
     steps:
     - name: Check out the repository
