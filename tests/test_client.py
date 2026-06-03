@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, Any
 
 import pytest
 
-from citric.client import Client
+from citric.client import Client, ServerVersion
 from citric.session import Session
 
 if sys.version_info >= (3, 12):
@@ -64,3 +64,18 @@ def test_invite_participants_unknown_status(client: MockClient):
     """Test invite_participants client method."""
     with pytest.raises(RuntimeError, match="Could not determine invitation status"):
         client.invite_participants(1)
+
+
+@pytest.mark.parametrize(
+    ("raw", "parsed"),
+    [
+        ("6.1.0", ServerVersion(6, 1)),
+        ("6.5.0-dev", ServerVersion(6, 5, prerelease="dev")),
+        ("7.0.0-beta1", ServerVersion(7, prerelease="beta1")),
+        ("7.0.0-RC1", ServerVersion(7, prerelease="rc1")),
+        ("NOMATCH", ServerVersion._default()),
+    ],
+)
+def test_parse_server_version(raw: str, parsed: tuple):
+    """Test server version parsing."""
+    assert ServerVersion.parse(raw) == parsed

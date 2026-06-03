@@ -174,7 +174,7 @@ def survey_with_question_answers(
 @pytest.fixture(scope="session")
 def server_version(client: citric.Client) -> semver.Version:
     """Get the server version."""
-    return semver.Version.parse(client.get_server_version())
+    return semver.Version.parse(client.get_server_version().lower())
 
 
 @pytest.fixture

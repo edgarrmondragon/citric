@@ -5,15 +5,11 @@ from __future__ import annotations
 import base64
 import datetime
 import io
+import logging
 import re
+from dataclasses import dataclass
 from pathlib import Path
-from typing import (  # noqa: UP035
-    IO,
-    TYPE_CHECKING,
-    Any,
-    Literal,
-    Type,
-)
+from typing import IO, TYPE_CHECKING, Any, Literal
 
 import requests
 
@@ -39,7 +35,72 @@ __all__ = [
     "Client",
 ]
 
+logger: logging.Logger = logging.getLogger(__name__)
+
 EMAILS_SENT_STATUS_PATTERN: re.Pattern[str] = re.compile(r"(-?\d+) left to send")
+_SEMVER_RE = re.compile(
+    r"^(?P<major>0|[1-9]\d*)"
+    r"\.(?P<minor>0|[1-9]\d*)"
+    r"\.(?P<patch>0|[1-9]\d*)"
+    r"(?:-(?P<prerelease>[0-9a-z-]+(?:\.[0-9a-z-]+)*))?"
+    r"(?:\+(?P<build>[0-9a-z-]+(?:\.[0-9a-z-]+)*))?$"
+)
+
+
+@dataclass
+class ServerVersion:
+    """A LimeSurvey server version.
+
+    .. versionadded:: NEXT_VERSION
+    """
+
+    major: int
+    minor: int = 0
+    patch: int = 0
+    prerelease: str | None = None
+    build: str | None = None
+
+    @classmethod
+    def _default(cls) -> ServerVersion:
+        return ServerVersion(0)
+
+    @classmethod
+    def parse(cls, version: str) -> ServerVersion:
+        """Parse a string into a server version object.
+
+        Args:
+            version: A semantic version string.
+
+        Returns:
+            A server version object.
+        """
+        if m := _SEMVER_RE.match(version.lower()):
+            return cls.from_dict(m.groupdict())
+
+        logger.warning(
+            "Could not detect server version from string '%s', defaulting to '0.0.0'",
+            version,
+        )
+        return cls._default()
+
+    @classmethod
+    def from_dict(cls, d: dict[str, Any]) -> ServerVersion:
+        """Extract a dictionary's keys to create a server version object.
+
+        Args:
+            d: A dictionary with keys 'major', 'minor' and 'patch'.
+                Optionally 'prerelease' and 'build' keys can be included.
+
+        Returns:
+            A server version object.
+        """
+        return cls(
+            int(d["major"]),
+            int(d["minor"]),
+            int(d["patch"]),
+            d.get("prerelease"),
+            d.get("build"),
+        )
 
 
 class Client:  # noqa: PLR0904
@@ -80,6 +141,7 @@ class Client:  # noqa: PLR0904
             requests_session=requests_session or requests.session(),
             auth_plugin=auth_plugin,
         )
+        self.__server_version: ServerVersion | None = None
 
     def close(self) -> None:
         """Close client session."""
@@ -95,7 +157,7 @@ class Client:  # noqa: PLR0904
 
     def __exit__(
         self,
-        exc_type: Type[BaseException] | None,  # noqa: UP006
+        exc_type: type[BaseException] | None,
         exc_value: BaseException | None,
         traceback: TracebackType | None,
     ) -> None:
@@ -106,6 +168,16 @@ class Client:  # noqa: PLR0904
     def session(self) -> Session:
         """Low-level RPC session."""
         return self.__session
+
+    @property
+    def server_version(self) -> ServerVersion:
+        """LimeSurvey server version (cached).
+
+        .. versionadded:: NEXT_VERSION
+        """
+        if self.__server_version is None:
+            self.__server_version = ServerVersion.parse(self.get_server_version())
+        return self.__server_version
 
     def get_fieldmap(self, survey_id: int) -> dict[str, Any]:
         """Get fieldmap for a survey.
@@ -337,31 +409,34 @@ class Client:  # noqa: PLR0904
         """
         return {q["title"]: q for q in self.list_questions(survey_id)}
 
-    @staticmethod
+    def _fieldname_from_question(self, question: types.QuestionsListElement) -> str:
+        return (
+            f"Q{question['qid']}"
+            if self.server_version.major >= 7  # noqa: PLR2004
+            else f"{question['sid']}X{question['gid']}X{question['qid']}"
+        )
+
     def _map_response_keys(
+        self,
         response_data: Mapping[str, Any],
         question_mapping: dict[str, types.QuestionsListElement],
     ) -> dict[str, Any]:
         """Convert response keys to LimeSurvey's internal representation.
+
+        In LimeSurvey 7+, the key format changed from '<SID>X<GID>X<QID>' to
+        'Q<QID>'.
 
         Args:
             response_data: The response mapping.
             question_mapping: A mapping of question titles to question dictionaries.
 
         Returns:
-            A new dictionary with the keys mapped to the <SID>X<GID>X<QID> format.
-
-        >>> keys = {"Q1": "foo", "Q2": "bar", "BAZ": "qux"}
-        >>> q1 = {"title": "Q1", "qid": 9, "gid": 7, "sid": 123}
-        >>> q2 = {"title": "Q2", "qid": 10, "gid": 7, "sid": 123}
-        >>> questions = {"Q1": q1, "Q2": q2}
-        >>> mapped_keys = Client._map_response_keys(keys, questions)
-        >>> mapped_keys
-        {'123X7X9': 'foo', '123X7X10': 'bar', 'BAZ': 'qux'}
+            A new dictionary with the keys mapped to the Q-style or <SID>X<GID>X<QID>
+            format.
         """
         return {
             (
-                "{sid}X{gid}X{qid}".format(**question_mapping[key])
+                self._fieldname_from_question(question_mapping[key])
                 if key in question_mapping
                 else key
             ): value
@@ -394,8 +469,8 @@ class Client:  # noqa: PLR0904
 
         Args:
             survey_id: Survey to add the response to.
-            response_data: Single response as a mapping from question codes of the form
-                <SID>X<GID>X<QID> to response values.
+            response_data: Single response as a mapping from fieldnames in the Q-style
+                or <SID>X<GID>X<QID> form to response values.
 
         Returns:
             ID of the new response.
