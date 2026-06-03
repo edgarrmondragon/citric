@@ -26,6 +26,10 @@ release = citric.__version__
 # -- General configuration -------------------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
+suppress_warnings = [
+    "ref.python",  # https://github.com/sphinx-doc/sphinx/issues/14223
+]
+
 extensions = [
     # Built-in extensions
     "sphinx.ext.autodoc",

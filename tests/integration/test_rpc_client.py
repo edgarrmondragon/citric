@@ -35,6 +35,7 @@ if TYPE_CHECKING:
     from tests.fixtures import MailpitClient
 
 NEW_SURVEY_NAME = "New Survey"
+LS7_FIELDNAME_CHANGE_VERSION = "7.0.0-beta1"
 
 
 @pytest.fixture
@@ -89,7 +90,7 @@ def test_fieldmap(client: citric.Client, survey_id: int, subtests: pytest.Subtes
         with subtests.test(msg="test field", field=key):
             assert key == value["fieldname"]
             assert (
-                key == "{sid}X{gid}X{qid}".format(**value)
+                key == client._fieldname_from_question(value)
                 or not value["qid"]
                 or "_" in key
             )
@@ -1126,34 +1127,37 @@ def test_response_files(
     file_upload_question: QuestionsListElement,
     tmp_path: Path,
     faker: Faker,
+    server_version: semver.VersionInfo,
 ):
     """Test response files."""
     token = "T00000"
-    sid = file_upload_question["sid"]
-    gid = file_upload_question["gid"]
-    qid = file_upload_question["qid"]
-    field_name = f"{sid}X{gid}X{qid}"
+    fieldname = client._fieldname_from_question(file_upload_question)
 
     # Upload two files
     with io.BytesIO() as file:
         content1 = faker.zip()
         file.write(content1)
         file.seek(0)
-        result1 = client.upload_file_object(survey_id, field_name, "file1.zip", file)
+        result1 = client.upload_file_object(survey_id, fieldname, "file1.zip", file)
 
     with io.BytesIO() as file:
         content2 = faker.zip()
         file.write(content2)
         file.seek(0)
-        result2 = client.upload_file_object(survey_id, field_name, "file2.zip", file)
+        result2 = client.upload_file_object(survey_id, fieldname, "file2.zip", file)
 
     # Add a response
     response_files = [result1, result2]
+    fieldname_filecount = (
+        f"{fieldname}_filecount"
+        if server_version < LS7_FIELDNAME_CHANGE_VERSION
+        else f"{fieldname}_Cfilecount"
+    )
     responses = [
         {
             "token": token,
-            field_name: json.dumps(response_files),
-            f"{field_name}_filecount": len(response_files),
+            fieldname: json.dumps(response_files),
+            fieldname_filecount: len(response_files),
         },
     ]
     assert client.add_responses(survey_id, responses) == [1]
@@ -1200,11 +1204,9 @@ def test_file_upload(
     filepath.write_bytes(faker.zip())
 
     sid = file_upload_question["sid"]
-    gid = file_upload_question["gid"]
-    qid = file_upload_question["qid"]
-
     filename = "upload.zip"
-    result = client.upload_file(sid, f"{sid}X{gid}X{qid}", filepath, filename=filename)
+    fieldname = client._fieldname_from_question(file_upload_question)
+    result = client.upload_file(sid, fieldname, filepath, filename=filename)
     assert result["success"]
     assert result["size"] == pytest.approx(filepath.stat().st_size / 1000, rel=5e-2)
     assert result["name"] == filename
@@ -1225,10 +1227,8 @@ def test_file_upload_no_filename(
     filepath.write_bytes(faker.zip())
 
     sid = file_upload_question["sid"]
-    gid = file_upload_question["gid"]
-    qid = file_upload_question["qid"]
-
-    result_no_filename = client.upload_file(sid, f"{sid}X{gid}X{qid}", filepath)
+    fieldname = client._fieldname_from_question(file_upload_question)
+    result_no_filename = client.upload_file(sid, fieldname, filepath)
     assert result_no_filename["success"]
     assert result_no_filename["size"] == pytest.approx(
         filepath.stat().st_size / 1000,
@@ -1252,14 +1252,13 @@ def test_file_upload_invalid_extension(
     filepath.write_bytes(faker.zip())
 
     sid = file_upload_question["sid"]
-    gid = file_upload_question["gid"]
-    qid = file_upload_question["qid"]
+    fieldname = client._fieldname_from_question(file_upload_question)
 
     with pytest.raises(
         LimeSurveyStatusError,
         match="The extension abc is not valid\\. Valid extensions are: zip",
     ):
-        client.upload_file(sid, f"{sid}X{gid}X{qid}", filepath)
+        client.upload_file(sid, fieldname, filepath)
 
 
 @pytest.mark.integration_test
