@@ -126,6 +126,7 @@ def mypy(session: nox.Session) -> None:
     """Type-check using mypy."""
     args = session.posargs or [*locations, "noxfile.py"]
     session.install(".", "--group=typing")
+    session.run("mypy", "--version")
     session.run("mypy", *args)
 
 
@@ -134,6 +135,7 @@ def ty(session: nox.Session) -> None:
     """Type-check using ty."""
     args = session.posargs or locations
     session.install(".", "--group=typing")
+    session.run("ty", "--version")
     session.run(
         "ty",
         "check",
@@ -147,6 +149,7 @@ def pyright(session: nox.Session) -> None:
     """Type-check using pyright."""
     args = session.posargs or locations
     session.install(".", "--group=typing")
+    session.run("pyright", "--version")
     session.run("pyright", *args)
 
 
@@ -155,6 +158,7 @@ def pyrefly(session: nox.Session) -> None:
     """Type-check using pyrefly."""
     args = session.posargs or locations
     session.install(".", "--group=typing")
+    session.run("pyrefly", "--version")
     session.run("pyrefly", "check", *args)
 
 
