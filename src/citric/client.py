@@ -1255,8 +1255,8 @@ class Client:  # noqa: PLR0904
 
         Args:
             survey_id: Survey for which to download files.
-            token: Optional participant token to filter uploaded files.
-            response_id: Response ID.
+            token: Get the files uploaded by this response token.
+            response_id: Get the files uploaded to this response.
 
         Returns:
             Dictionary with uploaded files metadata.
@@ -1277,8 +1277,8 @@ class Client:  # noqa: PLR0904
 
         Args:
             survey_id: Survey for which to download files.
-            token: Participant token to filter uploaded files.
-            response_id: Response ID.
+            token: Get the files uploaded by this response token.
+            response_id: Get the files uploaded to this response.
 
         Yields:
             :class:`~citric.types.ReadableFile` dictionaries.
@@ -1309,8 +1309,8 @@ class Client:  # noqa: PLR0904
         Args:
             directory: Where to store the files.
             survey_id: Survey for which to download files.
-            token: Optional participant token to filter uploaded files.
-            response_id: Response ID.
+            token: Get the files uploaded by this response token.
+            response_id: Get the files uploaded to this response.
 
         Returns:
             List with the paths of downloaded files.
