@@ -34,7 +34,7 @@ from citric.objects import Participant
 if TYPE_CHECKING:
     from collections.abc import Generator
 
-    from citric.types import QuestionsListElement
+    from citric.types import QuestionsListElement, ReadableFile
     from tests.fixtures import MailpitClient
 
 NEW_SURVEY_NAME = "New Survey"
@@ -1221,6 +1221,7 @@ def test_response_files(
     tmp_path: Path,
     faker: Faker,
     server_version: semver.VersionInfo,
+    subtests: pytest.Subtests,
 ):
     """Test response files."""
     token = "T00000"
@@ -1253,28 +1254,49 @@ def test_response_files(
             fieldname_filecount: len(response_files),
         },
     ]
-    assert client.add_responses(survey_id, responses) == [1]
+    response_id, *_ = client.add_responses(survey_id, responses)
+    assert response_id == 1
 
     export = json.loads(client.export_responses(survey_id, token=token))
     assert len(export["responses"]) == 1
+    assert export["responses"][0]["id"] == response_id
     assert len(json.loads(export["responses"][0]["G02Q03"])) == 2
     assert int(export["responses"][0]["G02Q03[filecount]"]) == 2
 
-    # Get uploaded files
-    files = list(client.get_uploaded_file_objects(survey_id, token))
-    assert len(files) == 2
+    def _assert_files(files: list[ReadableFile]) -> None:
+        assert len(files) == 2
 
-    assert files[0]["meta"]["filename"] == result1["filename"]
-    assert files[0]["meta"]["size"] == result1["size"]
-    assert files[0]["meta"]["ext"] == result1["ext"]
-    assert files[0]["meta"]["name"] == result1["name"]
-    assert files[0]["content"].read() == content1
+        assert files[0]["meta"]["filename"] == result1["filename"]
+        assert files[0]["meta"]["size"] == result1["size"]
+        assert files[0]["meta"]["ext"] == result1["ext"]
+        assert files[0]["meta"]["name"] == result1["name"]
+        assert files[0]["content"].read() == content1
 
-    assert files[1]["meta"]["filename"] == result2["filename"]
-    assert files[1]["meta"]["size"] == result2["size"]
-    assert files[1]["meta"]["ext"] == result2["ext"]
-    assert files[1]["meta"]["name"] == result2["name"]
-    assert files[1]["content"].read() == content2
+        assert files[1]["meta"]["filename"] == result2["filename"]
+        assert files[1]["meta"]["size"] == result2["size"]
+        assert files[1]["meta"]["ext"] == result2["ext"]
+        assert files[1]["meta"]["name"] == result2["name"]
+        assert files[1]["content"].read() == content2
+
+    with subtests.test("by_token"):
+        _assert_files(
+            list(
+                client.get_uploaded_file_objects(
+                    survey_id,
+                    token=token,
+                )
+            )
+        )
+
+    with subtests.test("by_response_id"):
+        _assert_files(
+            list(
+                client.get_uploaded_file_objects(
+                    survey_id,
+                    response_id=response_id,
+                )
+            )
+        )
 
     # Download files to a directory
     download_dir = tmp_path / "downloads"
