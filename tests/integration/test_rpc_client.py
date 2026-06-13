@@ -1278,6 +1278,11 @@ def test_response_files(
         assert files[1]["meta"]["name"] == result2["name"]
         assert files[1]["content"].read() == content2
 
+    def _assert_downloads(paths: list[Path]) -> None:
+        assert len(paths) == 2
+        assert paths[0].read_bytes() == content1
+        assert paths[1].read_bytes() == content2
+
     with subtests.test("by_token"):
         _assert_files(
             list(
@@ -1285,6 +1290,17 @@ def test_response_files(
                     survey_id,
                     token=token,
                 )
+            )
+        )
+
+        # Download files to a directory
+        download_dir = tmp_path / "downloads_by_token"
+        download_dir.mkdir(parents=True, exist_ok=True)
+        _assert_downloads(
+            client.download_files(
+                download_dir,
+                survey_id,
+                token=token,
             )
         )
 
@@ -1298,13 +1314,16 @@ def test_response_files(
             )
         )
 
-    # Download files to a directory
-    download_dir = tmp_path / "downloads"
-    download_dir.mkdir(parents=True, exist_ok=True)
-    paths = client.download_files(download_dir, survey_id, token)
-    assert len(paths) == 2
-    assert paths[0].read_bytes() == content1
-    assert paths[1].read_bytes() == content2
+        # Download files to a directory
+        download_dir = tmp_path / "downloads_by_response_id"
+        download_dir.mkdir(parents=True, exist_ok=True)
+        _assert_downloads(
+            client.download_files(
+                download_dir,
+                survey_id,
+                response_id=response_id,
+            )
+        )
 
 
 @pytest.mark.integration_test
