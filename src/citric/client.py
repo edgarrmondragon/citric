@@ -1283,11 +1283,13 @@ class Client:  # noqa: PLR0904
         Yields:
             :class:`~citric.types.ReadableFile` dictionaries.
 
+        Example: `Get files uploaded to a survey and move them to S3 </how-to.html#get-files-uploaded-to-a-survey-and-move-them-to-s3>`__
+
         .. versionadded:: 0.0.13
         .. versionchanged:: 2.0.0
            Yield :class:`~citric.types.ReadableFile` dictionaries instead of
            dataclass instances.
-        """
+        """  # noqa: E501
         files_data = self.get_uploaded_files(survey_id, token, response_id)
         for file in files_data:
             yield {
