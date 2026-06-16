@@ -23,7 +23,7 @@ Integration tests are run against a LimeSurvey instance, and both PostgreSQL and
 ```{include} _partial/tags.md
 ```
 
-But also the latest 5.x and 6.x are tested continuously and are expected to work.
+But also the latest 5.x, 6.x and 7.x are tested continuously and are expected to work.
 
 ## How-to guides
 
