@@ -1245,42 +1245,52 @@ class Client:  # noqa: PLR0904
         self,
         survey_id: int,
         token: str | None = None,
+        response_id: int | None = None,
     ) -> dict[str, types.EncodedFile]:
         """Get a dictionary of files uploaded in a survey response.
+
+        Either a token or a response ID is required.
 
         Calls :rpc_method:`get_uploaded_files`.
 
         Args:
             survey_id: Survey for which to download files.
-            token: Optional participant token to filter uploaded files.
+            token: Get the files uploaded by this response token.
+            response_id: Get the files uploaded to this response.
 
         Returns:
             Dictionary with uploaded files metadata.
 
         .. versionadded:: 0.0.5
         """
-        return self.session.get_uploaded_files(survey_id, token)
+        return self.session.get_uploaded_files(survey_id, token, response_id)
 
     def get_uploaded_file_objects(
         self,
         survey_id: int,
         token: str | None = None,
+        response_id: int | None = None,
     ) -> Generator[types.ReadableFile, None, None]:
         """Iterate over uploaded files in a survey response.
 
+        Either a token or a response ID is required.
+
         Args:
             survey_id: Survey for which to download files.
-            token: Optional participant token to filter uploaded files.
+            token: Get the files uploaded by this response token.
+            response_id: Get the files uploaded to this response.
 
         Yields:
             :class:`~citric.types.ReadableFile` dictionaries.
+
+        Example: `Get files uploaded to a survey and move them to S3 </how-to.html#get-files-uploaded-to-a-survey-and-move-them-to-s3>`__
 
         .. versionadded:: 0.0.13
         .. versionchanged:: 2.0.0
            Yield :class:`~citric.types.ReadableFile` dictionaries instead of
            dataclass instances.
-        """
-        files_data = self.get_uploaded_files(survey_id, token)
+        """  # noqa: E501
+        files_data = self.get_uploaded_files(survey_id, token, response_id)
         for file in files_data:
             yield {
                 "meta": files_data[file]["meta"],
@@ -1292,13 +1302,17 @@ class Client:  # noqa: PLR0904
         directory: str | Path,
         survey_id: int,
         token: str | None = None,
+        response_id: int | None = None,
     ) -> list[Path]:
         """Download files uploaded in survey response.
+
+        Either a token or a response ID is required.
 
         Args:
             directory: Where to store the files.
             survey_id: Survey for which to download files.
-            token: Optional participant token to filter uploaded files.
+            token: Get the files uploaded by this response token.
+            response_id: Get the files uploaded to this response.
 
         Returns:
             List with the paths of downloaded files.
@@ -1308,7 +1322,11 @@ class Client:  # noqa: PLR0904
         dirpath = Path(directory)
 
         filepaths = []
-        uploaded_files = self.get_uploaded_file_objects(survey_id, token=token)
+        uploaded_files = self.get_uploaded_file_objects(
+            survey_id,
+            token=token,
+            response_id=response_id,
+        )
 
         for file in uploaded_files:
             filepath = dirpath / file["meta"]["filename"]

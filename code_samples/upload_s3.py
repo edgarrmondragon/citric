@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 # start example
+import json
+
 import boto3
 from citric import Client
 
@@ -15,12 +17,14 @@ client = Client(
 )
 
 survey_id = 12345
+exported = json.loads(client.export_responses(survey_id, file_format="json"))
 
-# Get all uploaded files and upload them to S3
-for file in client.get_uploaded_file_objects(survey_id):
-    s3.upload_fileobj(
-        file["content"],
-        "my-s3-bucket",
-        f"uploads/sid={survey_id}/qid={file['meta']['question']['qid']}/{file['meta']['filename']}",
-    )
+# Get all uploaded files for all responses and upload them to S3
+for response in exported["responses"]:
+    for file in client.get_uploaded_file_objects(survey_id, response_id=response["id"]):
+        filename = (
+            f"uploads/sid={survey_id}/qid={file['meta']['question']['qid']}"
+            f"/{response['id']}/{file['meta']['filename']}"
+        )
+        s3.upload_fileobj(file["content"], "my-s3-bucket", filename)
 # end example
