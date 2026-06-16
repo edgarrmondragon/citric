@@ -32,9 +32,9 @@ from citric.exceptions import LimeSurveyApiError, LimeSurveyStatusError
 from citric.objects import Participant
 
 if TYPE_CHECKING:
-    from collections.abc import Generator
+    from collections.abc import Generator, Iterable
 
-    from citric.types import QuestionsListElement, ReadableFile
+    from citric.types import FileUploadResult, QuestionsListElement, ReadableFile
     from tests.fixtures import MailpitClient
 
 NEW_SURVEY_NAME = "New Survey"
@@ -1213,8 +1213,36 @@ def file_upload_question(
     return question
 
 
+def assert_uploaded_files(  # noqa: D103
+    files: Iterable[tuple[ReadableFile, FileUploadResult, bytes]],
+    subtests: pytest.Subtests,
+) -> None:
+    for down, up, content in files:
+        with subtests.test(up["name"]):
+            assert down["meta"]["filename"] == up["filename"]
+            assert down["meta"]["size"] == up["size"]
+            assert down["meta"]["ext"] == up["ext"]
+            assert down["meta"]["name"] == up["name"]
+            assert down["content"].read() == content
+
+
+def assert_downloaded_files(  # noqa: D103
+    files: Iterable[tuple[Path, FileUploadResult, bytes]],
+    subtests: pytest.Subtests,
+) -> None:
+    for path, up, content in files:
+        with subtests.test(up["name"]):
+            assert path.read_bytes() == content
+
+
+@pytest.mark.parametrize(
+    "by_response_id",
+    [False, True],
+    ids=["by_token", "by_response_id"],
+)
 @pytest.mark.integration_test
-def test_response_files(
+def test_response_files(  # noqa: PLR0914
+    request: pytest.FixtureRequest,
     client: citric.Client,
     survey_id: int,
     file_upload_question: QuestionsListElement,
@@ -1222,8 +1250,21 @@ def test_response_files(
     faker: Faker,
     server_version: semver.VersionInfo,
     subtests: pytest.Subtests,
-):
+    by_response_id: bool,  # noqa: FBT001
+) -> None:
     """Test response files."""
+    if by_response_id:
+        request.applymarker(
+            pytest.mark.xfail(
+                server_version < (6, 0, 0),
+                reason=(
+                    "Getting uploaded files by response ID is not supported in "
+                    f"LimeSurvey {server_version} < 6.0.0"
+                ),
+                strict=True,
+            ),
+        )
+
     token = "T00000"
     fieldname = client._fieldname_from_question(file_upload_question)
 
@@ -1259,71 +1300,39 @@ def test_response_files(
 
     export = json.loads(client.export_responses(survey_id, token=token))
     assert len(export["responses"]) == 1
-    assert export["responses"][0]["id"] == response_id
+    assert int(export["responses"][0]["id"]) == response_id
     assert len(json.loads(export["responses"][0]["G02Q03"])) == 2
     assert int(export["responses"][0]["G02Q03[filecount]"]) == 2
 
-    def _assert_files(files: list[ReadableFile]) -> None:
-        assert len(files) == 2
+    download_dir = tmp_path / "downloads"
+    download_dir.mkdir(parents=True, exist_ok=True)
 
-        assert files[0]["meta"]["filename"] == result1["filename"]
-        assert files[0]["meta"]["size"] == result1["size"]
-        assert files[0]["meta"]["ext"] == result1["ext"]
-        assert files[0]["meta"]["name"] == result1["name"]
-        assert files[0]["content"].read() == content1
-
-        assert files[1]["meta"]["filename"] == result2["filename"]
-        assert files[1]["meta"]["size"] == result2["size"]
-        assert files[1]["meta"]["ext"] == result2["ext"]
-        assert files[1]["meta"]["name"] == result2["name"]
-        assert files[1]["content"].read() == content2
-
-    def _assert_downloads(paths: list[Path]) -> None:
-        assert len(paths) == 2
-        assert paths[0].read_bytes() == content1
-        assert paths[1].read_bytes() == content2
-
-    with subtests.test("by_token"):
-        _assert_files(
-            list(
-                client.get_uploaded_file_objects(
-                    survey_id,
-                    token=token,
-                )
-            )
+    if by_response_id:
+        get_file_objects = client.get_uploaded_file_objects(
+            survey_id,
+            response_id=response_id,
+        )
+        download_files = client.download_files(
+            download_dir,
+            survey_id,
+            response_id=response_id,
+        )
+    else:
+        get_file_objects = client.get_uploaded_file_objects(
+            survey_id,
+            token=token,
+        )
+        download_files = client.download_files(
+            download_dir,
+            survey_id,
+            token=token,
         )
 
-        # Download files to a directory
-        download_dir = tmp_path / "downloads_by_token"
-        download_dir.mkdir(parents=True, exist_ok=True)
-        _assert_downloads(
-            client.download_files(
-                download_dir,
-                survey_id,
-                token=token,
-            )
-        )
+    files = zip(get_file_objects, [result1, result2], [content1, content2], strict=True)
+    assert_uploaded_files(files, subtests)
 
-    with subtests.test("by_response_id"):
-        _assert_files(
-            list(
-                client.get_uploaded_file_objects(
-                    survey_id,
-                    response_id=response_id,
-                )
-            )
-        )
-
-        # Download files to a directory
-        download_dir = tmp_path / "downloads_by_response_id"
-        download_dir.mkdir(parents=True, exist_ok=True)
-        _assert_downloads(
-            client.download_files(
-                download_dir,
-                survey_id,
-                response_id=response_id,
-            )
-        )
+    paths = zip(download_files, [result1, result2], [content1, content2], strict=True)
+    assert_downloaded_files(paths, subtests)
 
 
 @pytest.mark.integration_test

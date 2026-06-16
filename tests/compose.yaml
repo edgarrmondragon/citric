@@ -35,6 +35,8 @@ services:
       POSTGRES_USER: limesurvey
       POSTGRES_DB: limesurvey
       POSTGRES_PASSWORD: secret
+    ports:
+      - 5433:5432
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "limesurvey"]
       interval: 15s
