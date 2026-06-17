@@ -23,6 +23,7 @@ if TYPE_CHECKING:
     from collections.abc import Generator, Iterable
 
 DEFAULT_TAGS = (
+    "7-apache",
     "6-apache",
     "5-apache",
     "6.0.0-230405-apache",
@@ -35,9 +36,10 @@ SKIP_TAGS = (
     "6.15.19-251017-apache",  # PATCH for question answers is broken
     "6.15.20-251021-apache",  # PATCH for question answers is broken
 )
+CURRENT_MAJOR = "7"
+MAX_TAGS = 3
+PATTERN_MAJOR = re.compile(r"(\d+)\.\d+\.\d+-\d{6}-apache")
 PATTERN_VERSION = re.compile(r"(\d+\.\d+\.\d+)-\d{6}-apache")
-PATTERN_5x = re.compile(r"5\.\d+.\d+-\d{6}-apache")
-PATTERN_6x = re.compile(r"6\.\d+.\d+-\d{6}-apache")
 
 logging.basicConfig(level=logging.INFO, format="[%(levelname)s] %(message)s")
 logger = logging.getLogger(__name__)
@@ -92,32 +94,31 @@ def get_tags() -> Generator[dict, None, None]:
             break
 
 
-def filter_tags(
-    tags: Iterable[dict],
-    *,
-    max_tags: int = 3,
-) -> Generator[str, None, None]:
+def filter_tags(tags: Iterable[dict]) -> Generator[str, None, None]:
     """Filter tags.
 
     Args:
         tags: An iterable of tags.
-        max_tags: Maximum number of tags to yield.
 
     Yields:
         Tag names.
     """
-    count_6 = 0
+    count = 0
     for tag in tags:
         name = tag["name"]
 
         if name in SKIP_TAGS:
             continue
 
-        if re.match(PATTERN_6x, name) and count_6 < max_tags:
+        if (
+            (match := PATTERN_MAJOR.match(name))
+            and (major := match.group(1))
+            and major == CURRENT_MAJOR
+        ):
             yield name
-            count_6 += 1
+            count += 1
 
-        if count_6 >= max_tags:
+        if count >= MAX_TAGS:
             break
 
     yield from DEFAULT_TAGS
@@ -135,12 +136,6 @@ def main() -> None:
 
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
-        "--max-tags",
-        type=int,
-        default=1,
-        help="Maximum tags to present for each version.",
-    )
-    parser.add_argument(
         "--tags-file",
         type=pathlib.Path,
         default=pathlib.Path(".github/tags.json"),
@@ -154,12 +149,7 @@ def main() -> None:
     )
     args = parser.parse_args(namespace=ParserNamespace)
 
-    tags = list(
-        filter_tags(
-            sorted(get_tags(), key=_extract_version, reverse=True),
-            max_tags=args.max_tags,
-        )
-    )
+    tags = list(filter_tags(sorted(get_tags(), key=_extract_version, reverse=True)))
 
     with args.tags_file.open("w") as file:
         json.dump(tags, file, indent=2)
@@ -172,7 +162,7 @@ def main() -> None:
         tags = [
             tag
             for tag in sorted(tags, key=_version_parts, reverse=True)
-            if tag not in {"6-apache", "5-apache"}
+            if tag not in {"7-apache", "6-apache", "5-apache"}
         ]
 
         for tag in tags:
