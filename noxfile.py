@@ -65,21 +65,17 @@ def tests(session: nox.Session, constraints: str) -> None:
 def integration(session: nox.Session) -> None:
     """Execute integration tests and compute coverage."""
     session.install(".", "--group=test", f"--python={session.virtualenv.location}")
-    try:
-        session.run(
-            "coverage",
-            "run",
-            "-m",
-            "pytest",
-            "--integration",
-            "-m",
-            "integration_test",
-            *session.posargs,
-            env={"COVERAGE_CORE": "sysmon"},
-        )
-    finally:
-        if session.interactive:
-            session.notify("coverage", posargs=[])
+    session.run(
+        "coverage",
+        "run",
+        "-m",
+        "pytest",
+        "--integration",
+        "-m",
+        "integration_test",
+        *session.posargs,
+        env={"COVERAGE_CORE": "sysmon"},
+    )
 
 
 @nox.session(tags=["test"])
