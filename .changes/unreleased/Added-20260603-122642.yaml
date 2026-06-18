@@ -1,5 +1,0 @@
-kind: Added
-body: Handle LimeSurvey 7+ machine-readable error codes
-time: 2026-06-03T12:26:42.155544-06:00
-custom:
-    Issue: "1775"
