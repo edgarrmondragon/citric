@@ -1,5 +1,0 @@
-kind: Added
-body: Allow getting uploaded files by response ID
-time: 2026-06-13T12:29:08.36017-06:00
-custom:
-    Issue: "1780"
