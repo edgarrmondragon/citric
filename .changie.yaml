@@ -50,7 +50,11 @@ replacements:
 - path: pyproject.toml
   find: "^version = \".*\"$"
   replace: "version = \"{{.VersionNoPrefix}}\""
-- path: src/citric/**/*.py
+# Go's filepath.Glob does not support **, so each subdirectory needs its own entry.
+- path: src/citric/*.py
+  find: "NEXT_VERSION"
+  replace: "{{.VersionNoPrefix}}"
+- path: src/citric/objects/*.py
   find: "NEXT_VERSION"
   replace: "{{.VersionNoPrefix}}"
 - path: .github/ISSUE_TEMPLATE/BUG.yml
