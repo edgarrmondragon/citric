@@ -51,7 +51,7 @@ _SEMVER_RE = re.compile(
 class ServerVersion:
     """A LimeSurvey server version.
 
-    .. versionadded:: NEXT_VERSION
+    .. versionadded:: 2.2.0
     """
 
     major: int
@@ -173,7 +173,7 @@ class Client:  # noqa: PLR0904
     def server_version(self) -> ServerVersion:
         """LimeSurvey server version (cached).
 
-        .. versionadded:: NEXT_VERSION
+        .. versionadded:: 2.2.0
         """
         if self.__server_version is None:
             self.__server_version = ServerVersion.parse(self.get_server_version())
