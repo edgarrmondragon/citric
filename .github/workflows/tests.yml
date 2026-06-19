@@ -12,6 +12,8 @@ on:
     - compose*.yaml
     - noxfile.py
     - pyproject.toml
+    - .github/default_tags.json
+    - .github/include_tags.json
     - .github/tags.json
     - .github/workflows/tests.yml
     - .github/actions/install-tools/action.yml
@@ -25,6 +27,8 @@ on:
     - compose*.yaml
     - noxfile.py
     - pyproject.toml
+    - .github/default_tags.json
+    - .github/include_tags.json
     - .github/tags.json
     - .github/workflows/tests.yml
     - .github/actions/install-tools/action.yml
@@ -167,6 +171,7 @@ jobs:
     runs-on: ubuntu-24.04
     outputs:
       tags: ${{ steps.tags.outputs.tags }}
+      includes: ${{ steps.tags.outputs.includes }}
     permissions:
       contents: read
     steps:
@@ -177,8 +182,16 @@ jobs:
 
     - name: Output tags
       id: tags
+      env:
+        ALL_INTEGRATIONS: ${{ inputs.all_integrations }}
       run: |
-        echo "tags=$(cat .github/tags.json | jq -c .)" >> $GITHUB_OUTPUT
+        if [[ "$GITHUB_EVENT_NAME" == "schedule" || "$ALL_INTEGRATIONS" == "true" || "$GITHUB_HEAD_REF" == release/* ]]; then
+          echo "tags=$(cat .github/tags.json | jq -c .)" >> $GITHUB_OUTPUT
+          echo "includes=$(cat .github/include_tags.json | jq -c '[.[] | del(.schedule_only)]')" >> $GITHUB_OUTPUT
+        else
+          echo "tags=$(cat .github/default_tags.json | jq -c .)" >> $GITHUB_OUTPUT
+          echo "includes=$(cat .github/include_tags.json | jq -c '[.[] | select(.schedule_only == false) | del(.schedule_only)]')" >> $GITHUB_OUTPUT
+        fi
 
   integration:
     name: "Python ${{ matrix.python-version }} / ${{ matrix.image_tag || matrix.ref }} / ${{ matrix.database }}"
@@ -203,52 +216,7 @@ jobs:
         ref: [""]
         context: [""]
         image_tag: ${{ fromJson(needs.docker_tags.outputs.tags) }}
-        include:
-        # Test on other Python versions
-        - python-version: "3.10"
-          image_tag: "7-apache"
-          database: postgres
-
-        - python-version: "3.14t"
-          image_tag: "7-apache"
-          database: postgres
-
-        - python-version: "3.15"
-          image_tag: "7-apache"
-          database: postgres
-
-        - python-version: "3.14"
-          image_tag: "7-apache"
-          database: mysql
-
-        - python-version: "3.14"
-          image_tag: "6-apache"
-          database: mysql
-
-        - python-version: "3.14"
-          image_tag: "5-apache"
-          database: mysql
-
-        # Test Limesurvey/LimeSurvey branches
-        - python-version: "3.14"
-          ref: refs/heads/develop-minor
-          context: https://github.com/martialblog/docker-limesurvey.git#master:7.0/apache
-          database: postgres
-
-        - python-version: "3.14"
-          ref: refs/heads/develop-major
-          context: https://github.com/martialblog/docker-limesurvey.git#master:7.0/apache
-          database: postgres
-
-        - python-version: "3.14"
-          ref: refs/heads/v6.x
-          context: https://github.com/martialblog/docker-limesurvey.git#master:6.0/apache
-          database: postgres
-
-        - python-version: "3.14"
-          ref: refs/heads/master
-          context: https://github.com/martialblog/docker-limesurvey.git#master:7.0/apache
-          database: postgres
+        include: ${{ fromJson(needs.docker_tags.outputs.includes) }}
 
     steps:
     - name: Check out the repository
