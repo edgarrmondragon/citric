@@ -44,7 +44,7 @@ def pytest_addoption(parser: pytest.Parser):
         "--limesurvey-image-tag",
         action="store",
         help="Docker image tag for integration tests.",
-        default=_from_env_var("LS_IMAGE_TAG", "6-apache"),
+        default=_from_env_var("LS_IMAGE_TAG", "latest"),
     )
 
     parser.addoption(

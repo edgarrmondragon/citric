@@ -1438,6 +1438,27 @@ def test_site_settings(client: citric.Client):
 
 
 @pytest.mark.integration_test
+def test_get_display_timezone(
+    request: pytest.FixtureRequest,
+    client: citric.Client,
+    server_version: semver.VersionInfo,
+):
+    """Test getting display timezone."""
+    request.applymarker(
+        pytest.mark.xfail(
+            server_version < (7, 0, 0),
+            reason=(
+                "Setting `displayTimezone` is not available in LimeSurvey "
+                f"{server_version} < 7.0.0"
+            ),
+            raises=LimeSurveyStatusError,
+            strict=True,
+        ),
+    )
+    assert client.session.get_site_settings("displayTimezone") == "UTC"
+
+
+@pytest.mark.integration_test
 def test_missing_setting(client: citric.Client, server_version: semver.VersionInfo):
     """Test getting site settings."""
     with assert_status_error(
