@@ -272,9 +272,6 @@ enable_error_code = [
 ]
 strict = false
 warn_unused_configs = true
-overrides = [ { module = [
-  "nox.*",
-], ignore_missing_imports = true } ]
 
 [tool.pyrefly]
 search-path = [ "." ]
