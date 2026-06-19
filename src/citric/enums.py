@@ -130,11 +130,7 @@ class QuotaAction(StrEnum):
 
     @property
     def integer_value(self) -> int:
-        """Return database value of the action.
-
-        Returns:
-            Database value of the action.
-        """
+        """Database value of the action."""
         mapping = {
             self.TERMINATE: 1,
             self.CONFIRM_TERMINATE: 2,
