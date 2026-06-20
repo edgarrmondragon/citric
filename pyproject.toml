@@ -333,4 +333,5 @@ parallel = true
 relative_files = true
 source = [
   "citric",
+  "tests",
 ]

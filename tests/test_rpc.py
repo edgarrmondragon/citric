@@ -39,14 +39,6 @@ class RPCOffAdapter(LimeSurveyMockAdapter):
     rpc_interface = "off"
 
 
-@pytest.fixture(scope="session")
-def off_session(url: str) -> requests.Session:
-    """Session with interface turned off."""
-    requests_session = requests.Session()
-    requests_session.mount(url, RPCOffAdapter())
-    return requests_session
-
-
 def test_method():
     """Test method magic."""
     m1 = Method(lambda x, *args: f"{x}({','.join(args)})", "hello")

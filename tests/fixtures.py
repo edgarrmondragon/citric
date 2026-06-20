@@ -49,7 +49,6 @@ class LimeSurveyMockAdapter(BaseAdapter):
 
     session_key = "123456"
     status_ok: ClassVar[dict[str, Any]] = {"status": "OK"}
-    rpc_interface = "json"
 
     ldap_session_key = "ldap-key"
 
@@ -81,8 +80,6 @@ class LimeSurveyMockAdapter(BaseAdapter):
             output["result"] = (
                 self.ldap_session_key if params[2] == "AuthLDAP" else self.session_key
             )
-        elif method == "get_site_settings" and params[1] == "RPCInterface":
-            output["result"] = self.rpc_interface
 
         response._content = json.dumps(output).encode()
 
