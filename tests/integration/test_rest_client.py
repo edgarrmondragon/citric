@@ -206,12 +206,13 @@ def test_update_question_answers(
 ) -> None:
     """Test updating question answers."""
 
-    def _question_answers(survey: dict[str, Any]) -> tuple[int | None, list]:
-        for question in survey["questionGroups"][0]["questions"]:
-            if answers := question.get("answers"):
-                return question["qid"], answers
+    def _question_answers(s: dict[str, Any]) -> tuple[int, list]:
+        def _inner() -> Generator[tuple[int, list]]:
+            for question in s["questionGroups"][0]["questions"]:  # pragma: no branch
+                if answers := question.get("answers"):  # pragma: no branch
+                    yield question["qid"], answers
 
-        return None, []
+        return next(_inner())
 
     survey = rest_client.get_survey_details(survey_id=survey_with_question_answers)
     qid, answers = _question_answers(survey)
@@ -328,11 +329,13 @@ def test_patch_subquestions(
 ) -> None:
     """Test patching subquestions."""
 
-    def _subquestions(survey: dict[str, Any]) -> tuple[int | None, list]:
-        for question in survey["questionGroups"][0]["questions"]:
-            if subquestions := question.get("subquestions"):
-                return question["qid"], subquestions
-        return None, []
+    def _subquestions(s: dict[str, Any]) -> tuple[int, list]:
+        def _inner() -> Generator[tuple[int, list]]:
+            for question in s["questionGroups"][0]["questions"]:  # pragma: no branch
+                if subquestions := question.get("subquestions"):  # pragma: no branch
+                    yield question["qid"], subquestions
+
+        return next(_inner())
 
     survey = rest_client.get_survey_details(survey_id=survey_with_question_answers)
     qid, subquestions = _subquestions(survey)
