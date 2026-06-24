@@ -6,44 +6,17 @@ from __future__ import annotations
 
 import contextlib
 import operator
-import sys
 from typing import TYPE_CHECKING, Any
 
 import pytest
-import requests.exceptions
-import semver
 
 from citric.exceptions import LimeSurveyStatusError
 from citric.rest import RESTClient
-
-if sys.version_info >= (3, 12):
-    from typing import override
-else:
-    from typing_extensions import override
 
 if TYPE_CHECKING:
     from collections.abc import Generator
 
     from citric import Client
-
-
-class LegacyRESTClient(RESTClient):
-    """Legacy REST client."""
-
-    AUTH_ENDPOINT = "/rest/v1/session"
-
-    @override
-    def authenticate(self, username: str, password: str) -> None:
-        """Authenticate with the REST API."""
-        response = self._session.post(
-            url=f"{self.url}{self.AUTH_ENDPOINT}",
-            json={
-                "username": username,
-                "password": password,
-            },
-        )
-        response.raise_for_status()
-        self.session_id = response.json()
 
 
 @pytest.fixture(scope="module")
@@ -52,15 +25,9 @@ def rest_client(
     integration_url: str,
     integration_username: str,
     integration_password: str,
-    server_version: semver.Version,
 ) -> Generator[RESTClient, None, None]:
     """LimeSurvey REST API client."""
-    if server_version < (6, 2, 0):
-        pytest.xfail(
-            f"The REST API is not supported in LimeSurvey {server_version} < 6.2.0",
-        )
-    client_class = LegacyRESTClient if server_version < (6, 6, 0) else RESTClient
-    with client_class(
+    with RESTClient(
         integration_url,
         integration_username,
         integration_password,
@@ -72,34 +39,9 @@ def rest_client(
             client.delete_survey(survey["sid"])
 
 
-def _xfail(
-    condition: bool,  # noqa: FBT001
-    request: pytest.FixtureRequest,
-    *,
-    reason: str,
-    server_version: semver.Version,
-    **kwargs: Any,
-) -> None:
-    if condition:
-        kwargs.setdefault("strict", True)
-        message = f"{reason}\nCurrent server version is {server_version}."
-        request.applymarker(pytest.mark.xfail(reason=message, **kwargs))
-
-
 @pytest.mark.integration_test
-def test_refresh_token(
-    rest_client: RESTClient,
-    server_version: semver.Version,
-    request: pytest.FixtureRequest,
-) -> None:
+def test_refresh_token(rest_client: RESTClient) -> None:
     """Test refreshing the token."""
-    _xfail(
-        server_version < (6, 6, 0),
-        request,
-        reason="The REST API does not support refreshing a token in LimeSurvey < 6.6.0",
-        raises=requests.exceptions.HTTPError,
-        server_version=server_version,
-    )
     session_id = rest_client.session_id
     rest_client.refresh_token()
     assert session_id != rest_client.session_id
@@ -123,19 +65,8 @@ def test_get_survey_details(rest_client: RESTClient, survey_id: int) -> None:
 
 
 @pytest.mark.integration_test
-def test_patch_survey_details(
-    request: pytest.FixtureRequest,
-    server_version: semver.Version,
-    rest_client: RESTClient,
-    survey_id: int,
-) -> None:
+def test_patch_survey_details(rest_client: RESTClient, survey_id: int) -> None:
     """Test getting surveys."""
-    _xfail(
-        (6, 15, 0) <= server_version < (6, 15, 2),
-        request,
-        reason="Saving survey details is broken in `6.15.0` and `6.15.1`.",
-        server_version=server_version,
-    )
     original = rest_client.get_survey_details(survey_id=survey_id)
     anonymized = original["anonymized"]
     token_length = original["tokenLength"]
@@ -145,20 +76,9 @@ def test_patch_survey_details(
         anonymized=not anonymized,
         tokenLength=token_length + 10,
     )
-    expected = (
-        True
-        if server_version < semver.Version(6, 4, prerelease="dev")
-        else (
-            {
-                "operationsApplied": 1,
-                "erronousOperations": [],
-            }
-            if server_version < semver.Version(6, 5, prerelease="dev")
-            else {
-                "operationsApplied": 1,
-            }
-        )
-    )
+    expected = {
+        "operationsApplied": 1,
+    }
     assert result == expected
 
     updated = rest_client.get_survey_details(survey_id=survey_id)
@@ -166,39 +86,6 @@ def test_patch_survey_details(
     assert updated["tokenLength"] == token_length + 10
 
 
-@pytest.fixture
-def ls_62_format_change(
-    request: pytest.FixtureRequest,
-    server_version: semver.Version,
-) -> None:
-    """Xfail tests affected by the format change in LimeSurvey 6.2."""
-    _xfail(
-        server_version <= (6, 2),
-        request,
-        reason=(
-            "At some point after 6.2, `questionGroups` changed from a dict to a list. "
-            "We don't bother to test for older versions."
-        ),
-        server_version=server_version,
-        raises=KeyError,
-    )
-
-
-@pytest.fixture
-def ls_61518_patch_issue(
-    request: pytest.FixtureRequest,
-    server_version: semver.Version,
-) -> None:
-    """XFail tests affected by the PATCH issue in LimeSurvey 6.15.18-6.15.20."""
-    _xfail(
-        (6, 15, 18) <= server_version <= (6, 15, 20),
-        request,
-        reason="PATCH for question answers is broken in 6.15.18, 6.15.19 and 6.15.20.",
-        server_version=server_version,
-    )
-
-
-@pytest.mark.usefixtures("ls_62_format_change", "ls_61518_patch_issue")
 @pytest.mark.integration_test
 def test_update_question_answers(
     rest_client: RESTClient,
@@ -254,7 +141,6 @@ def test_update_question_answers(
     assert sorted_answers[2]["l10ns"]["en"]["answer"] == "TOO LITTLE!"
 
 
-@pytest.mark.usefixtures("ls_62_format_change", "ls_61518_patch_issue")
 @pytest.mark.integration_test
 def test_patch_question(
     rest_client: RESTClient,
@@ -287,7 +173,6 @@ def test_patch_question(
     assert updated_question["mandatory"] is True
 
 
-@pytest.mark.usefixtures("ls_62_format_change")
 @pytest.mark.integration_test
 def test_patch_question_l10n(
     rest_client: RESTClient,
@@ -321,7 +206,6 @@ def test_patch_question_l10n(
     assert updated_question["l10ns"]["en"]["question"] == new_text
 
 
-@pytest.mark.usefixtures("ls_62_format_change", "ls_61518_patch_issue")
 @pytest.mark.integration_test
 def test_patch_subquestions(
     rest_client: RESTClient,

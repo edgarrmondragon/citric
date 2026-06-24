@@ -20,8 +20,6 @@ from urllib.parse import quote
 
 import bs4
 import pytest
-import requests.exceptions
-import semver
 from dirty_equals import IsPositiveInt
 from faker import Faker
 
@@ -33,6 +31,8 @@ from citric.objects import Participant
 
 if TYPE_CHECKING:
     from collections.abc import Generator, Iterable
+
+    import semver
 
     from citric.types import FileUploadResult, QuestionsListElement, ReadableFile
     from tests.fixtures import MailpitClient
@@ -238,12 +238,6 @@ def test_survey(
     assert matched["surveyls_title"] == NEW_SURVEY_NAME
 
     with subtests.test(msg="survey group ID"):
-        if server_version < (6, 10, 0):
-            pytest.xfail(
-                "The gsid field is not available as input nor output of the RPC "
-                "list_surveys method in LimeSurvey < 6.10.0"
-            )
-
         gsid = matched["gsid"]
         surveys_in_group = client.list_surveys(survey_group_id=gsid)
         assert all(s["gsid"] == gsid for s in surveys_in_group)
@@ -269,24 +263,8 @@ def test_import_survey(client: citric.Client, subtests: pytest.Subtests):
 
 
 @pytest.mark.integration_test
-def test_copy_survey_destination_id(
-    request: pytest.FixtureRequest,
-    client: citric.Client,
-    survey_id: int,
-    server_version: semver.VersionInfo,
-):
+def test_copy_survey_destination_id(client: citric.Client, survey_id: int):
     """Test copying a survey with a destination survey ID."""
-    request.applymarker(
-        pytest.mark.xfail(
-            server_version < semver.VersionInfo.parse("6.4.0-dev"),
-            reason=(
-                "The destination_survey_id parameter is not supported in LimeSurvey "
-                f"{server_version} < 6.4.0"
-            ),
-            strict=True,
-        ),
-    )
-
     # Copy a survey, specifying a new survey ID
     copied = client.copy_survey(
         survey_id,
@@ -363,23 +341,8 @@ def test_group(client: citric.Client, server_version: semver.Version):
 
 
 @pytest.mark.integration_test
-def test_import_group_with_name(
-    request: pytest.FixtureRequest,
-    client: citric.Client,
-    server_version: semver.VersionInfo,
-    survey_id: int,
-):
+def test_import_group_with_name(client: citric.Client, survey_id: int):
     """Test importing a group with a custom name."""
-    request.applymarker(
-        pytest.mark.xfail(
-            server_version < (6, 6, 7),
-            reason=(
-                f"The name override is broken in LimeSurvey {server_version} < 6.6.7"
-            ),
-            strict=True,
-        ),
-    )
-
     with Path("./examples/group.lsg").open("rb") as f:
         group_id = client.import_group(f, survey_id, name="Custom Name")
 
@@ -388,24 +351,8 @@ def test_import_group_with_name(
 
 
 @pytest.mark.integration_test
-def test_import_group_with_description(
-    request: pytest.FixtureRequest,
-    client: citric.Client,
-    server_version: semver.VersionInfo,
-    survey_id: int,
-):
+def test_import_group_with_description(client: citric.Client, survey_id: int):
     """Test importing a group with a custom description."""
-    request.applymarker(
-        pytest.mark.xfail(
-            server_version < (6, 6, 7),
-            reason=(
-                "The description override is broken in LimeSurvey "
-                f"{server_version} < 6.6.7"
-            ),
-            strict=True,
-        ),
-    )
-
     with Path("./examples/group.lsg").open("rb") as f:
         group_id = client.import_group(f, survey_id, description="Custom description")
 
@@ -415,25 +362,12 @@ def test_import_group_with_description(
 
 @pytest.mark.integration_test
 def test_question(
-    request: pytest.FixtureRequest,
     client: citric.Client,
     server_version: semver.VersionInfo,
     survey_id: int,
     question_with_free_text: citric.objects.Question,
 ):
     """Test question methods."""
-    request.applymarker(
-        pytest.mark.xfail(
-            server_version < (6, 6, 4),
-            reason=(
-                "The question text property (`question`) is not available in "
-                f"LimeSurvey {server_version} < 6.6.4"
-            ),
-            raises=KeyError,
-            strict=True,
-        ),
-    )
-
     group_id = client.add_group(survey_id, "Test Group")
 
     # Import a question from a Question object
@@ -642,25 +576,12 @@ def test_import_question_with_attributes(
 
 @pytest.mark.integration_test
 def test_quota(
-    request: pytest.FixtureRequest,
     client: citric.Client,
     server_version: semver.VersionInfo,
     survey_id: int,
     subtests: pytest.Subtests,
 ):
     """Test quota methods."""
-    request.applymarker(
-        pytest.mark.xfail(
-            server_version < (6, 0, 0),
-            reason=(
-                "Quota RPC methods are not supported in LimeSurvey "
-                f"{server_version} < 6.0.0"
-            ),
-            raises=requests.exceptions.HTTPError,
-            strict=True,
-        ),
-    )
-
     with assert_status_error(
         "No quotas found",
         server_version,
@@ -698,8 +619,6 @@ def test_quota(
         assert props["quotals_urldescrip"] == "Learn more"
 
     with subtests.test(msg="completeCount"):
-        if server_version < (6, 9, 0):
-            pytest.xfail("completeCount is not supported in LimeSurvey < 6.9.0")
         props = client.get_quota_properties(quota_id)
         assert int(props["completeCount"]) == 0
 
@@ -721,51 +640,17 @@ def test_quota(
 
 
 @pytest.mark.parametrize(
-    ("action", "min_version"),
+    "action",
     [
-        pytest.param(
-            enums.QuotaAction.TERMINATE,
-            "6.0.0",
-            id=enums.QuotaAction.TERMINATE,
-        ),
-        pytest.param(
-            enums.QuotaAction.CONFIRM_TERMINATE,
-            "6.0.0",
-            id=enums.QuotaAction.CONFIRM_TERMINATE,
-        ),
-        # New (6.6.7+) quota options
-        pytest.param(
-            enums.QuotaAction.TERMINATE_PAGES,
-            "6.6.7",
-            id=enums.QuotaAction.TERMINATE_PAGES,
-        ),
-        pytest.param(
-            enums.QuotaAction.TERMINATE_VISIBLE_HIDDEN,
-            "6.6.7",
-            id=enums.QuotaAction.TERMINATE_VISIBLE_HIDDEN,
-        ),
+        enums.QuotaAction.TERMINATE,
+        enums.QuotaAction.CONFIRM_TERMINATE,
+        enums.QuotaAction.TERMINATE_PAGES,
+        enums.QuotaAction.TERMINATE_VISIBLE_HIDDEN,
     ],
 )
 @pytest.mark.integration_test
-def test_add_quota(
-    request: pytest.FixtureRequest,
-    client: citric.Client,
-    server_version: semver.VersionInfo,
-    survey_id: int,
-    action: enums.QuotaAction,
-    min_version: str,
-):
+def test_add_quota(client: citric.Client, survey_id: int, action: enums.QuotaAction):
     """Test adding a quota."""
-    request.applymarker(
-        pytest.mark.xfail(
-            server_version < semver.VersionInfo.parse(min_version),
-            reason=(
-                "Operation is not supported in LimeSurvey "
-                f"{server_version} < {min_version}"
-            ),
-            strict=True,
-        ),
-    )
     quota_id = client.add_quota(survey_id, "Test Quota", 100, action=action)
     props = client.get_quota_properties(quota_id)
     assert int(props["action"]) == action.integer_value
@@ -785,25 +670,8 @@ def test_activate_survey(client: citric.Client, survey_id: int):
 
 
 @pytest.mark.integration_test
-def test_activate_survey_with_settings(
-    request: pytest.FixtureRequest,
-    client: citric.Client,
-    server_version: semver.VersionInfo,
-    survey_id: int,
-):
+def test_activate_survey_with_settings(client: citric.Client, survey_id: int):
     """Test whether the survey gets activated with the requested settings."""
-    min_version = (5, 6, 45) if server_version < (6, 0) else (6, 3, 5)
-    request.applymarker(
-        pytest.mark.xfail(
-            server_version < min_version,
-            reason=(
-                "The user_activation_settings parameter is not supported in LimeSurvey "
-                f"{server_version} < {'.'.join(str(v) for v in min_version)}"
-            ),
-            strict=True,
-        ),
-    )
-
     properties_before = client.get_survey_properties(
         survey_id,
         ["active", "anonymized", "ipaddr"],
@@ -838,13 +706,7 @@ def test_activate_tokens(
 ):
     """Test whether the participants table gets activated."""
     client.activate_survey(survey_id)
-
-    # LimeSurvey 6.15.4+ changed the error message
-    if server_version >= (6, 15, 4):
-        expected_status = "Error: No survey participant list"
-    else:
-        expected_status = "No survey participants table"
-
+    expected_status = "Error: No survey participant list"
     with assert_status_error(
         expected_status,
         server_version,
@@ -1074,12 +936,6 @@ def test_responses(
             assert response["G02Q04"] == bool_string_value
 
     with subtests.test(msg="Convert Y to 1 and N to 0"):
-        if server_version < (6, 11, 0):
-            pytest.xfail(
-                f"LimeSurvey {server_version} < 6.11.0 doesn't support 0 for "
-                "answer codes"
-            )
-
         json_responses = client.export_responses(
             survey_id,
             file_format="json",
@@ -1147,7 +1003,9 @@ def test_summary(
     with (
         subtests.test(msg="Invalid stat name"),
         assert_status_error(
-            "Invalid summary key", server_version, error_code="ERR_INVALID_PARAMETERS"
+            "Invalid summary key",
+            server_version,
+            error_code="ERR_INVALID_PARAMETERS",
         ),
     ):
         client.get_summary_stat(survey_id, "not_valid")  # type: ignore[arg-type]  # ty:ignore[invalid-argument-type]
@@ -1253,18 +1111,6 @@ def test_response_files(  # noqa: PLR0914
     by_response_id: bool,  # noqa: FBT001
 ) -> None:
     """Test response files."""
-    if by_response_id:
-        request.applymarker(
-            pytest.mark.xfail(
-                server_version < (6, 0, 0),
-                reason=(
-                    "Getting uploaded files by response ID is not supported in "
-                    f"LimeSurvey {server_version} < 6.0.0"
-                ),
-                strict=True,
-            ),
-        )
-
     token = "T00000"
     fieldname = client._fieldname_from_question(file_upload_question)
 
@@ -1407,23 +1253,8 @@ def test_file_upload_invalid_extension(
 
 
 @pytest.mark.integration_test
-def test_get_available_site_settings(
-    request: pytest.FixtureRequest,
-    client: citric.Client,
-    server_version: semver.VersionInfo,
-):
+def test_get_available_site_settings(client: citric.Client):
     """Test getting available site settings."""
-    request.applymarker(
-        pytest.mark.xfail(
-            server_version < (6, 0, 0),
-            reason=(
-                "RPC method `get_available_site_settings` is not supported in "
-                f"LimeSurvey {server_version} < 6.0.0"
-            ),
-            raises=requests.exceptions.HTTPError,
-            strict=True,
-        ),
-    )
     assert client.get_available_site_settings()
 
 

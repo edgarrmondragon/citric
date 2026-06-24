@@ -4,7 +4,6 @@
   {"python-version": "3.15",  "image_tag": "7-apache", "database": "postgres", "schedule_only": false},
   {"python-version": "3.14",  "image_tag": "7-apache", "database": "mysql",    "schedule_only": false},
   {"python-version": "3.14",  "image_tag": "6-apache", "database": "mysql",    "schedule_only": true},
-  {"python-version": "3.14",  "image_tag": "5-apache", "database": "mysql",    "schedule_only": true},
   {"python-version": "3.14",  "ref": "refs/heads/develop-minor", "context": "https://github.com/martialblog/docker-limesurvey.git#master:7.0/apache", "database": "postgres", "schedule_only": true},
   {"python-version": "3.14",  "ref": "refs/heads/develop-major", "context": "https://github.com/martialblog/docker-limesurvey.git#master:7.0/apache", "database": "postgres", "schedule_only": true},
   {"python-version": "3.14",  "ref": "refs/heads/v6.x",          "context": "https://github.com/martialblog/docker-limesurvey.git#master:6.0/apache", "database": "postgres", "schedule_only": true},
