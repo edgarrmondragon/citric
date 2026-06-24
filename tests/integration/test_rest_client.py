@@ -94,12 +94,10 @@ def test_update_question_answers(
     """Test updating question answers."""
 
     def _question_answers(s: dict[str, Any]) -> tuple[int, list]:
-        def _inner() -> Generator[tuple[int, list]]:
-            for question in s["questionGroups"][0]["questions"]:  # pragma: no branch
-                if answers := question.get("answers"):  # pragma: no branch
-                    yield question["qid"], answers
-
-        return next(_inner())
+        question = next(
+            q for q in s["questionGroups"][0]["questions"] if q.get("answers")
+        )
+        return question["qid"], question["answers"]
 
     survey = rest_client.get_survey_details(survey_id=survey_with_question_answers)
     qid, answers = _question_answers(survey)
@@ -214,12 +212,10 @@ def test_patch_subquestions(
     """Test patching subquestions."""
 
     def _subquestions(s: dict[str, Any]) -> tuple[int, list]:
-        def _inner() -> Generator[tuple[int, list]]:
-            for question in s["questionGroups"][0]["questions"]:  # pragma: no branch
-                if subquestions := question.get("subquestions"):  # pragma: no branch
-                    yield question["qid"], subquestions
-
-        return next(_inner())
+        question = next(
+            q for q in s["questionGroups"][0]["questions"] if q.get("subquestions")
+        )
+        return question["qid"], question["subquestions"]
 
     survey = rest_client.get_survey_details(survey_id=survey_with_question_answers)
     qid, subquestions = _subquestions(survey)
