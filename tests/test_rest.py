@@ -72,39 +72,37 @@ def api_handler(backend: tinydb.TinyDB) -> APIHandler:
     content_type = "application/json"
 
     def handler(request: Request) -> Response:
-        if request.path.endswith("/rest/v1/survey"):
-            surveys = backend.table("surveys")
-            if request.method == "GET":  # pragma: no branch
-                return Response(
-                    json.dumps({"surveys": surveys.all()}),
-                    content_type=content_type,
-                )
+        surveys = backend.table("surveys")
 
-        if "/rest/v1/survey-detail" in request.path:  # pragma: no branch
-            surveys = backend.table("surveys")
+        if request.path.endswith("/rest/v1/survey") and request.method == "GET":
+            return Response(
+                json.dumps({"surveys": surveys.all()}),
+                content_type=content_type,
+            )
+
+        if "/rest/v1/survey-detail" in request.path and request.method == "GET":
             survey_id = int(request.path.split("/")[-1])
-            if request.method == "GET":
-                return Response(
-                    json.dumps({"survey": surveys.get(doc_id=survey_id)}),
-                    content_type=content_type,
-                )
+            return Response(
+                json.dumps({"survey": surveys.get(doc_id=survey_id)}),
+                content_type=content_type,
+            )
 
-            if request.method == "PATCH":  # pragma: no branch
-                surveys.update_multiple(
-                    [
-                        (patch["props"], tinydb.where("sid") == patch["id"])
-                        for patch in request.json["patch"]
-                    ],
-                )
-                return Response(
-                    json.dumps(
-                        {
-                            "operationsApplied": len(request.json["patch"]),
-                            "erronousOperations": [],
-                        },
-                    ),
-                    content_type=content_type,
-                )
+        if "/rest/v1/survey-detail" in request.path and request.method == "PATCH":
+            surveys.update_multiple(
+                [
+                    (patch["props"], tinydb.where("sid") == patch["id"])
+                    for patch in request.json["patch"]
+                ],
+            )
+            return Response(
+                json.dumps(
+                    {
+                        "operationsApplied": len(request.json["patch"]),
+                        "erronousOperations": [],
+                    },
+                ),
+                content_type=content_type,
+            )
 
         return Response(status=400)  # pragma: no cover
 
