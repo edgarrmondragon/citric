@@ -41,7 +41,7 @@ def env_file(
     dotenv.set_key(env_file, "LS_USER", integration_username)
     dotenv.set_key(env_file, "LS_PASSWORD", integration_password)
 
-    if git_reference:
+    if git_reference:  # pragma: no cover
         archive_url = (
             f"https://github.com/LimeSurvey/LimeSurvey/archive/{git_reference}.tar.gz"
         )
@@ -76,7 +76,7 @@ def docker_compose_file(
     if database_type == "mysql":
         files.append("compose.mysql.yaml")
 
-    if git_reference:
+    if git_reference:  # pragma: no cover
         files.append("compose.git-ref.yaml")
 
     return [pytestconfig.rootpath / "tests" / file for file in files]
@@ -91,7 +91,7 @@ def integration_url(docker_ip: str, docker_services: Services) -> str:
     def _check_connection() -> bool:
         try:
             return requests.get(f"{url}/index.php", timeout=5).status_code == 200
-        except requests.RequestException:
+        except requests.RequestException:  # pragma: no cover
             return False
 
     docker_services.wait_until_responsive(
@@ -111,7 +111,7 @@ def integration_mailpit_url(docker_ip: str, docker_services: Services) -> str:
     def _check_connection() -> bool:
         try:
             return requests.get(f"{url}/api/v1/messages", timeout=5).status_code == 200
-        except requests.RequestException:
+        except requests.RequestException:  # pragma: no cover
             return False
 
     docker_services.wait_until_responsive(

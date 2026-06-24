@@ -74,13 +74,13 @@ def api_handler(backend: tinydb.TinyDB) -> APIHandler:
     def handler(request: Request) -> Response:
         if request.path.endswith("/rest/v1/survey"):
             surveys = backend.table("surveys")
-            if request.method == "GET":
+            if request.method == "GET":  # pragma: no branch
                 return Response(
                     json.dumps({"surveys": surveys.all()}),
                     content_type=content_type,
                 )
 
-        if "/rest/v1/survey-detail" in request.path:
+        if "/rest/v1/survey-detail" in request.path:  # pragma: no branch
             surveys = backend.table("surveys")
             survey_id = int(request.path.split("/")[-1])
             if request.method == "GET":
@@ -89,7 +89,7 @@ def api_handler(backend: tinydb.TinyDB) -> APIHandler:
                     content_type=content_type,
                 )
 
-            if request.method == "PATCH":
+            if request.method == "PATCH":  # pragma: no branch
                 surveys.update_multiple(
                     [
                         (patch["props"], tinydb.where("sid") == patch["id"])
@@ -106,7 +106,7 @@ def api_handler(backend: tinydb.TinyDB) -> APIHandler:
                     content_type=content_type,
                 )
 
-        return Response(status=400)
+        return Response(status=400)  # pragma: no cover
 
     return handler
 
