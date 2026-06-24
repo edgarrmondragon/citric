@@ -25,11 +25,6 @@ if TYPE_CHECKING:
 DEFAULT_TAGS = (
     "7-apache",
     "6-apache",
-    "5-apache",
-    "6.0.0-230405-apache",
-    "6.2.0-230732-apache",
-    "6.6.0-240729-apache",
-    "6.15.20-251021-apache",
 )
 SKIP_TAGS = (
     "6.15.18-251016-apache",  # PATCH for question answers is broken
@@ -156,13 +151,13 @@ def main() -> None:
         file.write("\n")
 
     with args.markdown_block_file.open("w") as file:
-        # 1. Filter out '6-apache' and '5-apache' tags
+        # 1. Filter out  '<major>-apache' tags
         # 2. Sort tags by version
         # 3. Convert '6.10.5-250217-apache' to '- {ls_tag}`6.10.0+250
         tags = [
             tag
             for tag in sorted(tags, key=_version_parts, reverse=True)
-            if tag not in {"7-apache", "6-apache", "5-apache"}
+            if tag not in {"7-apache", "6-apache"}
         ]
 
         for tag in tags:

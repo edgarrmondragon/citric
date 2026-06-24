@@ -1,0 +1,5 @@
+kind: Changed
+body: est only on latest 7.x and 6.x tags, stop testing on 5.x and legacy 6.x tags
+time: 2026-06-23T20:54:43.614811-06:00
+custom:
+    Issue: "1793"
