@@ -85,3 +85,8 @@ repos:
         args: [--inject-junk]
         additional_dependencies:
           - hatchling==1.29.0
+
+  - repo: https://github.com/rhysd/actionlint
+    rev: v1.7.12
+    hooks:
+      - id: actionlint

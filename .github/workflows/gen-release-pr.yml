@@ -112,7 +112,7 @@ jobs:
         branch_name="release/${VERSION}"
 
         git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
-        git checkout -b $branch_name
+        git checkout -b "$branch_name"
         git add .
 
         if git diff --staged --quiet; then
@@ -121,8 +121,8 @@ jobs:
         fi
 
         git commit -m "chore: Release ${VERSION}"
-        git fetch origin $branch_name || true
-        git push --force-with-lease origin $branch_name
+        git fetch origin "$branch_name" || true
+        git push --force-with-lease origin "$branch_name"
 
         cat > /tmp/pr-body.md << 'EOF'
         Checklist:

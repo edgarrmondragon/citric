@@ -186,11 +186,11 @@ jobs:
         ALL_INTEGRATIONS: ${{ inputs.all_integrations }}
       run: |
         if [[ "$GITHUB_EVENT_NAME" == "schedule" || "$ALL_INTEGRATIONS" == "true" || "$GITHUB_HEAD_REF" == release/* ]]; then
-          echo "tags=$(cat .github/tags.json | jq -c .)" >> $GITHUB_OUTPUT
-          echo "includes=$(cat .github/include_tags.json | jq -c '[.[] | del(.schedule_only)]')" >> $GITHUB_OUTPUT
+          echo "tags=$(cat .github/tags.json | jq -c .)" >> "$GITHUB_OUTPUT"
+          echo "includes=$(cat .github/include_tags.json | jq -c '[.[] | del(.schedule_only)]')" >> "$GITHUB_OUTPUT"
         else
-          echo "tags=$(cat .github/default_tags.json | jq -c .)" >> $GITHUB_OUTPUT
-          echo "includes=$(cat .github/include_tags.json | jq -c '[.[] | select(.schedule_only == false) | del(.schedule_only)]')" >> $GITHUB_OUTPUT
+          echo "tags=$(cat .github/default_tags.json | jq -c .)" >> "$GITHUB_OUTPUT"
+          echo "includes=$(cat .github/include_tags.json | jq -c '[.[] | select(.schedule_only == false) | del(.schedule_only)]')" >> "$GITHUB_OUTPUT"
         fi
 
   integration:
@@ -235,7 +235,7 @@ jobs:
       env:
         REF: ${{ matrix.ref }}
       run: |
-        echo "CLEAN_REF=$(echo "$REF" | tr / -)" >> $GITHUB_ENV
+        echo "CLEAN_REF=$(echo "$REF" | tr / -)" >> "$GITHUB_ENV"
 
     - name: Install tools
       uses: ./.github/actions/install-tools

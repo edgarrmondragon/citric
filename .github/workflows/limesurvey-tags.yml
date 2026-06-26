@@ -33,6 +33,7 @@ jobs:
       uses: ./.github/actions/install-tools
       with:
         nox-version: ${{ env.NOX_VERSION }}
+        uv-cache-suffix: update-tags
         uv-version: ${{ env.UV_VERSION }}
 
     - name: Update tags

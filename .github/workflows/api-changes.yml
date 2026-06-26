@@ -49,8 +49,8 @@ jobs:
 
     - name: Install tools
       run: |
-        uv tool install --with nox==${NOX_VERSION} nox
-        uv tool install --with griffecli==${GRIFFECLI_VERSION} griffecli
+        uv tool install --with nox=="${NOX_VERSION}" nox
+        uv tool install --with griffecli=="${GRIFFECLI_VERSION}" griffecli
         uv tool list
       env:
         NOX_VERSION: ${{ env.NOX_VERSION }}
@@ -62,11 +62,11 @@ jobs:
       env:
         BASE_SHA: ${{ github.event.pull_request.base.sha }}
       run: |
-        echo "ref=$BASE_SHA" >> $GITHUB_OUTPUT
+        echo "ref=$BASE_SHA" >> "$GITHUB_OUTPUT"
 
     # Check API against the latest commit on the base branch
     - name: Run Nox
       env:
         REF: ${{ steps.set-ref.outputs.ref }}
       run: |
-        nox -- ${REF}
+        nox -- "${REF}"
