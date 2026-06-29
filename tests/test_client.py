@@ -9,6 +9,7 @@ from typing import TYPE_CHECKING, Any
 import pytest
 
 from citric.client import Client, ServerVersion
+from citric.objects import Survey
 from citric.session import Session
 
 if sys.version_info >= (3, 12):
@@ -79,3 +80,16 @@ def test_invite_participants_unknown_status(client: MockClient):
 def test_parse_server_version(raw: str, parsed: tuple):
     """Test server version parsing."""
     assert ServerVersion.parse(raw) == parsed
+
+
+def test_update_survey(client: MockClient):
+    """update_survey delegates to set_survey_properties via Survey.to_dict()."""
+    survey = Survey(
+        language="de",
+        title="Test",
+        admin="Jane",
+        adminemail="jane@example.com",
+        format="S",
+    )
+    result: dict[str, Any] = client.update_survey(123, survey)
+    assert result["params"][1] == survey.to_dict()

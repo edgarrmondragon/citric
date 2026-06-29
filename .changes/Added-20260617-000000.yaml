@@ -1,0 +1,5 @@
+kind: Added
+body: New `Survey`, `SurveyL10n`, and `QuestionGroup` classes for composing surveys as Python objects, exportable as LSS XML via `to_lss()` and updatable via `Client.update_survey()`
+time: 2026-06-17T00:00:00.000000-06:00
+custom:
+    Issue: "1679"
