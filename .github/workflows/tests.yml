@@ -187,10 +187,10 @@ jobs:
       run: |
         if [[ "$GITHUB_EVENT_NAME" == "schedule" || "$ALL_INTEGRATIONS" == "true" || "$GITHUB_HEAD_REF" == release/* ]]; then
           echo "tags=$(jq -c . < .github/tags.json)" >> "$GITHUB_OUTPUT"
-          echo "includes=$(jq -c '[.[] | del(.schedule_only)]') < .github/include_tags.json " >> "$GITHUB_OUTPUT"
+          echo "includes=$(jq -c '[.[] | del(.schedule_only)]' < .github/include_tags.json)" >> "$GITHUB_OUTPUT"
         else
           echo "tags=$(jq -c . < .github/default_tags.json)" >> "$GITHUB_OUTPUT"
-          echo "includes=$(jq -c '[.[] | select(.schedule_only == false) | del(.schedule_only)]' < .github/include_tags.json )" >> "$GITHUB_OUTPUT"
+          echo "includes=$(jq -c '[.[] | select(.schedule_only == false) | del(.schedule_only)]' < .github/include_tags.json)" >> "$GITHUB_OUTPUT"
         fi
 
   integration:
