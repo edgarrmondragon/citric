@@ -11,7 +11,7 @@ update-github-actions:
 
 # Command to update pre-commit hooks
 update-pre-commit-hooks:
-    -uvx prek autoupdate --cooldown-days=7
+    -uvx --with 'prek>=0.4.8' prek update --cooldown-days=7
 
 # Update Docker tags
 update-tags:
