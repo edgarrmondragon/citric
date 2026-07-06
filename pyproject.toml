@@ -311,7 +311,6 @@ testpaths = [
   "tests",
 ]
 
-[tool.coverage]
 [tool.coverage.paths]
 package = [
   "src/citric/",
