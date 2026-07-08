@@ -26,7 +26,7 @@ update-docs:
 docs-serve:
     ./noxfile.py -s docs-serve
 
-test: pre-commit lint nox
+test: pre-commit nox
 
 # Run pre-commit checks
 pre-commit:
@@ -38,7 +38,7 @@ lint:
 
 # Run all default nox sessions
 nox:
-    -./noxfile.py -s
+    -./noxfile.py
 
 venv:
     uv venv --clear

@@ -35,76 +35,6 @@ python_versions = [
 locations = "src", "tests", "docs/conf.py"
 
 
-@nox.session(python=python_versions, tags=["test"])
-@nox.parametrize("constraints", ["highest", "lowest-direct"])
-def tests(session: nox.Session, constraints: str) -> None:
-    """Execute pytest tests and compute coverage."""
-    env = {"COVERAGE_CORE": "sysmon"}
-    install_args = [".", "--group=test"]
-    if constraints == "lowest-direct":
-        install_args.append("--resolution=lowest-direct")
-
-    if session.python.endswith("t"):
-        env["PYTHON_GIL"] = "0"
-
-    session.install(*install_args)
-
-    session.run(
-        "coverage",
-        "run",
-        "-m",
-        "pytest",
-        "-m",
-        "not integration_test",
-        *session.posargs,
-        env=env,
-    )
-
-
-@nox.session(tags=["test"])
-def integration(session: nox.Session) -> None:
-    """Execute integration tests and compute coverage."""
-    session.install(".", "--group=test", f"--python={session.virtualenv.location}")
-    session.run(
-        "coverage",
-        "run",
-        "-m",
-        "pytest",
-        "--integration",
-        "-m",
-        "integration_test",
-        *session.posargs,
-        env={"COVERAGE_CORE": "sysmon"},
-    )
-
-
-@nox.session(tags=["test"])
-def xdoctest(session: nox.Session) -> None:
-    """Run examples with xdoctest."""
-    if session.posargs:
-        args = [package, *session.posargs]
-    else:
-        args = [f"--modname={package}", "--command=all"]
-        if FORCE_COLOR in os.environ:
-            args.append("--colored=1")
-
-    session.install(".", "--group=test")
-    session.run("python", "-m", "xdoctest", *args)
-
-
-@nox.session(default=False)
-def coverage(session: nox.Session) -> None:
-    """Upload coverage data."""
-    args = session.posargs or ["report"]
-
-    session.install("coverage[toml]")
-
-    if not session.posargs and any(Path().glob(".coverage.*")):
-        session.run("coverage", "combine", "--debug=pathmap")
-
-    session.run("coverage", *args)
-
-
 @nox.session(name="deps", tags=["lint"])
 def dependencies(session: nox.Session) -> None:
     """Check issues with dependencies."""
@@ -112,7 +42,7 @@ def dependencies(session: nox.Session) -> None:
     if session.python == "3.15":
         install_env["PYO3_USE_ABI3_FORWARD_COMPATIBILITY"] = "1"
 
-    session.install("citric @ .", env=install_env)
+    session.install("citric @ .", "--group", "dev", env=install_env)
     session.install("deptry")
     session.run("deptry", "src", "tests", "docs")
 
@@ -165,6 +95,76 @@ def docs_build(session: nox.Session) -> None:
         "language=en",
         *args,
     )
+
+
+@nox.session(tags=["test"])
+def xdoctest(session: nox.Session) -> None:
+    """Run examples with xdoctest."""
+    if session.posargs:
+        args = [package, *session.posargs]
+    else:
+        args = [f"--modname={package}", "--command=all"]
+        if FORCE_COLOR in os.environ:
+            args.append("--colored=1")
+
+    session.install(".", "--group=test")
+    session.run("python", "-m", "xdoctest", *args)
+
+
+@nox.session(python=python_versions, tags=["test"])
+@nox.parametrize("constraints", ["highest", "lowest-direct"])
+def test(session: nox.Session, constraints: str) -> None:
+    """Execute pytest tests and compute coverage."""
+    env = {"COVERAGE_CORE": "sysmon"}
+    install_args = [".", "--group=test"]
+    if constraints == "lowest-direct":
+        install_args.append("--resolution=lowest-direct")
+
+    if session.python.endswith("t"):
+        env["PYTHON_GIL"] = "0"
+
+    session.install(*install_args)
+
+    session.run(
+        "coverage",
+        "run",
+        "-m",
+        "pytest",
+        "-m",
+        "not integration_test",
+        *session.posargs,
+        env=env,
+    )
+
+
+@nox.session(tags=["test"])
+def integration(session: nox.Session) -> None:
+    """Execute integration tests and compute coverage."""
+    session.install(".", "--group=test", f"--python={session.virtualenv.location}")
+    session.run(
+        "coverage",
+        "run",
+        "-m",
+        "pytest",
+        "--integration",
+        "-m",
+        "integration_test",
+        *session.posargs,
+        env={"COVERAGE_CORE": "sysmon"},
+    )
+
+
+@nox.session(default=False)
+def coverage(session: nox.Session) -> None:
+    """Upload coverage data."""
+    args = session.posargs or ["report"]
+
+    session.install("coverage[toml]")
+
+    if not session.posargs and any(Path().glob(".coverage.*")):
+        session.run("coverage", "combine", "--debug=pathmap")
+
+    session.run("coverage", *args)
 
 
 @nox.session(name="docs-serve", python=DOCS_PYTHON, default=False)

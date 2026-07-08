@@ -3,7 +3,7 @@
 After you've [set up your environment][environment], you can run tests on available Python interpreters:
 
 ```shell
-nox -s tests
+nox -s test
 ```
 
 ## Integration tests

@@ -228,11 +228,6 @@ pydocstyle.convention = "google"
 pylint.max-args = 10
 preview = true
 
-[tool.deptry]
-pep621_dev_dependency_groups = [
-  "dev",
-  "docs",
-]
 [tool.deptry.package_module_name_map]
 backports-strenum = [ "backports", "strenum" ]
 types-requests = "requests"
@@ -275,10 +270,6 @@ warn_unused_configs = true
 
 [tool.pyrefly]
 search-path = [ "." ]
-[[tool.pyrefly.sub-config]]
-matches = "tests/**"
-[tool.pyrefly.sub-config.errors]
-no-access = false
 
 [tool.ty.rules]
 missing-override-decorator = "error"
