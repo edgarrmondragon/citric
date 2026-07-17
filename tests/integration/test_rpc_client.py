@@ -1071,7 +1071,7 @@ def file_upload_question(
     return question
 
 
-def assert_uploaded_files(  # noqa: D103
+def assert_uploaded_files(
     files: Iterable[tuple[ReadableFile, FileUploadResult, bytes]],
     subtests: pytest.Subtests,
 ) -> None:
@@ -1084,7 +1084,7 @@ def assert_uploaded_files(  # noqa: D103
             assert down["content"].read() == content
 
 
-def assert_downloaded_files(  # noqa: D103
+def assert_downloaded_files(
     files: Iterable[tuple[Path, FileUploadResult, bytes]],
     subtests: pytest.Subtests,
 ) -> None:

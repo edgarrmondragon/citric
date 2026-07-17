@@ -220,10 +220,12 @@ def _add_base_question_fields(
     gid: str,
     question: Question,
     order: int,
+    *,
+    sid: str = "0",
 ) -> None:
     _add_val(row, "qid", str(qid))
     _add_val(row, "parent_qid", str(parent_qid))
-    _add_val(row, "sid", "0")
+    _add_val(row, "sid", sid)
     _add_val(row, "gid", gid)
     _add_val(row, "type", question.type)
     _add_val(row, "title", question.title)
