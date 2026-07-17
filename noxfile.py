@@ -111,19 +111,32 @@ def xdoctest(session: nox.Session) -> None:
     session.run("python", "-m", "xdoctest", *args)
 
 
+@nox.session(python=python_versions[0], tags=["test"])
+def lowest(session: nox.Session) -> None:
+    """Execute pytest tests on the lowest supported Python."""
+    env = {"COVERAGE_CORE": "sysmon"}
+    session.install(".", "--group=test", "--resolution=lowest-direct")
+    session.run(
+        "coverage",
+        "run",
+        "-m",
+        "pytest",
+        "-m",
+        "not integration_test",
+        *session.posargs,
+        env=env,
+    )
+
+
 @nox.session(python=python_versions, tags=["test"])
-@nox.parametrize("constraints", ["highest", "lowest-direct"])
-def test(session: nox.Session, constraints: str) -> None:
+def test(session: nox.Session) -> None:
     """Execute pytest tests and compute coverage."""
     env = {"COVERAGE_CORE": "sysmon"}
-    install_args = [".", "--group=test"]
-    if constraints == "lowest-direct":
-        install_args.append("--resolution=lowest-direct")
 
     if session.python.endswith("t"):
         env["PYTHON_GIL"] = "0"
 
-    session.install(*install_args)
+    session.install(".", "--group=test")
 
     session.run(
         "coverage",
