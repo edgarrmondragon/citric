@@ -344,7 +344,7 @@ class Client:  # noqa: PLR0904
 
     def add_survey(
         self,
-        survey_id: int,
+        survey_id: int | None,
         title: str,
         language: str,
         survey_format: str | enums.NewSurveyType = "G",
@@ -354,7 +354,8 @@ class Client:  # noqa: PLR0904
         Calls :rpc_method:`add_survey`.
 
         Args:
-            survey_id: The desired ID of the Survey to add.
+            survey_id: The desired ID of the Survey to add. If None, LimeSurvey will
+                automatically set a random ID on creation.
             title: Title of the new Survey.
             language: Default language of the Survey.
             survey_format: Question appearance format (A, G or S) for "All on one page",
