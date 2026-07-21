@@ -1,7 +1,5 @@
 """Upload survey files to S3."""
 
-from __future__ import annotations
-
 # start example
 import json
 

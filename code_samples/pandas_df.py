@@ -1,7 +1,5 @@
 """Export survey responses to a Pandas DataFrame."""
 
-from __future__ import annotations
-
 # start example
 import io
 

@@ -1,5 +1,7 @@
 """Citric Python types."""
 
+# ruff:file-ignore[typing-only-standard-library-import,typing-only-first-party-import]
+
 from __future__ import annotations
 
 import io

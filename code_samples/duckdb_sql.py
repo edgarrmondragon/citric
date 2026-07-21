@@ -1,9 +1,5 @@
 """Export survey responses to a DuckDB database."""
 
-from __future__ import annotations
-
-# ruff: noqa: I001
-
 # start example
 from pathlib import Path
 

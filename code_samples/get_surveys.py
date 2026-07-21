@@ -1,9 +1,5 @@
 """Get all surveys and questions from user "iamadmin"."""
 
-# ruff: noqa: T201
-
-from __future__ import annotations
-
 # start example
 from citric import Client
 

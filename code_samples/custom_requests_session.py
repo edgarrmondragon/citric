@@ -1,7 +1,5 @@
 """Example of using a custom requests.Session object with the client."""
 
-from __future__ import annotations
-
 # start example
 import requests_cache
 from citric import Client

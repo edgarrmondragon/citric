@@ -1,7 +1,5 @@
 """Create and import a question using Python objects."""
 
-from __future__ import annotations
-
 # start example
 from citric import Client
 from citric.objects import AnswerOption, Question, QuestionL10n

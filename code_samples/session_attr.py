@@ -1,7 +1,5 @@
 """Example of using the Client.session attribute to call RPC methods directly."""
 
-from __future__ import annotations
-
 from citric import Client
 
 # start example

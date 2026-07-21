@@ -1,7 +1,5 @@
 """Use reticulate to export LimeSurvey data to R."""
 
-from __future__ import annotations
-
 # start example
 # export_ls_responses.py
 import io

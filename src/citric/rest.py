@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from importlib import metadata
-from typing import TYPE_CHECKING, Any, Type  # noqa: UP035
+from typing import TYPE_CHECKING, Any, Type  # ruff:ignore[deprecated-import]
 
 import requests
 
@@ -119,7 +119,7 @@ class RESTClient:
         path: str,
         *,
         params: Mapping[str, Any] | None = None,
-        json: Any | None = None,  # noqa: ANN401
+        json: Any | None = None,  # ruff:ignore[any-type]
     ) -> requests.Response:
         """Make a request to the REST API.
 
@@ -151,7 +151,7 @@ class RESTClient:
 
     def __exit__(
         self,
-        exc_type: Type[BaseException] | None,  # noqa: UP006
+        exc_type: Type[BaseException] | None,  # ruff:ignore[non-pep585-annotation]
         exc_value: BaseException | None,
         traceback: TracebackType | None,
     ) -> None:

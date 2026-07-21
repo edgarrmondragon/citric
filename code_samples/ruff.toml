@@ -2,7 +2,7 @@ extend = "../pyproject.toml"
 
 [lint]
 ignore = [
-  "INP001", # implicit-namespace-package
+  "implicit-namespace-package",
 ]
 
 [lint.isort]

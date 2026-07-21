@@ -30,7 +30,7 @@ class MockSession(Session):
         """Process a mock RPC call."""
         return {"method": method, "params": [*params]}
 
-    def export_timeline(self, *args: Any) -> dict[str, int]:
+    def export_timeline(self, *args: Any) -> dict[str, int]:  # ruff:ignore[unused-method-argument]
         """Mock submission timeline."""
         return {"2022-01-01": 4, "2022-01-02": 2}
 

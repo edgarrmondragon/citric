@@ -1,7 +1,5 @@
 """Example of using the context manager to automatically clean up the session key."""
 
-from __future__ import annotations
-
 # start example
 from citric import Client
 

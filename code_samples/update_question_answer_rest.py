@@ -1,9 +1,5 @@
 """Example: Update question answer properties using the REST API."""
 
-# ruff: noqa: T201
-
-from __future__ import annotations
-
 # start example
 from citric.rest import RESTClient
 

@@ -6,7 +6,7 @@ import json
 import logging
 import random
 from importlib import metadata
-from typing import TYPE_CHECKING, Any, Type  # noqa: UP035
+from typing import TYPE_CHECKING, Any, Type  # ruff:ignore[deprecated-import]
 
 import requests
 
@@ -106,7 +106,7 @@ class Session:
         *,
         auth_plugin: str = "Authdb",
         requests_session: requests.Session | None = None,
-        json_encoder: Type[json.JSONEncoder] | None = None,  # noqa: UP006
+        json_encoder: Type[json.JSONEncoder] | None = None,  # ruff:ignore[non-pep585-annotation]
     ) -> None:
         self.url: str = url
         self._session = requests_session or requests.session()
@@ -188,7 +188,7 @@ class Session:
                 (empty response).
             InvalidJSONResponseError: If the response is not valid JSON.
         """
-        request_id = random.randint(1, 999_999)  # noqa: S311
+        request_id = random.randint(1, 999_999)  # ruff:ignore[suspicious-non-cryptographic-random-usage]
 
         payload = {
             "method": method,
@@ -244,7 +244,7 @@ class Session:
 
     def __exit__(
         self,
-        exc_type: Type[BaseException] | None,  # noqa: UP006
+        exc_type: Type[BaseException] | None,  # ruff:ignore[non-pep585-annotation]
         exc_value: BaseException | None,
         traceback: TracebackType | None,
     ) -> None:

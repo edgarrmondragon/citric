@@ -59,7 +59,7 @@ def typing(session: nox.Session) -> None:
     session.run(
         "ty",
         "check",
-        f"--output-format={'github' if os.getenv('GITHUB_ACTIONS') == 'true' else 'concise'}",  # noqa: E501
+        f"--output-format={'github' if os.getenv('GITHUB_ACTIONS') == 'true' else 'concise'}",  # ruff:ignore[line-too-long]
         *args,
     )
 
@@ -75,7 +75,7 @@ def docs_build(session: nox.Session) -> None:
     """Build the documentation."""
     session.install(".", "-r=requirements/docs.requirements.txt")
 
-    if os.path.exists("build"):  # noqa: PTH110
+    if os.path.exists("build"):  # ruff:ignore[os-path-exists]
         shutil.rmtree("build")
 
     args = ["docs", "build"]

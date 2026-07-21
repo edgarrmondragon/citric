@@ -1,18 +1,14 @@
 """Python classes associated with LimeSurvey objects (surveys, questions, etc.)."""
 
-from __future__ import annotations
-
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, Any
+from typing import Any
+from uuid import UUID
 
-if TYPE_CHECKING:
-    from uuid import UUID
-
-    from citric.types import YesNo
+from citric.types import YesNo
 
 
 def to_yes_no(*, value: bool) -> YesNo:
-    """Convert boolean to yes/no string."""  # noqa: DOC201
+    """Convert boolean to yes/no string."""  # ruff:ignore[docstring-missing-returns]
     return "Y" if value else "N"
 
 

@@ -165,12 +165,12 @@ myst_heading_anchors = 2
 
 
 def skip_member_filter(
-    app: Sphinx,  # noqa: ARG001
-    what: str,  # noqa: ARG001
+    app: Sphinx,  # ruff:ignore[unused-function-argument]
+    what: str,  # ruff:ignore[unused-function-argument]
     name: str,
-    obj: Any,  # noqa: ARG001, ANN401
-    skip: bool,  # noqa: FBT001
-    options: Any,  # noqa: ARG001, ANN401
+    obj: Any,  # ruff:ignore[unused-function-argument, any-type]
+    skip: bool,  # ruff:ignore[boolean-type-hint-positional-argument]
+    options: Any,  # ruff:ignore[unused-function-argument, any-type]
 ) -> bool | None:
     """Filter autoapi members.
 

@@ -1,7 +1,5 @@
 """Example of using an auth plugin."""
 
-from __future__ import annotations
-
 # start example
 from citric import Client
 
