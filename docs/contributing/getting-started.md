@@ -10,7 +10,7 @@ You can contribute in many ways.
 ### Report bugs or request features
 
 Report bugs and request new features in the repo [issue tracker][new-issue].
-The issue forms will guide to include all necessary information, like package version,
+The issue forms will guide you to include all necessary information, like package version,
 Python version, operating system, and so on.
 
 ### Fix bugs or implement features
