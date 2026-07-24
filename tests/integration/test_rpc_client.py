@@ -16,6 +16,7 @@ from contextlib import contextmanager
 from datetime import datetime
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
+from unittest.mock import patch
 from urllib.parse import quote
 
 import bs4
@@ -872,7 +873,7 @@ def responses() -> list[dict]:
 
 
 @pytest.mark.integration_test
-def test_responses(
+def test_responses(  # ruff:ignore[too-many-statements]
     client: citric.Client,
     server_version: semver.VersionInfo,
     survey_id: int,
@@ -950,6 +951,20 @@ def test_responses(
         for i, response in enumerate(json_data["responses"]):
             int_value = 1 if responses[i]["G02Q04"] == "Y" else 0
             assert response["G02Q04"] == int_value
+
+    # Export responses as dictionaries
+    with subtests.test(msg="Export responses as dictionaries"):
+        dict_responses = client.export_responses_dict(survey_id)
+
+        assert len(dict_responses) == 3
+
+        with (
+            patch.object(client, "export_responses", return_value='{"test": []}'),
+            pytest.raises(
+                ValueError, match=r"The received JSON has not the expected structure\."
+            ),
+        ):
+            client.export_responses_dict(survey_id)
 
     # Save responses to a file
     filepath = tmp_path / "responses.json"
