@@ -5,6 +5,7 @@ from __future__ import annotations
 import base64
 import datetime
 import io
+import json
 import logging
 import re
 from dataclasses import dataclass
@@ -705,7 +706,7 @@ class Client:  # noqa: PLR0904
         Calls :rpc_method:`export_responses`.
 
         Args:
-            survey_id: Survey to add the response to.
+            survey_id: Survey from which responses should be exported.
             token: Optional participant token to get responses for.
             file_format: Type of export. One of PDF, CSV, XLS, DOC or JSON.
             language: Export responses made to this language version of the survey.
@@ -760,6 +761,66 @@ class Client:  # noqa: PLR0904
             ),
         )
 
+    def export_responses_dict(
+        self,
+        survey_id: int,
+        *,
+        token: str | None = None,
+        language: str | None = None,
+        completion_status: str | enums.SurveyCompletionStatus = "all",
+        heading_type: str | enums.HeadingType = "code",
+        response_type: str | enums.ResponseType = "short",
+        from_response_id: int | None = None,
+        to_response_id: int | None = None,
+        fields: Sequence[str] | None = None,
+        additional_options: types.ExportAdditionalOptions | None = None,
+    ) -> list[dict[str, Any]]:
+        """Export responses represented as dictionaries.
+
+        Calls :rpc_method:`export_responses`.
+
+        Args:
+            survey_id: Survey from which responses should be exported.
+            token: Optional participant token to get responses for.
+            language: Export responses made to this language version of the survey.
+            completion_status: Incomplete, complete or all.
+            heading_type: Use response codes, long or abbreviated titles.
+            response_type: Export long or short text responses.
+            from_response_id: First response to export.
+            to_response_id: Last response to export.
+            fields: Which response fields to export. If none, exports all fields.
+            additional_options: Dictionary of additional options to format the export.
+
+        Returns:
+            A list of responses represented as dictionaries
+
+
+        Raises:
+            ValueError: If the received JSON has not the expected structure
+
+        .. versionadded:: 2.2.2
+        """
+        dict_responses: dict[str, Any] = json.loads(
+            self.export_responses(
+                survey_id,
+                token=token,
+                language=language,
+                completion_status=completion_status,
+                heading_type=heading_type,
+                response_type=response_type,
+                from_response_id=from_response_id,
+                to_response_id=to_response_id,
+                fields=fields,
+                additional_options=additional_options,
+            )
+        )
+
+        if "responses" not in dict_responses:
+            msg = "The received JSON has not the expected structure."
+            raise ValueError(msg)
+
+        return dict_responses["responses"]
+
     def save_responses(  # noqa: PLR0913
         self,
         filename: PathLike[str],
@@ -780,7 +841,7 @@ class Client:  # noqa: PLR0904
 
         Args:
             filename: Target file path.
-            survey_id: Survey to add the response to.
+            survey_id: Survey from which responses should be exported.
             token: Optional participant token to get responses for.
             file_format: Type of export. One of PDF, CSV, XLS, DOC or JSON.
             language: Export responses made to this language version of the survey.

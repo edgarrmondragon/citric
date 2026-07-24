@@ -1,0 +1,5 @@
+kind: Added
+body: Added a `export_responses_dict` method to get responses represented as Python dictionaries
+time: 2026-07-24T11:02:31.526613824+02:00
+custom:
+  Issue: '1810'
