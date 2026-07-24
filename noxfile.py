@@ -51,6 +51,8 @@ def dependencies(session: nox.Session) -> None:
 def typing(session: nox.Session) -> None:
     """Type-check using mypy."""
     args = session.posargs or locations
+    gha = os.getenv("GITHUB_ACTIONS") == "true"
+
     session.install(".", "--group=typing")
     session.run("mypy", "--version")
     session.run("mypy", *args)
@@ -59,7 +61,7 @@ def typing(session: nox.Session) -> None:
     session.run(
         "ty",
         "check",
-        f"--output-format={'github' if os.getenv('GITHUB_ACTIONS') == 'true' else 'concise'}",  # noqa: E501
+        f"--output-format={'github' if gha else 'concise'}",
         *args,
     )
 
@@ -67,16 +69,19 @@ def typing(session: nox.Session) -> None:
     session.run("pyright", *args)
 
     session.run("pyrefly", "--version")
-    session.run("pyrefly", "check", *args)
+    session.run(
+        "pyrefly",
+        "check",
+        f"--output-format={'github' if gha else 'min-text'}",
+        *args,
+    )
 
 
 @nox.session(name="docs-build", python=DOCS_PYTHON)
 def docs_build(session: nox.Session) -> None:
     """Build the documentation."""
     session.install(".", "-r=requirements/docs.requirements.txt")
-
-    if os.path.exists("build"):  # noqa: PTH110
-        shutil.rmtree("build")
+    shutil.rmtree("build", ignore_errors=True)
 
     args = ["docs", "build"]
     if not args and FORCE_COLOR in os.environ:

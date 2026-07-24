@@ -112,6 +112,7 @@ required-version = ">=0.9.17"
 preview = true
 
 [tool.ruff]
+required-version = ">=0.16"
 line-length = 88
 src = [
   "docs",
@@ -184,18 +185,18 @@ select = [
   "YTT",  # flake8-2020
 ]
 ignore = [
-  "COM812", # missing-trailing-comma
-  "D107",   # undocumented-public-init
-  "DJ",     # flake8-django
-  "FIX002", # line-contains-todo
-  "ISC001", # single-line-implicit-string-concatenation
+  "missing-trailing-comma",
+  "undocumented-public-init",
+  "DJ",
+  "line-contains-todo",
+  "single-line-implicit-string-concatenation",
 ]
 explicit-preview-rules = false
 per-file-ignores."docs/notebooks/*" = [
-  "D100",   # undocumented-public-module
-  "E402",   # module-import-not-at-top-of-file
-  "I002",   # missing-required-import
-  "INP001", # implicit-namespace-package
+  "undocumented-public-module",
+  "module-import-not-at-top-of-file",
+  "missing-required-import",
+  "implicit-namespace-package",
 ]
 per-file-ignores."src/*" = [
   "PD", # pandas-vet
@@ -204,17 +205,18 @@ per-file-ignores."src/citric/types.py" = [
   "TC", # type-checking
 ]
 per-file-ignores."tests/*" = [
-  "ANN201",  # missing-return-type-undocumented-public-function
-  "ARG00",   # unused-method-argument
-  "C901",    # complex-structure
-  "DOC201",  # docstring-missing-returns
-  "DOC402",  # docstring-missing-yields
-  "PLR2004", # magic-value-comparison
-  "PLR6301", # no-self-use
-  "S101",    # assert
-  "S105",    # hardcoded-password-string
-  "S106",    # hardcoded-password-func-arg
-  "SLF001",  # private-member-access
+  "missing-return-type-undocumented-public-function",
+  "unused-function-argument",
+  "unused-method-argument",
+  "complex-structure",
+  "docstring-missing-returns",
+  "docstring-missing-yields",
+  "magic-value-comparison",
+  "no-self-use",
+  "assert",
+  "hardcoded-password-string",
+  "hardcoded-password-func-arg",
+  "private-member-access",
 ]
 unfixable = [
   "ERA", # Don't remove commented out code

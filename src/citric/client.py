@@ -104,7 +104,7 @@ class ServerVersion:
         )
 
 
-class Client:  # noqa: PLR0904
+class Client:  # ruff: ignore[too-many-public-methods]
     """LimeSurvey RemoteControl 2 API client.
 
     Offers explicit wrappers for RPC methods and simplifies common workflows.
@@ -414,7 +414,7 @@ class Client:  # noqa: PLR0904
     def _fieldname_from_question(self, question: types.QuestionsListElement) -> str:
         return (
             f"Q{question['qid']}"
-            if self.server_version.major >= 7  # noqa: PLR2004
+            if self.server_version.major >= 7  # ruff: ignore[magic-value-comparison]
             else f"{question['sid']}X{question['gid']}X{question['qid']}"
         )
 
@@ -686,7 +686,7 @@ class Client:  # noqa: PLR0904
         """
         return self.session.delete_survey(survey_id)
 
-    def export_responses(  # noqa: PLR0913
+    def export_responses(  # ruff: ignore[too-many-arguments]
         self,
         survey_id: int,
         *,
@@ -821,7 +821,7 @@ class Client:  # noqa: PLR0904
 
         return dict_responses["responses"]
 
-    def save_responses(  # noqa: PLR0913
+    def save_responses(  # ruff: ignore[too-many-arguments]
         self,
         filename: PathLike[str],
         survey_id: int,
@@ -1351,7 +1351,7 @@ class Client:  # noqa: PLR0904
         .. versionchanged:: 2.0.0
            Yield :class:`~citric.types.ReadableFile` dictionaries instead of
            dataclass instances.
-        """  # noqa: E501
+        """  # ruff: ignore[line-too-long]
         files_data = self.get_uploaded_files(survey_id, token, response_id)
         for file in files_data:
             yield {

@@ -1,6 +1,6 @@
 """Example: Update question answer properties using the REST API."""
 
-# ruff: noqa: T201
+# ruff: file-ignore[print]
 
 from __future__ import annotations
 

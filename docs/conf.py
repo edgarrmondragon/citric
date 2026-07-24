@@ -164,13 +164,14 @@ autoapi_root = "_api"
 myst_heading_anchors = 2
 
 
+# ruff: disable[unused-function-argument]
 def skip_member_filter(
-    app: Sphinx,  # noqa: ARG001
-    what: str,  # noqa: ARG001
+    app: Sphinx,
+    what: str,
     name: str,
-    obj: Any,  # noqa: ARG001, ANN401
-    skip: bool,  # noqa: FBT001
-    options: Any,  # noqa: ARG001, ANN401
+    obj: Any,  # ruff: ignore[any-type]
+    skip: bool,  # ruff: ignore[boolean-type-hint-positional-argument]
+    options: Any,  # ruff: ignore[any-type]
 ) -> bool | None:
     """Filter autoapi members.
 
@@ -189,6 +190,9 @@ def skip_member_filter(
     if name in {"citric.client", "citric.rest"}:
         skip = True
     return skip
+
+
+# ruff: enable[unused-function-argument]
 
 
 def setup(sphinx: Sphinx) -> None:

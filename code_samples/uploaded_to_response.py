@@ -1,6 +1,6 @@
 """Upload files to a LimeSurvey question and add them to a response."""
 
-# ruff : noqa: PTH123, S105
+# ruff: file-ignore[builtin-open, hardcoded-password-string]
 
 from __future__ import annotations
 

@@ -82,7 +82,7 @@ def pytest_addoption(parser: pytest.Parser):
     parser.addoption(
         "--limesurvey-dockerfile",
         action="store",
-        help="Path to the Dockerfile to build the LimeSurvey image, relative to the Docker context.",  # noqa: E501
+        help="Path to the Dockerfile to build the LimeSurvey image, relative to the Docker context.",  # ruff: ignore[line-too-long]
         default=_from_env_var("LS_DOCKERFILE", "Dockerfile"),
     )
 
@@ -124,8 +124,8 @@ def pytest_report_header(config: pytest.Config) -> list[str]:
 
     if config.getoption("--limesurvey-git-reference"):
         integration.extend([
-            f"LimeSurvey git reference: {config.getoption('--limesurvey-git-reference')}",  # noqa: E501
-            f"LimeSurvey Docker context: {config.getoption('--limesurvey-docker-context')}",  # noqa: E501
+            f"LimeSurvey git reference: {config.getoption('--limesurvey-git-reference')}",  # ruff: ignore[line-too-long]
+            f"LimeSurvey Docker context: {config.getoption('--limesurvey-docker-context')}",  # ruff: ignore[line-too-long]
         ])
     else:
         integration.append(

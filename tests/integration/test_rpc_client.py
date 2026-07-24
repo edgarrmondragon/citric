@@ -247,7 +247,7 @@ def test_survey(
 @pytest.mark.integration_test
 def test_import_survey(client: citric.Client, subtests: pytest.Subtests):
     """Test importing a survey with a custom ID and name."""
-    survey_id = random.randint(10000, 20000)  # noqa: S311
+    survey_id = random.randint(10000, 20000)  # ruff: ignore[suspicious-non-cryptographic-random-usage]
     with Path("./examples/survey.lss").open("rb") as f:
         imported_id = client.import_survey(
             f,
@@ -834,8 +834,8 @@ def test_invite_participants(
 
     participant_data = client.list_participants(survey_id, attributes=["sent"])
     date_format = "%Y-%m-%d %H:%M"
-    datetime.strptime(participant_data[0]["sent"], date_format)  # noqa: DTZ007
-    datetime.strptime(participant_data[1]["sent"], date_format)  # noqa: DTZ007
+    datetime.strptime(participant_data[0]["sent"], date_format)  # ruff: ignore[call-datetime-strptime-without-zone]
+    datetime.strptime(participant_data[1]["sent"], date_format)  # ruff: ignore[call-datetime-strptime-without-zone]
 
     with assert_status_error(
         "Error: No candidate tokens",
@@ -1086,7 +1086,7 @@ def file_upload_question(
     return question
 
 
-def assert_uploaded_files(  # noqa: D103
+def assert_uploaded_files(  # ruff: ignore[undocumented-public-function]
     files: Iterable[tuple[ReadableFile, FileUploadResult, bytes]],
     subtests: pytest.Subtests,
 ) -> None:
@@ -1099,7 +1099,7 @@ def assert_uploaded_files(  # noqa: D103
             assert down["content"].read() == content
 
 
-def assert_downloaded_files(  # noqa: D103
+def assert_downloaded_files(  # ruff: ignore[undocumented-public-function]
     files: Iterable[tuple[Path, FileUploadResult, bytes]],
     subtests: pytest.Subtests,
 ) -> None:
@@ -1114,7 +1114,7 @@ def assert_downloaded_files(  # noqa: D103
     ids=["by_token", "by_response_id"],
 )
 @pytest.mark.integration_test
-def test_response_files(  # noqa: PLR0914
+def test_response_files(  # ruff: ignore[too-many-locals]
     request: pytest.FixtureRequest,
     client: citric.Client,
     survey_id: int,
@@ -1123,7 +1123,7 @@ def test_response_files(  # noqa: PLR0914
     faker: Faker,
     server_version: semver.VersionInfo,
     subtests: pytest.Subtests,
-    by_response_id: bool,  # noqa: FBT001
+    by_response_id: bool,  # ruff: ignore[boolean-type-hint-positional-argument]
 ) -> None:
     """Test response files."""
     token = "T00000"

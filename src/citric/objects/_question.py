@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import io
-import xml.etree.ElementTree as ET  # noqa: S405
+import xml.etree.ElementTree as ET  # ruff: ignore[suspicious-xml-etree-import]
 from dataclasses import dataclass, field
 
 

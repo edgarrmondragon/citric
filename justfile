@@ -46,5 +46,5 @@ venv:
 
 # Clean build artifacts, coverage files, and nox venvs
 clean:
-    rm -rf build docker_tags.sqlite .coverage.* .nox/
+    rm -rf build docker_tags.sqlite .coverage.* .nox/ .venv/
     find . -type d -name '__pycache__' -exec rm -r {} +

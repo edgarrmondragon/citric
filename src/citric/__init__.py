@@ -11,6 +11,6 @@ from citric.rest import RESTClient
 __version__: str = metadata.version("citric")
 """Package version"""
 
-del annotations, metadata  # noqa: RUF067
+del annotations, metadata  # ruff: ignore[non-empty-init-module]
 
 __all__ = ["Client", "RESTClient", "ServerVersion", "objects"]
