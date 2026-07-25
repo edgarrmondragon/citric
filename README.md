@@ -49,8 +49,8 @@
         <a href="https://github.com/edgarrmondragon/citric/blob/main/LICENSE">
           <img alt="License" src="https://img.shields.io/github/license/edgarrmondragon/citric"/>
         </a>
-        <a href="https://zenodo.org/doi/10.5281/zenodo.10216279">
-          <img src="https://zenodo.org/badge/223537606.svg" alt="DOI">
+        <a href="https://doi.org/10.5281/zenodo.10216279">
+          <img src="https://zenodo.org/badge/DOI/10.5281/zenodo.10216279.svg?" alt="DOI">
         </a>
         <br />
         <a href="https://www.bestpractices.dev/projects/8144">
