@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Edgar Ramírez-Mondragón
+
 """Python classes associated with LimeSurvey objects (surveys, questions, etc.)."""
 
 from ._participant import Participant, to_yes_no

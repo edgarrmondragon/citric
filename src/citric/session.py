@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Edgar Ramírez-Mondragón
+
 """Low level wrapper for connecting to the LSRC2."""
 
 from __future__ import annotations

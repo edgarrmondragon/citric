@@ -1,5 +1,7 @@
 #!/usr/bin/env -S uv run --script
 
+# Copyright (c) 2026 Edgar Ramírez-Mondragón
+
 # /// script
 # dependencies = ["requests", "requests-cache"]
 # requires-python = ">=3.10"

@@ -138,6 +138,7 @@ select = [
   "C4",   # flake8-comprehensions
   "C90",  # mccabe
   "COM",  # flake8-commas
+  "CPY",  # flake8-copyright
   "D",    # pydocstyle
   "DOC",  # pydoclint
   "DTZ",  # flake8-datetimez
@@ -224,6 +225,7 @@ unfixable = [
 flake8-annotations.allow-star-arg-any = true
 flake8-annotations.mypy-init-return = true
 flake8-annotations.suppress-dummy-args = true
+flake8-copyright.author = "Edgar Ramírez-Mondragón"
 flake8-errmsg.max-string-length = 30
 mccabe.max-complexity = 5
 pydocstyle.convention = "google"

@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Edgar Ramírez-Mondragón
+
 """Question object for generating LimeSurvey LSQ import files."""
 
 from __future__ import annotations

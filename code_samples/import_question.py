@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Edgar Ramírez-Mondragón
+
 """Create and import a question using Python objects."""
 
 from __future__ import annotations

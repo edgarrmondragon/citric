@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Edgar Ramírez-Mondragón
+
 """Upload survey files to S3."""
 
 from __future__ import annotations

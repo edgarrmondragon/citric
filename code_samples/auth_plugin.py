@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Edgar Ramírez-Mondragón
+
 """Example of using an auth plugin."""
 
 from __future__ import annotations

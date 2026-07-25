@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Edgar Ramírez-Mondragón
+
 """Upload files to a LimeSurvey question and add them to a response."""
 
 # ruff: file-ignore[builtin-open, hardcoded-password-string]

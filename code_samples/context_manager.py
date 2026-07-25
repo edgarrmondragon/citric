@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Edgar Ramírez-Mondragón
+
 """Example of using the context manager to automatically clean up the session key."""
 
 from __future__ import annotations

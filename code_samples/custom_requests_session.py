@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Edgar Ramírez-Mondragón
+
 """Example of using a custom requests.Session object with the client."""
 
 from __future__ import annotations

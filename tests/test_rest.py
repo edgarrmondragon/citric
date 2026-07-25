@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Edgar Ramírez-Mondragón
+
 """Unit tests for REST API client."""
 
 from __future__ import annotations

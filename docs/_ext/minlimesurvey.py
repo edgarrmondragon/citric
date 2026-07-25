@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Edgar Ramírez-Mondragón
+
 """A Sphinx extension to add a directive for next LimeSurvey version."""
 
 from __future__ import annotations

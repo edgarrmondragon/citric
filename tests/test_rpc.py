@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Edgar Ramírez-Mondragón
+
 """Integration tests for the RPC client."""
 
 from __future__ import annotations

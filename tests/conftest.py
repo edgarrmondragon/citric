@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Edgar Ramírez-Mondragón
+
 """pytest fixtures."""
 
 from __future__ import annotations

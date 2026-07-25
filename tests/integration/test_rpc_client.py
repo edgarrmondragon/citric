@@ -1,3 +1,4 @@
+# Copyright (c) 2026 Edgar Ramírez-Mondragón
 # pyright: reportTypedDictNotRequiredAccess=none
 
 """Integration tests for Python client."""

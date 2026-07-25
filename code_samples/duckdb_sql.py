@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Edgar Ramírez-Mondragón
+
 """Export survey responses to a DuckDB database."""
 
 from __future__ import annotations

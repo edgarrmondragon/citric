@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Edgar Ramírez-Mondragón
+
 """Modify attributes of the `requests` session used by the client."""
 
 from __future__ import annotations

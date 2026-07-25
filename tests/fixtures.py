@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Edgar Ramírez-Mondragón
+
 """Test fixtures and mock helpers."""
 
 from __future__ import annotations

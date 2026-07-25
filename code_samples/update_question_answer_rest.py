@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Edgar Ramírez-Mondragón
+
 """Example: Update question answer properties using the REST API."""
 
 # ruff: file-ignore[print]

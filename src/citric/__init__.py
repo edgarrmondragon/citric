@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Edgar Ramírez-Mondragón
+
 """A client to the LimeSurvey Remote Control API 2, written in modern Python."""
 
 from __future__ import annotations

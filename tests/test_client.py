@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Edgar Ramírez-Mondragón
+
 """Unit tests for the Python Client."""
 
 from __future__ import annotations

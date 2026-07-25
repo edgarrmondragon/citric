@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Edgar Ramírez-Mondragón
+
 """Example of using the Client.session attribute to call RPC methods directly."""
 
 from __future__ import annotations

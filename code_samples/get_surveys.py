@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Edgar Ramírez-Mondragón
+
 """Get all surveys and questions from user "iamadmin"."""
 
 # ruff: file-ignore[print]

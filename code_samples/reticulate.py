@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Edgar Ramírez-Mondragón
+
 """Use reticulate to export LimeSurvey data to R."""
 
 from __future__ import annotations

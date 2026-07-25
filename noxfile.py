@@ -1,5 +1,7 @@
 #!/usr/bin/env -S uv run --script
 
+# Copyright (c) 2026 Edgar Ramírez-Mondragón
+
 # /// script
 # dependencies = ["nox>=2025.2.9"]
 # ///
