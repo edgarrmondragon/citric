@@ -118,7 +118,7 @@ def xdoctest(session: nox.Session) -> None:
     session.run("python", "-m", "xdoctest", *args)
 
 
-@nox.session(python=python_versions[0], tags=["test"])
+@nox.session(name="lowest-requirements", python=python_versions[0], tags=["test"])
 def lowest(session: nox.Session) -> None:
     """Execute pytest tests on the lowest supported Python."""
     env = {"COVERAGE_CORE": "sysmon"}

@@ -55,49 +55,42 @@ env:
 
 jobs:
   tests:
-    name: "Python ${{ matrix.python-version }} / ${{ matrix.os }} (dependencies: ${{ matrix.session || 'highest' }})"
+    name: "Python ${{ join(matrix.python-version, ', ') }} / ${{ matrix.os }} (${{ matrix.session || 'unit' }})"
     runs-on: ${{ matrix.os }}
     permissions:
       contents: read
     env:
       COVERAGE_FILE: ".coverage.unit"
-      NOXFORCEPYTHON: "${{ matrix.python-version }}"
     strategy:
       fail-fast: false
       matrix:
         include:
-        - python-version: "3.10"
+        - python-version: ["3.10"]
           os: ubuntu-24.04
-          session: lowest
+          session: lowest-requirements
 
-        - python-version: "3.14"
+        - python-version: ["3.10", "3.14"]
           os: ubuntu-24.04
+          session: xdoctest
 
-        - python-version: "3.14t"
-          os: ubuntu-24.04
-
-        - python-version: "3.13"
-          os: ubuntu-24.04
-
-        - python-version: "3.12"
-          os: ubuntu-24.04
-
-        - python-version: "3.11"
-          os: ubuntu-24.04
-
-        - python-version: "3.10"
+        - python-version:
+          - "3.10"
+          - "3.11"
+          - "3.12"
+          - "3.13"
+          - "3.14"
+          - "3.14t"
+          - "3.15"
+          - "3.15t"
           os: ubuntu-24.04
 
-        - python-version: "3.15"
+        - python-version: ["3.16"]
           os: ubuntu-24.04
 
-        - python-version: "3.15t"
-          os: ubuntu-24.04
-
-        - python-version: "3.14"
+        - python-version: ["3.14"]
           os: windows-2025
 
-        - python-version: "3.14"
+        - python-version: ["3.14"]
           os: macos-26
 
     steps:
@@ -106,12 +99,19 @@ jobs:
       with:
         persist-credentials: false
 
-    - name: Setup Python ${{ matrix.python-version }}
+    - name: Setup Python
+      if: ${{ matrix.python-version[0] != '3.16' }}
       uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
       with:
-        python-version: ${{ matrix.python-version }}
+        python-version: ${{ join(matrix.python-version, fromJson('"\n"')) }}
         architecture: x64
         allow-prereleases: true
+
+    - name: Setup pre-release Python
+      uses: deadsnakes/action@e640ac8743173a67cca4d7d77cd837e514bf98e8 # v3.2.0
+      if: matrix.python-version[0] == '3.16'
+      with:
+        python-version: ${{ format('{0}-dev', matrix.python-version[0]) }}
 
     - name: Install tools
       uses: ./.github/actions/install-tools
@@ -122,6 +122,8 @@ jobs:
 
     - name: Run Tests
       env:
+        NOX_DOWNLOAD_PYTHON: never
+        NOXFORCEPYTHON: ${{ join(matrix.python-version, ',') }}
         NOXSESSION: ${{ matrix.session || 'test' }}
       run: |
         nox --verbose -- --junit-xml=tests.xml
@@ -130,7 +132,7 @@ jobs:
       uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
       with:
         include-hidden-files: true
-        name: "coverage-unit-${{ matrix.os }}-${{ matrix.python-version }}"
+        name: "coverage-unit-${{ matrix.os }}-${{ join(matrix.python-version, '-') }}"
         path: ".coverage.*"
 
     - name: Upload test results to Codecov
@@ -139,12 +141,8 @@ jobs:
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         files: tests.xml
-        flags: unit-${{ matrix.os }}-${{ matrix.python-version }}
+        flags: unit-${{ matrix.os }}-${{ join(matrix.python-version, '-') }}
         report_type: test_results
-
-    - name: Run Doctests
-      run: |
-        nox -s xdoctest
 
   lint:
     name: Lint

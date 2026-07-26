@@ -195,7 +195,7 @@ def test_survey(
 
     # Add a new survey
     survey_id = client.add_survey(
-        5555,
+        None,
         NEW_SURVEY_NAME,
         "es",
         enums.NewSurveyType.GROUP_BY_GROUP,
@@ -282,7 +282,7 @@ def test_copy_survey_destination_id(client: citric.Client, survey_id: int):
 def test_group(client: citric.Client, server_version: semver.Version):
     """Test group methods."""
     # Create a new survey
-    survey_id = client.add_survey(1234, "New Survey", "en")
+    survey_id = client.add_survey(None, "New Survey", "en")
 
     # Import a group
     with Path("./examples/group.lsg").open("rb") as f:
