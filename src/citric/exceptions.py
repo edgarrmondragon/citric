@@ -31,7 +31,7 @@ class LimeSurveyStatusError(LimeSurveyError):
             error_code: The error code returned by LimeSurvey, if any.
         """
         msg = message if error_code is None else f"{message} (error code: {error_code})"
-        self.error_code = error_code
+        self.error_code: str | None = error_code
         super().__init__(msg)
 
 

@@ -77,6 +77,14 @@ def typing(session: nox.Session) -> None:
         f"--output-format={'github' if gha else 'min-text'}",
         *args,
     )
+    session.run(
+        "pyrefly",
+        "coverage",
+        "check",
+        "--public-only",
+        f"--output-format={'github' if gha else 'min-text'}",
+        "src/citric",
+    )
 
 
 @nox.session(name="docs-build", python=DOCS_PYTHON)
