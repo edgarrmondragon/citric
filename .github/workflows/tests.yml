@@ -247,7 +247,7 @@ jobs:
       with:
         nox-version: ${{ env.NOX_VERSION }}
         uv-version: ${{ env.UV_VERSION }}
-        uv-cache-suffix: integration-${{ matrix.image_tag || env.CLEAN_REF }}-${{ matrix.database }}
+        uv-cache-suffix: integration-${{ matrix.python-version }}-${{ matrix.image_tag || env.CLEAN_REF }}-${{ matrix.database }}
 
     - name: Run Nox
       id: nox-integration
@@ -303,7 +303,7 @@ jobs:
       with:
         nox-version: ${{ env.NOX_VERSION }}
         uv-version: ${{ env.UV_VERSION }}
-        uv-cache-suffix: coverage
+        uv-cache-suffix: coverage-${{ matrix.flag }}
 
     - name: Download coverage data
       uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
