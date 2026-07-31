@@ -75,6 +75,7 @@ test = [
   "python-dotenv>=1",
   "semver>=3.0.1",
   "tinydb>=4.8",
+  "tomli>=2.3",
   "xdoctest[colors]>=1.1.1",
 ]
 docs = [

@@ -4,6 +4,15 @@
 
 from __future__ import annotations
 
+__lazy_modules__ = {
+    "citric.exceptions",
+    "citric.method",
+    "importlib",
+    "json",
+    "random",
+    "requests",
+}
+
 import json
 import logging
 import random

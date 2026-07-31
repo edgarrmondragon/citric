@@ -4,6 +4,11 @@
 
 from __future__ import annotations
 
+__lazy_modules__ = {
+    "importlib",
+    "requests",
+}
+
 from importlib import metadata
 from typing import TYPE_CHECKING, Any, Type  # ruff: ignore[deprecated-import]
 
