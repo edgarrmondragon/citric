@@ -4,6 +4,10 @@
 
 from __future__ import annotations
 
+__lazy_modules__ = {
+    "typing",
+}
+
 import enum
 import sys
 from typing import Type  # ruff: ignore[deprecated-import]

@@ -4,6 +4,17 @@
 
 from __future__ import annotations
 
+__lazy_modules__ = {
+    "base64",
+    "citric.exceptions",
+    "citric.session",
+    "datetime",
+    "io",
+    "json",
+    "pathlib",
+    "requests",
+}
+
 import base64
 import datetime
 import io

@@ -4,6 +4,11 @@
 
 from __future__ import annotations
 
+__lazy_modules__ = {
+    "io",
+    "typing_extensions",
+}
+
 import io
 import sys
 from typing import Any, Literal, TypeAlias, TypedDict
