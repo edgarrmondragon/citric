@@ -289,8 +289,7 @@ include = [
 
 [tool.pytest]
 addopts = [
-  "--durations=5",
-  "-ra",           # show extra test summary info for all except passed
+  "-ra", # show extra test summary info for all except passed
 ]
 filterwarnings = [
   "error",
