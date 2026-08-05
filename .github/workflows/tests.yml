@@ -114,7 +114,7 @@ jobs:
         python-version: ${{ format('{0}-dev', matrix.python-version[0]) }}
 
     - name: Install tools
-      uses: ./.github/actions/install-tools
+      uses: $/.github/actions/install-tools
       with:
         nox-version: ${{ env.NOX_VERSION }}
         uv-version: ${{ env.UV_VERSION }}
@@ -162,7 +162,7 @@ jobs:
         python-version: 3.x
 
     - name: Install tools
-      uses: ./.github/actions/install-tools
+      uses: $/.github/actions/install-tools
       with:
         nox-version: ${{ env.NOX_VERSION }}
         uv-version: ${{ env.UV_VERSION }}
@@ -243,7 +243,7 @@ jobs:
         echo "CLEAN_REF=$(echo "$REF" | tr / -)" >> "$GITHUB_ENV"
 
     - name: Install tools
-      uses: ./.github/actions/install-tools
+      uses: $/.github/actions/install-tools
       with:
         nox-version: ${{ env.NOX_VERSION }}
         uv-version: ${{ env.UV_VERSION }}
@@ -299,7 +299,7 @@ jobs:
         python-version: "3.x"
 
     - name: Install tools
-      uses: ./.github/actions/install-tools
+      uses: $/.github/actions/install-tools
       with:
         nox-version: ${{ env.NOX_VERSION }}
         uv-version: ${{ env.UV_VERSION }}

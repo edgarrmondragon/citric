@@ -1,0 +1,7 @@
+paths:
+  .github/workflows/**/*.{yaml,yml}:
+    # TODO: Remove this once actionlint supports the new GHA self-repository syntax
+    # https://github.com/rhysd/actionlint/issues/711
+    ignore:
+      - reusable workflow call "\$/.+" at "uses" is not following the format
+      - specifying action "\$/.+" in invalid format because ref is missing

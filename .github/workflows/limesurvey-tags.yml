@@ -30,7 +30,7 @@ jobs:
         persist-credentials: false
 
     - name: Install tools
-      uses: ./.github/actions/install-tools
+      uses: $/.github/actions/install-tools
       with:
         nox-version: ${{ env.NOX_VERSION }}
         uv-cache-suffix: update-tags
