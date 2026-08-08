@@ -23,6 +23,7 @@ __all__ = [
     "ImportGroupType",
     "ImportSurveyType",
     "NewSurveyType",
+    "QuestionType",
     "QuotaAction",
     "ResponseType",
     "ResponsesExportFormat",
@@ -163,3 +164,37 @@ class UserStatus(enum.IntEnum):
 
     ACTIVATED = 1
     DEACTIVATED = 0
+
+
+class QuestionType(StrEnum):
+    """Question type."""
+
+    ARRAY_DUAL = "1"
+    POINT_CHOICE = "5"
+    ARRAY_5_POINT = "A"
+    ARRAY_10_POINT = "B"
+    ARRAY_YES_UNCERTAIN_NO = "C"
+    DATE = "D"
+    ARRAY_INC_SAME_DEC = "E"
+    ARRAY = "F"
+    GENDER = "G"
+    ARRAY_COLUMN = "H"
+    LANGUAGE = "I"
+    MULTIPLE_NUMERICAL = "K"
+    RADIO_BUTTONS_LIST = "L"
+    CHECKBOXES_MULTIPLE_CHOICE = "M"
+    NUMERICAL = "N"
+    LIST_WITH_COMMENT = "O"
+    MULTIPLE_CHOICE_WITH_COMMENTS = "P"
+    MULTIPLE_SHORT_TEXT = "Q"
+    RANKING = "R"
+    SHORT_FREE_TEXT = "S"
+    LONG_FREE_TEXT = "T"
+    HUGE_FREE_TEXT = "U"
+    TEXT_DISPLAY = "X"
+    YES_NO_RADIO = "Y"
+    LIST_DROPDOWN = "!"
+    FILE_UPLOAD = "|"
+    EQUATION = "*"
+    ARRAY_NUMBERS = ":"
+    ARRAY_TEXT = ";"

@@ -6,6 +6,7 @@ from __future__ import annotations
 
 # start example
 from citric import Client
+from citric.enums import QuestionType
 from citric.objects import AnswerOption, Question, QuestionL10n
 
 LS_URL = "http://localhost:8001/index.php/admin/remotecontrol"
@@ -18,7 +19,7 @@ group_id = client.list_groups(survey_id)[0]["id"]
 # A simple single-choice (list) question with answer options
 list_question = Question(
     title="Q01",
-    type="L",
+    type=QuestionType.RADIO_BUTTONS_LIST,
     l10ns={
         "en": QuestionL10n(question="What is your favourite colour?"),
         "es": QuestionL10n(question="Cual es tu color favorito?"),
@@ -35,22 +36,22 @@ client.import_question(list_question.to_lsq(), survey_id, group_id)
 # A multiple-choice question with subquestions
 mc_question = Question(
     title="Q02",
-    type="M",
+    type=QuestionType.CHECKBOXES_MULTIPLE_CHOICE,
     l10ns={"en": QuestionL10n(question="Which of the following do you use?")},
     subquestions=[
         Question(
             title="SQ001",
-            type="T",
+            type=QuestionType.LONG_FREE_TEXT,
             l10ns={"en": QuestionL10n(question="Python")},
         ),
         Question(
             title="SQ002",
-            type="T",
+            type=QuestionType.LONG_FREE_TEXT,
             l10ns={"en": QuestionL10n(question="R")},
         ),
         Question(
             title="SQ003",
-            type="T",
+            type=QuestionType.LONG_FREE_TEXT,
             l10ns={"en": QuestionL10n(question="Julia")},
         ),
     ],

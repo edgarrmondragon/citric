@@ -100,7 +100,7 @@ def question_with_free_text(faker: Faker) -> citric.objects.Question:
     """Create a question of free-text (T) type."""
     return citric.objects.Question(
         title=faker.lexify("Q??????", letters="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"),
-        type="T",
+        type=enums.QuestionType.LONG_FREE_TEXT,
         l10ns={
             "en": citric.objects.QuestionL10n(question=faker.sentence()),
             "es": citric.objects.QuestionL10n(question=Faker("es").sentence()),
@@ -471,12 +471,12 @@ def test_import_question_with_subquestions(
     sq_texts = [faker.sentence() for _ in sq_titles]
     q = citric.objects.Question(
         title=faker.lexify("M??????", letters="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"),
-        type="M",
+        type=enums.QuestionType.CHECKBOXES_MULTIPLE_CHOICE,
         l10ns={"en": citric.objects.QuestionL10n(question=faker.sentence())},
         subquestions=[
             citric.objects.Question(
                 title=title,
-                type="T",
+                type=enums.QuestionType.LONG_FREE_TEXT,
                 l10ns={"en": citric.objects.QuestionL10n(question=text)},
             )
             for title, text in zip(sq_titles, sq_texts, strict=True)
@@ -523,7 +523,7 @@ def test_import_question_answer_options(
 
     q = citric.objects.Question(
         title=faker.lexify("L??????", letters="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"),
-        type="L",
+        type=enums.QuestionType.RADIO_BUTTONS_LIST,
         l10ns={
             "en": citric.objects.QuestionL10n(question="What's your favourite colour?"),
             "es": citric.objects.QuestionL10n(question="¿Cuál es tu color favorito?"),
@@ -565,7 +565,7 @@ def test_import_question_with_attributes(
     css_class = faker.lexify("cls_??????", letters=string.ascii_lowercase)
     q = citric.objects.Question(
         title=faker.lexify("Q??????", letters="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"),
-        type="T",
+        type=enums.QuestionType.LONG_FREE_TEXT,
         l10ns={"en": citric.objects.QuestionL10n(question=faker.sentence())},
         attributes={"cssclass": css_class},
     )
