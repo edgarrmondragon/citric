@@ -1800,9 +1800,11 @@ class Client:  # ruff: ignore[too-many-public-methods]
         self,
         question_id: int,
         language: str | None = None,
-        **properties: Unpack[types.QuestionProperties],
+        **properties: Unpack[types.QuestionPropertiesUpdate],
     ) -> dict[str, bool]:
         """Set properties of a question.
+
+        Calls :rpc_method:`set_question_properties`.
 
         Args:
             question_id: ID of the question to set the properties of.
