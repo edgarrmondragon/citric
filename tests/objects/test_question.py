@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import xml.etree.ElementTree as ET  # ruff: ignore[suspicious-xml-etree-import]
 
+from citric.enums import QuestionType
 from citric.objects import AnswerOption, Question, QuestionL10n
 
 
@@ -17,7 +18,7 @@ def test_document_metadata():
     """Test that the document root has the correct metadata."""
     q = Question(
         title="Q1",
-        type="T",
+        type=QuestionType.LONG_FREE_TEXT,
         l10ns={"en": QuestionL10n(question="Hello")},
     )
     root = _parse(q)
@@ -32,7 +33,7 @@ def test_custom_db_version():
     """Test that the db_version parameter is reflected in the XML output."""
     q = Question(
         title="Q1",
-        type="T",
+        type=QuestionType.LONG_FREE_TEXT,
         l10ns={"en": QuestionL10n(question="Hello")},
     )
     root = ET.parse(q.to_lsq(db_version=999)).getroot()  # ruff: ignore[suspicious-xml-element-tree-usage]
@@ -43,7 +44,7 @@ def test_simple_text_question():
     """Test a simple text question with no subquestions or answer options."""
     q = Question(
         title="G01Q01",
-        type="T",
+        type=QuestionType.LONG_FREE_TEXT,
         l10ns={"en": QuestionL10n(question="What is your name?")},
     )
     root = _parse(q)
@@ -74,7 +75,7 @@ def test_empty_attributes_omits_section():
     """Test that an empty attributes dict omits the question_attributes section."""
     q = Question(
         title="Q1",
-        type="T",
+        type=QuestionType.LONG_FREE_TEXT,
         l10ns={"en": QuestionL10n(question="Hello")},
         attributes={},
     )
@@ -85,7 +86,7 @@ def test_list_question_with_answer_options():
     """Test a list question with answer options and a question attribute."""
     q = Question(
         title="Q1",
-        type="L",
+        type=QuestionType.RADIO_BUTTONS_LIST,
         l10ns={"en": QuestionL10n(question="Pick one")},
         attributes={"answer_order": "random"},
         answer_options=[
@@ -122,17 +123,17 @@ def test_multiple_choice_with_subquestions():
     """Test a multiple-choice question with two subquestions."""
     q = Question(
         title="Q1",
-        type="M",
+        type=QuestionType.CHECKBOXES_MULTIPLE_CHOICE,
         l10ns={"en": QuestionL10n(question="Which apply?")},
         subquestions=[
             Question(
                 title="SQ001",
-                type="T",
+                type=QuestionType.LONG_FREE_TEXT,
                 l10ns={"en": QuestionL10n(question="Option A")},
             ),
             Question(
                 title="SQ002",
-                type="T",
+                type=QuestionType.LONG_FREE_TEXT,
                 l10ns={"en": QuestionL10n(question="Option B")},
             ),
         ],
@@ -171,7 +172,7 @@ def test_html_content_entities():
     html = "Text with <strong>bold</strong> & 'quotes'"
     q = Question(
         title="Q1",
-        type="T",
+        type=QuestionType.LONG_FREE_TEXT,
         l10ns={"en": QuestionL10n(question=html)},
     )
     root = _parse(q)
@@ -184,7 +185,7 @@ def test_mandatory_question():
     """Test that mandatory=True produces 'Y' in the XML output."""
     q = Question(
         title="Q1",
-        type="T",
+        type=QuestionType.LONG_FREE_TEXT,
         l10ns={"en": QuestionL10n(question="Required")},
         mandatory=True,
     )
@@ -198,7 +199,7 @@ def test_xml_declaration():
     """Test that the output contains an XML declaration with UTF-8 encoding."""
     q = Question(
         title="Q1",
-        type="T",
+        type=QuestionType.LONG_FREE_TEXT,
         l10ns={"en": QuestionL10n(question="Hello")},
     )
     content = q.to_lsq().read()
@@ -210,7 +211,7 @@ def test_fields_element_present():
     """Test that the questions section contains a fields element with expected names."""
     q = Question(
         title="Q1",
-        type="T",
+        type=QuestionType.LONG_FREE_TEXT,
         l10ns={"en": QuestionL10n(question="Hello")},
     )
     root = _parse(q)
@@ -225,7 +226,7 @@ def test_multilanguage():
     """Test that multiple languages produce correct rows in questions and l10ns."""
     q = Question(
         title="Q1",
-        type="T",
+        type=QuestionType.LONG_FREE_TEXT,
         l10ns={
             "en": QuestionL10n(question="Hello"),
             "de": QuestionL10n(question="Hallo"),
@@ -245,7 +246,7 @@ def test_preg_empty_is_self_closing():
     """Test that a None preg field produces a self-closing element."""
     q = Question(
         title="Q1",
-        type="T",
+        type=QuestionType.LONG_FREE_TEXT,
         l10ns={"en": QuestionL10n(question="Hello")},
         preg=None,
     )
@@ -261,7 +262,7 @@ def test_answer_aid_sequential():
     """Test that answer_l10ns rows reference sequential aid values."""
     q = Question(
         title="Q1",
-        type="L",
+        type=QuestionType.RADIO_BUTTONS_LIST,
         l10ns={"en": QuestionL10n(question="Pick one")},
         answer_options=[
             AnswerOption(code="A1", l10ns={"en": "Yes"}),

@@ -14,6 +14,10 @@ __lazy_modules__ = {
 import io
 import xml.etree.ElementTree as ET  # ruff: ignore[suspicious-xml-etree-import]
 from dataclasses import dataclass, field
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from citric import enums
 
 
 def _add_fields(parent: ET.Element, field_names: list[str]) -> None:
@@ -104,12 +108,14 @@ class Question:
     """
 
     title: str
-    type: str
+    type: enums.QuestionType | str
     l10ns: dict[str, QuestionL10n]
     mandatory: bool = False
     other: bool = False
     encrypted: bool = False
     relevance: str = "1"
+    """The condition when the question is displayed or not"""
+
     scale_id: int = 0
     preg: str | None = None
     attributes: dict[str, str] = field(default_factory=dict)
