@@ -1,0 +1,5 @@
+kind: Fixed
+body: Update the `properties` parameter type of `Client.set_question_properties` to exclude restricted properties
+time: 2026-08-10T15:24:09.937263-06:00
+custom:
+    Issue: "1821"

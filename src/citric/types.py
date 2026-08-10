@@ -33,6 +33,7 @@ __all__ = [
     "ParticipantListElement",
     "Permission",
     "QuestionProperties",
+    "QuestionPropertiesUpdate",
     "QuestionReference",
     "QuestionsListElement",
     "QuotaListElement",
@@ -304,6 +305,73 @@ class QuestionProperties(TypedDict, total=False):
 
     question_order: int
     """The question order."""
+
+    scale_id: int
+    """The question scale ID."""
+
+    same_default: int
+    """The question same default."""
+
+    relevance: str
+    """The question relevance."""
+
+    question_theme_name: str
+    """The question theme name."""
+
+    modulename: str
+    """The question module name."""
+
+    same_script: int
+    """The question same script."""
+
+    available_answers: Any
+    """The available answers."""
+
+    answeroptions: Any
+    """The answer options."""
+
+    subquestions: Any
+    """The subquestions."""
+
+    default_values: Any
+    """The default values."""
+
+    attributes: dict[str, Any]
+    """The question attributes."""
+
+    attributes_lang: dict[str, Any]
+    """The question attributes language."""
+
+
+class QuestionPropertiesUpdate(TypedDict, total=False):
+    """Question properties the user can update."""
+
+    question: str
+    """The question text in the survey language."""
+
+    help: str
+    """The question help text in the survey language."""
+
+    script: str
+    """The question script."""
+
+    questionl10ns: dict[str, Any]
+    """The question language-specific attributes."""
+
+    title: str
+    """The question title."""
+
+    preg: str
+    """The question preg."""
+
+    other: YesNo
+    """Whether the question has an "other" option."""
+
+    mandatory: YesNo
+    """Whether the question is mandatory."""
+
+    encrypted: YesNo
+    """Whether the question is encrypted."""
 
     scale_id: int
     """The question scale ID."""

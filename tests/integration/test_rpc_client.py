@@ -400,7 +400,7 @@ def test_question(
     assert int(props["gid"]) == group_id
     assert int(props["qid"]) == question_id
     assert int(props["sid"]) == survey_id
-    assert props["type"] == "T"
+    assert props["type"] == enums.QuestionType.LONG_FREE_TEXT
     assert props["title"] == question_with_free_text.title
     assert props["mandatory"] == "N"
 
