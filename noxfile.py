@@ -94,6 +94,7 @@ def docs_build(session: nox.Session) -> None:
     shutil.rmtree("build", ignore_errors=True)
 
     args = ["docs", "build"]
+    extra_args = session.posargs or ("--quiet",)
     if not args and FORCE_COLOR in os.environ:
         args.insert(0, "--color")
 
@@ -101,14 +102,14 @@ def docs_build(session: nox.Session) -> None:
         "python",
         "-m",
         "sphinx",
-        "-T",
-        "-W",
+        "--show-traceback",
+        "--fail-on-warning",
         "--keep-going",
-        "-b",
-        "html",
-        "-D",
-        "language=en",
+        "--jobs=auto",
+        "--builder=html",
+        "--define=language=en",
         *args,
+        *extra_args,
     )
 
 
@@ -118,7 +119,7 @@ def xdoctest(session: nox.Session) -> None:
     if session.posargs:
         args = [package, *session.posargs]
     else:
-        args = [f"--modname={package}", "--command=all"]
+        args = [f"--modname={package}", "--command=all", "--silent"]
         if FORCE_COLOR in os.environ:
             args.append("--colored=1")
 
@@ -131,6 +132,7 @@ def lowest(session: nox.Session) -> None:
     """Execute pytest tests on the lowest supported Python."""
     env = {"COVERAGE_CORE": "sysmon"}
     session.install(".", "--group=test", "--resolution=lowest-direct")
+    args = session.posargs or ("--quiet",)
     session.run(
         "coverage",
         "run",
@@ -138,7 +140,7 @@ def lowest(session: nox.Session) -> None:
         "pytest",
         "-m",
         "not integration_test",
-        *session.posargs,
+        *args,
         env=env,
     )
 
@@ -152,7 +154,7 @@ def test(session: nox.Session) -> None:
         env["PYTHON_GIL"] = "0"
 
     session.install(".", "--group=test")
-
+    args = session.posargs or ("--quiet",)
     session.run(
         "coverage",
         "run",
@@ -160,7 +162,7 @@ def test(session: nox.Session) -> None:
         "pytest",
         "-m",
         "not integration_test",
-        *session.posargs,
+        *args,
         env=env,
     )
 
@@ -169,6 +171,7 @@ def test(session: nox.Session) -> None:
 def integration(session: nox.Session) -> None:
     """Execute integration tests and compute coverage."""
     session.install(".", "--group=test", f"--python={session.virtualenv.location}")
+    args = session.posargs or ("--quiet",)
     session.run(
         "coverage",
         "run",
@@ -177,7 +180,7 @@ def integration(session: nox.Session) -> None:
         "--integration",
         "-m",
         "integration_test",
-        *session.posargs,
+        *args,
         env={"COVERAGE_CORE": "sysmon"},
     )
 

@@ -105,7 +105,7 @@ def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item
             item.add_marker(marker)
 
 
-def pytest_report_header(config: pytest.Config) -> list[str]:
+def pytest_report_header(config: pytest.Config) -> list[str]:  # pragma: no cover
     """Return a list of strings to be displayed in the header of the report."""
     env_vars = [
         f"{key}: {value}"
