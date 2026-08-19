@@ -3,7 +3,7 @@
 # Copyright (c) 2026 Edgar Ramírez-Mondragón
 
 # /// script
-# dependencies = ["nox>=2025.2.9"]
+# dependencies = ["nox>=2026.8.17"]
 # ///
 
 """Nox configuration."""
@@ -22,7 +22,7 @@ FORCE_COLOR = "FORCE_COLOR"
 DOCS_PYTHON = "3.14"  # NOTE: Keep this in sync with .readthedocs.yaml
 PYPROJECT = nox.project.load_toml()
 
-nox.needs_version = ">=2025.2.9"
+nox.needs_version = ">=2026.8.17"
 nox.options.default_venv_backend = "uv"
 nox.options.reuse_venv = "yes"
 
@@ -37,7 +37,7 @@ python_versions = [
 locations = "src", "tests", "docs/conf.py"
 
 
-@nox.session(name="deps", tags=["lint"])
+@nox.session(name="deps", tags=["lint"], allow_parallel=True)
 def dependencies(session: nox.Session) -> None:
     """Check issues with dependencies."""
     install_env = {}
@@ -49,7 +49,7 @@ def dependencies(session: nox.Session) -> None:
     session.run("deptry", "src", "tests", "docs")
 
 
-@nox.session(tags=["lint", "types"])
+@nox.session(tags=["lint", "types"], allow_parallel=True)
 def typing(session: nox.Session) -> None:
     """Type-check using mypy."""
     args = session.posargs or locations
@@ -113,7 +113,7 @@ def docs_build(session: nox.Session) -> None:
     )
 
 
-@nox.session(tags=["test"])
+@nox.session(tags=["test"], allow_parallel=True)
 def xdoctest(session: nox.Session) -> None:
     """Run examples with xdoctest."""
     if session.posargs:
@@ -127,7 +127,12 @@ def xdoctest(session: nox.Session) -> None:
     session.run("python", "-m", "xdoctest", *args)
 
 
-@nox.session(name="lowest-requirements", python=python_versions[0], tags=["test"])
+@nox.session(
+    name="lowest-requirements",
+    python=python_versions[0],
+    tags=["test"],
+    allow_parallel=True,
+)
 def lowest(session: nox.Session) -> None:
     """Execute pytest tests on the lowest supported Python."""
     env = {"COVERAGE_CORE": "sysmon"}
@@ -145,7 +150,7 @@ def lowest(session: nox.Session) -> None:
     )
 
 
-@nox.session(python=python_versions, tags=["test"])
+@nox.session(python=python_versions, tags=["test"], allow_parallel=True)
 def test(session: nox.Session) -> None:
     """Execute pytest tests and compute coverage."""
     env = {"COVERAGE_CORE": "sysmon"}
@@ -221,7 +226,7 @@ def docs_serve(session: nox.Session) -> None:
     session.run("sphinx-autobuild", *args)
 
 
-@nox.session(name="api")
+@nox.session(name="api", allow_parallel=True)
 def api_changes(session: nox.Session) -> None:
     """Check for API changes."""
     args = [
