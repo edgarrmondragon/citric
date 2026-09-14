@@ -2018,12 +2018,14 @@ class AsyncClient(BaseClient):  # ruff: ignore[too-many-public-methods]
         """Close client session."""
         await self.session.close()
 
-    def __aenter__(self: Self) -> Self:
+    async def __aenter__(self: Self) -> Self:
         """Create client context.
 
         Returns:
             Client instance.
         """
+        await self.__session.__aenter__()
+
         return self
 
     async def __aexit__(
