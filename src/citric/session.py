@@ -325,37 +325,16 @@ class AsyncSession(BaseSession):
         username: LimeSurvey user name.
         password: LimeSurvey password.
         httpx_client: A :py:class:`httpx2.AsyncClient <httpx2.AsyncClient>` object.
-        requests_session: [DEPRECATED] A :py:class:`requests.Session <requests.Session>`
-            object.
         auth_plugin: Name of the :ls_manual:`plugin <Authentication_plugins>` to use for
             authentication. For example,
             :ls_manual:`AuthLDAP <Authentication_plugins#LDAP>`. Defaults to using the
             :ls_manual:`internal database <Authentication_plugins#Internal_database>`
             (``"Authdb"``).
-        json_encoder: [DEPRECATED] A :py:class:`json.Encoder <json.JSONEncoder>`
-            subclass to use for encoding RPC parameters.
-
-    .. versionchanged:: 0.0.4
-       Replaced the ``requests_session_factory`` parameter with ``requests_session``.
-
-    .. versionadded:: 0.0.6
-       Support Auth plugins with the ``auth_plugin`` parameter.
-
-    .. versionadded:: 0.5.0
-       The ``json_encoder`` parameter.
-
 
     .. _key: #citric.session.Session.key
     .. _closure: #citric.session.Session.close
     """
 
-    @deprecated_params(
-        "requests_session",
-        reason="requests_session is no longer used since version v3.0.0. Use httpx_client instead",  # ruff: ignore[line-too-long]
-    )
-    @deprecated_params(
-        "json_encoder", reason="json_encoder is no longer used since version v3.0.0"
-    )
     def __init__(
         self,
         url: str,
@@ -364,8 +343,6 @@ class AsyncSession(BaseSession):
         *,
         auth_plugin: str = "Authdb",
         httpx_client: httpx2.AsyncClient | None = None,
-        requests_session: requests.Session | None = None,  # ruff: ignore[unused-method-argument]
-        json_encoder: Type[json.JSONEncoder] | None = None,  # ruff: ignore[non-pep585-annotation, unused-method-argument]
     ) -> None:
         super().__init__(url)
         self._username = username

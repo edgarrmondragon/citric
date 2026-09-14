@@ -147,7 +147,9 @@ class Client(BaseClient):  # ruff: ignore[too-many-public-methods]
         url: LimeSurvey Remote Control endpoint.
         username: LimeSurvey user name.
         password: LimeSurvey password.
-        requests_session: A :py:class:`requests.Session <requests.Session>` object.
+        httpx_client: A :py:class:`httpx2.Client <httpx2.Client>` object.
+        requests_session: [DEPRECATED] A :py:class:`requests.Session <requests.Session>`
+            object.
         auth_plugin: Name of the :ls_manual:`plugin <Authentication_plugins>` to use for
             authentication. For example,
             :ls_manual:`AuthLDAP <Authentication_plugins#LDAP>`. Defaults to using the
@@ -1984,7 +1986,7 @@ class AsyncClient(BaseClient):  # ruff: ignore[too-many-public-methods]
         url: LimeSurvey Remote Control endpoint.
         username: LimeSurvey user name.
         password: LimeSurvey password.
-        requests_session: A :py:class:`requests.Session <requests.Session>` object.
+        httpx_client: A :py:class:`httpx2.AsyncClient <httpx2.AsyncClient>` object.
         auth_plugin: Name of the :ls_manual:`plugin <Authentication_plugins>` to use for
             authentication. For example,
             :ls_manual:`AuthLDAP <Authentication_plugins#LDAP>`. Defaults to using the
@@ -1994,10 +1996,6 @@ class AsyncClient(BaseClient):  # ruff: ignore[too-many-public-methods]
 
     session_class = AsyncSession
 
-    @deprecated_params(
-        "requests_session",
-        reason="requests_session is no longer used since version v3.0.0. Use httpx_client instead",  # ruff: ignore[line-too-long]
-    )
     def __init__(
         self,
         url: str,
@@ -2005,7 +2003,6 @@ class AsyncClient(BaseClient):  # ruff: ignore[too-many-public-methods]
         password: str,
         *,
         httpx_client: httpx2.AsyncClient | None = None,
-        requests_session: requests.Session | None = None,  # ruff: ignore[unused-method-argument]
         auth_plugin: str = "Authdb",
     ) -> None:
         self.__session = self.session_class(
