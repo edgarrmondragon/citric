@@ -7,14 +7,26 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, Generic, TypeVar
 
 if TYPE_CHECKING:
-    from collections.abc import Callable
+    from collections.abc import Awaitable, Callable
 
-__all__ = ["Method"]
+__all__ = ["AsyncMethod", "Method"]
 
 T = TypeVar("T")
 
 
-class Method(Generic[T]):
+class BaseMethod(Generic[T]):
+    """RPC method.
+
+    Args:
+        caller: RPC caller function.
+        name: RPC method name.
+    """
+
+    def __init__(self, name: str) -> None:
+        self.__name = name
+
+
+class Method(BaseMethod[T]):
     """RPC method.
 
     Args:
@@ -24,7 +36,7 @@ class Method(Generic[T]):
 
     def __init__(self, caller: Callable[[str], T], name: str) -> None:
         self.__caller = caller
-        self.__name = name
+        super().__init__(name)
 
     def __getattr__(self, name: str) -> Method[T]:
         """Get nested method.
@@ -55,3 +67,46 @@ class Method(Generic[T]):
         some_method 1 a
         """
         return self.__caller(self.__name, *params)
+
+
+class AsyncMethod(BaseMethod[T]):
+    """RPC asynchronous method.
+
+    Args:
+        caller: RPC caller function.
+        name: RPC asynchronous method name.
+    """
+
+    def __init__(self, caller: Callable[[str], Awaitable[T]], name: str) -> None:
+        self.__caller = caller
+        super().__init__(name)
+
+    def __getattr__(self, name: str) -> AsyncMethod[T]:
+        """Get nested method.
+
+        Args:
+            name: Method name.
+
+        Returns:
+            A new instance of Method for the nested call.
+
+        >>> method = Method(print, "some_method")
+        >>> method.nested("x", "y")
+        some_method.nested x y
+        """
+        return AsyncMethod(self.__caller, f"{self.__name}.{name}")
+
+    async def __call__(self, *params: Any) -> T:
+        """Call RPC asynchronous method.
+
+        Args:
+            params: RPC asynchronous method parameters.
+
+        Returns:
+            An RPC result.
+
+        >>> method = Method(print, "some_method")
+        >>> method(1, "a")
+        some_method 1 a
+        """
+        return await self.__caller(self.__name, *params)

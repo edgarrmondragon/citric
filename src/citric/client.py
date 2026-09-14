@@ -4,6 +4,11 @@
 
 from __future__ import annotations
 
+import asyncio
+
+import httpx2
+from deprecated.params import deprecated_params
+
 __lazy_modules__ = {
     "base64",
     "citric.exceptions",
@@ -25,17 +30,17 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import IO, TYPE_CHECKING, Any, Literal
 
-import requests
-
 from citric import enums
 from citric.exceptions import LimeSurveyStatusError
-from citric.session import Session
+from citric.session import AsyncSession, Session
 
 if TYPE_CHECKING:
     import sys
-    from collections.abc import Generator, Iterable, Mapping, Sequence
+    from collections.abc import AsyncIterator, Generator, Iterable, Mapping, Sequence
     from os import PathLike
     from types import TracebackType
+
+    import requests
 
     from citric import types
     from citric.objects import Participant
@@ -46,6 +51,7 @@ if TYPE_CHECKING:
         from typing_extensions import Self, Unpack
 
 __all__ = [
+    "AsyncClient",
     "Client",
 ]
 
@@ -117,7 +123,22 @@ class ServerVersion:
         )
 
 
-class Client:  # ruff: ignore[too-many-public-methods]
+def prepare_activation_settings(
+    user_activation_settings: types.SurveyUserActivationSettings | None = None,
+) -> dict[str, str] | None:
+    return (
+        {key: "Y" if value else "N" for key, value in user_activation_settings.items()}
+        if user_activation_settings
+        else None
+    )
+
+
+class BaseClient:
+    def __init__(self) -> None:
+        self.__server_version: ServerVersion | None = None
+
+
+class Client(BaseClient):  # ruff: ignore[too-many-public-methods]
     """LimeSurvey RemoteControl 2 API client.
 
     Offers explicit wrappers for RPC methods and simplifies common workflows.
@@ -126,7 +147,9 @@ class Client:  # ruff: ignore[too-many-public-methods]
         url: LimeSurvey Remote Control endpoint.
         username: LimeSurvey user name.
         password: LimeSurvey password.
-        requests_session: A :py:class:`requests.Session <requests.Session>` object.
+        httpx_client: A :py:class:`httpx2.Client <httpx2.Client>` object.
+        requests_session: [DEPRECATED] A :py:class:`requests.Session <requests.Session>`
+            object.
         auth_plugin: Name of the :ls_manual:`plugin <Authentication_plugins>` to use for
             authentication. For example,
             :ls_manual:`AuthLDAP <Authentication_plugins#LDAP>`. Defaults to using the
@@ -139,23 +162,28 @@ class Client:  # ruff: ignore[too-many-public-methods]
 
     session_class = Session
 
+    @deprecated_params(
+        "requests_session",
+        reason="requests_session is no longer used since version v3.0.0. Use httpx_client instead",  # ruff: ignore[line-too-long]
+    )
     def __init__(
         self,
         url: str,
         username: str,
         password: str,
         *,
-        requests_session: requests.Session | None = None,
+        httpx_client: httpx2.Client | None = None,
+        requests_session: requests.Session | None = None,  # ruff: ignore[unused-method-argument]
         auth_plugin: str = "Authdb",
     ) -> None:
         self.__session = self.session_class(
             url,
             username,
             password,
-            requests_session=requests_session or requests.session(),
+            httpx_client=httpx_client or httpx2.Client(),
             auth_plugin=auth_plugin,
         )
-        self.__server_version: ServerVersion | None = None
+        super().__init__()
 
     def close(self) -> None:
         """Close client session."""
@@ -229,14 +257,7 @@ class Client:  # ruff: ignore[too-many-public-methods]
         .. versionchanged:: 0.10.0
            The ``user_activation_settings`` optional parameter was added.
         """
-        activation_settings = (
-            {
-                key: "Y" if value else "N"
-                for key, value in user_activation_settings.items()
-            }
-            if user_activation_settings
-            else None
-        )
+        activation_settings = prepare_activation_settings(user_activation_settings)
         return self.session.activate_survey(survey_id, activation_settings)
 
     def activate_tokens(
@@ -1944,6 +1965,1713 @@ class Client:  # ruff: ignore[too-many-public-methods]
         email_flag = enums.EmailSendStrategy.to_flag(strategy)
         try:
             self.session.invite_participants(survey_id, token_ids, email_flag)
+        except LimeSurveyStatusError as error:
+            status_match = re.match(EMAILS_SENT_STATUS_PATTERN, error.args[0])
+            if not status_match:
+                raise
+
+            return int(status_match[1])
+
+        msg = "Could not determine invitation status"
+        raise RuntimeError(msg)
+
+
+class AsyncClient(BaseClient):  # ruff: ignore[too-many-public-methods]
+    """LimeSurvey RemoteControl 2 API asynchronous client.
+
+    Offers explicit wrappers for RPC asynchronous methods and simplifies common
+    workflows.
+
+    Args:
+        url: LimeSurvey Remote Control endpoint.
+        username: LimeSurvey user name.
+        password: LimeSurvey password.
+        httpx_client: A :py:class:`httpx2.AsyncClient <httpx2.AsyncClient>` object.
+        auth_plugin: Name of the :ls_manual:`plugin <Authentication_plugins>` to use for
+            authentication. For example,
+            :ls_manual:`AuthLDAP <Authentication_plugins#LDAP>`. Defaults to using the
+            :ls_manual:`internal database <Authentication_plugins#Internal_database>`
+            (``"Authdb"``).
+    """
+
+    session_class = AsyncSession
+
+    def __init__(
+        self,
+        url: str,
+        username: str,
+        password: str,
+        *,
+        httpx_client: httpx2.AsyncClient | None = None,
+        auth_plugin: str = "Authdb",
+    ) -> None:
+        self.__session = self.session_class(
+            url,
+            username,
+            password,
+            httpx_client=httpx_client or httpx2.AsyncClient(),
+            auth_plugin=auth_plugin,
+        )
+        super().__init__()
+
+    async def close(self) -> None:
+        """Close client session."""
+        await self.session.close()
+
+    async def __aenter__(self: Self) -> Self:
+        """Create client context.
+
+        Returns:
+            Client instance.
+        """
+        await self.__session.__aenter__()
+
+        return self
+
+    async def __aexit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_value: BaseException | None,
+        traceback: TracebackType | None,
+    ) -> None:
+        """Safely exit the client context."""
+        await self.close()
+
+    @property
+    def session(self) -> AsyncSession:
+        """Low-level RPC asynchronous session."""
+        return self.__session
+
+    @property
+    async def server_version(self) -> ServerVersion:
+        """LimeSurvey server version (cached)."""
+        if self.__server_version is None:
+            self.__server_version = ServerVersion.parse(await self.get_server_version())
+        return self.__server_version
+
+    async def get_fieldmap(self, survey_id: int) -> dict[str, Any]:
+        """Get fieldmap for a survey.
+
+        Calls :rpc_method:`get_fieldmap`.
+
+        Args:
+            survey_id: ID of survey to get fieldmap for.
+
+        Returns:
+            Dictionary mapping response keys to LimeSurvey internal representation.
+        """
+        return await self.session.get_fieldmap(survey_id)
+
+    async def activate_survey(
+        self,
+        survey_id: int,
+        *,
+        user_activation_settings: types.SurveyUserActivationSettings | None = None,
+    ) -> types.OperationStatus:
+        """Activate a survey.
+
+        Calls :rpc_method:`activate_survey`.
+
+        Args:
+            survey_id: ID of survey to be activated.
+            user_activation_settings: Optional user activation settings.
+
+        Returns:
+            Status and plugin feedback.
+        """
+        activation_settings = prepare_activation_settings(user_activation_settings)
+        return await self.session.activate_survey(survey_id, activation_settings)
+
+    async def activate_tokens(
+        self,
+        survey_id: int,
+        attributes: list[int] | None = None,
+    ) -> types.OperationStatus:
+        """Initialise the survey participant table.
+
+        New participant tokens may be later added.
+
+        Calls :rpc_method:`activate_tokens`.
+
+        Args:
+            survey_id: ID of survey to be activated.
+            attributes: Optional list of participant attributes numbers to be activated.
+
+        Returns:
+            Status message.
+        """
+        return await self.session.activate_tokens(survey_id, attributes or [])
+
+    async def add_language(
+        self, survey_id: int, language: str
+    ) -> types.OperationStatus:
+        """Add a survey language.
+
+        Calls :rpc_method:`add_language`.
+
+        Args:
+            survey_id: ID of the Survey for which a language will be added.
+            language: A valid language shortcut to add to the current Survey. If the
+                language already exists no error will be given.
+
+        Returns:
+            Status message.
+        """
+        return await self.session.add_language(survey_id, language)
+
+    async def add_participants(
+        self,
+        survey_id: int,
+        *,
+        participant_data: Sequence[Mapping[str, Any]],
+        create_tokens: bool = True,
+    ) -> list[dict[str, Any]]:
+        """Add participants to a survey.
+
+        Calls :rpc_method:`add_participants`.
+
+        Args:
+            survey_id: Survey to add participants to.
+            participant_data: Information to create participants with.
+            create_tokens: Whether to create the participants with tokens.
+
+        Returns:
+            Information of newly created participants.
+        """
+        return await self.session.add_participants(
+            survey_id,
+            participant_data,
+            create_tokens,
+        )
+
+    async def add_quota(
+        self,
+        survey_id: int,
+        name: str,
+        limit: int,
+        *,
+        active: bool = True,
+        action: str = enums.QuotaAction.TERMINATE,
+        autoload_url: bool = False,
+        message: str = "",
+        url: str = "",
+        url_description: str = "",
+    ) -> int:
+        """Add a quota to a LimeSurvey survey.
+
+        Calls :rpc_method:`add_quota`.
+
+        You can read more about quotas in the
+        :ls_manual:`LimeSurvey manual <Survey_quotas>`.
+
+        Args:
+            survey_id: ID of the survey to add the quota to.
+            name: Name of the quota.
+            limit: Limit of the quota.
+            active: Whether the quota is active.
+            action: Action to take when the limit is reached.
+            autoload_url: Whether to automatically load the URL.
+            message: Message to display to the respondent when the limit is reached.
+            url: URL to redirect the respondent to when the limit is reached.
+            url_description: Description of the URL.
+
+        Returns:
+            ID of the newly created quota.
+
+        .. minlimesurvey:: 6.0.0
+        """
+        return await self.session.add_quota(
+            survey_id,
+            name,
+            limit,
+            active,
+            enums.QuotaAction(action),
+            autoload_url,
+            message,
+            url,
+            url_description,
+        )
+
+    async def add_survey(
+        self,
+        survey_id: int | None,
+        title: str,
+        language: str,
+        survey_format: str | enums.NewSurveyType = "G",
+    ) -> int:
+        """Add a new empty survey.
+
+        Calls :rpc_method:`add_survey`.
+
+        Args:
+            survey_id: The desired ID of the Survey to add. If None, LimeSurvey will
+                automatically set a random ID on creation.
+            title: Title of the new Survey.
+            language: Default language of the Survey.
+            survey_format: Question appearance format (A, G or S) for "All on one page",
+                "Group by Group", "Single questions", default to group by group (G).
+
+        Returns:
+            The new survey ID.
+        """
+        return await self.session.add_survey(
+            survey_id,
+            title,
+            language,
+            enums.NewSurveyType(survey_format),
+        )
+
+    async def delete_participants(
+        self,
+        survey_id: int,
+        participant_ids: Sequence[int],
+    ) -> dict[str, Any]:
+        """Delete participants from a survey.
+
+        Calls :rpc_method:`delete_participants`.
+
+        Args:
+            survey_id: Survey to delete participants to.
+            participant_ids: Participant IDs to be deleted.
+
+        Returns:
+            Mapping of participant token IDs to deletion status.
+        """
+        return await self.session.delete_participants(
+            survey_id,
+            participant_ids,
+        )
+
+    async def _get_question_mapping(
+        self,
+        survey_id: int,
+    ) -> dict[str, types.QuestionsListElement]:
+        """Get question mapping.
+
+        Args:
+            survey_id: Survey ID.
+
+        Returns:
+            Question mapping.
+        """
+        return {q["title"]: q for q in await self.list_questions(survey_id)}
+
+    async def _fieldname_from_question(
+        self, question: types.QuestionsListElement
+    ) -> str:
+        return (
+            f"Q{question['qid']}"
+            if (await self.server_version).major >= 7  # ruff: ignore[magic-value-comparison]
+            else f"{question['sid']}X{question['gid']}X{question['qid']}"
+        )
+
+    async def _map_response_keys(
+        self,
+        response_data: Mapping[str, Any],
+        question_mapping: dict[str, types.QuestionsListElement],
+    ) -> dict[str, Any]:
+        """Convert response keys to LimeSurvey's internal representation.
+
+        In LimeSurvey 7+, the key format changed from '<SID>X<GID>X<QID>' to
+        'Q<QID>'.
+
+        Args:
+            response_data: The response mapping.
+            question_mapping: A mapping of question titles to question dictionaries.
+
+        Returns:
+            A new dictionary with the keys mapped to the Q-style or <SID>X<GID>X<QID>
+            format.
+        """
+
+        async def async_key(key: str) -> str:  # ruff: ignore[unused-async]
+            return key
+
+        fieldname_from_question_tasks: list[tuple[asyncio.Task[str], str]] = []
+
+        async with asyncio.TaskGroup() as tg:
+            for key, value in response_data.items():
+                if key in question_mapping:
+                    task = tg.create_task(
+                        self._fieldname_from_question(question_mapping[key])
+                    )
+                else:
+                    task = tg.create_task(async_key(key))
+
+                fieldname_from_question_tasks.append((task, value))
+
+        return {task.result(): value for task, value in fieldname_from_question_tasks}
+
+    async def add_group(self, survey_id: int, title: str, description: str = "") -> int:
+        """Add a new empty question group to a survey.
+
+        Calls :rpc_method:`add_group`.
+
+        Args:
+            survey_id: ID of the Survey to add the group.
+            title: Name of the group.
+            description: Optional description of the group.
+
+        Returns:
+            The id of the new group.
+        """
+        return await self.session.add_group(survey_id, title, description)
+
+    async def _add_response(
+        self,
+        survey_id: int,
+        response_data: Mapping[str, Any],
+    ) -> int:
+        """Add a single response to a survey.
+
+        Args:
+            survey_id: Survey to add the response to.
+            response_data: Single response as a mapping from fieldnames in the Q-style
+                or <SID>X<GID>X<QID> form to response values.
+
+        Returns:
+            ID of the new response.
+        """
+        return int(await self.session.add_response(survey_id, response_data))
+
+    async def add_response(
+        self, survey_id: int, response_data: Mapping[str, Any]
+    ) -> int:
+        """Add a single response to a survey.
+
+        Args:
+            survey_id: Survey to add the response to.
+            response_data: Single response as a mapping.
+
+        Returns:
+            ID of the new response.
+        """
+        # Transform question codes to the format LimeSurvey expects
+        questions = await self._get_question_mapping(survey_id)
+        data = await self._map_response_keys(response_data, questions)
+        return await self._add_response(survey_id, data)
+
+    async def add_responses(
+        self,
+        survey_id: int,
+        responses: Iterable[Mapping[str, Any]],
+    ) -> list[int]:
+        """Add multiple responses to a survey.
+
+        Args:
+            survey_id: Survey to add the response to.
+            responses: Iterable of survey responses.
+
+        Returns:
+            IDs of the new responses.
+        """
+        questions = await self._get_question_mapping(survey_id)
+
+        async def add_response(response: Mapping[str, Any]) -> int:
+            data = await self._map_response_keys(response, questions)
+            return await self._add_response(survey_id, data)
+
+        add_response_tasks: list[asyncio.Task[int]] = []
+
+        async with asyncio.TaskGroup() as tg:
+            for response in responses:
+                task = tg.create_task(add_response(response))
+                add_response_tasks.append(task)
+
+        return [t.result() for t in add_response_tasks]
+
+    async def update_response(
+        self, survey_id: int, response_data: dict[str, Any]
+    ) -> bool:
+        """Update a response.
+
+        Calls :rpc_method:`update_response`.
+
+        Args:
+            survey_id: Survey to update the response in.
+            response_data: Response data to update.
+
+        Returns:
+            True if the response was updated, False otherwise.
+        """
+        questions = await self._get_question_mapping(survey_id)
+        data = await self._map_response_keys(response_data, questions)
+        return await self.session.update_response(survey_id, data)
+
+    async def copy_survey(
+        self,
+        survey_id: int,
+        name: str,
+        *,
+        destination_survey_id: int | None = None,
+    ) -> dict[str, Any]:
+        """Copy a survey.
+
+        Calls :rpc_method:`copy_survey`.
+
+        Args:
+            survey_id: ID of the source survey.
+            name: Name of the new survey.
+            destination_survey_id: ID of the new survey. If already used a, random one
+                will be generated.
+
+        Returns:
+            Dictionary of status message and the new survey ID.
+
+        .. minlimesurveyparam:: 6.4.0 destination_survey_id
+        """
+        return await self.session.copy_survey(survey_id, name, destination_survey_id)
+
+    async def import_cpdb_participants(
+        self,
+        participants: Sequence[Participant],
+        *,
+        update: bool = False,
+    ) -> types.CPDBParticipantImportResult:
+        """Import CPDB participants.
+
+        Calls :rpc_method:`cpd_importParticipants`.
+
+        Args:
+            participants: CPDB participant data.
+            update: Whether to update existing participants.
+
+        Returns:
+            IDs of the new participants.
+        """
+        return await self.session.cpd_importParticipants(
+            [participant.to_dict() for participant in participants],
+            update,
+        )
+
+    async def delete_group(self, survey_id: int, group_id: int) -> int:
+        """Delete a group.
+
+        Args:
+            survey_id: ID of the Survey that the group belongs to.
+            group_id: ID of the group to delete.
+
+        Returns:
+            ID of the deleted group.
+        """
+        return await self.session.delete_group(survey_id, group_id)
+
+    async def delete_language(
+        self, survey_id: int, language: str
+    ) -> types.OperationStatus:
+        """Delete a language from a survey.
+
+        Args:
+            survey_id: ID of the Survey for which a language will be deleted from.
+            language: Language to delete.
+
+        Returns:
+            Status message.
+
+        .. minlimesurvey:: 5.3.4
+        """
+        return await self.session.delete_language(survey_id, language)
+
+    async def delete_quota(self, quota_id: int) -> types.OperationStatus:
+        """Delete a LimeSurvey quota.
+
+        Calls :rpc_method:`delete_quota`.
+
+        You can read more about quotas in the
+        :ls_manual:`LimeSurvey manual <Survey_quotas>`.
+
+        Args:
+            quota_id: ID of the quota to delete.
+
+        Returns:
+            True if the quota was deleted.
+
+        .. minlimesurvey:: 6.0.0
+        """
+        return await self.session.delete_quota(quota_id)
+
+    async def delete_response(
+        self,
+        survey_id: int,
+        response_id: int,
+    ) -> types.OperationStatus:
+        """Delete a response in a survey.
+
+        Args:
+            survey_id: ID of the survey the response belongs to.
+            response_id: ID of the response to delete.
+
+        Returns:
+            Status message.
+        """
+        return await self.session.delete_response(survey_id, response_id)
+
+    async def delete_question(self, question_id: int) -> int:
+        """Delete a survey.
+
+        Calls :rpc_method:`delete_question`.
+
+        Args:
+            question_id: ID of Question to delete.
+
+        Returns:
+            ID of the deleted question.
+
+        .. minlimesurvey:: 5.3.19
+        """
+        return await self.session.delete_question(question_id)
+
+    async def delete_survey(self, survey_id: int) -> types.OperationStatus:
+        """Delete a survey.
+
+        Calls :rpc_method:`delete_survey`.
+
+        Args:
+            survey_id: Survey to delete.
+
+        Returns:
+            Status message.
+        """
+        return await self.session.delete_survey(survey_id)
+
+    async def export_responses(  # ruff: ignore[too-many-arguments]
+        self,
+        survey_id: int,
+        *,
+        token: str | None = None,
+        file_format: str | enums.ResponsesExportFormat = "json",
+        language: str | None = None,
+        completion_status: str | enums.SurveyCompletionStatus = "all",
+        heading_type: str | enums.HeadingType = "code",
+        response_type: str | enums.ResponseType = "short",
+        from_response_id: int | None = None,
+        to_response_id: int | None = None,
+        fields: Sequence[str] | None = None,
+        additional_options: types.ExportAdditionalOptions | None = None,
+    ) -> bytes:
+        """Export responses to a file-like object.
+
+        Calls :rpc_method:`export_responses`.
+
+        Args:
+            survey_id: Survey from which responses should be exported.
+            token: Optional participant token to get responses for.
+            file_format: Type of export. One of PDF, CSV, XLS, DOC or JSON.
+            language: Export responses made to this language version of the survey.
+            completion_status: Incomplete, complete or all.
+            heading_type: Use response codes, long or abbreviated titles.
+            response_type: Export long or short text responses.
+            from_response_id: First response to export.
+            to_response_id: Last response to export.
+            fields: Which response fields to export. If none, exports all fields.
+            additional_options: Dictionary of additional options to format the export.
+
+        Returns:
+            Content bytes of exported to file.
+        """
+        if token is None:
+            return base64.b64decode(
+                await self.session.export_responses(
+                    survey_id,
+                    enums.ResponsesExportFormat(file_format),
+                    language,
+                    enums.SurveyCompletionStatus(completion_status),
+                    enums.HeadingType(heading_type),
+                    enums.ResponseType(response_type),
+                    from_response_id,
+                    to_response_id,
+                    fields,
+                    additional_options,
+                ),
+            )
+
+        return base64.b64decode(
+            await self.session.export_responses_by_token(
+                survey_id,
+                enums.ResponsesExportFormat(file_format),
+                token,
+                language,
+                enums.SurveyCompletionStatus(completion_status),
+                enums.HeadingType(heading_type),
+                enums.ResponseType(response_type),
+                from_response_id,
+                to_response_id,
+                fields,
+                additional_options,
+            ),
+        )
+
+    async def export_responses_dict(
+        self,
+        survey_id: int,
+        *,
+        token: str | None = None,
+        language: str | None = None,
+        completion_status: str | enums.SurveyCompletionStatus = "all",
+        heading_type: str | enums.HeadingType = "code",
+        response_type: str | enums.ResponseType = "short",
+        from_response_id: int | None = None,
+        to_response_id: int | None = None,
+        fields: Sequence[str] | None = None,
+        additional_options: types.ExportAdditionalOptions | None = None,
+    ) -> list[dict[str, Any]]:
+        """Export responses represented as dictionaries.
+
+        Calls :rpc_method:`export_responses`.
+
+        Args:
+            survey_id: Survey from which responses should be exported.
+            token: Optional participant token to get responses for.
+            language: Export responses made to this language version of the survey.
+            completion_status: Incomplete, complete or all.
+            heading_type: Use response codes, long or abbreviated titles.
+            response_type: Export long or short text responses.
+            from_response_id: First response to export.
+            to_response_id: Last response to export.
+            fields: Which response fields to export. If none, exports all fields.
+            additional_options: Dictionary of additional options to format the export.
+
+        Returns:
+            A list of responses represented as dictionaries
+
+
+        Raises:
+            ValueError: If the received JSON has not the expected structure
+        """
+        dict_responses: dict[str, Any] = json.loads(
+            await self.export_responses(
+                survey_id,
+                token=token,
+                language=language,
+                completion_status=completion_status,
+                heading_type=heading_type,
+                response_type=response_type,
+                from_response_id=from_response_id,
+                to_response_id=to_response_id,
+                fields=fields,
+                additional_options=additional_options,
+            )
+        )
+
+        if "responses" not in dict_responses:
+            msg = "The received JSON has not the expected structure."
+            raise ValueError(msg)
+
+        return dict_responses["responses"]
+
+    async def save_responses(  # ruff: ignore[too-many-arguments]
+        self,
+        filename: PathLike[str],
+        survey_id: int,
+        *,
+        token: str | None = None,
+        file_format: str = "json",
+        language: str | None = None,
+        completion_status: str = "all",
+        heading_type: str = "code",
+        response_type: str = "short",
+        from_response_id: int | None = None,
+        to_response_id: int | None = None,
+        fields: Sequence[str] | None = None,
+        additional_options: types.ExportAdditionalOptions | None = None,
+    ) -> int:
+        """Save responses to a file.
+
+        Args:
+            filename: Target file path.
+            survey_id: Survey from which responses should be exported.
+            token: Optional participant token to get responses for.
+            file_format: Type of export. One of PDF, CSV, XLS, DOC or JSON.
+            language: Export responses made to this language version of the survey.
+            completion_status: Incomplete, complete or all.
+            heading_type: Use response codes, long or abbreviated titles.
+            response_type: Export long or short text responses.
+            from_response_id: First response to export.
+            to_response_id: Last response to export.
+            fields: Which response fields to export. If none, exports all fields.
+            additional_options: Dictionary of additional options to format the export.
+
+        Returns:
+            Bytes length written to file.
+        """
+        return Path(filename).write_bytes(
+            await self.export_responses(
+                survey_id,
+                token=token,
+                file_format=file_format,
+                language=language,
+                completion_status=completion_status,
+                heading_type=heading_type,
+                response_type=response_type,
+                from_response_id=from_response_id,
+                to_response_id=to_response_id,
+                fields=fields,
+                additional_options=additional_options,
+            ),
+        )
+
+    async def export_statistics(
+        self,
+        survey_id: int,
+        *,
+        file_format: str | enums.StatisticsExportFormat = "pdf",
+        language: str | None = None,
+        graph: bool = False,
+        group_ids: list[int] | None = None,
+    ) -> bytes:
+        """Export survey statistics.
+
+        Calls :rpc_method:`export_statistics`.
+
+        Args:
+            survey_id: ID of the Survey.
+            file_format: Type of documents the exported statistics should be.
+                Defaults to "pdf".
+            language: Language of the survey to use (default from Survey).
+                Defaults to None.
+            graph: Export graphs. Defaults to False.
+            group_ids: Question groups to generate statistics from. Defaults to None.
+
+        Returns:
+            File contents.
+        """
+        return base64.b64decode(
+            await self.session.export_statistics(
+                survey_id,
+                enums.StatisticsExportFormat(file_format),
+                language,
+                "yes" if graph else "no",
+                group_ids,
+            ),
+        )
+
+    async def save_statistics(
+        self,
+        filename: PathLike[str],
+        survey_id: int,
+        *,
+        file_format: str | enums.StatisticsExportFormat = "pdf",
+        language: str | None = None,
+        graph: bool = False,
+        group_ids: list[int] | None = None,
+    ) -> int:
+        """Save survey statistics to a file.
+
+        Args:
+            filename: Target file path.
+            survey_id: ID of the Survey.
+            file_format: Type of documents the exported statistics should be.
+                Defaults to "pdf".
+            language: Language of the survey to use (default from Survey).
+                Defaults to None.
+            graph: Export graphs. Defaults to False.
+            group_ids: Question groups to generate statistics from. Defaults to None.
+
+        Returns:
+            Bytes length written to file.
+        """
+        return Path(filename).write_bytes(
+            await self.export_statistics(
+                survey_id,
+                file_format=file_format,
+                language=language,
+                graph=graph,
+                group_ids=group_ids,
+            ),
+        )
+
+    async def export_timeline(
+        self,
+        survey_id: int,
+        period: Literal["day", "hour"] | enums.TimelineAggregationPeriod,
+        start: datetime.datetime,
+        end: datetime.datetime | None = None,
+    ) -> dict[str, int]:
+        """Export survey submission timeline.
+
+        Calls :rpc_method:`export_timeline`.
+
+        Args:
+            survey_id: ID of the Survey.
+            period: Granularity level for aggregation submission counts.
+            start: Start datetime.
+            end: End datetime.
+
+        Returns:
+            Mapping of days/hours to submission counts.
+        """
+        return await self.session.export_timeline(
+            survey_id,
+            enums.TimelineAggregationPeriod(period),
+            start.isoformat(),
+            (
+                end.isoformat()
+                if end
+                else datetime.datetime.now(tz=datetime.timezone.utc).isoformat()
+            ),
+        )
+
+    async def get_group_properties(
+        self,
+        group_id: int,
+        *,
+        settings: list[str] | None = None,
+        language: str | None = None,
+    ) -> types.GroupProperties:
+        """Get the properties of a group of a survey.
+
+        Calls :rpc_method:`get_group_properties`.
+
+        Args:
+            group_id: ID of the group to get properties of.
+            settings: Properties to get, default to all.
+            language: Parameter language for multilingual groups.
+
+        Returns:
+            Dictionary of group properties.
+        """
+        return await self.session.get_group_properties(group_id, settings, language)
+
+    async def get_language_properties(
+        self,
+        survey_id: int,
+        *,
+        settings: list[str] | None = None,
+        language: str | None = None,
+    ) -> types.LanguageProperties:
+        """Get survey language properties.
+
+        Args:
+            survey_id: ID of the survey.
+            settings: Properties to get, default to all.
+            language: Specify language for multilingual surveys.
+
+        Returns:
+            Dictionary of survey language properties.
+        """
+        return await self.session.get_language_properties(survey_id, settings, language)
+
+    async def get_participant_properties(
+        self,
+        survey_id: int,
+        query: dict[str, Any] | int,
+        properties: Sequence[str] | None = None,
+    ) -> dict[str, Any]:
+        """Get properties a single survey participant.
+
+        Calls :rpc_method:`get_participant_properties`.
+
+        Args:
+            survey_id: Survey to get participants properties.
+            query: Mapping of properties to query participants, or the token id
+                as an integer.
+            properties: Which participant properties to retrieve.
+
+        Returns:
+            List of participants properties.
+        """
+        return await self.session.get_participant_properties(
+            survey_id, query, properties
+        )
+
+    async def get_question_properties(
+        self,
+        question_id: int,
+        *,
+        settings: list[str] | None = None,
+        language: str | None = None,
+    ) -> types.QuestionProperties:
+        """Get properties of a question in a survey.
+
+        Calls :rpc_method:`get_question_properties`.
+
+        Args:
+            question_id: ID of the question to get properties.
+            settings: Properties to get, default to all.
+            language: Parameter language for multilingual questions.
+
+        Returns:
+            Dictionary of question properties.
+        """
+        return await self.session.get_question_properties(
+            question_id, settings, language
+        )
+
+    async def get_quota_properties(
+        self,
+        quota_id: int,
+        settings: list[str] | None = None,
+        language: str | None = None,
+    ) -> types.QuotaProperties:
+        """Get properties of a LimeSurvey quota.
+
+        Calls :rpc_method:`get_quota_properties`.
+
+        You can read more about quotas in the
+        :ls_manual:`LimeSurvey manual <Survey_quotas>`.
+
+        Args:
+            quota_id: ID of the quota to get properties for.
+            settings: Properties to get, default to all.
+            language: Parameter language for multilingual quotas.
+
+        Returns:
+            Quota properties.
+
+        .. minlimesurvey:: 6.0.0
+        """
+        return await self.session.get_quota_properties(quota_id, settings, language)
+
+    async def get_response_ids(
+        self,
+        survey_id: int,
+        token: str,
+    ) -> list[int]:
+        """Find response IDs given a survey ID and a token.
+
+        Calls :rpc_method:`get_response_ids`.
+
+        Args:
+            survey_id: Survey to get responses from.
+            token: Participant for which to get response IDs.
+
+        Returns:
+            A list of response IDs.
+        """
+        return await self.session.get_response_ids(survey_id, token)
+
+    async def get_available_site_settings(self) -> list[str]:
+        """Get all available site settings.
+
+        Calls :rpc_method:`get_available_site_settings`.
+
+        Returns:
+            A list of all the available site settings.
+
+        .. minlimesurvey:: 6.0.0
+        """
+        return await self.session.get_available_site_settings()
+
+    async def _get_site_setting(self, setting_name: str) -> types.Result:
+        """Get a global setting.
+
+        Function to query site settings. Can only be used by super administrators.
+
+        Args:
+            setting_name: Name of the setting to get.
+
+        Returns:
+            The requested setting value.
+        """
+        return await self.session.get_site_settings(setting_name)
+
+    async def get_default_theme(self) -> str:
+        """Get the global default theme.
+
+        Calls :rpc_method:`get_site_settings("defaulttheme") <get_site_settings>`.
+
+        Returns:
+            The name of the theme.
+        """
+        return await self._get_site_setting("defaulttheme")
+
+    async def get_site_name(self) -> str:
+        """Get the site name.
+
+        Calls :rpc_method:`get_site_settings("sitename") <get_site_settings>`.
+
+        Returns:
+            The name of the site.
+        """
+        return await self._get_site_setting("sitename")
+
+    async def get_default_language(self) -> str:
+        """Get the default site language.
+
+        Calls :rpc_method:`get_site_settings("defaultlang") <get_site_settings>`.
+
+        Returns:
+            A string representing the language.
+        """
+        return await self._get_site_setting("defaultlang")
+
+    async def get_available_languages(self) -> list[str] | None:
+        """Get the list of available languages.
+
+        Calls
+        :rpc_method:`get_site_settings("restrictToLanguages") <get_site_settings>`.
+
+        Returns:
+            Either a list of strings for the available languages or None if there are
+            no restrictions.
+        """
+        langs: str = await self._get_site_setting("restrictToLanguages")
+
+        return langs.split(" ") if langs else None
+
+    async def get_server_version(self) -> str:
+        """Get the server version.
+
+        Calls :rpc_method:`get_site_settings("versionnumber") <get_site_settings>`.
+
+        Returns:
+            The LimeSurvey server version.
+        """
+        return await self._get_site_setting("versionnumber")
+
+    async def get_db_version(self) -> int:
+        """Get the LimeSurvey database version.
+
+        Calls :rpc_method:`get_site_settings("dbversionnumber") <get_site_settings>`.
+
+        Returns:
+            The LimeSurvey database version.
+        """
+        return await self._get_site_setting("dbversionnumber")
+
+    async def get_summary(self, survey_id: int) -> types.SurveySummary | None:
+        """Get survey summary.
+
+        Calls :rpc_method:`get_summary`.
+
+        Args:
+            survey_id: ID of the survey to get summary of.
+
+        Returns:
+            Mapping of survey statistics or None if stats are not available.
+        """
+        summary = await self.session.get_summary(survey_id)
+
+        # An empty list is returned if the survey is not active
+        if isinstance(summary, list):
+            return None
+
+        return summary
+
+    async def get_summary_stat(
+        self,
+        survey_id: int,
+        stat_name: Literal[
+            "token_count",
+            "token_invalid",
+            "token_sent",
+            "token_opted_out",
+            "token_completed",
+            "token_screenout",
+            "completed_responses",
+            "incomplete_responses",
+            "full_responses",
+        ],
+    ) -> int:
+        """Get a specific survey summary statistic.
+
+        Calls :rpc_method:`get_summary_stat`.
+
+        Args:
+            survey_id: Survey to get summary of.
+            stat_name: Name of the summary option.
+
+        Returns:
+            The requested summary statistic.
+
+        Raises:
+            ValueError: If ``stat_name`` is ``all``.
+        """
+        if stat_name == "all":
+            msg = "Use get_summary instead to get all summary statistics"  # type: ignore[unreachable]
+            raise ValueError(msg)
+
+        return int(await self.session.get_summary(survey_id, stat_name))
+
+    async def get_survey_properties(
+        self,
+        survey_id: int,
+        properties: Sequence[str] | None = None,
+    ) -> types.SurveyProperties:
+        """Get properties of a survey.
+
+        Calls :rpc_method:`get_survey_properties`.
+
+        Args:
+            survey_id: Survey to get properties.
+            properties: Which survey properties to retrieve. If none, gets all fields.
+
+        Returns:
+            Dictionary of survey properties.
+        """
+        return await self.session.get_survey_properties(survey_id, properties)
+
+    async def get_uploaded_files(
+        self,
+        survey_id: int,
+        token: str | None = None,
+        response_id: int | None = None,
+    ) -> dict[str, types.EncodedFile]:
+        """Get a dictionary of files uploaded in a survey response.
+
+        Either a token or a response ID is required.
+
+        Calls :rpc_method:`get_uploaded_files`.
+
+        Args:
+            survey_id: Survey for which to download files.
+            token: Get the files uploaded by this response token.
+            response_id: Get the files uploaded to this response.
+
+        Returns:
+            Dictionary with uploaded files metadata.
+        """
+        return await self.session.get_uploaded_files(survey_id, token, response_id)
+
+    async def get_uploaded_file_objects(
+        self,
+        survey_id: int,
+        token: str | None = None,
+        response_id: int | None = None,
+    ) -> AsyncIterator[types.ReadableFile]:
+        """Iterate over uploaded files in a survey response.
+
+        Either a token or a response ID is required.
+
+        Args:
+            survey_id: Survey for which to download files.
+            token: Get the files uploaded by this response token.
+            response_id: Get the files uploaded to this response.
+
+        Yields:
+            :class:`~citric.types.ReadableFile` dictionaries.
+
+        Example: `Get files uploaded to a survey and move them to S3 </how-to.html#get-files-uploaded-to-a-survey-and-move-them-to-s3>`__
+        """  # ruff: ignore[line-too-long]
+        files_data = await self.get_uploaded_files(survey_id, token, response_id)
+        for file in files_data:
+            yield {
+                "meta": files_data[file]["meta"],
+                "content": io.BytesIO(base64.b64decode(files_data[file]["content"])),
+            }
+
+    async def download_files(
+        self,
+        directory: str | Path,
+        survey_id: int,
+        token: str | None = None,
+        response_id: int | None = None,
+    ) -> list[Path]:
+        """Download files uploaded in survey response.
+
+        Either a token or a response ID is required.
+
+        Args:
+            directory: Where to store the files.
+            survey_id: Survey for which to download files.
+            token: Get the files uploaded by this response token.
+            response_id: Get the files uploaded to this response.
+
+        Returns:
+            List with the paths of downloaded files.
+        """
+        dirpath = Path(directory)
+
+        filepaths = []
+        uploaded_files = self.get_uploaded_file_objects(
+            survey_id,
+            token=token,
+            response_id=response_id,
+        )
+
+        async for file in uploaded_files:
+            filepath = dirpath / file["meta"]["filename"]
+            filepaths.append(filepath)
+            Path(filepath).write_bytes(file["content"].read())
+
+        return filepaths
+
+    async def import_group(
+        self,
+        file: IO[bytes],
+        survey_id: int,
+        file_type: str | enums.ImportGroupType = "lsg",
+        *,
+        name: str | None = None,
+        description: str | None = None,
+    ) -> int:
+        """Import group from a file.
+
+        Create a new group from an exported LSG file.
+
+        Calls :rpc_method:`import_group`.
+
+        Args:
+            file: File object.
+            survey_id: The ID of the Survey that the question will belong to.
+            file_type: Type of file. One of LSS, CSV, TXT and LSA.
+            name: Optional new name for the group.
+            description: Optional new description for the group.
+
+        Returns:
+            The ID of the new group.
+
+        .. code-block:: python
+
+            with open("group.lsg", "rb") as f:
+                group_id = client.import_group(f, survey_id)
+        """
+        contents = base64.b64encode(file.read()).decode()
+        return await self.session.import_group(
+            survey_id,
+            contents,
+            enums.ImportGroupType(file_type),
+            name,
+            description,
+        )
+
+    async def import_question(
+        self,
+        file: IO[bytes],
+        survey_id: int,
+        group_id: int,
+        *,
+        mandatory: bool = False,
+        new_question_title: str | None = None,
+        new_question_text: str | None = None,
+        new_question_help: str | None = None,
+    ) -> int:
+        """Import question from a file.
+
+        Create a new question from an exported LSQ file.
+
+        Calls :rpc_method:`import_question`.
+
+        Args:
+            file: File object.
+            survey_id: The ID of the Survey that the question will belong to.
+            group_id: The ID of the Group that the question will belong to.
+            mandatory: Whether the question is mandatory.
+            new_question_title: Optional title override for the imported question.
+            new_question_text: Optional text override for the imported question.
+            new_question_help: Optional help override text for the imported question.
+
+        Returns:
+            The ID of the new question.
+        """
+        contents = base64.b64encode(file.read()).decode()
+        return await self.session.import_question(
+            survey_id,
+            group_id,
+            contents,
+            "lsq",
+            "Y" if mandatory else "N",
+            new_question_title,
+            new_question_text,
+            new_question_help,
+        )
+
+    async def import_survey(
+        self,
+        file: IO[bytes],
+        file_type: str | enums.ImportSurveyType = "lss",
+        survey_name: str | None = None,
+        survey_id: int | None = None,
+    ) -> int:
+        """Import survey from a file.
+
+        Create a new survey from an exported LSS, CSV, TXT or LSA file.
+
+        Calls :rpc_method:`import_survey`.
+
+        .. warning::
+           Different versions of LimeSurvey seem to expect slightly different structures
+           for exported files. If you get errors when importing a survey, try importing
+           it manually in the LimeSurvey web interface. If it works, try exporting it
+           from the web interface and importing the new file. If it still doesn't work,
+           you might need to import it with a different version of LimeSurvey.
+
+        Args:
+            file: File object.
+            file_type: Type of file. One of LSS, CSV, TXT and LSA.
+            survey_name: Override the new survey name.
+            survey_id: Desired ID of the new survey. A different ID will be used if
+                there is already a survey with this ID.
+
+        Returns:
+            The ID of the new survey.
+        """
+        contents = base64.b64encode(file.read()).decode()
+        return await self.session.import_survey(
+            contents,
+            enums.ImportSurveyType(file_type),
+            survey_name,
+            survey_id,
+        )
+
+    async def list_participants(
+        self,
+        survey_id: int,
+        *,
+        start: int = 0,
+        limit: int = 10,
+        unused: bool = False,
+        attributes: Sequence[str] | bool = False,
+        conditions: Mapping[str, Any] | None = None,
+    ) -> list[types.ParticipantListElement]:
+        """Get participants in a survey.
+
+        Calls :rpc_method:`list_participants`.
+
+        Args:
+            survey_id: Survey to get participants from.
+            start: Retrieve participants starting from this index (zero-indexed).
+            limit: Maximum number of participants to retrieve.
+            unused: Retrieve participants with unused tokens.
+            attributes: Extra participant attributes to include in the result.
+            conditions: Dictionary of conditions to limit the list.
+
+        Returns:
+            List of participants with basic information.
+
+        Some valid participant attributes are:
+
+        * tid
+        * participant_id
+        * firstname
+        * lastname
+        * email
+        * emailstatus
+        * token
+        * language
+        * blacklisted
+        * sent
+        * remindersent
+        * remindercount
+        * completed
+        * usesleft
+        * validfrom
+        * validuntil
+        """
+        return await self.session.list_participants(
+            survey_id,
+            start,
+            limit,
+            unused,
+            attributes,
+            conditions or {},
+        )
+
+    async def list_users(
+        self,
+        *,
+        user_id: int | None = None,
+        username: str | None = None,
+    ) -> list[types.UserDetails]:
+        """Get LimeSurvey users.
+
+        Calls :rpc_method:`list_users`.
+
+        Args:
+            user_id: Get details for a specific user ID.
+            username: Get details for a specific username.
+
+        Returns:
+            List of users.
+        """
+        return await self.session.list_users(user_id, username)
+
+    async def list_groups(
+        self,
+        survey_id: int,
+        language: str | None = None,
+    ) -> list[dict[str, Any]]:
+        """Get the IDs and all attributes of all question groups in a Survey.
+
+        Calls :rpc_method:`list_groups`.
+
+        Args:
+            survey_id: ID of the Survey containing the groups.
+            language: Optional parameter language for multilingual groups.
+
+        Returns:
+            List of question groups.
+        """
+        return await self.session.list_groups(survey_id, language)
+
+    async def list_questions(
+        self,
+        survey_id: int,
+        group_id: int | None = None,
+        language: str | None = None,
+    ) -> list[types.QuestionsListElement]:
+        """Get questions in a survey, in a specific group or all.
+
+        Calls :rpc_method:`list_questions`.
+
+        Args:
+            survey_id: Survey.
+            group_id: Question group.
+            language: Retrieve question text, description, etc. in this language.
+
+        Returns:
+            List of questions with basic information.
+        """
+        return await self.session.list_questions(survey_id, group_id, language)
+
+    async def list_quotas(self, survey_id: int) -> list[types.QuotaListElement]:
+        """Get all quotas for a LimeSurvey survey.
+
+        Calls :rpc_method:`list_quotas`.
+
+        You can read more about quotas in the
+        :ls_manual:`LimeSurvey manual <Survey_quotas>`.
+
+        Args:
+            survey_id: ID of the survey to get quotas for.
+
+        Returns:
+            List of quotas.
+
+        .. minlimesurvey:: 6.0.0
+        """
+        return await self.session.list_quotas(survey_id)
+
+    async def list_surveys(
+        self,
+        username: str | None = None,
+        *,
+        survey_group_id: int | None = None,
+    ) -> list[types.SurveyListElement]:
+        """Get all surveys or only those owned by a user.
+
+        Calls :rpc_method:`list_surveys`.
+
+        Args:
+            username: Owner of the surveys to retrieve.
+            survey_group_id: ID of the survey group to retrieve surveys from.
+
+        Returns:
+            List of surveys with basic information.
+
+        .. minlimesurveyparam:: 6.10.0 survey_group_id
+        """
+        return await self.session.list_surveys(username, survey_group_id)
+
+    async def list_survey_groups(
+        self,
+        username: str | None = None,
+    ) -> list[dict[str, Any]]:
+        """Get all survey groups or only those owned by a user.
+
+        Calls :rpc_method:`list_survey_groups`.
+
+        Args:
+            username: Owner of the survey groups to retrieve.
+
+        Returns:
+            List of survey groups with basic information.
+        """
+        return await self.session.list_survey_groups(username)
+
+    async def set_group_properties(
+        self,
+        group_id: int,
+        **properties: Unpack[types.GroupProperties],
+    ) -> dict[str, bool]:
+        """Set properties of a group.
+
+        Calls :rpc_method:`set_group_properties`.
+
+        Args:
+            group_id: ID of the group.
+            properties: Properties to set.
+
+        Returns:
+            Mapping of property names to whether they were set successfully.
+        """
+        return await self.session.set_group_properties(group_id, properties)
+
+    async def set_language_properties(
+        self,
+        survey_id: int,
+        language: str | None = None,
+        **properties: Unpack[types.LanguageProperties],
+    ) -> dict[str, Any]:
+        """Set properties of a survey language.
+
+        Calls :rpc_method:`set_language_properties`.
+
+        Args:
+            survey_id: ID of the survey for which to set the language properties.
+            language: Language code.
+            properties: Properties to set.
+
+        Returns:
+            Mapping with status and updated properties.
+        """
+        return await self.session.set_language_properties(
+            survey_id, properties, language
+        )
+
+    async def set_participant_properties(
+        self,
+        survey_id: int,
+        token_query_properties: Mapping[str, Any] | int,
+        **token_data: Any,
+    ) -> dict[str, Any]:
+        """Set properties of a participant. Only one participant can be updated.
+
+        Calls :rpc_method:`set_participant_properties`.
+
+        Args:
+            survey_id: ID of the survey to which the participant belongs.
+            token_query_properties: Dictionary of properties to match the participant
+                or token ID.
+            token_data: Properties to set.
+
+        Returns:
+            New participant properties.
+        """
+        return await self.session.set_participant_properties(
+            survey_id,
+            token_query_properties,
+            token_data,
+        )
+
+    async def set_question_properties(
+        self,
+        question_id: int,
+        language: str | None = None,
+        **properties: Unpack[types.QuestionPropertiesUpdate],
+    ) -> dict[str, bool]:
+        """Set properties of a question.
+
+        Calls :rpc_method:`set_question_properties`.
+
+        Args:
+            question_id: ID of the question to set the properties of.
+            language: Language code.
+            properties: Properties to set.
+
+        Returns:
+            Mapping of property names to whether they were set successfully.
+        """
+        return await self.session.set_question_properties(
+            question_id, properties, language
+        )
+
+    async def set_quota_properties(
+        self,
+        quota_id: int,
+        **properties: Unpack[types.QuotaProperties],
+    ) -> types.SetQuotaPropertiesResult:
+        """Set properties of a quota.
+
+        Calls :rpc_method:`set_quota_properties`.
+
+        You can read more about quotas in the
+        :ls_manual:`LimeSurvey manual <Survey_quotas>`.
+
+        Args:
+            quota_id: Quota ID.
+            properties: Properties to set.
+
+        Returns:
+            Mapping with success status and updated properties.
+        """
+        return await self.session.set_quota_properties(quota_id, properties)
+
+    async def set_survey_properties(
+        self,
+        survey_id: int,
+        **properties: Unpack[types.SurveyProperties],
+    ) -> dict[str, bool]:
+        """Set properties of a survey.
+
+        Calls :rpc_method:`set_survey_properties`.
+
+        Args:
+            survey_id: ID of the survey to set the properties of.
+            properties: Properties to set.
+
+        Returns:
+            Mapping of property names to whether they were set successfully.
+        """
+        return await self.session.set_survey_properties(survey_id, properties)
+
+    async def upload_file_object(
+        self,
+        survey_id: int,
+        field: str,
+        filename: str,
+        file: IO[bytes],
+    ) -> types.FileUploadResult:
+        """Upload a file to a LimeSurvey survey.
+
+        Calls :rpc_method:`upload_file`.
+
+        Args:
+            survey_id: ID of the survey to upload the file to.
+            field: Field name to upload the file to.
+            filename: Name of the file to upload.
+            file: File-like object to upload.
+
+        Returns:
+            File metadata with final upload path.
+        """
+        contents = base64.b64encode(file.read()).decode()
+        return await self.session.upload_file(survey_id, field, filename, contents)
+
+    async def upload_file(
+        self,
+        survey_id: int,
+        field: str,
+        path: PathLike[str],
+        *,
+        filename: str | None = None,
+    ) -> types.FileUploadResult:
+        """Upload a file to a LimeSurvey survey from a local path.
+
+        Args:
+            survey_id: ID of the survey to which the file belongs.
+            field: Field to upload the file to.
+            path: Path to the file to upload.
+            filename: Optional filename override to use in LimeSurvey.
+
+        Returns:
+            File metadata with final upload path.
+        """
+        path = Path(path)
+        if filename is None:
+            filename = path.name
+
+        with Path(path).open("rb") as file:
+            return await self.upload_file_object(survey_id, field, filename, file)
+
+    async def invite_participants(
+        self,
+        survey_id: int,
+        *,
+        token_ids: list[int] | None = None,
+        strategy: int = enums.EmailSendStrategy.PENDING,
+    ) -> int:
+        """Invite participants to a survey.
+
+        Calls :rpc_method:`invite_participants`.
+
+        Args:
+            survey_id: ID of the survey to invite participants to.
+            token_ids: IDs of the participants to invite.
+            strategy: Strategy to use for sending emails. See
+                :class:`~citric.enums.EmailSendStrategy`.
+
+        Returns:
+            Number of emails left to send.
+
+        Raises:
+            LimeSurveyStatusError: If the number of emails left to send could not be
+                determined.
+            RuntimeError: If an unexpected error occurs.
+        """
+        email_flag = enums.EmailSendStrategy.to_flag(strategy)
+        try:
+            await self.session.invite_participants(survey_id, token_ids, email_flag)
         except LimeSurveyStatusError as error:
             status_match = re.match(EMAILS_SENT_STATUS_PATTERN, error.args[0])
             if not status_match:
