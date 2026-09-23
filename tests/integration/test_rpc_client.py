@@ -16,7 +16,7 @@ import uuid
 from contextlib import contextmanager
 from datetime import datetime
 from pathlib import Path
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 from unittest.mock import patch
 from urllib.parse import quote
 
@@ -36,7 +36,12 @@ if TYPE_CHECKING:
 
     import semver
 
-    from citric.types import FileUploadResult, QuestionsListElement, ReadableFile
+    from citric.types import (
+        FileUploadResult,
+        ParticipantData,
+        QuestionsListElement,
+        ReadableFile,
+    )
     from tests.fixtures import MailpitClient
 
 NEW_SURVEY_NAME = "New Survey"
@@ -65,7 +70,7 @@ def assert_status_error(
 
 
 @pytest.fixture
-def participants(faker: Faker) -> list[dict[str, Any]]:
+def participants(faker: Faker) -> list[ParticipantData]:
     """Create participants for a survey."""
     return [
         {
@@ -731,7 +736,7 @@ def test_participants(
     faker: Faker,
     client: citric.Client,
     survey_id: int,
-    participants: list[dict[str, str]],
+    participants: list[ParticipantData],
     subtests: pytest.Subtests,
 ):
     """Test participants methods."""
@@ -800,11 +805,69 @@ def test_participants(
 
 
 @pytest.mark.integration_test
+def test_list_participants_with_conditions(
+    server_version: semver.Version,
+    faker: Faker,
+    client: citric.Client,
+    survey_id: int,
+):
+    """Test list_participants with conditions."""
+    tokens = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    participants: list[ParticipantData] = [
+        {
+            "email": faker.email(domain="example.com"),
+            "firstname": faker.first_name(),
+            "lastname": faker.last_name(),
+            "token": str(token),
+            "attribute_1": faker.ssn(),
+            "attribute_2": f"{['Dog', 'Cat', 'Bird'][i % 3]} person",
+        }
+        for i, token in enumerate(tokens)
+    ]
+
+    client.activate_survey(survey_id)
+    client.activate_tokens(survey_id, attributes=tokens)
+    client.add_participants(
+        survey_id,
+        participant_data=participants,
+        create_tokens=False,
+    )
+
+    filtered = client.list_participants(survey_id, conditions={"tid": "2"})
+    assert [p["tid"] for p in filtered] == [2]
+
+    filtered = client.list_participants(survey_id, conditions={"tid": [">", "2"]})
+    assert [p["tid"] for p in filtered] == [3, 4, 5, 6, 7, 8, 9, 10]
+
+    filtered = client.list_participants(
+        survey_id,
+        conditions={
+            "tid": [">", "5"],
+            "attribute_2": ["=", "Dog person"],
+        },
+    )
+    assert [p["tid"] for p in filtered] == [7, 10]
+
+    filtered = client.list_participants(
+        survey_id,
+        conditions={"attribute_2": ["IN", "Dog person", "Cat person"]},
+    )
+    assert [p["tid"] for p in filtered] == [1, 2, 4, 5, 7, 8, 10]
+
+    if server_version >= (7, 1, 0):
+        filtered = client.list_participants(
+            survey_id,
+            conditions={"attribute_2": ["NOT IN", "Dog person", "Bird person"]},
+        )
+        assert [p["tid"] for p in filtered] == [2, 5, 8]
+
+
+@pytest.mark.integration_test
 def test_invite_participants(
     client: citric.Client,
     server_version: semver.VersionInfo,
     survey_id: int,
-    participants: list[dict[str, str]],
+    participants: list[ParticipantData],
 ):
     """Test inviting participants to a survey."""
     client.activate_survey(survey_id)
@@ -1005,7 +1068,7 @@ def test_summary(
     client: citric.Client,
     server_version: semver.VersionInfo,
     survey_id: int,
-    participants: list[dict],
+    participants: list[ParticipantData],
     responses: list[dict],
     subtests: pytest.Subtests,
 ):
@@ -1408,7 +1471,7 @@ def test_mail_registered_participants(
     client: citric.Client,
     server_version: semver.VersionInfo,
     survey_id: int,
-    participants: list[dict[str, str]],
+    participants: list[ParticipantData],
     mailpit: MailpitClient,
     subtests: pytest.Subtests,
 ):
@@ -1451,7 +1514,7 @@ def test_remind_participants(
     client: citric.Client,
     server_version: semver.VersionInfo,
     survey_id: int,
-    participants: list[dict[str, str]],
+    participants: list[ParticipantData],
     mailpit: MailpitClient,
     subtests: pytest.Subtests,
 ):

@@ -282,7 +282,7 @@ class Client:  # ruff: ignore[too-many-public-methods]
         self,
         survey_id: int,
         *,
-        participant_data: Sequence[Mapping[str, Any]],
+        participant_data: Sequence[types.ParticipantData],
         create_tokens: bool = True,
     ) -> list[dict[str, Any]]:
         """Add participants to a survey.
