@@ -29,7 +29,8 @@ import requests
 
 from citric import enums
 from citric.exceptions import LimeSurveyStatusError
-from citric.session import Session
+from citric.objects import MailOutcome
+from citric.session import Session, handle_rpc_errors
 
 if TYPE_CHECKING:
     import sys
@@ -1953,3 +1954,38 @@ class Client:  # ruff: ignore[too-many-public-methods]
 
         msg = "Could not determine invitation status"
         raise RuntimeError(msg)
+
+    def mail_registered_participants(
+        self,
+        survey_id: int,
+        *,
+        override_all_conditions: Mapping[str, Any] | None = None,
+    ) -> MailOutcome:
+        """Send e-mails to registered participants in a survey.
+
+        Calls :rpc_method:`mail_registered_participants`.
+
+        Args:
+            survey_id: Survey to get participants from.
+            override_all_conditions: Replace the default conditions. Each entry maps
+                a column (or, if the key is an integer, a raw comparison string like
+                ``"tid = 2"``) to either a value to search for in that column (e.g.
+                ``{"tid": "2"}``) or an ``[operator, value, ...]`` list (e.g.
+                ``{"tid": ["=", "2"]}``). Valid operators are ``<``, ``>``, ``>=``,
+                ``<=``, ``=``, ``<>``, ``LIKE`` and ``IN``. Only ``IN`` and ``NOT IN``
+                allow several values. All conditions are connected by ``AND``.
+
+        Returns:
+            The raw RPC response dictionary.
+
+        .. versionadded:: NEXT_VERSION
+        """
+        response = self.session.call(
+            "mail_registered_participants",
+            survey_id,
+            override_all_conditions or {},
+        )
+        if response["result"].get("status", "").startswith("Error:"):
+            handle_rpc_errors(response["result"], response["error"])
+
+        return MailOutcome.from_dict(response["result"])
