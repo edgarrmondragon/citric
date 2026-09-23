@@ -1,0 +1,5 @@
+kind: Documentation
+body: Document and test the 7.2.0+ survey property
+time: 2026-09-23T10:32:33.900869-06:00
+custom:
+    Issue: "1827"
