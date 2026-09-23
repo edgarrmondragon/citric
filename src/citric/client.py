@@ -603,7 +603,7 @@ class Client:  # ruff: ignore[too-many-public-methods]
         )
 
     def delete_group(self, survey_id: int, group_id: int) -> int:
-        """Delete a group.
+        """Delete a question group.
 
         Args:
             survey_id: ID of the Survey that the group belongs to.
@@ -1002,7 +1002,7 @@ class Client:  # ruff: ignore[too-many-public-methods]
         settings: list[str] | None = None,
         language: str | None = None,
     ) -> types.GroupProperties:
-        """Get the properties of a group of a survey.
+        """Get the properties of a question group of a survey.
 
         Calls :rpc_method:`get_group_properties`.
 
@@ -1419,7 +1419,7 @@ class Client:  # ruff: ignore[too-many-public-methods]
         name: str | None = None,
         description: str | None = None,
     ) -> int:
-        """Import group from a file.
+        """Import a question group from a file.
 
         Create a new group from an exported LSG file.
 
@@ -1732,7 +1732,7 @@ class Client:  # ruff: ignore[too-many-public-methods]
         group_id: int,
         **properties: Unpack[types.GroupProperties],
     ) -> dict[str, bool]:
-        """Set properties of a group.
+        """Set properties of a question group.
 
         Calls :rpc_method:`set_group_properties`.
 
