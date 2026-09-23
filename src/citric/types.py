@@ -29,6 +29,7 @@ __all__ = [
     "GroupProperties",
     "LanguageProperties",
     "OperationStatus",
+    "ParticipantData",
     "ParticipantInfo",
     "ParticipantListElement",
     "Permission",
@@ -53,6 +54,8 @@ Result: TypeAlias = Any
 
 #: Yes/No/Inherit type alias.
 YesNo: TypeAlias = Literal["Y", "N", "I"]
+
+ParticipantData: TypeAlias = dict[str, Any]
 
 
 class FileUploadResult(TypedDict):
