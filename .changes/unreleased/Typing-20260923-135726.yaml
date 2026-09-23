@@ -1,0 +1,5 @@
+kind: Typing
+body: Improve typing of participant dictionaries in `Client.add_participants`
+time: 2026-09-23T13:57:26.186235-06:00
+custom:
+    Issue: "1828"

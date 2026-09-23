@@ -61,8 +61,6 @@ Result: TypeAlias = Any
 #: Yes/No/Inherit type alias.
 YesNo: TypeAlias = Literal["Y", "N", "I"]
 
-ParticipantData: TypeAlias = dict[str, Any]
-
 
 class FileUploadResult(TypedDict):
     """File upload result."""
@@ -981,6 +979,22 @@ class SurveySummary(TypedDict, total=False):
 
 class ParticipantInfo(TypedDict):
     """Participant info."""
+
+    firstname: str
+    """The participant first name."""
+
+    lastname: str
+    """The participant last name."""
+
+    email: str
+    """The participant email."""
+
+
+class ParticipantData(TypedDict, extra_items=Any):  # type: ignore[call-arg]
+    """New participant details for :meth:`~citric.Client.add_participants`."""
+
+    token: str
+    """The participant access code."""
 
     firstname: str
     """The participant first name."""

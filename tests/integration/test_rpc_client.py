@@ -73,7 +73,7 @@ def assert_status_error(
 def participants(faker: Faker) -> list[ParticipantData]:
     """Create participants for a survey."""
     return [
-        {
+        {  # type: ignore[typeddict-unknown-key]
             "email": faker.email(domain="example.com"),
             "firstname": faker.first_name(),
             "lastname": faker.last_name(),
@@ -81,7 +81,7 @@ def participants(faker: Faker) -> list[ParticipantData]:
             "attribute_1": "Dog person",
             "attribute_2": "Night owl",
         },
-        {
+        {  # type: ignore[typeddict-unknown-key]
             "email": faker.email(domain="example.com"),
             "firstname": faker.first_name(),
             "lastname": faker.last_name(),
@@ -89,7 +89,7 @@ def participants(faker: Faker) -> list[ParticipantData]:
             "attribute_1": "Cat person",
             "attribute_2": "Early bird",
         },
-        {
+        {  # type: ignore[typeddict-unknown-key]
             "email": faker.email(domain="example.com"),
             "firstname": faker.first_name(),
             "lastname": faker.last_name(),
@@ -754,8 +754,8 @@ def test_participants(
             assert p["email"] == d["email"]
             assert p["firstname"] == d["firstname"]
             assert p["lastname"] == d["lastname"]
-            assert p["attribute_1"] == d["attribute_1"]
-            assert p["attribute_2"] == d["attribute_2"]
+            assert p["attribute_2"] == d["attribute_2"]  # type: ignore[typeddict-item]
+            assert p["attribute_1"] == d["attribute_1"]  # type: ignore[typeddict-item]
 
     participants_list = client.list_participants(
         survey_id,
@@ -781,8 +781,8 @@ def test_participants(
             assert properties["email"] == d["email"]
             assert properties["firstname"] == d["firstname"]
             assert properties["lastname"] == d["lastname"]
-            assert properties["attribute_1"] == d["attribute_1"]
-            assert properties["attribute_2"] == d["attribute_2"]
+            assert properties["attribute_1"] == d["attribute_1"]  # type: ignore[typeddict-item]
+            assert properties["attribute_2"] == d["attribute_2"]  # type: ignore[typeddict-item]
 
     # Update participant properties
     new_firstname = faker.first_name()
@@ -814,7 +814,7 @@ def test_list_participants_with_conditions(
     """Test list_participants with conditions."""
     tokens = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     participants: list[ParticipantData] = [
-        {
+        {  # type: ignore[typeddict-unknown-key]
             "email": faker.email(domain="example.com"),
             "firstname": faker.first_name(),
             "lastname": faker.last_name(),
