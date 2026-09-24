@@ -136,8 +136,11 @@ class RESTClient:
             url=f"{self.url}{self.AUTH_ENDPOINT}",
             headers=self._auth_headers,
         )
-        self._raise_for_status(response)
-        self.session_id = None
+        try:
+            self._raise_for_status(response)
+        finally:
+            self._session.close()
+            self.session_id = None
 
     def make_request(
         self,
