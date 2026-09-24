@@ -79,7 +79,7 @@ By default, {class}`Client <citric.Client>` and
 {class}`Session <citric.session.Session>` send requests with `requests`. Any
 object that implements the
 {class}`HTTPTransport <citric.transport.protocol.HTTPTransport>` protocol (a
-`post` method and a `close` method) can be passed as `requests_session`
+`request` method and a `close` method) can be passed as `requests_session`
 instead, including a plain
 [`requests.Session`](inv:requests:py:class:api/#requests.Session) with a custom
 adapter mounted.
