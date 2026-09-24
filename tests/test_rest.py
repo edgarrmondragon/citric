@@ -166,6 +166,21 @@ def test_refresh_token(rest_client: RESTClient, httpserver: HTTPServer):
     assert rest_client.session_id != old_session_id
 
 
+def test_close(rest_client: RESTClient, httpserver: HTTPServer):
+    """Test deleting the token behaves idempotently."""
+    httpserver.expect_request(
+        "/rest/v1/auth",
+        method="DELETE",
+    ).respond_with_response(Response(status=204))
+
+    assert rest_client.session_id is not None
+
+    rest_client.close()
+    assert rest_client.session_id is None
+
+    rest_client.close()
+
+
 def test_bad_request(
     backend: tinydb.TinyDB,
     rest_client: RESTClient,
