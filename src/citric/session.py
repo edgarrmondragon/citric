@@ -7,7 +7,6 @@ from __future__ import annotations
 __lazy_modules__ = {
     "citric.exceptions",
     "citric.method",
-    "importlib",
     "json",
     "random",
     "requests",
@@ -34,6 +33,7 @@ if TYPE_CHECKING:
     import sys
     from types import TracebackType
 
+    from citric.transport.protocol import HTTPTransport
     from citric.types import Result, RPCResponse
 
     if sys.version_info >= (3, 11):
@@ -84,7 +84,11 @@ class Session:
         url: LimeSurvey Remote Control endpoint.
         username: LimeSurvey user name.
         password: LimeSurvey password.
-        requests_session: A :py:class:`requests.Session <requests.Session>` object.
+        requests_session: An HTTP transport implementing
+            :class:`~citric.transport.protocol.HTTPTransport`, e.g. a
+            :py:class:`requests.Session <requests.Session>` or
+            :class:`~citric.transport.httpx2.Httpx2Transport`. Defaults to a new
+            :py:class:`requests.Session <requests.Session>`.
         auth_plugin: Name of the :ls_manual:`plugin <Authentication_plugins>` to use for
             authentication. For example,
             :ls_manual:`AuthLDAP <Authentication_plugins#LDAP>`. Defaults to using the
@@ -102,6 +106,11 @@ class Session:
     .. versionadded:: 0.5.0
        The ``json_encoder`` parameter.
 
+    .. versionchanged:: NEXT_VERSION
+       ``requests_session`` now accepts any object implementing
+       :class:`~citric.transport.protocol.HTTPTransport`, not just
+       :py:class:`requests.Session <requests.Session>`.
+
 
     .. _key: #citric.session.Session.key
     .. _closure: #citric.session.Session.close
@@ -116,12 +125,11 @@ class Session:
         password: str,
         *,
         auth_plugin: str = "Authdb",
-        requests_session: requests.Session | None = None,
+        requests_session: HTTPTransport | None = None,
         json_encoder: Type[json.JSONEncoder] | None = None,  # ruff: ignore[non-pep585-annotation]
     ) -> None:
         self.url: str = url
-        self._session = requests_session or requests.session()
-        self._session.headers["User-Agent"] = self.USER_AGENT
+        self._session: HTTPTransport = requests_session or requests.session()
         self._encoder = json_encoder or json.JSONEncoder
 
         self.__key: str | None = self.get_session_key(
@@ -212,11 +220,12 @@ class Session:
             data=json.dumps(payload, cls=self._encoder),
             headers={
                 "content-type": "application/json",
+                "User-Agent": self.USER_AGENT,
             },
         )
         res.raise_for_status()
 
-        if not res.text:
+        if not res.content:
             raise RPCInterfaceNotEnabledError
 
         data: RPCResponse

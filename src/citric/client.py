@@ -39,6 +39,7 @@ if TYPE_CHECKING:
 
     from citric import types
     from citric.objects import Participant
+    from citric.transport.protocol import HTTPTransport
     from citric.types import MailOutcome
 
     if sys.version_info >= (3, 11):
@@ -127,7 +128,11 @@ class Client:  # ruff: ignore[too-many-public-methods]
         url: LimeSurvey Remote Control endpoint.
         username: LimeSurvey user name.
         password: LimeSurvey password.
-        requests_session: A :py:class:`requests.Session <requests.Session>` object.
+        requests_session: An HTTP transport implementing
+            :class:`~citric.transport.protocol.HTTPTransport`, e.g. a
+            :py:class:`requests.Session <requests.Session>` or
+            :class:`~citric.transport.httpx2.Httpx2Transport`. Defaults to a new
+            :py:class:`requests.Session <requests.Session>`.
         auth_plugin: Name of the :ls_manual:`plugin <Authentication_plugins>` to use for
             authentication. For example,
             :ls_manual:`AuthLDAP <Authentication_plugins#LDAP>`. Defaults to using the
@@ -136,6 +141,11 @@ class Client:  # ruff: ignore[too-many-public-methods]
 
     .. versionadded:: 0.0.6
        Support Auth plugins with the ``auth_plugin`` parameter.
+
+    .. versionchanged:: NEXT_VERSION
+       ``requests_session`` now accepts any object implementing
+       :class:`~citric.transport.protocol.HTTPTransport`, not just
+       :py:class:`requests.Session <requests.Session>`.
     """
 
     session_class = Session
@@ -146,7 +156,7 @@ class Client:  # ruff: ignore[too-many-public-methods]
         username: str,
         password: str,
         *,
-        requests_session: requests.Session | None = None,
+        requests_session: HTTPTransport | None = None,
         auth_plugin: str = "Authdb",
     ) -> None:
         self.__session = self.session_class(
