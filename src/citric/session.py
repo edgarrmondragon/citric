@@ -4,6 +4,8 @@
 
 from __future__ import annotations
 
+import http
+
 __lazy_modules__ = {
     "citric.exceptions",
     "citric.method",
@@ -202,6 +204,7 @@ class Session:
             An RPC result.
 
         Raises:
+            LimeSurveyApiError: If the server responds with an error HTTP status code.
             ResponseMismatchError: Request ID does not match the response ID.
             RPCInterfaceNotEnabledError: If the JSON RPC interface is not enabled
                 (empty response).
@@ -223,7 +226,9 @@ class Session:
                 "User-Agent": self.USER_AGENT,
             },
         )
-        res.raise_for_status()
+        if res.status_code >= http.HTTPStatus.BAD_REQUEST:
+            msg = f"Request to LimeSurvey server failed with status {self.status_code}"
+            raise LimeSurveyApiError(msg)
 
         if not res.content:
             raise RPCInterfaceNotEnabledError

@@ -4,7 +4,6 @@
 
 from __future__ import annotations
 
-import http
 import json
 from typing import TYPE_CHECKING, Any
 
@@ -13,13 +12,6 @@ import urllib3.response
 
 if TYPE_CHECKING:
     from collections.abc import Mapping
-
-
-class Urllib3StatusError(Exception):
-    """Exception raised for responses with error status codes.
-
-    .. versionadded:: NEXT_VERSION
-    """
 
 
 class Urllib3ResponseWrapper:
@@ -36,6 +28,11 @@ class Urllib3ResponseWrapper:
         """The raw response bytes."""
         return self._response.data
 
+    @property
+    def status_code(self) -> int:
+        """The HTTP status of this response."""
+        return self._response.status
+
     def json(self) -> Any:  # ruff: ignore[any-type]
         """The JSON data contained in the response.
 
@@ -43,15 +40,6 @@ class Urllib3ResponseWrapper:
             JSON data.
         """
         return json.loads(self._response.data.decode("utf-8"))
-
-    def raise_for_status(self) -> None:
-        """Raise an exception if the response has an HTTP error status.
-
-        Raises:
-            Urllib3StatusError: When the response has an error status code.
-        """
-        if self._response.status >= http.HTTPStatus.BAD_REQUEST:
-            raise Urllib3StatusError(self._response.reason or "Request failed")
 
 
 class Urllib3Transport:

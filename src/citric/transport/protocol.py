@@ -32,12 +32,13 @@ class HTTPResponse(Protocol):
         """The response body."""
         ...
 
-    def json(self) -> Any:  # ruff: ignore[any-type]
-        """Decode the response body as JSON."""
+    @property
+    def status_code(self) -> int:
+        """The HTTP status of this response."""
         ...
 
-    def raise_for_status(self) -> None:
-        """Raise an exception if the response has an HTTP error status."""
+    def json(self) -> Any:  # ruff: ignore[any-type]
+        """Decode the response body as JSON."""
         ...
 
 
