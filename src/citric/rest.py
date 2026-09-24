@@ -15,6 +15,7 @@ import http
 import json as _json
 from importlib import metadata
 from typing import TYPE_CHECKING, Any, Type  # ruff: ignore[deprecated-import]
+from urllib.parse import urlencode, urlsplit, urlunsplit
 
 import requests
 
@@ -22,6 +23,7 @@ from citric.exceptions import LimeSurveyApiError
 
 if TYPE_CHECKING:
     import sys
+    from collections.abc import Mapping
     from types import TracebackType
 
     from citric.transport.protocol import HTTPResponse, HTTPTransport
@@ -34,6 +36,18 @@ if TYPE_CHECKING:
 __all__ = [
     "RESTClient",
 ]
+
+
+def _encode_params(url: str, params: Mapping[str, Any]) -> str:
+    if not params:
+        return url
+
+    split = urlsplit(url)
+    query = urlencode(params, doseq=True)
+    if split.query:
+        query = f"{split.query}&{query}"
+
+    return urlunsplit(split._replace(query=query))
 
 
 class RESTClient:
@@ -147,6 +161,7 @@ class RESTClient:
         method: str,
         path: str,
         *,
+        params: Mapping[str, Any] | None = None,
         json: Any | None = None,  # ruff: ignore[any-type]
     ) -> HTTPResponse:
         """Make a request to the REST API.
@@ -154,6 +169,7 @@ class RESTClient:
         Args:
             method: HTTP method.
             path: URL path.
+            params: Query parameters.
             json: JSON data.
 
         Returns:
@@ -163,9 +179,12 @@ class RESTClient:
         if json is not None:
             headers = {**headers, "Content-Type": "application/json"}
 
+        url = f"{self.url}{path}"
+        url = _encode_params(url, params) if params else url
+
         response = self._session.request(
             method=method,
-            url=f"{self.url}{path}",
+            url=url,
             data=_json.dumps(json) if json is not None else None,
             headers=headers,
         )
