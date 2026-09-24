@@ -102,6 +102,8 @@ sphinxcontrib-serializinghtml==2.0.0
 tabulate==0.10.0
     # via sphinx-markdown-builder
 typing-extensions==4.16.0
-    # via beautifulsoup4
+    # via
+    #   citric (pyproject.toml)
+    #   beautifulsoup4
 urllib3==2.7.0
     # via requests

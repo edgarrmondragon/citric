@@ -1,0 +1,5 @@
+kind: Refactored
+body: Use a typed dict as the return type of `Client.mail_registered_participants` and `Client.remind_participants`
+time: 2026-09-23T18:52:06.963808-06:00
+custom:
+    Issue: "1833"
