@@ -29,7 +29,6 @@ import requests
 
 from citric import enums
 from citric.exceptions import LimeSurveyStatusError
-from citric.objects import MailOutcome
 from citric.session import Session, handle_rpc_errors
 
 if TYPE_CHECKING:
@@ -40,6 +39,7 @@ if TYPE_CHECKING:
 
     from citric import types
     from citric.objects import Participant
+    from citric.types import MailOutcome
 
     if sys.version_info >= (3, 11):
         from typing import Self, Unpack
@@ -1976,7 +1976,7 @@ class Client:  # ruff: ignore[too-many-public-methods]
                 allow several values. All conditions are connected by ``AND``.
 
         Returns:
-            A structured outcome object.
+            An dictionary with the outcome of the operation.
 
         .. versionadded:: NEXT_VERSION
         """
@@ -1988,7 +1988,7 @@ class Client:  # ruff: ignore[too-many-public-methods]
         if r["error"] is not None or r["result"].get("status", "").startswith("Error:"):
             handle_rpc_errors(r["result"], r["error"])
 
-        return MailOutcome.from_dict(r["result"])
+        return r["result"]
 
     def remind_participants(
         self,
@@ -2015,7 +2015,7 @@ class Client:  # ruff: ignore[too-many-public-methods]
                 individual participant fails, instead of stopping at the first one.
 
         Returns:
-            A structured outcome object.
+            An dictionary with the outcome of the operation.
 
         .. versionadded:: NEXT_VERSION
         """
@@ -2030,4 +2030,4 @@ class Client:  # ruff: ignore[too-many-public-methods]
         if r["error"] is not None or r["result"].get("status", "").startswith("Error:"):
             handle_rpc_errors(r["result"], r["error"])
 
-        return MailOutcome.from_dict(r["result"])
+        return r["result"]

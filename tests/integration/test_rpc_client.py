@@ -1491,23 +1491,23 @@ def test_mail_registered_participants(
     # emails are sent successfully and that violates assumptions made by this
     # library about the meaning of `status` messages
     outcome = client.mail_registered_participants(survey_id)
-    assert outcome.participants == {
-        "1": citric.objects.MailParticipantOutcome(
-            name=f"{participants[0]['firstname']} {participants[0]['lastname']}",
-            email=participants[0]["email"],
-            status="OK",
-            warning=None,
-            error=None,
-        ),
-        "2": citric.objects.MailParticipantOutcome(
-            name=f"{participants[1]['firstname']} {participants[1]['lastname']}",
-            email=participants[1]["email"],
-            status="OK",
-            warning=None,
-            error=None,
-        ),
+    assert outcome == {
+        "status": "0 left to send",
+        "1": {
+            "name": f"{participants[0]['firstname']} {participants[0]['lastname']}",
+            "email": participants[0]["email"],
+            "status": "OK",
+            "warning": None,
+            "error": None,
+        },
+        "2": {
+            "name": f"{participants[1]['firstname']} {participants[1]['lastname']}",
+            "email": participants[1]["email"],
+            "status": "OK",
+            "warning": None,
+            "error": None,
+        },
     }
-    assert outcome.status == "0 left to send"
 
     with subtests.test(msg="2 emails sent"):
         assert mailpit.get_all()["total"] == 2
@@ -1558,23 +1558,23 @@ def test_remind_participants(
     # sent successfully and that violates assumptions made by this library about the
     # meaning of `status` messages
     outcome = client.remind_participants(survey_id)
-    assert outcome.participants == {
-        "1": citric.objects.MailParticipantOutcome(
-            name=f"{participants[0]['firstname']} {participants[0]['lastname']}",
-            email=participants[0]["email"],
-            status="OK",
-            warning=None,
-            error=None,
-        ),
-        "2": citric.objects.MailParticipantOutcome(
-            name=f"{participants[1]['firstname']} {participants[1]['lastname']}",
-            email=participants[1]["email"],
-            status="OK",
-            warning=None,
-            error=None,
-        ),
+    assert outcome == {
+        "status": "0 left to send",
+        "1": {
+            "name": f"{participants[0]['firstname']} {participants[0]['lastname']}",
+            "email": participants[0]["email"],
+            "status": "OK",
+            "warning": None,
+            "error": None,
+        },
+        "2": {
+            "name": f"{participants[1]['firstname']} {participants[1]['lastname']}",
+            "email": participants[1]["email"],
+            "status": "OK",
+            "warning": None,
+            "error": None,
+        },
     }
-    assert outcome.status == "0 left to send"
 
     with subtests.test(msg="2 reminders sent"):
         assert mailpit.get_all()["total"] == 2
