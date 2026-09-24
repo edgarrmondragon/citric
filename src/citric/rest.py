@@ -145,12 +145,12 @@ class RESTClient:
 
     def close(self) -> None:
         """Delete the session."""
-        response = self._session.request(
-            method="DELETE",
-            url=f"{self.url}{self.AUTH_ENDPOINT}",
-            headers=self._auth_headers,
-        )
         try:
+            response = self._session.request(
+                method="DELETE",
+                url=f"{self.url}{self.AUTH_ENDPOINT}",
+                headers=self._auth_headers,
+            )
             self._raise_for_status(response)
         finally:
             self._session.close()
