@@ -4,6 +4,10 @@
 
 from __future__ import annotations
 
+__lazy_modules__ = {
+    "httpx2",
+}
+
 from typing import TYPE_CHECKING
 
 import httpx2

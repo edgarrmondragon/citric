@@ -4,6 +4,12 @@
 
 from __future__ import annotations
 
+__lazy_modules__ = {
+    "json",
+    "urllib3",
+    "urllib3.response",
+}
+
 import json
 from typing import TYPE_CHECKING, Any
 

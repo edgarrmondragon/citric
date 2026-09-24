@@ -9,6 +9,7 @@ import http
 __lazy_modules__ = {
     "citric.exceptions",
     "citric.method",
+    "http",
     "json",
     "random",
     "requests",
