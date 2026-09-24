@@ -56,6 +56,8 @@ class Urllib3Transport:
     but isn't a direct dependency of citric itself, so pin it explicitly
     (``pip install urllib3``) if you don't want to rely on that.
 
+    Wraps :py:class:`urllib3.PoolManager <urllib3.PoolManager>`.
+
     .. versionadded:: NEXT_VERSION
     """
 

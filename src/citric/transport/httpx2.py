@@ -24,6 +24,8 @@ class Httpx2Transport:
     Requires the `httpx2 <https://github.com/pydantic/httpx2>`_ package,
     which is not installed by citric itself: run ``pip install httpx2``.
 
+    Wraps :py:class:`httpx2.Client <httpx2.Client>`.
+
     .. versionadded:: NEXT_VERSION
     """
 
