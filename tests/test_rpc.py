@@ -62,7 +62,10 @@ def test_json_rpc(session: Session):
 
 def test_http_error(session: Session):
     """Test HTTP errors."""
-    with pytest.raises(LimeSurveyApiError):
+    with pytest.raises(
+        LimeSurveyApiError,
+        match="Request to LimeSurvey server failed with status 500",
+    ):
         session.__http_error()
 
 

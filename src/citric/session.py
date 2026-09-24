@@ -227,7 +227,7 @@ class Session:
             },
         )
         if res.status_code >= http.HTTPStatus.BAD_REQUEST:
-            msg = f"Request to LimeSurvey server failed with status {self.status_code}"
+            msg = f"Request to LimeSurvey server failed with status {res.status_code}"
             raise LimeSurveyApiError(msg)
 
         if not res.content:
