@@ -6,7 +6,7 @@ Citric only needs a very small slice of an HTTP client's behavior to talk to
 the LimeSurvey RPC endpoint: issue a POST request with a body and headers, and
 close any underlying connections when the session ends. :class:`HTTPTransport`
 captures that slice as a :class:`~typing.Protocol`, so anything with a
-compatible ``post``/``close`` shape can be passed in as ``requests_session``,
+compatible ``request``/``close`` shape can be passed in as ``requests_session``,
 not just a :py:class:`requests.Session <requests.Session>`.
 """
 
@@ -56,14 +56,15 @@ class HTTPTransport(Protocol):
     .. versionadded:: NEXT_VERSION
     """
 
-    def post(
+    def request(
         self,
+        method: str,
         url: str,
         *,
-        data: str,
+        data: str | None = None,
         headers: Mapping[str, str],
     ) -> HTTPResponse:
-        """Send a POST request."""
+        """Send an HTTP request."""
         ...
 
     def close(self) -> None:

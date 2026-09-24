@@ -4,6 +4,12 @@
 
 from __future__ import annotations
 
+__lazy_modules__ = {
+    "json",
+    "urllib3",
+    "urllib3.response",
+}
+
 import json
 from typing import TYPE_CHECKING, Any
 
@@ -65,10 +71,18 @@ class Urllib3Transport:
         """Initialize the urllib3 transport."""
         self._pool = urllib3.PoolManager()
 
-    def post(self, url: str, *, data: str, headers: Mapping[str, str]) -> HTTPResponse:
-        """Send a POST HTTP request.
+    def request(
+        self,
+        method: str,
+        url: str,
+        *,
+        data: str | None = None,
+        headers: Mapping[str, str],
+    ) -> HTTPResponse:
+        """Send an HTTP request.
 
         Args:
+            method: The HTTP method.
             url: The server URL.
             data: The request body.
             headers: The HTTP headers.
@@ -78,7 +92,7 @@ class Urllib3Transport:
         """
         return Urllib3ResponseWrapper(
             self._pool.request(
-                method="POST",
+                method=method,
                 url=url,
                 body=data,
                 headers=headers,
