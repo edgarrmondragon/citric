@@ -13,6 +13,10 @@ import urllib3.response
 if TYPE_CHECKING:
     from collections.abc import Mapping
 
+__all__ = [
+    "Urllib3Transport",
+]
+
 
 class Urllib3ResponseWrapper:
     """A urllib3 response object wrapper used for protocol compatibility.

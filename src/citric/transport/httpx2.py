@@ -11,6 +11,10 @@ import httpx2
 if TYPE_CHECKING:
     from collections.abc import Mapping
 
+__all__ = [
+    "Httpx2Transport",
+]
+
 
 class Httpx2Transport:
     """Citric transport protocol implementation for httpx2.
