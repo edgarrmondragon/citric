@@ -160,6 +160,7 @@ class Client:  # ruff: ignore[too-many-public-methods]
 
     def close(self) -> None:
         """Close client session."""
+        self.__server_version = None
         self.session.close()
 
     def __enter__(self: Self) -> Self:
