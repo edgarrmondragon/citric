@@ -1,0 +1,5 @@
+kind: Added
+body: Support HTTP protocol in REST API client
+time: 2026-09-23T23:41:41.032386-06:00
+custom:
+    Issue: "1837"

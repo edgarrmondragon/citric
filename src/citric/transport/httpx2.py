@@ -43,7 +43,7 @@ class Httpx2Transport:
         url: str,
         *,
         data: str | None = None,
-        headers: Mapping[str, str],
+        headers: Mapping[str, str] | None = None,
     ) -> HTTPResponse:
         """Send an HTTP request.
 
