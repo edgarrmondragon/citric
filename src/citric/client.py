@@ -1976,16 +1976,16 @@ class Client:  # ruff: ignore[too-many-public-methods]
                 allow several values. All conditions are connected by ``AND``.
 
         Returns:
-            The raw RPC response dictionary.
+            A structured outcome object.
 
         .. versionadded:: NEXT_VERSION
         """
-        response = self.session.call(
+        r = self.session.call(
             "mail_registered_participants",
             survey_id,
             override_all_conditions or {},
         )
-        if response["result"].get("status", "").startswith("Error:"):
-            handle_rpc_errors(response["result"], response["error"])
+        if r["error"] is not None or r["result"].get("status", "").startswith("Error:"):
+            handle_rpc_errors(r["result"], r["error"])
 
-        return MailOutcome.from_dict(response["result"])
+        return MailOutcome.from_dict(r["result"])
