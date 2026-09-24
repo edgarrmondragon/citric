@@ -1989,3 +1989,45 @@ class Client:  # ruff: ignore[too-many-public-methods]
             handle_rpc_errors(r["result"], r["error"])
 
         return MailOutcome.from_dict(r["result"])
+
+    def remind_participants(
+        self,
+        survey_id: int,
+        *,
+        min_days_between: int | None = None,
+        max_reminders: int | None = None,
+        token_ids: Sequence[int] | None = None,
+        continue_on_error: bool = False,
+    ) -> MailOutcome:
+        """Send a reminder to participants in a survey.
+
+        Calls :rpc_method:`remind_participants`.
+
+        Args:
+            survey_id: Survey to send reminders for.
+            min_days_between: Only remind participants whose last invitation or
+                reminder was sent at least this many days ago.
+            max_reminders: Only remind participants who have received fewer than
+                this many reminders.
+            token_ids: IDs of the participants to remind. If none, all eligible
+                participants are reminded.
+            continue_on_error: Whether to continue sending reminders after an
+                individual participant fails, instead of stopping at the first one.
+
+        Returns:
+            A structured outcome object.
+
+        .. versionadded:: NEXT_VERSION
+        """
+        r = self.session.call(
+            "remind_participants",
+            survey_id,
+            min_days_between,
+            max_reminders,
+            token_ids,
+            continue_on_error,
+        )
+        if r["error"] is not None or r["result"].get("status", "").startswith("Error:"):
+            handle_rpc_errors(r["result"], r["error"])
+
+        return MailOutcome.from_dict(r["result"])
