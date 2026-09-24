@@ -14,6 +14,7 @@ import tinydb.table
 from tinydb.table import Document
 from werkzeug.wrappers import Response
 
+from citric.exceptions import LimeSurveyApiError
 from citric.rest import RESTClient
 
 if TYPE_CHECKING:
@@ -76,6 +77,11 @@ def api_handler(backend: tinydb.TinyDB) -> APIHandler:
     def handler(request: Request) -> Response:
         surveys = backend.table("surveys")
 
+        if request.method == "GET":
+            # A bodiless request must not claim a JSON body: LimeSurvey's REST
+            # API 500s if it does, since it tries to decode the (empty) body.
+            assert "Content-Type" not in request.headers
+
         if request.path.endswith("/rest/v1/survey") and request.method == "GET":
             return Response(
                 json.dumps({"surveys": surveys.all()}),
@@ -90,6 +96,7 @@ def api_handler(backend: tinydb.TinyDB) -> APIHandler:
             )
 
         if "/rest/v1/survey-detail" in request.path and request.method == "PATCH":
+            assert request.headers.get("Content-Type") == "application/json"
             surveys.update_multiple(
                 [
                     (patch["props"], tinydb.where("sid") == patch["id"])
@@ -106,7 +113,7 @@ def api_handler(backend: tinydb.TinyDB) -> APIHandler:
                 content_type=content_type,
             )
 
-        return Response(status=400)  # pragma: no cover
+        return Response(status=400)
 
     return handler
 
@@ -127,6 +134,46 @@ def rest_client(
 
     with RESTClient(httpserver.url_for("").rstrip("/"), username, password) as client:
         yield client
+
+
+def test_refresh_token(rest_client: RESTClient, httpserver: HTTPServer):
+    """Test refreshing the token, a bodiless request."""
+
+    def handler(request: Request) -> Response:
+        assert "Content-Type" not in request.headers
+        return Response(
+            json.dumps({"token": "my-refreshed-session-id"}),
+            content_type="application/json",
+        )
+
+    httpserver.expect_request(
+        "/rest/v1/auth",
+        method="PUT",
+    ).respond_with_handler(handler)
+
+    old_session_id = rest_client.session_id
+    rest_client.refresh_token()
+    assert rest_client.session_id == "my-refreshed-session-id"
+    assert rest_client.session_id != old_session_id
+
+
+def test_bad_request(
+    backend: tinydb.TinyDB,
+    rest_client: RESTClient,
+    httpserver: HTTPServer,
+    api_handler: APIHandler,
+):
+    """Test a bad request."""
+    httpserver.expect_request(
+        "/rest/v1/not-an-endpoint",
+        method="GET",
+    ).respond_with_handler(api_handler)
+
+    with pytest.raises(
+        LimeSurveyApiError,
+        match="Request to LimeSurvey server failed with status 400",
+    ):
+        _ = rest_client.make_request("GET", "/rest/v1/not-an-endpoint")
 
 
 def test_get_surveys(
