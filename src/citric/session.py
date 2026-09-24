@@ -220,7 +220,8 @@ class Session:
             "id": request_id,
         }
 
-        res = self._session.post(
+        res = self._session.request(
+            "POST",
             self.url,
             data=json.dumps(payload, cls=self._encoder),
             headers={

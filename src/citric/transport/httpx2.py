@@ -33,10 +33,18 @@ class Httpx2Transport:
         """Initialize the httpx2 transport."""
         self._client = httpx2.Client()
 
-    def post(self, url: str, *, data: str, headers: Mapping[str, str]) -> HTTPResponse:
-        """Send a POST HTTP request.
+    def request(
+        self,
+        method: str,
+        url: str,
+        *,
+        data: str | None = None,
+        headers: Mapping[str, str],
+    ) -> HTTPResponse:
+        """Send an HTTP request.
 
         Args:
+            method: The HTTP method.
             url: The server URL.
             data: The request body.
             headers: The HTTP headers.
@@ -44,7 +52,12 @@ class Httpx2Transport:
         Returns:
             A response object.
         """
-        return self._client.post(url=url, content=data, headers=headers)
+        return self._client.request(
+            method=method,
+            url=url,
+            content=data,
+            headers=headers,
+        )
 
     def close(self) -> None:
         """Close the HTTP session."""
