@@ -176,9 +176,8 @@ def test_close(rest_client: RESTClient, httpserver: HTTPServer):
     assert rest_client.session_id is not None
 
     rest_client.close()
-    assert rest_client.session_id is None
-
     rest_client.close()
+    assert rest_client.session_id is None
 
 
 def test_bad_request(
