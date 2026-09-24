@@ -76,14 +76,16 @@ class Urllib3Transport:
         method: str,
         url: str,
         *,
+        params: Mapping[str, Any] | None = None,
         data: str | None = None,
-        headers: Mapping[str, str],
+        headers: Mapping[str, str] | None = None,
     ) -> HTTPResponse:
         """Send an HTTP request.
 
         Args:
             method: The HTTP method.
             url: The server URL.
+            params: Query parameters.
             data: The request body.
             headers: The HTTP headers.
 
@@ -94,6 +96,7 @@ class Urllib3Transport:
             self._pool.request(
                 method=method,
                 url=url,
+                fields=params,
                 body=data,
                 headers=headers,
             )

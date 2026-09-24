@@ -5,19 +5,27 @@
 from __future__ import annotations
 
 __lazy_modules__ = {
-    "importlib",
+    "citric.exceptions",
+    "http",
+    "json",
     "requests",
 }
 
+import http
+import json as _json
 from importlib import metadata
 from typing import TYPE_CHECKING, Any, Type  # ruff: ignore[deprecated-import]
 
 import requests
 
+from citric.exceptions import LimeSurveyApiError
+
 if TYPE_CHECKING:
     import sys
     from collections.abc import Mapping
     from types import TracebackType
+
+    from citric.transport.protocol import HTTPResponse, HTTPTransport
 
     if sys.version_info >= (3, 11):
         from typing import Self
@@ -55,15 +63,26 @@ class RESTClient:
         username: str,
         password: str,
         *,
-        requests_session: requests.Session | None = None,
+        requests_session: HTTPTransport | None = None,
     ) -> None:
         self.url: str = url
-        self._session = requests_session or requests.session()
-        self._session.headers["User-Agent"] = self.USER_AGENT
+        self._session = (
+            requests_session if requests_session is not None else requests.session()
+        )
         self.__session_id: str | None = None
-
+        self._headers = {
+            "Accept": "application/json",
+            "User-Agent": self.USER_AGENT,
+        }
         self.authenticate(username=username, password=password)
-        self._session.auth = self._auth
+
+    @property
+    def _auth_headers(self) -> dict[str, str]:
+        assert self.session_id is not None  # ruff: ignore[assert]
+        return {
+            **self._headers,
+            "Authorization": f"Bearer {self.session_id}",
+        }
 
     @property
     def session_id(self) -> str | None:
@@ -75,6 +94,12 @@ class RESTClient:
         """Set the session ID."""
         self.__session_id = value
 
+    @staticmethod
+    def _raise_for_status(r: HTTPResponse) -> None:
+        if r.status_code >= http.HTTPStatus.BAD_REQUEST:
+            msg = f"Request to LimeSurvey server failed with status {r.status_code}"
+            raise LimeSurveyApiError(msg)
+
     def authenticate(self, username: str, password: str) -> None:
         """Authenticate with the REST API.
 
@@ -82,43 +107,34 @@ class RESTClient:
             username: LimeSurvey user name.
             password: LimeSurvey password.
         """
-        response = self._session.post(
+        response = self._session.request(
+            method="POST",
             url=f"{self.url}{self.AUTH_ENDPOINT}",
-            json={
-                "username": username,
-                "password": password,
-            },
+            data=_json.dumps({"username": username, "password": password}),
+            headers={**self._headers, "Content-Type": "application/json"},
         )
-        response.raise_for_status()
+        self._raise_for_status(response)
         self.session_id = response.json()["token"]
 
     def refresh_token(self) -> None:
         """Refresh the session token."""
-        response = self._session.put(url=f"{self.url}{self.AUTH_ENDPOINT}")
-        response.raise_for_status()
+        response = self._session.request(
+            method="PUT",
+            url=f"{self.url}{self.AUTH_ENDPOINT}",
+            headers=self._auth_headers,
+        )
+        self._raise_for_status(response)
         self.session_id = response.json()["token"]
 
     def close(self) -> None:
         """Delete the session."""
-        response = self._session.delete(f"{self.url}{self.AUTH_ENDPOINT}")
-        response.raise_for_status()
+        response = self._session.request(
+            method="DELETE",
+            url=f"{self.url}{self.AUTH_ENDPOINT}",
+            headers=self._auth_headers,
+        )
+        self._raise_for_status(response)
         self.session_id = None
-        self._session.auth = None
-
-    def _auth(self, request: requests.PreparedRequest) -> requests.PreparedRequest:
-        """Authenticate with the REST API.
-
-        This is an auth callable for
-        :py:attr:`requests.Session.auth <requests.Session.auth>`.
-
-        Args:
-            request: Prepared request.
-
-        Returns:
-            The prepared request with the ``Authorization`` header set.
-        """
-        request.headers["Authorization"] = f"Bearer {self.session_id}"
-        return request
 
     def make_request(
         self,
@@ -127,7 +143,7 @@ class RESTClient:
         *,
         params: Mapping[str, Any] | None = None,
         json: Any | None = None,  # ruff: ignore[any-type]
-    ) -> requests.Response:
+    ) -> HTTPResponse:
         """Make a request to the REST API.
 
         Args:
@@ -139,13 +155,18 @@ class RESTClient:
         Returns:
             Response.
         """
+        headers = self._auth_headers
+        if json is not None:
+            headers = {**headers, "Content-Type": "application/json"}
+
         response = self._session.request(
             method=method,
             url=f"{self.url}{path}",
             params=params,
-            json=json,
+            data=_json.dumps(json) if json is not None else None,
+            headers=headers,
         )
-        response.raise_for_status()
+        self._raise_for_status(response)
         return response
 
     def __enter__(self: Self) -> Self:
