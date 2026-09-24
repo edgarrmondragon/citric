@@ -48,7 +48,11 @@ class RESTClient:
         url: LimeSurvey server URL. For example, ``http://www.yourdomain.com/rest/v1``.
         username: LimeSurvey user name.
         password: LimeSurvey password.
-        requests_session: A :py:class:`requests.Session <requests.Session>` object.
+        requests_session: An HTTP transport implementing
+            :class:`~citric.transport.protocol.HTTPTransport`, e.g. a
+            :py:class:`requests.Session <requests.Session>` or
+            :class:`~citric.transport.httpx2.Httpx2Transport`. Defaults to a new
+            :py:class:`requests.Session <requests.Session>`.
 
     .. versionadded:: 0.10.0.post1
     """
