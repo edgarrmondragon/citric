@@ -9,9 +9,9 @@ import dataclasses
 import json
 import random
 import sys
+from typing import TYPE_CHECKING
 
 import pytest
-import requests
 
 from citric.exceptions import (
     InvalidJSONResponseError,
@@ -23,6 +23,9 @@ from citric.exceptions import (
 from citric.method import Method
 from citric.session import Session
 from tests.fixtures import LimeSurveyMockAdapter
+
+if TYPE_CHECKING:
+    import requests
 
 if sys.version_info >= (3, 11):
     SET_PROPERTY_MESSAGE_REGEX = "property .* of 'Session' object has no setter"
@@ -59,7 +62,10 @@ def test_json_rpc(session: Session):
 
 def test_http_error(session: Session):
     """Test HTTP errors."""
-    with pytest.raises(requests.HTTPError):
+    with pytest.raises(
+        LimeSurveyApiError,
+        match="Request to LimeSurvey server failed with status 500",
+    ):
         session.__http_error()
 
 

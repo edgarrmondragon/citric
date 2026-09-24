@@ -67,6 +67,7 @@ test = [
   "coverage[toml]>=7.4.2",
   "dirty-equals>=0.11",
   "faker>=19",
+  "httpx2>=2.13.1",
   "pytest>=9",
   "pytest-docker>=3.1.1",
   "pytest-github-actions-annotate-failures>=0.4",
@@ -244,11 +245,17 @@ DEP001 = [
   "IPython",
   "sqlalchemy",
 ]
+DEP003 = [
+  # Transports
+  "urllib3",
+]
 DEP004 = [
   "boto3",
   "docutils",
   "faker",
   "pandas",
+  # Transports
+  "httpx2",
 ]
 
 [tool.pyproject-fmt]

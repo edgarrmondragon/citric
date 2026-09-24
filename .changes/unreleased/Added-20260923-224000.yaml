@@ -1,0 +1,7 @@
+kind: Added
+body: 'Made `Client`/`Session`''s `requests_session` accept any HTTP client implementing
+  the new `citric.transport.protocol.HTTPTransport` protocol, not just `requests.Session`.
+  Added `Httpx2Transport` and `Urllib3Transport` implementations in `citric.transport`'
+time: 2026-09-23T22:40:00.000000-06:00
+custom:
+    Issue: "1835"
