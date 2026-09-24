@@ -163,7 +163,9 @@ class Client:  # ruff: ignore[too-many-public-methods]
             url,
             username,
             password,
-            requests_session=requests_session or requests.session(),
+            requests_session=requests_session
+            if requests_session is not None
+            else requests.session(),
             auth_plugin=auth_plugin,
         )
         self.__server_version: ServerVersion | None = None

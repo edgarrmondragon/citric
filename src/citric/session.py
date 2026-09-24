@@ -131,7 +131,9 @@ class Session:
         json_encoder: Type[json.JSONEncoder] | None = None,  # ruff: ignore[non-pep585-annotation]
     ) -> None:
         self.url: str = url
-        self._session: HTTPTransport = requests_session or requests.session()
+        self._session = (
+            requests_session if requests_session is not None else requests.session()
+        )
         self._encoder = json_encoder or json.JSONEncoder
 
         self.__key: str | None = self.get_session_key(
