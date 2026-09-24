@@ -11,6 +11,8 @@ import httpx2
 if TYPE_CHECKING:
     from collections.abc import Mapping
 
+    from citric.transport.protocol import HTTPResponse
+
 __all__ = [
     "Httpx2Transport",
 ]
@@ -29,13 +31,7 @@ class Httpx2Transport:
         """Initialize the httpx2 transport."""
         self._client = httpx2.Client()
 
-    def post(
-        self,
-        url: str,
-        *,
-        data: str,
-        headers: Mapping[str, str],
-    ) -> httpx2.Response:
+    def post(self, url: str, *, data: str, headers: Mapping[str, str]) -> HTTPResponse:
         """Send a POST HTTP request.
 
         Args:

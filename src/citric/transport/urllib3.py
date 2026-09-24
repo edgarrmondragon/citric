@@ -13,6 +13,8 @@ import urllib3.response
 if TYPE_CHECKING:
     from collections.abc import Mapping
 
+    from citric.transport.protocol import HTTPResponse
+
 __all__ = [
     "Urllib3Transport",
 ]
@@ -61,13 +63,7 @@ class Urllib3Transport:
         """Initialize the urllib3 transport."""
         self._pool = urllib3.PoolManager()
 
-    def post(
-        self,
-        url: str,
-        *,
-        data: str,
-        headers: Mapping[str, str],
-    ) -> Urllib3ResponseWrapper:
+    def post(self, url: str, *, data: str, headers: Mapping[str, str]) -> HTTPResponse:
         """Send a POST HTTP request.
 
         Args:
