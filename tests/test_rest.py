@@ -15,7 +15,7 @@ from tinydb.table import Document
 from werkzeug.wrappers import Response
 
 from citric.exceptions import LimeSurveyApiError
-from citric.rest import RESTClient
+from citric.rest import RESTClient, _encode_params  # ruff: ignore[import-private-name]
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Generator
@@ -134,6 +134,14 @@ def rest_client(
 
     with RESTClient(httpserver.url_for("").rstrip("/"), username, password) as client:
         yield client
+
+
+def test_encode_params():
+    """Test encoding of query parameters."""
+    url = "https://example.com"
+    assert _encode_params(url, {}) == url
+    assert _encode_params(f"{url}?foo=bar", {}) == f"{url}?foo=bar"
+    assert _encode_params(f"{url}?foo=bar", {"baz": "qux"}) == f"{url}?foo=bar&baz=qux"
 
 
 def test_refresh_token(rest_client: RESTClient, httpserver: HTTPServer):
