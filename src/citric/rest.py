@@ -22,7 +22,6 @@ from citric.exceptions import LimeSurveyApiError
 
 if TYPE_CHECKING:
     import sys
-    from collections.abc import Mapping
     from types import TracebackType
 
     from citric.transport.protocol import HTTPResponse, HTTPTransport
@@ -141,7 +140,6 @@ class RESTClient:
         method: str,
         path: str,
         *,
-        params: Mapping[str, Any] | None = None,
         json: Any | None = None,  # ruff: ignore[any-type]
     ) -> HTTPResponse:
         """Make a request to the REST API.
@@ -149,7 +147,6 @@ class RESTClient:
         Args:
             method: HTTP method.
             path: URL path.
-            params: Query parameters.
             json: JSON data.
 
         Returns:
@@ -162,7 +159,6 @@ class RESTClient:
         response = self._session.request(
             method=method,
             url=f"{self.url}{path}",
-            params=params,
             data=_json.dumps(json) if json is not None else None,
             headers=headers,
         )

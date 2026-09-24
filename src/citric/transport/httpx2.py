@@ -8,7 +8,7 @@ __lazy_modules__ = {
     "httpx2",
 }
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 import httpx2
 
@@ -42,7 +42,6 @@ class Httpx2Transport:
         method: str,
         url: str,
         *,
-        params: Mapping[str, Any] | None = None,
         data: str | None = None,
         headers: Mapping[str, str] | None = None,
     ) -> HTTPResponse:
@@ -51,7 +50,6 @@ class Httpx2Transport:
         Args:
             method: The HTTP method.
             url: The server URL.
-            params: Query parameters.
             data: The request body.
             headers: The HTTP headers.
 
@@ -61,7 +59,6 @@ class Httpx2Transport:
         return self._client.request(
             method=method,
             url=url,
-            params=params,
             content=data,
             headers=headers,
         )
