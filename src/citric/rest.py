@@ -145,6 +145,9 @@ class RESTClient:
 
     def close(self) -> None:
         """Delete the session."""
+        if self.session_id is None:
+            return
+
         try:
             response = self._session.request(
                 method="DELETE",
