@@ -140,6 +140,7 @@ def test_encode_params():
     """Test encoding of query parameters."""
     url = "https://example.com"
     assert _encode_params(url, {}) == url
+    assert _encode_params(url, {"foo": "bar"}) == f"{url}?foo=bar"
     assert _encode_params(f"{url}?foo=bar", {}) == f"{url}?foo=bar"
     assert _encode_params(f"{url}?foo=bar", {"baz": "qux"}) == f"{url}?foo=bar&baz=qux"
 

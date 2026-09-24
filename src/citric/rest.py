@@ -124,23 +124,16 @@ class RESTClient:
             username: LimeSurvey user name.
             password: LimeSurvey password.
         """
-        response = self._session.request(
-            method="POST",
-            url=f"{self.url}{self.AUTH_ENDPOINT}",
-            data=_json.dumps({"username": username, "password": password}),
-            headers={**self._headers, "Content-Type": "application/json"},
+        response = self.make_request(
+            "POST",
+            path=self.AUTH_ENDPOINT,
+            json={"username": username, "password": password},
         )
-        self._raise_for_status(response)
         self.session_id = response.json()["token"]
 
     def refresh_token(self) -> None:
         """Refresh the session token."""
-        response = self._session.request(
-            method="PUT",
-            url=f"{self.url}{self.AUTH_ENDPOINT}",
-            headers=self._auth_headers,
-        )
-        self._raise_for_status(response)
+        response = self.make_request("PUT", path=self.AUTH_ENDPOINT)
         self.session_id = response.json()["token"]
 
     def close(self) -> None:
@@ -149,12 +142,7 @@ class RESTClient:
             return
 
         try:
-            response = self._session.request(
-                method="DELETE",
-                url=f"{self.url}{self.AUTH_ENDPOINT}",
-                headers=self._auth_headers,
-            )
-            self._raise_for_status(response)
+            _ = self.make_request("DELETE", self.AUTH_ENDPOINT)
         finally:
             self._session.close()
             self.session_id = None
@@ -178,7 +166,11 @@ class RESTClient:
         Returns:
             Response.
         """
-        headers = self._auth_headers
+        headers = (
+            self._headers
+            if path == self.AUTH_ENDPOINT and method == "POST"
+            else self._auth_headers
+        )
         if json is not None:
             headers = {**headers, "Content-Type": "application/json"}
 
