@@ -22,6 +22,7 @@ from citric.client import Client
 from citric.session import Session
 from citric.transport.httpx2 import Httpx2Transport
 from citric.transport.protocol import HTTPTransport
+from citric.transport.stdlib import StdlibTransport
 from citric.transport.urllib3 import Urllib3Transport
 
 if TYPE_CHECKING:
@@ -40,6 +41,7 @@ transport_factories = pytest.mark.parametrize(
     [
         pytest.param(requests.Session, id="requests"),
         pytest.param(Httpx2Transport, id="httpx2"),
+        pytest.param(StdlibTransport, id="stdlib"),
         pytest.param(Urllib3Transport, id="urllib3"),
     ],
 )
