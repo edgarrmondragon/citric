@@ -7,11 +7,13 @@ __lazy_modules__ = {
     "citric.objects._question",
 }
 
-from ._participant import Participant, to_yes_no
+from ._participant import MailOutcome, MailParticipantOutcome, Participant, to_yes_no
 from ._question import AnswerOption, Question, QuestionL10n
 
 __all__ = [
     "AnswerOption",
+    "MailOutcome",
+    "MailParticipantOutcome",
     "Participant",
     "Question",
     "QuestionL10n",

@@ -74,7 +74,7 @@ def participants(faker: Faker) -> list[ParticipantData]:
     """Create participants for a survey."""
     return [
         {
-            "email": faker.email(),
+            "email": faker.email(domain="example.com"),
             "firstname": faker.first_name(),
             "lastname": faker.last_name(),
             "token": "1",
@@ -82,7 +82,7 @@ def participants(faker: Faker) -> list[ParticipantData]:
             "attribute_2": "Night owl",
         },
         {
-            "email": faker.email(),
+            "email": faker.email(domain="example.com"),
             "firstname": faker.first_name(),
             "lastname": faker.last_name(),
             "token": "2",
@@ -90,7 +90,7 @@ def participants(faker: Faker) -> list[ParticipantData]:
             "attribute_2": "Early bird",
         },
         {
-            "email": faker.email(),
+            "email": faker.email(domain="example.com"),
             "firstname": faker.first_name(),
             "lastname": faker.last_name(),
             "token": "2",
@@ -1490,8 +1490,24 @@ def test_mail_registered_participants(
     # `mail_registered_participants` returns a non-error status messages even when
     # emails are sent successfully and that violates assumptions made by this
     # library about the meaning of `status` messages
-    with assert_status_error("0 left to send", server_version):
-        client.session.mail_registered_participants(survey_id)
+    outcome = client.mail_registered_participants(survey_id)
+    assert outcome.participants == {
+        "1": citric.objects.MailParticipantOutcome(
+            name=f"{participants[0]['firstname']} {participants[0]['lastname']}",
+            email=participants[0]["email"],
+            status="OK",
+            warning=None,
+            error=None,
+        ),
+        "2": citric.objects.MailParticipantOutcome(
+            name=f"{participants[1]['firstname']} {participants[1]['lastname']}",
+            email=participants[1]["email"],
+            status="OK",
+            warning=None,
+            error=None,
+        ),
+    }
+    assert outcome.status == "0 left to send"
 
     with subtests.test(msg="2 emails sent"):
         assert mailpit.get_all()["total"] == 2
@@ -1503,7 +1519,7 @@ def test_mail_registered_participants(
         server_version,
         error_code="ERR_NO_DATA",
     ):
-        client.session.mail_registered_participants(survey_id)
+        client.mail_registered_participants(survey_id)
 
     with subtests.test(msg="No more emails sent"):
         assert mailpit.get_all()["total"] == 0

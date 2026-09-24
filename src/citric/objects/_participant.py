@@ -5,7 +5,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Literal
 
 if TYPE_CHECKING:
     from uuid import UUID
@@ -48,3 +48,49 @@ class Participant:
             "blacklisted": to_yes_no(value=self.blacklisted),
             **self.attributes,
         }
+
+
+@dataclass
+class MailParticipantOutcome:
+    """Individual outcome of sending an email to a participant.
+
+    .. versionadded:: NEXT_VERSION
+    """
+
+    name: str
+    email: str
+    status: Literal["OK", "fail"]
+    warning: Any | None
+    error: str | None
+
+    @classmethod
+    def from_dict(cls, d: dict[str, Any]) -> MailParticipantOutcome:
+        return cls(
+            name=d["name"],
+            email=d["email"],
+            status=d["status"],
+            warning=d["warning"],
+            error=d["error"],
+        )
+
+
+@dataclass
+class MailOutcome:
+    """Overall outcome of sending an email to a list of participants.
+
+    .. versionadded:: NEXT_VERSION
+    """
+
+    status: str
+    participants: dict[str, MailParticipantOutcome]
+
+    @classmethod
+    def from_dict(cls, d: dict[str, Any]) -> MailOutcome:
+        status = d.pop("status")
+        return cls(
+            status=status,
+            participants={
+                token: MailParticipantOutcome.from_dict(data)
+                for token, data in d.items()
+            },
+        )
