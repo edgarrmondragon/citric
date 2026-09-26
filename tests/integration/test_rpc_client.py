@@ -677,32 +677,41 @@ def test_activate_survey(client: citric.Client, survey_id: int):
 
 
 @pytest.mark.integration_test
-def test_activate_survey_with_settings(client: citric.Client, survey_id: int):
+def test_activate_survey_with_settings(
+    server_version: semver.VersionInfo,
+    client: citric.Client,
+    survey_id: int,
+):
     """Test whether the survey gets activated with the requested settings."""
     properties_before = client.get_survey_properties(
         survey_id,
-        ["active", "anonymized", "ipaddr"],
+        ["active", "anonymized", "ipaddr", "savequotaexit"],
     )
     assert properties_before["active"] == "N"
     assert properties_before["anonymized"] == "N"
     assert properties_before["ipaddr"] == "I"
+    if server_version >= (7, 2, 0):
+        assert properties_before["savequotaexit"] == "N"  # Available in 7.2.0+
 
     result = client.activate_survey(
         survey_id,
         user_activation_settings={
             "anonymized": True,
             "ipaddr": False,
+            "savequotaexit": True,
         },
     )
     assert result["status"] == "OK"
 
     properties_after = client.get_survey_properties(
         survey_id,
-        ["active", "anonymized", "ipaddr"],
+        ["active", "anonymized", "ipaddr", "savequotaexit"],
     )
     assert properties_after["active"] == "Y"
     assert properties_after["anonymized"] == "Y"
     assert properties_after["ipaddr"] == "N"
+    if server_version >= (7, 2, 0):
+        assert properties_after["savequotaexit"] == "Y"  # Available in 7.2.0+
 
 
 @pytest.mark.integration_test
