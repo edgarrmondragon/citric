@@ -49,9 +49,9 @@ Full list of methods is available at [the Remote Control documentation](https://
 | `list_survey_groups` | [Yes](citric.Client.list_survey_groups) | List the survey groups belonging to a user |
 | `list_surveys` | [Yes](citric.Client.list_surveys) | List the survey belonging to a user (RPC function) |
 | `list_users` | [Yes](citric.Client.list_users) | Get list the ids and info of administration user(s) (RPC function) |
-| `mail_registered_participants` | [No](how-to.md#use-the-session-attribute-for-low-level-interaction) | Send e-mails to registered participants in a survey (RPC function) |
+| `mail_registered_participants` | [Yes](citric.Client.mail_registered_participants) | Send e-mails to registered participants in a survey (RPC function) |
 | `release_session_key` | [Yes](Session.close) | Close the RPC session |
-| `remind_participants` | [No](how-to.md#use-the-session-attribute-for-low-level-interaction) | Send a reminder to participants in a survey (RPC function) |
+| `remind_participants` | [Yes](citric.Client.remind_participants) | Send a reminder to participants in a survey (RPC function) |
 | `set_group_properties` | [Yes](citric.Client.set_group_properties) | Set group properties (RPC function) |
 | `set_language_properties` | [Yes](citric.Client.set_language_properties) | Set survey language properties (RPC function) |
 | `set_participant_properties` | [Yes](citric.Client.set_participant_properties) | Set properties of a survey participant (RPC function) |

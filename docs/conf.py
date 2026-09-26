@@ -114,9 +114,11 @@ extlinks = {
 # https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html#configuration
 
 intersphinx_mapping = {
-    "requests": ("https://requests.readthedocs.io/en/latest/", None),
+    "httpx2": ("https://pydantic.dev/docs/httpx2/", None),
+    "requests": ("https://requests.readthedocs.io/en/stable/", None),
     "requests-cache": ("https://requests-cache.readthedocs.io/en/stable/", None),
     "python": ("https://docs.python.org/3/", None),
+    "urllib3": ("https://urllib3.readthedocs.io/en/stable/", None),
 }
 
 # -- Options for linkcode --------------------------------------------------------------

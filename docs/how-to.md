@@ -73,6 +73,34 @@ and reduce the load on your server in read-intensive applications, you can use
 :end-before: end example
 ```
 
+## Use a different HTTP transport
+
+By default, {class}`Client <citric.Client>` and
+{class}`Session <citric.session.Session>` send requests with `requests`. Any
+object that implements the
+{class}`HTTPTransport <citric.transport.protocol.HTTPTransport>` protocol (a
+`request` method and a `close` method) can be passed as `requests_session`
+instead, including a plain
+[`requests.Session`](inv:requests:py:class:api/#requests.Session) with a custom
+adapter mounted.
+
+citric ships two ready-made alternative transports. Neither library is a
+dependency of citric itself, so install the one you want to use separately:
+
+- {class}`citric.transport.httpx2.Httpx2Transport`, backed by
+  [`httpx2`](https://github.com/pydantic/httpx2). Install it with
+  `pip install httpx2`.
+- {class}`citric.transport.urllib3.Urllib3Transport`, backed by
+  [`urllib3`](https://urllib3.readthedocs.io) directly, without `requests` in
+  the loop. `urllib3` is normally already installed as a dependency of
+  `requests`, but pin it explicitly with `pip install urllib3` if you don't
+  want to rely on that.
+
+```{literalinclude} ../code_samples/custom_transport.py
+:start-after: start example
+:end-before: end example
+```
+
 ## Use a different authentication plugin
 
 By default, this client uses the internal database for authentication but

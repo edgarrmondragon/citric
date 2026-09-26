@@ -5,19 +5,28 @@
 from __future__ import annotations
 
 __lazy_modules__ = {
-    "importlib",
+    "citric.exceptions",
+    "http",
+    "json",
     "requests",
 }
 
+import http
+import json as _json
 from importlib import metadata
 from typing import TYPE_CHECKING, Any, Type  # ruff: ignore[deprecated-import]
+from urllib.parse import urlencode, urlsplit, urlunsplit
 
 import requests
+
+from citric.exceptions import LimeSurveyApiError
 
 if TYPE_CHECKING:
     import sys
     from collections.abc import Mapping
     from types import TracebackType
+
+    from citric.transport.protocol import HTTPResponse, HTTPTransport
 
     if sys.version_info >= (3, 11):
         from typing import Self
@@ -27,6 +36,18 @@ if TYPE_CHECKING:
 __all__ = [
     "RESTClient",
 ]
+
+
+def _encode_params(url: str, params: Mapping[str, Any]) -> str:
+    if not params:
+        return url
+
+    split = urlsplit(url)
+    query = urlencode(params, doseq=True)
+    if split.query:
+        query = f"{split.query}&{query}"
+
+    return urlunsplit(split._replace(query=query))
 
 
 class RESTClient:
@@ -41,7 +62,11 @@ class RESTClient:
         url: LimeSurvey server URL. For example, ``http://www.yourdomain.com/rest/v1``.
         username: LimeSurvey user name.
         password: LimeSurvey password.
-        requests_session: A :py:class:`requests.Session <requests.Session>` object.
+        requests_session: An HTTP transport implementing
+            :class:`~citric.transport.protocol.HTTPTransport`, e.g. a
+            :py:class:`requests.Session <requests.Session>` or
+            :class:`~citric.transport.httpx2.Httpx2Transport`. Defaults to a new
+            :py:class:`requests.Session <requests.Session>`.
 
     .. versionadded:: 0.10.0.post1
     """
@@ -55,15 +80,26 @@ class RESTClient:
         username: str,
         password: str,
         *,
-        requests_session: requests.Session | None = None,
+        requests_session: HTTPTransport | None = None,
     ) -> None:
         self.url: str = url
-        self._session = requests_session or requests.session()
-        self._session.headers["User-Agent"] = self.USER_AGENT
+        self._session = (
+            requests_session if requests_session is not None else requests.session()
+        )
         self.__session_id: str | None = None
-
+        self._headers = {
+            "Accept": "application/json",
+            "User-Agent": self.USER_AGENT,
+        }
         self.authenticate(username=username, password=password)
-        self._session.auth = self._auth
+
+    @property
+    def _auth_headers(self) -> dict[str, str]:
+        assert self.session_id is not None  # ruff: ignore[assert]
+        return {
+            **self._headers,
+            "Authorization": f"Bearer {self.session_id}",
+        }
 
     @property
     def session_id(self) -> str | None:
@@ -75,6 +111,12 @@ class RESTClient:
         """Set the session ID."""
         self.__session_id = value
 
+    @staticmethod
+    def _raise_for_status(r: HTTPResponse) -> None:
+        if r.status_code >= http.HTTPStatus.BAD_REQUEST:
+            msg = f"Request to LimeSurvey server failed with status {r.status_code}"
+            raise LimeSurveyApiError(msg)
+
     def authenticate(self, username: str, password: str) -> None:
         """Authenticate with the REST API.
 
@@ -82,43 +124,28 @@ class RESTClient:
             username: LimeSurvey user name.
             password: LimeSurvey password.
         """
-        response = self._session.post(
-            url=f"{self.url}{self.AUTH_ENDPOINT}",
-            json={
-                "username": username,
-                "password": password,
-            },
+        response = self.make_request(
+            "POST",
+            path=self.AUTH_ENDPOINT,
+            json={"username": username, "password": password},
         )
-        response.raise_for_status()
         self.session_id = response.json()["token"]
 
     def refresh_token(self) -> None:
         """Refresh the session token."""
-        response = self._session.put(url=f"{self.url}{self.AUTH_ENDPOINT}")
-        response.raise_for_status()
+        response = self.make_request("PUT", path=self.AUTH_ENDPOINT)
         self.session_id = response.json()["token"]
 
     def close(self) -> None:
         """Delete the session."""
-        response = self._session.delete(f"{self.url}{self.AUTH_ENDPOINT}")
-        response.raise_for_status()
-        self.session_id = None
-        self._session.auth = None
+        if self.session_id is None:
+            return
 
-    def _auth(self, request: requests.PreparedRequest) -> requests.PreparedRequest:
-        """Authenticate with the REST API.
-
-        This is an auth callable for
-        :py:attr:`requests.Session.auth <requests.Session.auth>`.
-
-        Args:
-            request: Prepared request.
-
-        Returns:
-            The prepared request with the ``Authorization`` header set.
-        """
-        request.headers["Authorization"] = f"Bearer {self.session_id}"
-        return request
+        try:
+            _ = self.make_request("DELETE", self.AUTH_ENDPOINT)
+        finally:
+            self._session.close()
+            self.session_id = None
 
     def make_request(
         self,
@@ -127,7 +154,7 @@ class RESTClient:
         *,
         params: Mapping[str, Any] | None = None,
         json: Any | None = None,  # ruff: ignore[any-type]
-    ) -> requests.Response:
+    ) -> HTTPResponse:
         """Make a request to the REST API.
 
         Args:
@@ -139,13 +166,24 @@ class RESTClient:
         Returns:
             Response.
         """
+        headers = (
+            self._headers
+            if path == self.AUTH_ENDPOINT and method == "POST"
+            else self._auth_headers
+        )
+        if json is not None:
+            headers = {**headers, "Content-Type": "application/json"}
+
+        url = f"{self.url}{path}"
+        url = _encode_params(url, params) if params else url
+
         response = self._session.request(
             method=method,
-            url=f"{self.url}{path}",
-            params=params,
-            json=json,
+            url=url,
+            data=_json.dumps(json) if json is not None else None,
+            headers=headers,
         )
-        response.raise_for_status()
+        self._raise_for_status(response)
         return response
 
     def __enter__(self: Self) -> Self:

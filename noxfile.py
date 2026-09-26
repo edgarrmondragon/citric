@@ -40,10 +40,7 @@ locations = "src", "tests", "docs/conf.py"
 @nox.session(name="deps", tags=["lint"], allow_parallel=True)
 def dependencies(session: nox.Session) -> None:
     """Check issues with dependencies."""
-    install_env = {}
-    if session.python == "3.15":
-        install_env["PYO3_USE_ABI3_FORWARD_COMPATIBILITY"] = "1"
-
+    install_env = {"PYO3_USE_ABI3_FORWARD_COMPATIBILITY": "1"}
     session.install("citric @ .", "--group", "dev", env=install_env)
     session.install("deptry")
     session.run("deptry", "src", "tests", "docs")

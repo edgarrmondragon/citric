@@ -6,12 +6,11 @@ from __future__ import annotations
 
 __lazy_modules__ = {
     "io",
-    "typing_extensions",
 }
 
 import io
 import sys
-from typing import Any, Literal, TypeAlias, TypedDict
+from typing import Any, Literal, TypeAlias
 
 from citric import enums
 
@@ -19,6 +18,11 @@ if sys.version_info >= (3, 11):
     from typing import Required
 else:
     from typing_extensions import Required
+
+if sys.version_info >= (3, 15):
+    from typing import TypedDict
+else:
+    from typing_extensions import TypedDict
 
 __all__ = [
     "CPDBParticipantImportResult",
@@ -28,7 +32,10 @@ __all__ = [
     "FileUploadResult",
     "GroupProperties",
     "LanguageProperties",
+    "MailOutcome",
+    "MailParticipantOutcome",
     "OperationStatus",
+    "ParticipantData",
     "ParticipantInfo",
     "ParticipantListElement",
     "Permission",
@@ -188,6 +195,32 @@ class LanguageProperties(TypedDict, total=False):
 
     attachments: str | None
     """The attachments."""
+
+
+class MailParticipantOutcome(TypedDict):
+    """Individual outcome of sending an email to a participant."""
+
+    name: str
+    """The participant's full name."""
+
+    email: str
+    """The participant's email address."""
+
+    status: Literal["OK", "fail"]
+    """Whether the email was sent successfully."""
+
+    warning: Any | None
+    """Warnings raised while sending the email, if any."""
+
+    error: str | None
+    """The error message, if the email failed to send."""
+
+
+class MailOutcome(TypedDict, extra_items=MailParticipantOutcome):  # type:ignore[call-arg]
+    """Overall outcome of sending an email to a list of participants."""
+
+    status: str
+    """A summary status message, e.g. the number of emails left to send."""
 
 
 class OperationStatus(TypedDict):
@@ -952,6 +985,22 @@ class SurveySummary(TypedDict, total=False):
 
 class ParticipantInfo(TypedDict):
     """Participant info."""
+
+    firstname: str
+    """The participant first name."""
+
+    lastname: str
+    """The participant last name."""
+
+    email: str
+    """The participant email."""
+
+
+class ParticipantData(TypedDict, extra_items=Any):  # type: ignore[call-arg]
+    """New participant details for :meth:`~citric.Client.add_participants`."""
+
+    token: str
+    """The participant access code."""
 
     firstname: str
     """The participant first name."""

@@ -29,7 +29,7 @@ import requests
 
 from citric import enums
 from citric.exceptions import LimeSurveyStatusError
-from citric.session import Session
+from citric.session import Session, handle_rpc_errors
 
 if TYPE_CHECKING:
     import sys
@@ -39,6 +39,8 @@ if TYPE_CHECKING:
 
     from citric import types
     from citric.objects import Participant
+    from citric.transport.protocol import HTTPTransport
+    from citric.types import MailOutcome
 
     if sys.version_info >= (3, 11):
         from typing import Self, Unpack
@@ -126,7 +128,11 @@ class Client:  # ruff: ignore[too-many-public-methods]
         url: LimeSurvey Remote Control endpoint.
         username: LimeSurvey user name.
         password: LimeSurvey password.
-        requests_session: A :py:class:`requests.Session <requests.Session>` object.
+        requests_session: An HTTP transport implementing
+            :class:`~citric.transport.protocol.HTTPTransport`, e.g. a
+            :py:class:`requests.Session <requests.Session>` or
+            :class:`~citric.transport.httpx2.Httpx2Transport`. Defaults to a new
+            :py:class:`requests.Session <requests.Session>`.
         auth_plugin: Name of the :ls_manual:`plugin <Authentication_plugins>` to use for
             authentication. For example,
             :ls_manual:`AuthLDAP <Authentication_plugins#LDAP>`. Defaults to using the
@@ -135,6 +141,11 @@ class Client:  # ruff: ignore[too-many-public-methods]
 
     .. versionadded:: 0.0.6
        Support Auth plugins with the ``auth_plugin`` parameter.
+
+    .. versionchanged:: NEXT_VERSION
+       ``requests_session`` now accepts any object implementing
+       :class:`~citric.transport.protocol.HTTPTransport`, not just
+       :py:class:`requests.Session <requests.Session>`.
     """
 
     session_class = Session
@@ -145,20 +156,23 @@ class Client:  # ruff: ignore[too-many-public-methods]
         username: str,
         password: str,
         *,
-        requests_session: requests.Session | None = None,
+        requests_session: HTTPTransport | None = None,
         auth_plugin: str = "Authdb",
     ) -> None:
         self.__session = self.session_class(
             url,
             username,
             password,
-            requests_session=requests_session or requests.session(),
+            requests_session=requests_session
+            if requests_session is not None
+            else requests.session(),
             auth_plugin=auth_plugin,
         )
         self.__server_version: ServerVersion | None = None
 
     def close(self) -> None:
         """Close client session."""
+        self.__server_version = None
         self.session.close()
 
     def __enter__(self: Self) -> Self:
@@ -282,7 +296,7 @@ class Client:  # ruff: ignore[too-many-public-methods]
         self,
         survey_id: int,
         *,
-        participant_data: Sequence[Mapping[str, Any]],
+        participant_data: Sequence[types.ParticipantData],
         create_tokens: bool = True,
     ) -> list[dict[str, Any]]:
         """Add participants to a survey.
@@ -603,7 +617,7 @@ class Client:  # ruff: ignore[too-many-public-methods]
         )
 
     def delete_group(self, survey_id: int, group_id: int) -> int:
-        """Delete a group.
+        """Delete a question group.
 
         Args:
             survey_id: ID of the Survey that the group belongs to.
@@ -1002,7 +1016,7 @@ class Client:  # ruff: ignore[too-many-public-methods]
         settings: list[str] | None = None,
         language: str | None = None,
     ) -> types.GroupProperties:
-        """Get the properties of a group of a survey.
+        """Get the properties of a question group of a survey.
 
         Calls :rpc_method:`get_group_properties`.
 
@@ -1419,7 +1433,7 @@ class Client:  # ruff: ignore[too-many-public-methods]
         name: str | None = None,
         description: str | None = None,
     ) -> int:
-        """Import group from a file.
+        """Import a question group from a file.
 
         Create a new group from an exported LSG file.
 
@@ -1732,7 +1746,7 @@ class Client:  # ruff: ignore[too-many-public-methods]
         group_id: int,
         **properties: Unpack[types.GroupProperties],
     ) -> dict[str, bool]:
-        """Set properties of a group.
+        """Set properties of a question group.
 
         Calls :rpc_method:`set_group_properties`.
 
@@ -1953,3 +1967,80 @@ class Client:  # ruff: ignore[too-many-public-methods]
 
         msg = "Could not determine invitation status"
         raise RuntimeError(msg)
+
+    def mail_registered_participants(
+        self,
+        survey_id: int,
+        *,
+        override_all_conditions: Mapping[str, Any] | None = None,
+    ) -> MailOutcome:
+        """Send e-mails to registered participants in a survey.
+
+        Calls :rpc_method:`mail_registered_participants`.
+
+        Args:
+            survey_id: Survey to get participants from.
+            override_all_conditions: Replace the default conditions. Each entry maps
+                a column (or, if the key is an integer, a raw comparison string like
+                ``"tid = 2"``) to either a value to search for in that column (e.g.
+                ``{"tid": "2"}``) or an ``[operator, value, ...]`` list (e.g.
+                ``{"tid": ["=", "2"]}``). Valid operators are ``<``, ``>``, ``>=``,
+                ``<=``, ``=``, ``<>``, ``LIKE`` and ``IN``. Only ``IN`` and ``NOT IN``
+                allow several values. All conditions are connected by ``AND``.
+
+        Returns:
+            An dictionary with the outcome of the operation.
+
+        .. versionadded:: NEXT_VERSION
+        """
+        r = self.session.call(
+            "mail_registered_participants",
+            survey_id,
+            override_all_conditions or {},
+        )
+        if r["error"] is not None or r["result"].get("status", "").startswith("Error:"):
+            handle_rpc_errors(r["result"], r["error"])
+
+        return r["result"]
+
+    def remind_participants(
+        self,
+        survey_id: int,
+        *,
+        min_days_between: int | None = None,
+        max_reminders: int | None = None,
+        token_ids: Sequence[int] | None = None,
+        continue_on_error: bool = False,
+    ) -> MailOutcome:
+        """Send a reminder to participants in a survey.
+
+        Calls :rpc_method:`remind_participants`.
+
+        Args:
+            survey_id: Survey to send reminders for.
+            min_days_between: Only remind participants whose last invitation or
+                reminder was sent at least this many days ago.
+            max_reminders: Only remind participants who have received fewer than
+                this many reminders.
+            token_ids: IDs of the participants to remind. If none, all eligible
+                participants are reminded.
+            continue_on_error: Whether to continue sending reminders after an
+                individual participant fails, instead of stopping at the first one.
+
+        Returns:
+            An dictionary with the outcome of the operation.
+
+        .. versionadded:: NEXT_VERSION
+        """
+        r = self.session.call(
+            "remind_participants",
+            survey_id,
+            min_days_between,
+            max_reminders,
+            token_ids,
+            continue_on_error,
+        )
+        if r["error"] is not None or r["result"].get("status", "").startswith("Error:"):
+            handle_rpc_errors(r["result"], r["error"])
+
+        return r["result"]

@@ -16,7 +16,7 @@ import uuid
 from contextlib import contextmanager
 from datetime import datetime
 from pathlib import Path
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 from unittest.mock import patch
 from urllib.parse import quote
 
@@ -36,7 +36,12 @@ if TYPE_CHECKING:
 
     import semver
 
-    from citric.types import FileUploadResult, QuestionsListElement, ReadableFile
+    from citric.types import (
+        FileUploadResult,
+        ParticipantData,
+        QuestionsListElement,
+        ReadableFile,
+    )
     from tests.fixtures import MailpitClient
 
 NEW_SURVEY_NAME = "New Survey"
@@ -65,27 +70,27 @@ def assert_status_error(
 
 
 @pytest.fixture
-def participants(faker: Faker) -> list[dict[str, Any]]:
+def participants(faker: Faker) -> list[ParticipantData]:
     """Create participants for a survey."""
     return [
-        {
-            "email": faker.email(),
+        {  # type: ignore[typeddict-unknown-key]
+            "email": faker.email(domain="example.com"),
             "firstname": faker.first_name(),
             "lastname": faker.last_name(),
             "token": "1",
             "attribute_1": "Dog person",
             "attribute_2": "Night owl",
         },
-        {
-            "email": faker.email(),
+        {  # type: ignore[typeddict-unknown-key]
+            "email": faker.email(domain="example.com"),
             "firstname": faker.first_name(),
             "lastname": faker.last_name(),
             "token": "2",
             "attribute_1": "Cat person",
             "attribute_2": "Early bird",
         },
-        {
-            "email": faker.email(),
+        {  # type: ignore[typeddict-unknown-key]
+            "email": faker.email(domain="example.com"),
             "firstname": faker.first_name(),
             "lastname": faker.last_name(),
             "token": "2",
@@ -740,7 +745,7 @@ def test_participants(
     faker: Faker,
     client: citric.Client,
     survey_id: int,
-    participants: list[dict[str, str]],
+    participants: list[ParticipantData],
     subtests: pytest.Subtests,
 ):
     """Test participants methods."""
@@ -758,8 +763,8 @@ def test_participants(
             assert p["email"] == d["email"]
             assert p["firstname"] == d["firstname"]
             assert p["lastname"] == d["lastname"]
-            assert p["attribute_1"] == d["attribute_1"]
-            assert p["attribute_2"] == d["attribute_2"]
+            assert p["attribute_2"] == d["attribute_2"]  # type: ignore[typeddict-item]
+            assert p["attribute_1"] == d["attribute_1"]  # type: ignore[typeddict-item]
 
     participants_list = client.list_participants(
         survey_id,
@@ -785,8 +790,8 @@ def test_participants(
             assert properties["email"] == d["email"]
             assert properties["firstname"] == d["firstname"]
             assert properties["lastname"] == d["lastname"]
-            assert properties["attribute_1"] == d["attribute_1"]
-            assert properties["attribute_2"] == d["attribute_2"]
+            assert properties["attribute_1"] == d["attribute_1"]  # type: ignore[typeddict-item]
+            assert properties["attribute_2"] == d["attribute_2"]  # type: ignore[typeddict-item]
 
     # Update participant properties
     new_firstname = faker.first_name()
@@ -809,11 +814,69 @@ def test_participants(
 
 
 @pytest.mark.integration_test
+def test_list_participants_with_conditions(
+    server_version: semver.Version,
+    faker: Faker,
+    client: citric.Client,
+    survey_id: int,
+):
+    """Test list_participants with conditions."""
+    tokens = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    participants: list[ParticipantData] = [
+        {  # type: ignore[typeddict-unknown-key]
+            "email": faker.email(domain="example.com"),
+            "firstname": faker.first_name(),
+            "lastname": faker.last_name(),
+            "token": str(token),
+            "attribute_1": faker.ssn(),
+            "attribute_2": f"{['Dog', 'Cat', 'Bird'][i % 3]} person",
+        }
+        for i, token in enumerate(tokens)
+    ]
+
+    client.activate_survey(survey_id)
+    client.activate_tokens(survey_id, attributes=tokens)
+    client.add_participants(
+        survey_id,
+        participant_data=participants,
+        create_tokens=False,
+    )
+
+    filtered = client.list_participants(survey_id, conditions={"tid": "2"})
+    assert [p["tid"] for p in filtered] == [2]
+
+    filtered = client.list_participants(survey_id, conditions={"tid": [">", "2"]})
+    assert [p["tid"] for p in filtered] == [3, 4, 5, 6, 7, 8, 9, 10]
+
+    filtered = client.list_participants(
+        survey_id,
+        conditions={
+            "tid": [">", "5"],
+            "attribute_2": ["=", "Dog person"],
+        },
+    )
+    assert [p["tid"] for p in filtered] == [7, 10]
+
+    filtered = client.list_participants(
+        survey_id,
+        conditions={"attribute_2": ["IN", "Dog person", "Cat person"]},
+    )
+    assert [p["tid"] for p in filtered] == [1, 2, 4, 5, 7, 8, 10]
+
+    if server_version >= (7, 1, 0):
+        filtered = client.list_participants(
+            survey_id,
+            conditions={"attribute_2": ["NOT IN", "Dog person", "Bird person"]},
+        )
+        assert [p["tid"] for p in filtered] == [2, 5, 8]
+
+
+@pytest.mark.integration_test
 def test_invite_participants(
     client: citric.Client,
     server_version: semver.VersionInfo,
     survey_id: int,
-    participants: list[dict[str, str]],
+    participants: list[ParticipantData],
 ):
     """Test inviting participants to a survey."""
     client.activate_survey(survey_id)
@@ -1014,7 +1077,7 @@ def test_summary(
     client: citric.Client,
     server_version: semver.VersionInfo,
     survey_id: int,
-    participants: list[dict],
+    participants: list[ParticipantData],
     responses: list[dict],
     subtests: pytest.Subtests,
 ):
@@ -1417,7 +1480,7 @@ def test_mail_registered_participants(
     client: citric.Client,
     server_version: semver.VersionInfo,
     survey_id: int,
-    participants: list[dict[str, str]],
+    participants: list[ParticipantData],
     mailpit: MailpitClient,
     subtests: pytest.Subtests,
 ):
@@ -1436,8 +1499,24 @@ def test_mail_registered_participants(
     # `mail_registered_participants` returns a non-error status messages even when
     # emails are sent successfully and that violates assumptions made by this
     # library about the meaning of `status` messages
-    with assert_status_error("0 left to send", server_version):
-        client.session.mail_registered_participants(survey_id)
+    outcome = client.mail_registered_participants(survey_id)
+    assert outcome == {
+        "status": "0 left to send",
+        "1": {
+            "name": f"{participants[0]['firstname']} {participants[0]['lastname']}",
+            "email": participants[0]["email"],
+            "status": "OK",
+            "warning": None,
+            "error": None,
+        },
+        "2": {
+            "name": f"{participants[1]['firstname']} {participants[1]['lastname']}",
+            "email": participants[1]["email"],
+            "status": "OK",
+            "warning": None,
+            "error": None,
+        },
+    }
 
     with subtests.test(msg="2 emails sent"):
         assert mailpit.get_all()["total"] == 2
@@ -1449,7 +1528,7 @@ def test_mail_registered_participants(
         server_version,
         error_code="ERR_NO_DATA",
     ):
-        client.session.mail_registered_participants(survey_id)
+        client.mail_registered_participants(survey_id)
 
     with subtests.test(msg="No more emails sent"):
         assert mailpit.get_all()["total"] == 0
@@ -1460,7 +1539,7 @@ def test_remind_participants(
     client: citric.Client,
     server_version: semver.VersionInfo,
     survey_id: int,
-    participants: list[dict[str, str]],
+    participants: list[ParticipantData],
     mailpit: MailpitClient,
     subtests: pytest.Subtests,
 ):
@@ -1486,12 +1565,43 @@ def test_remind_participants(
 
     # `remind_participants` returns a non-error status messages even when emails are
     # sent successfully and that violates assumptions made by this library about the
-    # meaning of `status` messages"
-    with assert_status_error("0 left to send", server_version):
-        client.session.remind_participants(survey_id)
+    # meaning of `status` messages
+    outcome = client.remind_participants(survey_id)
+    assert outcome == {
+        "status": "0 left to send",
+        "1": {
+            "name": f"{participants[0]['firstname']} {participants[0]['lastname']}",
+            "email": participants[0]["email"],
+            "status": "OK",
+            "warning": None,
+            "error": None,
+        },
+        "2": {
+            "name": f"{participants[1]['firstname']} {participants[1]['lastname']}",
+            "email": participants[1]["email"],
+            "status": "OK",
+            "warning": None,
+            "error": None,
+        },
+    }
 
     with subtests.test(msg="2 reminders sent"):
         assert mailpit.get_all()["total"] == 2
+
+    mailpit.delete()
+
+    # Without a `min_days_between` throttle, the same participants remain
+    # eligible for another reminder indefinitely, so require at least a day
+    # since the last reminder to get no candidates.
+    with assert_status_error(
+        "Error: No candidate tokens",
+        server_version,
+        error_code="ERR_NO_DATA",
+    ):
+        client.remind_participants(survey_id, min_days_between=1)
+
+    with subtests.test(msg="No more emails sent"):
+        assert mailpit.get_all()["total"] == 0
 
 
 @pytest.mark.integration_test

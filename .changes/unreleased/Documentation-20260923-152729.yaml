@@ -1,0 +1,5 @@
+kind: Documentation
+body: Make it clearer in docstrings when we are referring to _question_ groups
+time: 2026-09-23T15:27:29.475472-06:00
+custom:
+    Issue: "1830"
