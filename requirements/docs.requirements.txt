@@ -106,4 +106,6 @@ typing-extensions==4.16.0
     #   citric (pyproject.toml)
     #   beautifulsoup4
 urllib3==2.7.0
-    # via requests
+    # via
+    #   citric (pyproject.toml)
+    #   requests
