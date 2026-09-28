@@ -1,0 +1,5 @@
+kind: Packaging
+body: Bump min required `requests` to 2.30 (May 3, 2023)
+time: 2026-09-27T22:08:19.81059-06:00
+custom:
+    Issue: "1838"
