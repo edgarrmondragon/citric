@@ -621,6 +621,9 @@ class SurveyProperties(TypedDict, total=False):
     refurl: YesNo
     """Whether the survey uses referrer URLs."""
 
+    savequotaexit: YesNo
+    """Whether to save matched quota ID."""
+
     datecreated: str
     """The survey creation date."""
 
@@ -772,6 +775,9 @@ class SurveyUserActivationSettings(TypedDict, total=False):
 
     savetimings: bool
     """Whether the survey saves response timings."""
+
+    savequotaexit: bool
+    """Whether the survey saves matched quota ID."""
 
 
 class ExportAdditionalOptions(TypedDict, total=False):

@@ -77,7 +77,7 @@ def pytest_addoption(parser: pytest.Parser):
         help="Path to the Docker context to build the LimeSurvey image.",
         default=_from_env_var(
             "LS_DOCKER_CONTEXT",
-            "https://github.com/martialblog/docker-limesurvey.git#master:6.0/apache",
+            "https://github.com/martialblog/docker-limesurvey.git#master:7.0/apache",
         ),
     )
 
