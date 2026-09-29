@@ -10,7 +10,6 @@ __lazy_modules__ = {
     "urllib3.response",
 }
 
-import json
 from typing import TYPE_CHECKING, Any
 
 import urllib3
@@ -51,7 +50,7 @@ class Urllib3ResponseWrapper:
         Returns:
             JSON data.
         """
-        return json.loads(self._response.data.decode("utf-8"))
+        return self._response.json()
 
 
 class Urllib3Transport:
