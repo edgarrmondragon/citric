@@ -22,7 +22,7 @@ permissions: {}
 jobs:
   build:
     name: Build wheel and sdist
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     outputs:
       version: ${{ steps.baipp.outputs.package_version }}
     steps:
@@ -36,7 +36,7 @@ jobs:
   publish:
     name: Publish to PyPI
     if: startsWith(github.ref, 'refs/tags/') || github.event.inputs.publish == 'true'
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     needs: [build]
     environment:
       name: pypi
@@ -54,7 +54,7 @@ jobs:
   sign:
     name: Sign the distribution package
     if: startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch'
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     needs: [build]
     permissions:
       contents: write     # IMPORTANT: mandatory for making GitHub Releases
