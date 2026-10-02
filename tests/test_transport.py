@@ -117,7 +117,7 @@ def test_session_over_http_transport(
             httpserver.url_for("/"),
             "user",
             "password",
-            requests_session=transport,  # type: ignore[call-arg] # ty: ignore[unknown-argument]
+            **{parameter: transport},  # type: ignore[arg-type] # ty: ignore[invalid-argument-type]
         ) as session,
     ):
         assert session.key == SESSION_KEY
