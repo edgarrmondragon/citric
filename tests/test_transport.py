@@ -112,7 +112,7 @@ def test_session_over_http_transport(
     transport = transport_factory()
 
     with (
-        requests_session_warning,
+        effect,
         Session(
             httpserver.url_for("/"),
             "user",
