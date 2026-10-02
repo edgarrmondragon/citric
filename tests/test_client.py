@@ -58,6 +58,17 @@ def client() -> Generator[Client, None, None]:
         client.close()
 
 
+def test_session_class_deprecation_location():
+    """The ``session_class`` warning is attributed to the caller, not citric."""
+    with pytest.warns(
+        DeprecationWarning,
+        match="Using a custom class in `Client.session_class` is deprecated",
+    ) as record:
+        MockClient("mock://lime.com", "user", "secret").close()
+
+    assert [w.filename for w in record] == [__file__]
+
+
 def test_export_timeline(client: MockClient):
     """Test export_timeline client method."""
     assert client.export_timeline(

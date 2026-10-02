@@ -44,7 +44,7 @@ def _transport_or_default(
         warnings.warn(
             "Parameter 'requests_session' is deprecated; use 'transport' instead",
             DeprecationWarning,
-            stacklevel=3,
+            stacklevel=3,  # helper -> public constructor -> user code
         )
         return requests_session
 

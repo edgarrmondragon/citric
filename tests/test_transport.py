@@ -207,3 +207,32 @@ def test_both_transport_requests_session_error(
             transport=Urllib3Transport(),
             requests_session=requests.Session(),
         )
+
+
+@client_classes
+def test_requests_session_warning_location(
+    httpserver: HTTPServer,
+    client_class: type[Session | Client | RESTClient],
+):
+    """The deprecation warning is attributed to the caller, not citric internals.
+
+    Python only shows a ``DeprecationWarning`` by default when it points at user code.
+    """
+    httpserver.expect_request("/", method="POST").respond_with_handler(rpc_handler)
+    httpserver.expect_request(re.compile(r"^/rest/v1")).respond_with_handler(
+        rest_handler
+    )
+
+    with pytest.warns(
+        DeprecationWarning,
+        match="Parameter 'requests_session' is deprecated",
+    ) as record:
+        instance = client_class(
+            httpserver.url_for("/"),
+            "user",
+            "password",
+            requests_session=requests.Session(),
+        )
+
+    instance.close()
+    assert [w.filename for w in record] == [__file__]

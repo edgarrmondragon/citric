@@ -203,7 +203,7 @@ class Client:  # ruff: ignore[too-many-public-methods]
             warnings.warn(
                 "Using a custom class in `Client.session_class` is deprecated; override `Client.get_rpc_session` instead",  # ruff: ignore[line-too-long]
                 DeprecationWarning,
-                stacklevel=3,
+                stacklevel=3,  # get_rpc_session -> Client.__init__ -> user code
             )
 
         return self.session_class(
