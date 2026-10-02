@@ -12,6 +12,7 @@ behavior.
 from __future__ import annotations
 
 import json
+import re
 from contextlib import nullcontext
 from typing import TYPE_CHECKING
 
@@ -20,6 +21,7 @@ import requests
 from werkzeug.wrappers import Response
 
 from citric.client import Client
+from citric.rest import RESTClient
 from citric.session import Session
 from citric.transport.httpx2 import Httpx2Transport
 from citric.transport.protocol import HTTPTransport
@@ -36,6 +38,7 @@ if TYPE_CHECKING:
     TransportFactory: TypeAlias = Callable[[], HTTPTransport]
 
 SESSION_KEY = "session-key-from-httpserver"
+REST_SESSION_ID = "my-api-token"
 
 transport_factories = pytest.mark.parametrize(
     "transport_factory",
@@ -74,6 +77,17 @@ def rpc_handler(request: Request) -> Response:
         json.dumps({"id": request_id, "result": result, "error": None}),
         content_type="application/json",
     )
+
+
+def rest_handler(request: Request) -> Response:
+    """Serve a minimal REST responder backed by a real HTTP server."""
+    if request.method == "POST" and request.path == "/rest/v1/auth":
+        return Response(
+            json.dumps({"token": REST_SESSION_ID}),
+            content_type="application/json",
+        )
+
+    return Response('{"survey": {"foo": "bar"}}', content_type="application/json")
 
 
 @transport_factories
@@ -135,3 +149,31 @@ def test_client_over_http_transport(
         assert client.session.key == SESSION_KEY
 
     assert client.session.closed
+
+
+@transport_factories
+@transport_parameters
+def test_rest_client_over_http_transport(
+    httpserver: HTTPServer,
+    transport_factory: TransportFactory,
+    parameter: str,
+    effect: AbstractContextManager,
+):
+    """A REST client works the same way regardless of the underlying HTTPTransport."""
+    httpserver.expect_request(re.compile(r"^/rest/v1")).respond_with_handler(
+        rest_handler
+    )
+
+    transport = transport_factory()
+
+    with (
+        effect,
+        RESTClient(
+            httpserver.url_for("/"),
+            "user",
+            "password",
+            **{parameter: transport},
+        ) as client,
+    ):
+        assert client.session_id == REST_SESSION_ID
+        assert client.get_survey_details(1) == {"foo": "bar"}

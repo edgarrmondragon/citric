@@ -91,7 +91,7 @@ class RESTClient:
         transport: HTTPTransport | None = None,
     ) -> None:
         self.url: str = url
-        self._session = transport if transport is not None else requests.session()
+        self._transport = transport if transport is not None else requests.session()
         self.__session_id: str | None = None
         self._headers = {
             "Accept": "application/json",
@@ -150,7 +150,7 @@ class RESTClient:
         try:
             _ = self.make_request("DELETE", self.AUTH_ENDPOINT)
         finally:
-            self._session.close()
+            self._transport.close()
             self.session_id = None
 
     def make_request(
@@ -183,7 +183,7 @@ class RESTClient:
         url = f"{self.url}{path}"
         url = _encode_params(url, params) if params else url
 
-        response = self._session.request(
+        response = self._transport.request(
             method=method,
             url=url,
             data=_json.dumps(json) if json is not None else None,
