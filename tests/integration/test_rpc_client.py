@@ -377,6 +377,10 @@ def test_question(
     """Test question methods."""
     group_id = client.add_group(survey_id, "Test Group")
 
+    # Question has "es"-specific properties, so the survey needs to support it
+    # https://github.com/LimeSurvey/LimeSurvey/commit/13af3bb69
+    assert client.add_language(survey_id, "es") == {"status": "OK"}
+
     # Import a question from a Question object
     question_id = client.import_question(
         question_with_free_text.to_lsq(),
@@ -535,6 +539,10 @@ def test_import_question_answer_options(
         },
         answer_options=answer_options,
     )
+
+    # Question has "es"-specific properties, so the survey needs to support it
+    # https://github.com/LimeSurvey/LimeSurvey/commit/13af3bb69
+    assert client.add_language(survey_id, "es") == {"status": "OK"}
 
     question_id = client.import_question(q.to_lsq(), survey_id, group_id)
     get_props = functools.partial(
