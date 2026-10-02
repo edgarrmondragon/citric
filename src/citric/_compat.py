@@ -11,10 +11,13 @@ __lazy_modules__ = {
 import warnings
 from collections.abc import Callable
 from functools import wraps
-from typing import Any
+from typing import Any, ParamSpec, TypeVar
+
+T = TypeVar("T")
+P = ParamSpec("P")
 
 
-def deprecate_requests_session(fn: Callable) -> Callable:
+def deprecate_requests_session(fn: Callable[P, T]) -> Callable[P, T]:
     old = "requests_session"
     new = "transport"
 

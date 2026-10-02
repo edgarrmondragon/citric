@@ -179,7 +179,7 @@ class Client:  # ruff: ignore[too-many-public-methods]
                 username,
                 password,
                 auth_plugin=auth_plugin,
-                requests_session=transport,
+                requests_session=transport,  # type: ignore[call-arg] # ty: ignore[unknown-argument]
             )
 
         self.__server_version: ServerVersion | None = None

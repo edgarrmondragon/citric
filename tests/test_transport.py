@@ -112,12 +112,12 @@ def test_session_over_http_transport(
     transport = transport_factory()
 
     with (
-        effect,
+        requests_session_warning,
         Session(
             httpserver.url_for("/"),
             "user",
             "password",
-            **{parameter: transport},
+            requests_session=transport,  # type: ignore[call-arg] # ty: ignore[unknown-argument]
         ) as session,
     ):
         assert session.key == SESSION_KEY
@@ -145,7 +145,7 @@ def test_client_over_http_transport(
             httpserver.url_for("/"),
             "user",
             "password",
-            **{parameter: transport},
+            **{parameter: transport},  # type: ignore[arg-type] # ty: ignore[invalid-argument-type]
         ) as client,
     ):
         assert client.session.key == SESSION_KEY
@@ -198,12 +198,12 @@ def test_client_custom_session_kwargs(httpserver: HTTPServer):
                 url,
                 username,
                 password,
-                requests_session=requests_session,
+                requests_session=requests_session,  # type: ignore[call-arg] # ty: ignore[unknown-argument]
                 **kwargs,
             )
 
     class CustomClient(Client):
-        session_class = CustomSession
+        session_class = CustomSession  # type: ignore[assignment]
 
     with (
         requests_session_warning,
