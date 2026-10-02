@@ -18,11 +18,11 @@ __lazy_modules__ = {
 
 import base64
 import datetime
+import inspect
 import io
 import json
 import logging
 import re
-import warnings
 from dataclasses import dataclass
 from pathlib import Path
 from typing import IO, TYPE_CHECKING, Any, Literal
@@ -163,19 +163,23 @@ class Client:  # ruff: ignore[too-many-public-methods]
         transport: HTTPTransport | None = None,
         auth_plugin: str = "Authdb",
     ) -> None:
-        with warnings.catch_warnings():
-            warnings.filterwarnings(
-                "ignore",
-                message="Parameter 'requests_session' is deprecated; use 'transport' instead.",  # ruff: ignore[line-too-long]
-                category=DeprecationWarning,
-            )
+        if "transport" in inspect.signature(self.session_class).parameters:
             self.__session = self.session_class(
                 url,
                 username,
                 password,
-                requests_session=_transport_or_default(transport),
                 auth_plugin=auth_plugin,
+                transport=_transport_or_default(transport),
             )
+        else:
+            self.__session = self.session_class(
+                url,
+                username,
+                password,
+                auth_plugin=auth_plugin,
+                requests_session=_transport_or_default(transport),
+            )
+
         self.__server_version: ServerVersion | None = None
 
     def close(self) -> None:
