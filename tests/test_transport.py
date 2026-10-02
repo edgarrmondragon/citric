@@ -12,6 +12,7 @@ behavior.
 from __future__ import annotations
 
 import json
+from contextlib import nullcontext
 from typing import TYPE_CHECKING
 
 import pytest
@@ -26,6 +27,7 @@ from citric.transport.urllib3 import Urllib3Transport
 
 if TYPE_CHECKING:
     from collections.abc import Callable
+    from contextlib import AbstractContextManager
     from typing import TypeAlias
 
     from pytest_httpserver import HTTPServer
@@ -41,6 +43,21 @@ transport_factories = pytest.mark.parametrize(
         pytest.param(requests.Session, id="requests"),
         pytest.param(Httpx2Transport, id="httpx2"),
         pytest.param(Urllib3Transport, id="urllib3"),
+    ],
+)
+
+transport_parameters = pytest.mark.parametrize(
+    ("parameter", "effect"),
+    [
+        pytest.param(
+            "requests_session",
+            pytest.warns(
+                DeprecationWarning,
+                match="Parameter 'requests_session' is deprecated",
+            ),
+            id="requests_session",
+        ),
+        pytest.param("transport", nullcontext(), id="transport"),
     ],
 )
 
@@ -66,21 +83,27 @@ def test_transport_satisfies_protocol(transport_factory: TransportFactory):
 
 
 @transport_factories
+@transport_parameters
 def test_session_over_http_transport(
     httpserver: HTTPServer,
     transport_factory: TransportFactory,
+    parameter: str,
+    effect: AbstractContextManager,
 ):
     """A Session drives a full login/RPC/close cycle over any HTTPTransport."""
     httpserver.expect_request("/", method="POST").respond_with_handler(rpc_handler)
 
     transport = transport_factory()
 
-    with Session(
-        httpserver.url_for("/"),
-        "user",
-        "password",
-        requests_session=transport,
-    ) as session:
+    with (
+        effect,
+        Session(
+            httpserver.url_for("/"),
+            "user",
+            "password",
+            **{parameter: transport},
+        ) as session,
+    ):
         assert session.key == SESSION_KEY
         assert session.__ok() == "OK"
 
@@ -88,21 +111,27 @@ def test_session_over_http_transport(
 
 
 @transport_factories
+@transport_parameters
 def test_client_over_http_transport(
     httpserver: HTTPServer,
     transport_factory: TransportFactory,
+    parameter: str,
+    effect: AbstractContextManager,
 ):
     """A Client works the same way regardless of the underlying HTTPTransport."""
     httpserver.expect_request("/", method="POST").respond_with_handler(rpc_handler)
 
     transport = transport_factory()
 
-    with Client(
-        httpserver.url_for("/"),
-        "user",
-        "password",
-        requests_session=transport,
-    ) as client:
+    with (
+        effect,
+        Client(
+            httpserver.url_for("/"),
+            "user",
+            "password",
+            **{parameter: transport},
+        ) as client,
+    ):
         assert client.session.key == SESSION_KEY
 
     assert client.session.closed

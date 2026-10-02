@@ -19,6 +19,7 @@ from urllib.parse import urlencode, urlsplit, urlunsplit
 
 import requests
 
+from citric._compat import deprecate_requests_session
 from citric.exceptions import LimeSurveyApiError
 
 if TYPE_CHECKING:
@@ -69,23 +70,26 @@ class RESTClient:
             :py:class:`requests.Session <requests.Session>`.
 
     .. versionadded:: 0.10.0.post1
+
+    .. versionchanged:: NEXT_VERSION
+        The ``requests_session`` parameter was deprecated in favor of its alias
+        ``transport``.
     """
 
     USER_AGENT = f"citric/{metadata.version('citric')}"
     AUTH_ENDPOINT = "/rest/v1/auth"
 
+    @deprecate_requests_session
     def __init__(
         self,
         url: str,
         username: str,
         password: str,
         *,
-        requests_session: HTTPTransport | None = None,
+        transport: HTTPTransport | None = None,
     ) -> None:
         self.url: str = url
-        self._session = (
-            requests_session if requests_session is not None else requests.session()
-        )
+        self._session = transport if transport is not None else requests.session()
         self.__session_id: str | None = None
         self._headers = {
             "Accept": "application/json",

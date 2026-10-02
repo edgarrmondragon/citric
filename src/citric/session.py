@@ -4,8 +4,6 @@
 
 from __future__ import annotations
 
-import http
-
 __lazy_modules__ = {
     "citric.exceptions",
     "citric.method",
@@ -15,6 +13,7 @@ __lazy_modules__ = {
     "requests",
 }
 
+import http
 import json
 import logging
 import random
@@ -23,6 +22,7 @@ from typing import TYPE_CHECKING, Any, Type  # ruff: ignore[deprecated-import]
 
 import requests
 
+from citric._compat import deprecate_requests_session
 from citric.exceptions import (
     InvalidJSONResponseError,
     LimeSurveyApiError,
@@ -87,7 +87,7 @@ class Session:
         url: LimeSurvey Remote Control endpoint.
         username: LimeSurvey user name.
         password: LimeSurvey password.
-        requests_session: An HTTP transport implementing
+        transport: An HTTP transport implementing
             :class:`~citric.transport.protocol.HTTPTransport`, e.g. a
             :py:class:`requests.Session <requests.Session>` or
             :class:`~citric.transport.httpx2.Httpx2Transport`. Defaults to a new
@@ -110,10 +110,13 @@ class Session:
        The ``json_encoder`` parameter.
 
     .. versionchanged:: NEXT_VERSION
-       ``requests_session`` now accepts any object implementing
+       ``requests_session`` started accepting any object implementing
        :class:`~citric.transport.protocol.HTTPTransport`, not just
        :py:class:`requests.Session <requests.Session>`.
 
+    .. versionchanged:: NEXT_VERSION
+       The ``requests_session`` parameter was deprecated in favor of its alias
+       ``transport``.
 
     .. _key: #citric.session.Session.key
     .. _closure: #citric.session.Session.close
@@ -121,6 +124,7 @@ class Session:
 
     USER_AGENT = f"citric/{metadata.version('citric')}"
 
+    @deprecate_requests_session
     def __init__(
         self,
         url: str,
@@ -128,13 +132,11 @@ class Session:
         password: str,
         *,
         auth_plugin: str = "Authdb",
-        requests_session: HTTPTransport | None = None,
+        transport: HTTPTransport | None = None,
         json_encoder: Type[json.JSONEncoder] | None = None,  # ruff: ignore[non-pep585-annotation]
     ) -> None:
         self.url: str = url
-        self._session = (
-            requests_session if requests_session is not None else requests.session()
-        )
+        self._transport = transport if transport is not None else requests.session()
         self._encoder = json_encoder or json.JSONEncoder
 
         self.__key: str | None = self.get_session_key(
@@ -221,7 +223,7 @@ class Session:
             "id": request_id,
         }
 
-        res = self._session.request(
+        res = self._transport.request(
             "POST",
             self.url,
             data=json.dumps(payload, cls=self._encoder),
@@ -259,7 +261,7 @@ class Session:
         :ls_manual:`release_session_key <RemoteControl_2_API#release_session_key>`.
         """
         self.release_session_key()
-        self._session.close()
+        self._transport.close()
         self.__key = None
         self.__closed = True
 

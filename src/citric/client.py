@@ -21,6 +21,7 @@ import io
 import json
 import logging
 import re
+import warnings
 from dataclasses import dataclass
 from pathlib import Path
 from typing import IO, TYPE_CHECKING, Any, Literal
@@ -28,6 +29,7 @@ from typing import IO, TYPE_CHECKING, Any, Literal
 import requests
 
 from citric import enums
+from citric._compat import deprecate_requests_session
 from citric.exceptions import LimeSurveyStatusError
 from citric.session import Session, handle_rpc_errors
 
@@ -128,7 +130,7 @@ class Client:  # ruff: ignore[too-many-public-methods]
         url: LimeSurvey Remote Control endpoint.
         username: LimeSurvey user name.
         password: LimeSurvey password.
-        requests_session: An HTTP transport implementing
+        transport: An HTTP transport implementing
             :class:`~citric.transport.protocol.HTTPTransport`, e.g. a
             :py:class:`requests.Session <requests.Session>` or
             :class:`~citric.transport.httpx2.Httpx2Transport`. Defaults to a new
@@ -150,24 +152,31 @@ class Client:  # ruff: ignore[too-many-public-methods]
 
     session_class = Session
 
+    @deprecate_requests_session
     def __init__(
         self,
         url: str,
         username: str,
         password: str,
         *,
-        requests_session: HTTPTransport | None = None,
+        transport: HTTPTransport | None = None,
         auth_plugin: str = "Authdb",
     ) -> None:
-        self.__session = self.session_class(
-            url,
-            username,
-            password,
-            requests_session=requests_session
-            if requests_session is not None
-            else requests.session(),
-            auth_plugin=auth_plugin,
-        )
+        with warnings.catch_warnings():
+            warnings.filterwarnings(
+                "ignore",
+                message="Parameter 'requests_session' is deprecated; use 'transport' instead.",  # ruff: ignore[line-too-long]
+                category=DeprecationWarning,
+            )
+            self.__session = self.session_class(
+                url,
+                username,
+                password,
+                requests_session=transport
+                if transport is not None
+                else requests.session(),
+                auth_plugin=auth_plugin,
+            )
         self.__server_version: ServerVersion | None = None
 
     def close(self) -> None:

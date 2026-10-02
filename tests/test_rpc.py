@@ -38,6 +38,12 @@ else:
     from typing_extensions import override
 
 
+requests_session_warning = pytest.warns(
+    DeprecationWarning,
+    match="Parameter 'requests_session' is deprecated",
+)
+
+
 class RPCOffAdapter(LimeSurveyMockAdapter):
     """Mock adapter with RPC interface turned off."""
 
@@ -76,7 +82,10 @@ def test_session(
     mock_session: requests.Session,
 ):
     """Test context creates a session key."""
-    with Session(url, username, password, requests_session=mock_session) as session:
+    with (
+        requests_session_warning,
+        Session(url, username, password, requests_session=mock_session) as session,
+    ):
         assert not session.closed
         assert session.key == LimeSurveyMockAdapter.session_key
 
@@ -88,13 +97,16 @@ def test_session_auth_plugin(
     mock_session: requests.Session,
 ):
     """Test context creates a session key and uses auth plugin."""
-    with Session(
-        url,
-        username,
-        password,
-        requests_session=mock_session,
-        auth_plugin="AuthLDAP",
-    ) as session:
+    with (
+        requests_session_warning,
+        Session(
+            url,
+            username,
+            password,
+            requests_session=mock_session,
+            auth_plugin="AuthLDAP",
+        ) as session,
+    ):
         assert not session.closed
         assert session.key == LimeSurveyMockAdapter.ldap_session_key
 
@@ -106,7 +118,10 @@ def test_closed_session(
     mock_session: requests.Session,
 ):
     """Test context closes session."""
-    with Session(url, username, password, requests_session=mock_session) as session:
+    with (
+        requests_session_warning,
+        Session(url, username, password, requests_session=mock_session) as session,
+    ):
         pass
 
     assert session.closed
@@ -169,13 +184,14 @@ def test_json_encoder(
     context: contextlib.AbstractContextManager,
 ):
     """Test JSON encoding error."""
-    session = Session(
-        url,
-        username,
-        password,
-        requests_session=mock_session,
-        json_encoder=encoder,
-    )
+    with requests_session_warning:
+        session = Session(
+            url,
+            username,
+            password,
+            requests_session=mock_session,
+            json_encoder=encoder,
+        )
 
     with context:
         session._invoke("json_encode_error", NotSerializable(123))

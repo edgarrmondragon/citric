@@ -1,0 +1,5 @@
+kind: Deprecated
+body: Deprecate `requests_session` parameter in `Client` and `Session` classes in favor of `transport`
+time: 2026-10-02T09:29:42.411285-06:00
+custom:
+    Issue: "1851"
