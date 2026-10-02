@@ -69,6 +69,7 @@ class RESTClient:
             :py:class:`requests.Session <requests.Session>` or
             :class:`~citric.transport.httpx2.Httpx2Transport`. Defaults to a new
             :py:class:`requests.Session <requests.Session>`.
+        requests_session: Deprecated alias of ``transport``.
 
     .. versionadded:: 0.10.0.post1
 
@@ -77,6 +78,9 @@ class RESTClient:
         ``transport``. It also now accepts any object implementing
         :class:`~citric.transport.protocol.HTTPTransport`, not just
         :py:class:`requests.Session <requests.Session>`.
+
+    .. deprecated:: NEXT_VERSION
+        The ``requests_session`` parameter, use ``transport`` instead.
     """
 
     USER_AGENT = f"citric/{metadata.version('citric')}"

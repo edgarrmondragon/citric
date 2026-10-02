@@ -91,6 +91,7 @@ class Session:
             :py:class:`requests.Session <requests.Session>` or
             :class:`~citric.transport.httpx2.Httpx2Transport`. Defaults to a new
             :py:class:`requests.Session <requests.Session>`.
+        requests_session: Deprecated alias of ``transport``.
         auth_plugin: Name of the :ls_manual:`plugin <Authentication_plugins>` to use for
             authentication. For example,
             :ls_manual:`AuthLDAP <Authentication_plugins#LDAP>`. Defaults to using the
@@ -113,6 +114,9 @@ class Session:
         ``transport``. It also now accepts any object implementing
         :class:`~citric.transport.protocol.HTTPTransport`, not just
         :py:class:`requests.Session <requests.Session>`.
+
+    .. deprecated:: NEXT_VERSION
+        The ``requests_session`` parameter, use ``transport`` instead.
 
     .. _key: #citric.session.Session.key
     .. _closure: #citric.session.Session.close
