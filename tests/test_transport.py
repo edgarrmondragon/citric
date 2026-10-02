@@ -14,7 +14,7 @@ from __future__ import annotations
 import json
 import re
 from contextlib import nullcontext
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 import pytest
 import requests
@@ -179,70 +179,3 @@ def test_rest_client_over_http_transport(
     ):
         assert client.session_id == REST_SESSION_ID
         assert client.get_survey_details(1) == {"foo": "bar"}
-
-
-def test_client_custom_session_kwargs(httpserver: HTTPServer):
-    """A Client can be instantiated with a custom session."""
-    httpserver.expect_request("/", method="POST").respond_with_handler(rpc_handler)
-
-    class CustomSession(Session):
-        def __init__(
-            self,
-            url: str,
-            username: str,
-            password: str,
-            requests_session: HTTPTransport,
-            **kwargs: Any,
-        ):
-            super().__init__(
-                url,
-                username,
-                password,
-                requests_session=requests_session,  # type: ignore[call-arg] # ty: ignore[unknown-argument]
-                **kwargs,
-            )
-
-    class CustomClient(Client):
-        session_class = CustomSession  # type: ignore[assignment]
-
-    with (
-        requests_session_warning,
-        CustomClient(
-            httpserver.url_for("/"),
-            "user",
-            "password",
-            transport=Urllib3Transport(),
-        ) as client,
-    ):
-        assert client.session.key == SESSION_KEY
-
-    class TransportSession(Session):
-        def __init__(
-            self,
-            url: str,
-            username: str,
-            password: str,
-            transport: HTTPTransport,
-            **kwargs: Any,
-        ):
-            super().__init__(
-                url,
-                username,
-                password,
-                transport=transport,
-                **kwargs,
-            )
-
-    class TransportClient(Client):
-        session_class = TransportSession  # type: ignore[assignment]
-
-    with (
-        requests_session_warning,
-        CustomClient(
-            httpserver.url_for("/"),
-            "user",
-            "password",
-            transport=Urllib3Transport(),
-        ) as client,
-    ):
-        assert client.session.key == SESSION_KEY

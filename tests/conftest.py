@@ -224,7 +224,7 @@ def session(
 ):
     """Create a LimeSurvey Session fixture."""
     with requests_session_warning:
-        session = Session(url, username, password, requests_session=mock_session)  # type: ignore[call-arg] # ty: ignore[unknown-argument]
+        session = Session(url, username, password, requests_session=mock_session)
 
     yield session
 

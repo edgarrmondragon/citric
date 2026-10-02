@@ -21,7 +21,6 @@ import random
 from importlib import metadata
 from typing import TYPE_CHECKING, Any, Type  # ruff: ignore[deprecated-import]
 
-from citric._compat import deprecate_requests_session
 from citric.exceptions import (
     InvalidJSONResponseError,
     LimeSurveyApiError,
@@ -121,7 +120,6 @@ class Session:
 
     USER_AGENT = f"citric/{metadata.version('citric')}"
 
-    @deprecate_requests_session
     def __init__(
         self,
         url: str,
@@ -130,10 +128,11 @@ class Session:
         *,
         auth_plugin: str = "Authdb",
         transport: HTTPTransport | None = None,
+        requests_session: HTTPTransport | None = None,
         json_encoder: Type[json.JSONEncoder] | None = None,  # ruff: ignore[non-pep585-annotation]
     ) -> None:
         self.url: str = url
-        self._transport = _transport_or_default(transport)
+        self._transport = _transport_or_default(transport, requests_session)
         self._encoder = json_encoder or json.JSONEncoder
 
         self.__key: str | None = self.get_session_key(

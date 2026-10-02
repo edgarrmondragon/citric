@@ -4,31 +4,35 @@
 
 from __future__ import annotations
 
+
 __lazy_modules__ = {
     "base64",
     "citric.exceptions",
+    "citric.transport",
+    "citric.transport._default",
     "datetime",
     "inspect",
     "io",
     "json",
     "pathlib",
+    "warnings",
 }
 
 import base64
 import datetime
-import inspect
 import io
 import json
 import logging
 import re
+import warnings
 from dataclasses import dataclass
 from pathlib import Path
 from typing import IO, TYPE_CHECKING, Any, Literal
 
 from citric import enums
-from citric._compat import deprecate_requests_session
 from citric.exceptions import LimeSurveyStatusError
 from citric.session import Session, handle_rpc_errors
+from citric.transport._default import _transport_or_default
 
 if TYPE_CHECKING:
     import sys
@@ -150,7 +154,6 @@ class Client:  # ruff: ignore[too-many-public-methods]
 
     session_class = Session
 
-    @deprecate_requests_session
     def __init__(
         self,
         url: str,
@@ -158,36 +161,60 @@ class Client:  # ruff: ignore[too-many-public-methods]
         password: str,
         *,
         transport: HTTPTransport | None = None,
+        requests_session: HTTPTransport | None = None,
         auth_plugin: str = "Authdb",
     ) -> None:
-        params = inspect.signature(self.session_class).parameters
-        if (
-            # New Session subclass that uses transport/kwargs but not requests_session
-            ("transport" in params or "kwargs" in params)
-            and "requests_session" not in params
-        ):
-            self.__session = self.session_class(
-                url,
-                username,
-                password,
-                auth_plugin=auth_plugin,
-                transport=transport,
-            )
-        else:
-            self.__session = self.session_class(
-                url,
-                username,
-                password,
-                auth_plugin=auth_plugin,
-                requests_session=transport,  # type: ignore[call-arg] # ty: ignore[unknown-argument]
-            )
-
+        self.__session = self.get_rpc_session(
+            url=url,
+            username=username,
+            password=password,
+            auth_plugin=auth_plugin,
+            transport=_transport_or_default(transport, requests_session),
+        )
         self.__server_version: ServerVersion | None = None
 
     def close(self) -> None:
         """Close client session."""
         self.__server_version = None
         self.session.close()
+
+    def get_rpc_session(
+        self,
+        *,
+        url: str,
+        username: str,
+        password: str,
+        auth_plugin: str = "Authdb",
+        transport: HTTPTransport | None = None,
+    ) -> Session:
+        """Get the RPC session.
+
+        Args:
+            url: The URL of the LimeSurvey server.
+            username: The username for authentication.
+            password: The password for authentication.
+            auth_plugin: The authentication plugin to use.
+            transport: The HTTP transport to use.
+
+        Returns:
+            The RPC session.
+
+        .. versionadded:: NEXT_VERSION
+        """
+        if self.session_class is not Session:
+            warnings.warn(
+                "Using a custom class in `Client.session_class` is deprecated; override `Client.get_rpc_session` instead",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+
+        return self.session_class(
+            url,
+            username,
+            password,
+            auth_plugin=auth_plugin,
+            transport=transport,
+        )
 
     def __enter__(self: Self) -> Self:
         """Create client context.

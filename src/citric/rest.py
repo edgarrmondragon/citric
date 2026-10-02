@@ -20,7 +20,6 @@ from importlib import metadata
 from typing import TYPE_CHECKING, Any, Type  # ruff: ignore[deprecated-import]
 from urllib.parse import urlencode, urlsplit, urlunsplit
 
-from citric._compat import deprecate_requests_session
 from citric.exceptions import LimeSurveyApiError
 from citric.transport._default import _transport_or_default
 
@@ -83,7 +82,6 @@ class RESTClient:
     USER_AGENT = f"citric/{metadata.version('citric')}"
     AUTH_ENDPOINT = "/rest/v1/auth"
 
-    @deprecate_requests_session
     def __init__(
         self,
         url: str,
@@ -91,9 +89,10 @@ class RESTClient:
         password: str,
         *,
         transport: HTTPTransport | None = None,
+        requests_session: HTTPTransport | None = None,
     ) -> None:
         self.url: str = url
-        self._transport = _transport_or_default(transport)
+        self._transport = _transport_or_default(transport, requests_session)
         self.__session_id: str | None = None
         self._headers = {
             "Accept": "application/json",

@@ -84,7 +84,7 @@ def test_session(
     """Test context creates a session key."""
     with (
         requests_session_warning,
-        Session(url, username, password, requests_session=mock_session) as session,  # type: ignore[call-arg] # ty: ignore[unknown-argument]
+        Session(url, username, password, requests_session=mock_session) as session,
     ):
         assert not session.closed
         assert session.key == LimeSurveyMockAdapter.session_key
@@ -103,7 +103,7 @@ def test_session_auth_plugin(
             url,
             username,
             password,
-            requests_session=mock_session,  # type: ignore[call-arg] # ty: ignore[unknown-argument]
+            requests_session=mock_session,
             auth_plugin="AuthLDAP",
         ) as session,
     ):
@@ -120,7 +120,7 @@ def test_closed_session(
     """Test context closes session."""
     with (
         requests_session_warning,
-        Session(url, username, password, requests_session=mock_session) as session,  # type: ignore[call-arg] # ty: ignore[unknown-argument]
+        Session(url, username, password, requests_session=mock_session) as session,
     ):
         pass
 
@@ -189,7 +189,7 @@ def test_json_encoder(
             url,
             username,
             password,
-            requests_session=mock_session,  # type: ignore[call-arg] # ty: ignore[unknown-argument]
+            requests_session=mock_session,
             json_encoder=encoder,
         )
 
