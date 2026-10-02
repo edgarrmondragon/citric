@@ -31,7 +31,6 @@ from citric import enums
 from citric._compat import deprecate_requests_session
 from citric.exceptions import LimeSurveyStatusError
 from citric.session import Session, handle_rpc_errors
-from citric.transport._default import _transport_or_default
 
 if TYPE_CHECKING:
     import sys
@@ -164,13 +163,17 @@ class Client:  # ruff: ignore[too-many-public-methods]
         auth_plugin: str = "Authdb",
     ) -> None:
         params = inspect.signature(self.session_class).parameters
-        if "transport" in params or "kwargs" in params:
+        if (
+            # New Session subclass that uses transport/kwargs but not requests_session
+            ("transport" in params or "kwargs" in params)
+            and "requests_session" not in params
+        ):
             self.__session = self.session_class(
                 url,
                 username,
                 password,
                 auth_plugin=auth_plugin,
-                transport=_transport_or_default(transport),
+                transport=transport,
             )
         else:
             self.__session = self.session_class(
@@ -178,7 +181,7 @@ class Client:  # ruff: ignore[too-many-public-methods]
                 username,
                 password,
                 auth_plugin=auth_plugin,
-                requests_session=_transport_or_default(transport),
+                requests_session=transport,
             )
 
         self.__server_version: ServerVersion | None = None
