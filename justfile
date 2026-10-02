@@ -41,7 +41,7 @@ nox:
     -./noxfile.py
 
 venv:
-    uv venv --clear
+    uv venv .venv --clear
     uv pip install --python .venv/bin/python --group dev -e .
 
 # Clean build artifacts, coverage files, and nox venvs
