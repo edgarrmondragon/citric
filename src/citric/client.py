@@ -173,7 +173,7 @@ class Client:  # ruff: ignore[too-many-public-methods]
                 url,
                 username,
                 password,
-                transport=_transport_or_default(transport),
+                requests_session=_transport_or_default(transport),
                 auth_plugin=auth_plugin,
             )
         self.__server_version: ServerVersion | None = None
