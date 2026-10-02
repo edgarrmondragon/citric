@@ -4,7 +4,6 @@
 
 from __future__ import annotations
 
-
 __lazy_modules__ = {
     "base64",
     "citric.exceptions",
@@ -203,7 +202,7 @@ class Client:  # ruff: ignore[too-many-public-methods]
         """
         if self.session_class is not Session:
             warnings.warn(
-                "Using a custom class in `Client.session_class` is deprecated; override `Client.get_rpc_session` instead",
+                "Using a custom class in `Client.session_class` is deprecated; override `Client.get_rpc_session` instead",  # ruff: ignore[line-too-long]
                 DeprecationWarning,
                 stacklevel=2,
             )

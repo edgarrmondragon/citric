@@ -179,3 +179,20 @@ def test_rest_client_over_http_transport(
     ):
         assert client.session_id == REST_SESSION_ID
         assert client.get_survey_details(1) == {"foo": "bar"}
+
+
+def test_both_transport_requests_session_error():
+    """Test setting both 'transport' and 'requests_session' raises a ValueError."""
+    with (
+        pytest.raises(
+            ValueError,
+            match="Both 'transport' and 'requests_session' are set",
+        ),
+    ):
+        _ = Session(
+            "https://example.com",
+            "user",
+            "password",
+            transport=Urllib3Transport(),
+            requests_session=requests.Session(),
+        )

@@ -22,16 +22,15 @@ def _transport_or_default(
     transport: HTTPTransport | None, requests_session: HTTPTransport | None
 ) -> HTTPTransport:
     if transport is not None and requests_session is not None:
-        raise ValueError(
-            "Both 'transport' and 'requests_session' are set; only one should be used."
-        )
+        err = "Both 'transport' and 'requests_session' are set; only one should be used"
+        raise ValueError(err)
 
     if transport is None and requests_session is None:
         return requests.Session()
 
     if requests_session is not None:
         warnings.warn(
-            "Parameter 'requests_session' is deprecated; use 'transport' instead.",
+            "Parameter 'requests_session' is deprecated; use 'transport' instead",
             DeprecationWarning,
             stacklevel=2,
         )
