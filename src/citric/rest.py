@@ -63,7 +63,7 @@ class RESTClient:
         url: LimeSurvey server URL. For example, ``http://www.yourdomain.com/rest/v1``.
         username: LimeSurvey user name.
         password: LimeSurvey password.
-        requests_session: An HTTP transport implementing
+        transport: An HTTP transport implementing
             :class:`~citric.transport.protocol.HTTPTransport`, e.g. a
             :py:class:`requests.Session <requests.Session>` or
             :class:`~citric.transport.httpx2.Httpx2Transport`. Defaults to a new
@@ -73,7 +73,9 @@ class RESTClient:
 
     .. versionchanged:: NEXT_VERSION
         The ``requests_session`` parameter was deprecated in favor of its alias
-        ``transport``.
+        ``transport``. It also now accepts any object implementing
+        :class:`~citric.transport.protocol.HTTPTransport`, not just
+        :py:class:`requests.Session <requests.Session>`.
     """
 
     USER_AGENT = f"citric/{metadata.version('citric')}"

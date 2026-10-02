@@ -110,13 +110,10 @@ class Session:
        The ``json_encoder`` parameter.
 
     .. versionchanged:: NEXT_VERSION
-       ``requests_session`` started accepting any object implementing
-       :class:`~citric.transport.protocol.HTTPTransport`, not just
-       :py:class:`requests.Session <requests.Session>`.
-
-    .. versionchanged:: NEXT_VERSION
-       The ``requests_session`` parameter was deprecated in favor of its alias
-       ``transport``.
+        The ``requests_session`` parameter was deprecated in favor of its alias
+        ``transport``. It also now accepts any object implementing
+        :class:`~citric.transport.protocol.HTTPTransport`, not just
+        :py:class:`requests.Session <requests.Session>`.
 
     .. _key: #citric.session.Session.key
     .. _closure: #citric.session.Session.close
