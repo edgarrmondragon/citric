@@ -46,10 +46,13 @@ class MockClient(Client):
 @pytest.fixture(scope="session")
 def client() -> Generator[Client, None, None]:
     """RemoteControl2 API client."""
-    with pytest.warns(
-        DeprecationWarning,
-        match="Using a custom class in `Client.session_class` is deprecated",
-    ), MockClient("mock://lime.com", "user", "secret") as client:
+    with (
+        pytest.warns(
+            DeprecationWarning,
+            match="Using a custom class in `Client.session_class` is deprecated",
+        ),
+        MockClient("mock://lime.com", "user", "secret") as client,
+    ):
         yield client
 
 
