@@ -181,15 +181,26 @@ def test_rest_client_over_http_transport(
         assert client.get_survey_details(1) == {"foo": "bar"}
 
 
-def test_both_transport_requests_session_error():
-    """Test setting both 'transport' and 'requests_session' raises a ValueError."""
-    with (
-        pytest.raises(
-            ValueError,
-            match="Both 'transport' and 'requests_session' are set",
-        ),
+client_classes = pytest.mark.parametrize(
+    "client_class",
+    [
+        pytest.param(Session, id="Session"),
+        pytest.param(Client, id="Client"),
+        pytest.param(RESTClient, id="RESTClient"),
+    ],
+)
+
+
+@client_classes
+def test_both_transport_requests_session_error(
+    client_class: type[Session | Client | RESTClient],
+):
+    """Test setting both 'transport' and 'requests_session' raises a TypeError."""
+    with pytest.raises(
+        TypeError,
+        match="Both 'transport' and 'requests_session' are set",
     ):
-        _ = Session(
+        _ = client_class(
             "https://example.com",
             "user",
             "password",
