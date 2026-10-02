@@ -17,4 +17,4 @@ if TYPE_CHECKING:
 
 
 def _transport_or_default(transport: HTTPTransport | None) -> HTTPTransport:
-    return transport or requests.session()
+    return transport if transport is not None else requests.session()
