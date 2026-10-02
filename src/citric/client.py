@@ -7,11 +7,13 @@ from __future__ import annotations
 __lazy_modules__ = {
     "base64",
     "citric.exceptions",
-    "citric.session",
+    "citric.transport",
+    "citric.transport._default",
     "datetime",
     "io",
     "json",
     "pathlib",
+    "warnings",
 }
 
 import base64

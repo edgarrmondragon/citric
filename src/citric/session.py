@@ -7,6 +7,8 @@ from __future__ import annotations
 __lazy_modules__ = {
     "citric.exceptions",
     "citric.method",
+    "citric.transport",
+    "citric.transport._default",
     "http",
     "json",
     "random",

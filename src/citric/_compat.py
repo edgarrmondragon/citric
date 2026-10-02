@@ -1,5 +1,13 @@
 # Copyright (c) 2026 Edgar Ramírez-Mondragón
 
+__lazy_modules__ = {
+    "collections",
+    "collections.abc",
+    "functools",
+    "typing",
+    "warnings",
+}
+
 import warnings
 from collections.abc import Callable
 from functools import wraps

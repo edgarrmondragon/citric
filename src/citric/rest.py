@@ -6,8 +6,12 @@ from __future__ import annotations
 
 __lazy_modules__ = {
     "citric.exceptions",
+    "citric.transport",
+    "citric.transport._default",
     "http",
     "json",
+    "urllib",
+    "urllib.parse",
 }
 
 import http
