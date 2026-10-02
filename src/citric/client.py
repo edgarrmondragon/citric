@@ -163,7 +163,8 @@ class Client:  # ruff: ignore[too-many-public-methods]
         transport: HTTPTransport | None = None,
         auth_plugin: str = "Authdb",
     ) -> None:
-        if "transport" in inspect.signature(self.session_class).parameters:
+        params = inspect.signature(self.session_class).parameters
+        if "transport" in params or "kwargs" in params:
             self.__session = self.session_class(
                 url,
                 username,
