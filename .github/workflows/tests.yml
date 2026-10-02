@@ -190,7 +190,7 @@ jobs:
       env:
         ALL_INTEGRATIONS: ${{ inputs.all_integrations }}
       run: |
-        if [[ "$GITHUB_EVENT_NAME" == "schedule" || "$ALL_INTEGRATIONS" == "true" || "$GITHUB_HEAD_REF" == release/* ]]; then
+        if [[ "$GITHUB_EVENT_NAME" == "schedule" || "$ALL_INTEGRATIONS" == "true" || "$GITHUB_HEAD_REF" == release/* || "$GITHUB_HEAD_REF" == docker/update-tags ]]; then
           echo "tags=$(jq -c . < .github/tags.json)" >> "$GITHUB_OUTPUT"
           echo "includes=$(jq -c '[.[] | del(.schedule_only)]' < .github/include_tags.json)" >> "$GITHUB_OUTPUT"
         else
