@@ -10,7 +10,6 @@ __lazy_modules__ = {
     "http",
     "json",
     "random",
-    "requests",
 }
 
 import http
@@ -19,8 +18,6 @@ import logging
 import random
 from importlib import metadata
 from typing import TYPE_CHECKING, Any, Type  # ruff: ignore[deprecated-import]
-
-import requests
 
 from citric._compat import deprecate_requests_session
 from citric.exceptions import (
@@ -31,6 +28,7 @@ from citric.exceptions import (
     RPCInterfaceNotEnabledError,
 )
 from citric.method import Method
+from citric.transport._default import _transport_or_default
 
 if TYPE_CHECKING:
     import sys
@@ -133,7 +131,7 @@ class Session:
         json_encoder: Type[json.JSONEncoder] | None = None,  # ruff: ignore[non-pep585-annotation]
     ) -> None:
         self.url: str = url
-        self._transport = transport if transport is not None else requests.session()
+        self._transport = _transport_or_default(transport)
         self._encoder = json_encoder or json.JSONEncoder
 
         self.__key: str | None = self.get_session_key(

@@ -12,7 +12,6 @@ __lazy_modules__ = {
     "io",
     "json",
     "pathlib",
-    "requests",
 }
 
 import base64
@@ -26,12 +25,11 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import IO, TYPE_CHECKING, Any, Literal
 
-import requests
-
 from citric import enums
 from citric._compat import deprecate_requests_session
 from citric.exceptions import LimeSurveyStatusError
 from citric.session import Session, handle_rpc_errors
+from citric.transport._default import _transport_or_default
 
 if TYPE_CHECKING:
     import sys
@@ -173,9 +171,7 @@ class Client:  # ruff: ignore[too-many-public-methods]
                 url,
                 username,
                 password,
-                requests_session=transport
-                if transport is not None
-                else requests.session(),
+                transport=_transport_or_default(transport),
                 auth_plugin=auth_plugin,
             )
         self.__server_version: ServerVersion | None = None

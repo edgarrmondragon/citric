@@ -8,7 +8,6 @@ __lazy_modules__ = {
     "citric.exceptions",
     "http",
     "json",
-    "requests",
 }
 
 import http
@@ -17,10 +16,9 @@ from importlib import metadata
 from typing import TYPE_CHECKING, Any, Type  # ruff: ignore[deprecated-import]
 from urllib.parse import urlencode, urlsplit, urlunsplit
 
-import requests
-
 from citric._compat import deprecate_requests_session
 from citric.exceptions import LimeSurveyApiError
+from citric.transport._default import _transport_or_default
 
 if TYPE_CHECKING:
     import sys
@@ -91,7 +89,7 @@ class RESTClient:
         transport: HTTPTransport | None = None,
     ) -> None:
         self.url: str = url
-        self._transport = transport if transport is not None else requests.session()
+        self._transport = _transport_or_default(transport)
         self.__session_id: str | None = None
         self._headers = {
             "Accept": "application/json",
