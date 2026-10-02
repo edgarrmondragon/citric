@@ -10,7 +10,6 @@ __lazy_modules__ = {
     "citric.transport",
     "citric.transport._default",
     "datetime",
-    "inspect",
     "io",
     "json",
     "pathlib",
