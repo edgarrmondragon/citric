@@ -12,7 +12,7 @@ client = Client(
     "https://example.com/index.php/admin/remotecontrol",
     "iamadmin",
     "secret",
-    requests_session=Httpx2Transport(),
+    transport=Httpx2Transport(),
 )
 
 surveys = client.list_surveys("iamadmin")

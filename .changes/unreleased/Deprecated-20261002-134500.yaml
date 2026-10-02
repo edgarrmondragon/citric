@@ -1,0 +1,5 @@
+kind: Deprecated
+body: Deprecated setting `Client.session_class` to a custom class; override the new `Client.get_rpc_session` method instead. A custom `session_class` whose `__init__` only accepts `requests_session` is no longer supported, because `Client` now always passes `transport`
+time: 2026-10-02T13:45:00.000000-06:00
+custom:
+    Issue: "1851"
