@@ -215,3 +215,34 @@ def test_client_custom_session_kwargs(httpserver: HTTPServer):
         ) as client,
     ):
         assert client.session.key == SESSION_KEY
+
+    class TransportSession(Session):
+        def __init__(
+            self,
+            url: str,
+            username: str,
+            password: str,
+            transport: HTTPTransport,
+            **kwargs: Any,
+        ):
+            super().__init__(
+                url,
+                username,
+                password,
+                transport=transport,
+                **kwargs,
+            )
+
+    class TransportClient(Client):
+        session_class = TransportSession  # type: ignore[assignment]
+
+    with (
+        requests_session_warning,
+        CustomClient(
+            httpserver.url_for("/"),
+            "user",
+            "password",
+            transport=Urllib3Transport(),
+        ) as client,
+    ):
+        assert client.session.key == SESSION_KEY
