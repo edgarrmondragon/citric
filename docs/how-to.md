@@ -94,7 +94,7 @@ dependency of citric itself, so install the one you want to use separately:
 
 Any subclass of [`requests.Session`](inv:requests:py:class:api/#requests.Session)
 is also a valid transport, so you can use
-[`requests-cache`](inv:requests-cache:std#general), to cache the requests and
+[`requests-cache`](inv:requests-cache:std#general) to cache the requests and
 reduce the load on your server in read-intensive applications:
 
 ```{literalinclude} ../code_samples/custom_requests_session.py
