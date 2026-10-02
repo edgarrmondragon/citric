@@ -1,0 +1,5 @@
+kind: Added
+body: Added `Client.get_rpc_session`, which subclasses can override to customize the RPC session used by the client
+time: 2026-10-02T13:45:01.000000-06:00
+custom:
+    Issue: "1851"
