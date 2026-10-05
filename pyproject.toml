@@ -39,10 +39,10 @@ dependencies = [
   "requests>=2.25.1",
   "typing-extensions>=4.10; python_version<'3.15'",
 ]
-[[project.authors]]
+[[project.maintainers]]
 name = "Edgar Ramírez-Mondragón"
 email = "edgarrm358@gmail.com"
-[[project.maintainers]]
+[[project.authors]]
 name = "Edgar Ramírez-Mondragón"
 email = "edgarrm358@gmail.com"
 [project.urls]
@@ -189,18 +189,18 @@ select = [
   "YTT",  # flake8-2020
 ]
 ignore = [
-  "missing-trailing-comma",
-  "undocumented-public-init",
   "DJ",
   "line-contains-todo",
+  "missing-trailing-comma",
   "single-line-implicit-string-concatenation",
+  "undocumented-public-init",
 ]
 explicit-preview-rules = false
 per-file-ignores."docs/notebooks/*" = [
-  "undocumented-public-module",
-  "module-import-not-at-top-of-file",
-  "missing-required-import",
   "implicit-namespace-package",
+  "missing-required-import",
+  "module-import-not-at-top-of-file",
+  "undocumented-public-module",
 ]
 per-file-ignores."src/*" = [
   "PD", # pandas-vet
@@ -209,18 +209,18 @@ per-file-ignores."src/citric/types.py" = [
   "TC", # type-checking
 ]
 per-file-ignores."tests/*" = [
-  "missing-return-type-undocumented-public-function",
-  "unused-function-argument",
-  "unused-method-argument",
+  "assert",
   "complex-structure",
   "docstring-missing-returns",
   "docstring-missing-yields",
-  "magic-value-comparison",
-  "no-self-use",
-  "assert",
-  "hardcoded-password-string",
   "hardcoded-password-func-arg",
+  "hardcoded-password-string",
+  "magic-value-comparison",
+  "missing-return-type-undocumented-public-function",
+  "no-self-use",
   "private-member-access",
+  "unused-function-argument",
+  "unused-method-argument",
 ]
 unfixable = [
   "ERA", # Don't remove commented out code
@@ -235,10 +235,6 @@ pydocstyle.convention = "google"
 pylint.max-args = 10
 preview = true
 
-[tool.deptry.package_module_name_map]
-backports-strenum = [ "backports", "strenum" ]
-types-requests = "requests"
-typing-extensions = "typing_extensions"
 [tool.deptry.per_rule_ignores]
 DEP001 = [
   # Notebook dependencies
@@ -257,6 +253,10 @@ DEP004 = [
   # Transports
   "httpx2",
 ]
+[tool.deptry.package_module_name_map]
+backports-strenum = [ "backports", "strenum" ]
+types-requests = "requests"
+typing-extensions = "typing_extensions"
 
 [tool.pyproject-fmt]
 max_supported_python = "3.16"
@@ -284,15 +284,15 @@ warn_unused_configs = true
 [tool.pyrefly]
 search-path = [ "." ]
 
+[tool.ty.src]
+include = [
+  "docs/conf.py",
+  "src",
+  "tests",
+]
 [tool.ty.rules]
 missing-override-decorator = "error"
 unused-type-ignore-comment = "ignore"
-[tool.ty.src]
-include = [
-  "src",
-  "tests",
-  "docs/conf.py",
-]
 
 [tool.pytest]
 addopts = [
@@ -314,26 +314,26 @@ testpaths = [
   "tests",
 ]
 
+[tool.coverage.run]
+source = [
+  "citric",
+  "tests",
+]
+branch = true
+parallel = true
+relative_files = true
 [tool.coverage.paths]
 package = [
   "src/citric/",
   "*/site-packages/citric/",
 ]
 [tool.coverage.report]
-exclude_also = [
-  "if (t\\.)?TYPE_CHECKING:",
-]
+precision = 2
 omit = [
   "src/citric/types.py",
 ]
-precision = 2
-show_missing = true
-skip_covered = true
-[tool.coverage.run]
-branch = true
-parallel = true
-relative_files = true
-source = [
-  "citric",
-  "tests",
+exclude_also = [
+  "if (t\\.)?TYPE_CHECKING:",
 ]
+skip_covered = true
+show_missing = true
