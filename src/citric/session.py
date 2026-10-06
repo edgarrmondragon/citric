@@ -4,24 +4,22 @@
 
 from __future__ import annotations
 
-import http
-
 __lazy_modules__ = {
     "citric.exceptions",
     "citric.method",
+    "citric.transport",
+    "citric.transport._default",
     "http",
     "json",
     "random",
-    "requests",
 }
 
+import http
 import json
 import logging
 import random
 from importlib import metadata
 from typing import TYPE_CHECKING, Any, Type  # ruff: ignore[deprecated-import]
-
-import requests
 
 from citric.exceptions import (
     InvalidJSONResponseError,
@@ -31,6 +29,7 @@ from citric.exceptions import (
     RPCInterfaceNotEnabledError,
 )
 from citric.method import Method
+from citric.transport._default import _transport_or_default
 
 if TYPE_CHECKING:
     import sys
@@ -87,11 +86,12 @@ class Session:
         url: LimeSurvey Remote Control endpoint.
         username: LimeSurvey user name.
         password: LimeSurvey password.
-        requests_session: An HTTP transport implementing
+        transport: An HTTP transport implementing
             :class:`~citric.transport.protocol.HTTPTransport`, e.g. a
             :py:class:`requests.Session <requests.Session>` or
             :class:`~citric.transport.httpx2.Httpx2Transport`. Defaults to a new
             :py:class:`requests.Session <requests.Session>`.
+        requests_session: Deprecated alias of ``transport``.
         auth_plugin: Name of the :ls_manual:`plugin <Authentication_plugins>` to use for
             authentication. For example,
             :ls_manual:`AuthLDAP <Authentication_plugins#LDAP>`. Defaults to using the
@@ -110,10 +110,13 @@ class Session:
        The ``json_encoder`` parameter.
 
     .. versionchanged:: NEXT_VERSION
-       ``requests_session`` now accepts any object implementing
-       :class:`~citric.transport.protocol.HTTPTransport`, not just
-       :py:class:`requests.Session <requests.Session>`.
+        The ``requests_session`` parameter was deprecated in favor of its alias
+        ``transport``. It also now accepts any object implementing
+        :class:`~citric.transport.protocol.HTTPTransport`, not just
+        :py:class:`requests.Session <requests.Session>`.
 
+    .. deprecated:: NEXT_VERSION
+        The ``requests_session`` parameter, use ``transport`` instead.
 
     .. _key: #citric.session.Session.key
     .. _closure: #citric.session.Session.close
@@ -128,13 +131,12 @@ class Session:
         password: str,
         *,
         auth_plugin: str = "Authdb",
+        transport: HTTPTransport | None = None,
         requests_session: HTTPTransport | None = None,
         json_encoder: Type[json.JSONEncoder] | None = None,  # ruff: ignore[non-pep585-annotation]
     ) -> None:
         self.url: str = url
-        self._session = (
-            requests_session if requests_session is not None else requests.session()
-        )
+        self._transport = _transport_or_default(transport, requests_session)
         self._encoder = json_encoder or json.JSONEncoder
 
         self.__key: str | None = self.get_session_key(
@@ -221,7 +223,7 @@ class Session:
             "id": request_id,
         }
 
-        res = self._session.request(
+        res = self._transport.request(
             "POST",
             self.url,
             data=json.dumps(payload, cls=self._encoder),
@@ -259,7 +261,7 @@ class Session:
         :ls_manual:`release_session_key <RemoteControl_2_API#release_session_key>`.
         """
         self.release_session_key()
-        self._session.close()
+        self._transport.close()
         self.__key = None
         self.__closed = True
 

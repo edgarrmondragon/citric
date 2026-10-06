@@ -18,6 +18,6 @@ client = Client(
     "https://mylimeserver.com/index.php/admin/remotecontrol",
     "iamadmin",
     "secret",
-    requests_session=session,
+    transport=session,
 )
 # end example

@@ -17,6 +17,11 @@ from tests.fixtures import LimeSurveyMockAdapter
 
 load_dotenv()
 
+requests_session_warning = pytest.warns(
+    DeprecationWarning,
+    match="Parameter 'requests_session' is deprecated",
+)
+
 
 def _from_env_var(
     env_var: str,
@@ -218,7 +223,8 @@ def session(
     mock_session: requests.Session,
 ):
     """Create a LimeSurvey Session fixture."""
-    session = Session(url, username, password, requests_session=mock_session)
+    with requests_session_warning:
+        session = Session(url, username, password, requests_session=mock_session)
 
     yield session
 

@@ -6,9 +6,12 @@ from __future__ import annotations
 
 __lazy_modules__ = {
     "citric.exceptions",
+    "citric.transport",
+    "citric.transport._default",
     "http",
     "json",
-    "requests",
+    "urllib",
+    "urllib.parse",
 }
 
 import http
@@ -17,9 +20,8 @@ from importlib import metadata
 from typing import TYPE_CHECKING, Any, Type  # ruff: ignore[deprecated-import]
 from urllib.parse import urlencode, urlsplit, urlunsplit
 
-import requests
-
 from citric.exceptions import LimeSurveyApiError
+from citric.transport._default import _transport_or_default
 
 if TYPE_CHECKING:
     import sys
@@ -62,13 +64,23 @@ class RESTClient:
         url: LimeSurvey server URL. For example, ``http://www.yourdomain.com/rest/v1``.
         username: LimeSurvey user name.
         password: LimeSurvey password.
-        requests_session: An HTTP transport implementing
+        transport: An HTTP transport implementing
             :class:`~citric.transport.protocol.HTTPTransport`, e.g. a
             :py:class:`requests.Session <requests.Session>` or
             :class:`~citric.transport.httpx2.Httpx2Transport`. Defaults to a new
             :py:class:`requests.Session <requests.Session>`.
+        requests_session: Deprecated alias of ``transport``.
 
     .. versionadded:: 0.10.0.post1
+
+    .. versionchanged:: NEXT_VERSION
+        The ``requests_session`` parameter was deprecated in favor of its alias
+        ``transport``. It also now accepts any object implementing
+        :class:`~citric.transport.protocol.HTTPTransport`, not just
+        :py:class:`requests.Session <requests.Session>`.
+
+    .. deprecated:: NEXT_VERSION
+        The ``requests_session`` parameter, use ``transport`` instead.
     """
 
     USER_AGENT = f"citric/{metadata.version('citric')}"
@@ -80,12 +92,11 @@ class RESTClient:
         username: str,
         password: str,
         *,
+        transport: HTTPTransport | None = None,
         requests_session: HTTPTransport | None = None,
     ) -> None:
         self.url: str = url
-        self._session = (
-            requests_session if requests_session is not None else requests.session()
-        )
+        self._transport = _transport_or_default(transport, requests_session)
         self.__session_id: str | None = None
         self._headers = {
             "Accept": "application/json",
@@ -144,7 +155,7 @@ class RESTClient:
         try:
             _ = self.make_request("DELETE", self.AUTH_ENDPOINT)
         finally:
-            self._session.close()
+            self._transport.close()
             self.session_id = None
 
     def make_request(
@@ -177,7 +188,7 @@ class RESTClient:
         url = f"{self.url}{path}"
         url = _encode_params(url, params) if params else url
 
-        response = self._session.request(
+        response = self._transport.request(
             method=method,
             url=url,
             data=_json.dumps(json) if json is not None else None,

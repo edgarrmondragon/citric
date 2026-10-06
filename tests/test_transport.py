@@ -12,6 +12,8 @@ behavior.
 from __future__ import annotations
 
 import json
+import re
+from contextlib import nullcontext
 from typing import TYPE_CHECKING
 
 import pytest
@@ -19,6 +21,7 @@ import requests
 from werkzeug.wrappers import Response
 
 from citric.client import Client
+from citric.rest import RESTClient
 from citric.session import Session
 from citric.transport.httpx2 import Httpx2Transport
 from citric.transport.protocol import HTTPTransport
@@ -26,6 +29,7 @@ from citric.transport.urllib3 import Urllib3Transport
 
 if TYPE_CHECKING:
     from collections.abc import Callable
+    from contextlib import AbstractContextManager
     from typing import TypeAlias
 
     from pytest_httpserver import HTTPServer
@@ -34,6 +38,12 @@ if TYPE_CHECKING:
     TransportFactory: TypeAlias = Callable[[], HTTPTransport]
 
 SESSION_KEY = "session-key-from-httpserver"
+REST_SESSION_ID = "my-api-token"
+
+requests_session_warning = pytest.warns(
+    DeprecationWarning,
+    match="Parameter 'requests_session' is deprecated",
+)
 
 transport_factories = pytest.mark.parametrize(
     "transport_factory",
@@ -41,6 +51,18 @@ transport_factories = pytest.mark.parametrize(
         pytest.param(requests.Session, id="requests"),
         pytest.param(Httpx2Transport, id="httpx2"),
         pytest.param(Urllib3Transport, id="urllib3"),
+    ],
+)
+
+transport_parameters = pytest.mark.parametrize(
+    ("parameter", "effect"),
+    [
+        pytest.param(
+            "requests_session",
+            requests_session_warning,
+            id="requests_session",
+        ),
+        pytest.param("transport", nullcontext(), id="transport"),
     ],
 )
 
@@ -59,6 +81,17 @@ def rpc_handler(request: Request) -> Response:
     )
 
 
+def rest_handler(request: Request) -> Response:
+    """Serve a minimal REST responder backed by a real HTTP server."""
+    if request.method == "POST" and request.path == "/rest/v1/auth":
+        return Response(
+            json.dumps({"token": REST_SESSION_ID}),
+            content_type="application/json",
+        )
+
+    return Response('{"survey": {"foo": "bar"}}', content_type="application/json")
+
+
 @transport_factories
 def test_transport_satisfies_protocol(transport_factory: TransportFactory):
     """Both requests.Session and httpx2.Client satisfy HTTPTransport at runtime."""
@@ -66,21 +99,27 @@ def test_transport_satisfies_protocol(transport_factory: TransportFactory):
 
 
 @transport_factories
+@transport_parameters
 def test_session_over_http_transport(
     httpserver: HTTPServer,
     transport_factory: TransportFactory,
+    parameter: str,
+    effect: AbstractContextManager,
 ):
     """A Session drives a full login/RPC/close cycle over any HTTPTransport."""
     httpserver.expect_request("/", method="POST").respond_with_handler(rpc_handler)
 
     transport = transport_factory()
 
-    with Session(
-        httpserver.url_for("/"),
-        "user",
-        "password",
-        requests_session=transport,
-    ) as session:
+    with (
+        effect,
+        Session(
+            httpserver.url_for("/"),
+            "user",
+            "password",
+            **{parameter: transport},  # type: ignore[arg-type] # ty: ignore[invalid-argument-type]
+        ) as session,
+    ):
         assert session.key == SESSION_KEY
         assert session.__ok() == "OK"
 
@@ -88,21 +127,112 @@ def test_session_over_http_transport(
 
 
 @transport_factories
+@transport_parameters
 def test_client_over_http_transport(
     httpserver: HTTPServer,
     transport_factory: TransportFactory,
+    parameter: str,
+    effect: AbstractContextManager,
 ):
     """A Client works the same way regardless of the underlying HTTPTransport."""
     httpserver.expect_request("/", method="POST").respond_with_handler(rpc_handler)
 
     transport = transport_factory()
 
-    with Client(
-        httpserver.url_for("/"),
-        "user",
-        "password",
-        requests_session=transport,
-    ) as client:
+    with (
+        effect,
+        Client(
+            httpserver.url_for("/"),
+            "user",
+            "password",
+            **{parameter: transport},  # type: ignore[arg-type] # ty: ignore[invalid-argument-type]
+        ) as client,
+    ):
         assert client.session.key == SESSION_KEY
 
     assert client.session.closed
+
+
+@transport_factories
+@transport_parameters
+def test_rest_client_over_http_transport(
+    httpserver: HTTPServer,
+    transport_factory: TransportFactory,
+    parameter: str,
+    effect: AbstractContextManager,
+):
+    """A REST client works the same way regardless of the underlying HTTPTransport."""
+    httpserver.expect_request(re.compile(r"^/rest/v1")).respond_with_handler(
+        rest_handler
+    )
+
+    transport = transport_factory()
+
+    with (
+        effect,
+        RESTClient(
+            httpserver.url_for("/"),
+            "user",
+            "password",
+            **{parameter: transport},
+        ) as client,
+    ):
+        assert client.session_id == REST_SESSION_ID
+        assert client.get_survey_details(1) == {"foo": "bar"}
+
+
+client_classes = pytest.mark.parametrize(
+    "client_class",
+    [
+        pytest.param(Session, id="Session"),
+        pytest.param(Client, id="Client"),
+        pytest.param(RESTClient, id="RESTClient"),
+    ],
+)
+
+
+@client_classes
+def test_both_transport_requests_session_error(
+    client_class: type[Session | Client | RESTClient],
+):
+    """Test setting both 'transport' and 'requests_session' raises a TypeError."""
+    with pytest.raises(
+        TypeError,
+        match="Both 'transport' and 'requests_session' are set",
+    ):
+        _ = client_class(
+            "https://example.com",
+            "user",
+            "password",
+            transport=Urllib3Transport(),
+            requests_session=requests.Session(),
+        )
+
+
+@client_classes
+def test_requests_session_warning_location(
+    httpserver: HTTPServer,
+    client_class: type[Session | Client | RESTClient],
+):
+    """The deprecation warning is attributed to the caller, not citric internals.
+
+    Python only shows a ``DeprecationWarning`` by default when it points at user code.
+    """
+    httpserver.expect_request("/", method="POST").respond_with_handler(rpc_handler)
+    httpserver.expect_request(re.compile(r"^/rest/v1")).respond_with_handler(
+        rest_handler
+    )
+
+    with pytest.warns(
+        DeprecationWarning,
+        match="Parameter 'requests_session' is deprecated",
+    ) as record:
+        instance = client_class(
+            httpserver.url_for("/"),
+            "user",
+            "password",
+            requests_session=requests.Session(),
+        )
+
+    instance.close()
+    assert [w.filename for w in record] == [__file__]

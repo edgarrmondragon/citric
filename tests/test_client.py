@@ -46,8 +46,27 @@ class MockClient(Client):
 @pytest.fixture(scope="session")
 def client() -> Generator[Client, None, None]:
     """RemoteControl2 API client."""
-    with MockClient("mock://lime.com", "user", "secret") as client:
+    with pytest.warns(
+        DeprecationWarning,
+        match="Using a custom class in `Client.session_class` is deprecated",
+    ):
+        client = MockClient("mock://lime.com", "user", "secret")
+
+    try:
         yield client
+    finally:
+        client.close()
+
+
+def test_session_class_deprecation_location():
+    """The ``session_class`` warning is attributed to the caller, not citric."""
+    with pytest.warns(
+        DeprecationWarning,
+        match="Using a custom class in `Client.session_class` is deprecated",
+    ) as record:
+        MockClient("mock://lime.com", "user", "secret").close()
+
+    assert [w.filename for w in record] == [__file__]
 
 
 def test_export_timeline(client: MockClient):
