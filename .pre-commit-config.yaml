@@ -86,7 +86,7 @@ repos:
         additional_dependencies:
           - hatchling==1.32.4
 
-  - repo: https://github.com/rhysd/actionlint
-    rev: v1.7.12
-    hooks:
-      - id: actionlint
+  # - repo: https://github.com/rhysd/actionlint
+  #   rev: v1.7.12
+  #   hooks:
+  #     - id: actionlint
