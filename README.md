@@ -94,7 +94,7 @@ conda install -c conda-forge citric
 from citric import Client
 
 # Connect to your LimeSurvey instance
-client =  Client(
+client = Client(
     "https://mylimesite.limequery.com/admin/remotecontrol",
     "myusername",
     "mypassword",
