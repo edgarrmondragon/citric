@@ -27,6 +27,7 @@ from typing import IO, TYPE_CHECKING, Any, Literal
 import requests
 
 from citric import enums
+from citric.exceptions import LimeSurveyApiError, LimeSurveyStatusError
 from citric.session import Session, handle_rpc_errors
 
 if TYPE_CHECKING:
@@ -1947,6 +1948,9 @@ class Client:  # ruff: ignore[too-many-public-methods]
             Number of emails left to send.
 
         Raises:
+            LimeSurveyApiError: If the RPC contains an error message.
+            LimeSurveyStatusError: If the number of emails left to send could not be
+                determined.
             RuntimeError: If an unexpected error occurs.
 
         .. versionadded:: 0.8.0
@@ -1958,15 +1962,24 @@ class Client:  # ruff: ignore[too-many-public-methods]
             token_ids,
             email_flag,
         )
-        if (result := response.get("result")) and (
-            status_match := re.match(
-                EMAILS_SENT_STATUS_PATTERN,
-                result["status"],
-            )
-        ):
-            return int(status_match[1])
+        if error := response["error"]:
+            raise LimeSurveyApiError(error)
 
-        handle_rpc_errors(response.get("result", {}), response.get("error", None))
+        result = response["result"]
+
+        if (
+            isinstance(result, dict)
+            and (status := result.get("status"))
+            and (isinstance(status, str))
+            and (match := re.match(EMAILS_SENT_STATUS_PATTERN, result["status"]))
+        ):
+            return int(match[1])
+
+        if result.get("status") not in {"OK", None}:
+            raise LimeSurveyStatusError(
+                result["status"],
+                error_code=result.get("error_code"),
+            )
 
         msg = "Could not determine invitation status"
         raise RuntimeError(msg)
