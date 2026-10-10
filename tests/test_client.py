@@ -21,6 +21,8 @@ else:
 if TYPE_CHECKING:
     from collections.abc import Generator
 
+    from citric.types import RPCResponse
+
 DUMMY_FILE_CONTENTS = b"FILE CONTENTS"
 
 
@@ -28,9 +30,15 @@ class MockSession(Session):
     """Mock RPC session with some hardcoded methods for testing."""
 
     @override
-    def rpc(self, method: str, *params: Any) -> dict[str, Any]:
-        """Process a mock RPC call."""
-        return {"method": method, "params": [*params]}
+    def call(self, method: str, *params: Any) -> RPCResponse:
+        if method == "invite_participants":
+            return {"foo": "bar"}  # type: ignore[typeddict-item,typeddict-unknown-key] # ty: ignore[invalid-return-type,missing-typed-dict-key,invalid-key]
+
+        return {
+            "id": 1,
+            "result": {"method": method, "params": [*params]},
+            "error": None,
+        }
 
     def export_timeline(self, *args: Any) -> dict[str, int]:
         """Mock submission timeline."""

@@ -1952,11 +1952,21 @@ class Client:  # ruff: ignore[too-many-public-methods]
         .. versionadded:: 0.8.0
         """
         email_flag = enums.EmailSendStrategy.to_flag(strategy)
-        r = self.session.call("invite_participants", survey_id, token_ids, email_flag)
-        if status_match := re.match(EMAILS_SENT_STATUS_PATTERN, r["result"]["status"]):
+        response = self.session.call(
+            "invite_participants",
+            survey_id,
+            token_ids,
+            email_flag,
+        )
+        if (result := response.get("result")) and (
+            status_match := re.match(
+                EMAILS_SENT_STATUS_PATTERN,
+                result["status"],
+            )
+        ):
             return int(status_match[1])
 
-        handle_rpc_errors(r["result"], r["error"])
+        handle_rpc_errors(response.get("result", {}), response.get("error", None))
 
         msg = "Could not determine invitation status"
         raise RuntimeError(msg)
