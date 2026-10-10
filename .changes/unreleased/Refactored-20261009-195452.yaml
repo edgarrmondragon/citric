@@ -1,0 +1,5 @@
+kind: Refactored
+body: Use `Client.session.call` in `Client.invite_participants()` implementation instead of getting the result from a caught exception
+time: 2026-10-09T19:54:52.888022-06:00
+custom:
+    Issue: "1856"

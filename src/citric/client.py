@@ -27,7 +27,6 @@ from typing import IO, TYPE_CHECKING, Any, Literal
 import requests
 
 from citric import enums
-from citric.exceptions import LimeSurveyStatusError
 from citric.session import Session, handle_rpc_errors
 
 if TYPE_CHECKING:
@@ -1948,21 +1947,16 @@ class Client:  # ruff: ignore[too-many-public-methods]
             Number of emails left to send.
 
         Raises:
-            LimeSurveyStatusError: If the number of emails left to send could not be
-                determined.
             RuntimeError: If an unexpected error occurs.
 
         .. versionadded:: 0.8.0
         """
         email_flag = enums.EmailSendStrategy.to_flag(strategy)
-        try:
-            self.session.invite_participants(survey_id, token_ids, email_flag)
-        except LimeSurveyStatusError as error:
-            status_match = re.match(EMAILS_SENT_STATUS_PATTERN, error.args[0])
-            if not status_match:
-                raise
-
+        r = self.session.call("invite_participants", survey_id, token_ids, email_flag)
+        if status_match := re.match(EMAILS_SENT_STATUS_PATTERN, r["result"]["status"]):
             return int(status_match[1])
+
+        handle_rpc_errors(r["result"], r["error"])
 
         msg = "Could not determine invitation status"
         raise RuntimeError(msg)
