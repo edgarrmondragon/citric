@@ -27,7 +27,7 @@ from typing import IO, TYPE_CHECKING, Any, Literal
 import requests
 
 from citric import enums
-from citric.exceptions import LimeSurveyApiError, LimeSurveyStatusError
+from citric.exceptions import LimeSurveyStatusError
 from citric.session import Session, handle_rpc_errors
 
 if TYPE_CHECKING:
@@ -1948,7 +1948,6 @@ class Client:  # ruff: ignore[too-many-public-methods]
             Number of emails left to send.
 
         Raises:
-            LimeSurveyApiError: If the RPC contains an error message.
             LimeSurveyStatusError: If the number of emails left to send could not be
                 determined.
             RuntimeError: If an unexpected error occurs.
@@ -1962,9 +1961,6 @@ class Client:  # ruff: ignore[too-many-public-methods]
             token_ids,
             email_flag,
         )
-        if error := response["error"]:
-            raise LimeSurveyApiError(error)
-
         result = response["result"]
 
         if (
@@ -2014,8 +2010,8 @@ class Client:  # ruff: ignore[too-many-public-methods]
             survey_id,
             override_all_conditions or {},
         )
-        if r["error"] is not None or r["result"].get("status", "").startswith("Error:"):
-            handle_rpc_errors(r["result"], r["error"])
+        if r["result"].get("status", "").startswith("Error:"):
+            handle_rpc_errors(r["result"])
 
         return r["result"]
 
@@ -2056,7 +2052,7 @@ class Client:  # ruff: ignore[too-many-public-methods]
             token_ids,
             continue_on_error,
         )
-        if r["error"] is not None or r["result"].get("status", "").startswith("Error:"):
-            handle_rpc_errors(r["result"], r["error"])
+        if r["result"].get("status", "").startswith("Error:"):
+            handle_rpc_errors(r["result"])
 
         return r["result"]
