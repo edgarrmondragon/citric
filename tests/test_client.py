@@ -5,60 +5,55 @@
 from __future__ import annotations
 
 import datetime
-import sys
+import json
+from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any
 
 import pytest
 
 from citric.client import Client, ServerVersion
-from citric.session import Session
-
-if sys.version_info >= (3, 12):
-    from typing import override
-else:
-    from typing_extensions import override
 
 if TYPE_CHECKING:
     from collections.abc import Generator
 
-    from citric.types import RPCResponse
 
 DUMMY_FILE_CONTENTS = b"FILE CONTENTS"
 
 
-class MockSession(Session):
-    """Mock RPC session with some hardcoded methods for testing."""
+@dataclass
+class _Response:
+    status_code: int
+    data: Any
 
-    @override
-    def call(self, method: str, *params: Any) -> RPCResponse:
-        if method == "invite_participants":
-            return {"foo": "bar"}  # type: ignore[typeddict-item,typeddict-unknown-key] # ty: ignore[invalid-return-type,missing-typed-dict-key,invalid-key]
+    @property
+    def content(self) -> bytes:
+        return json.dumps(self.data).encode()
 
-        return {
-            "id": 1,
-            "result": {"method": method, "params": [*params]},
-            "error": None,
-        }
-
-    def export_timeline(self, *args: Any) -> dict[str, int]:
-        """Mock submission timeline."""
-        return {"2022-01-01": 4, "2022-01-02": 2}
+    def json(self) -> Any:  # ruff: ignore[any-type]
+        return self.data
 
 
-class MockClient(Client):
-    """A mock LimeSurvey client."""
+class _Transport:
+    def request(self, *args: Any, data: str | None = None, **kwargs: Any) -> _Response:
+        payload = json.loads(data)  # type: ignore[arg-type] # ty: ignore[invalid-argument-type]
+        if payload["method"] == "export_timeline":
+            result: dict[str, Any] = {"2022-01-01": 4, "2022-01-02": 2}
+        else:
+            result = {"method": payload["method"], "params": payload["params"]}
 
-    session_class = MockSession
+        return _Response(200, {"id": payload["id"], "result": result, "error": None})
+
+    def close(self) -> None: ...
 
 
 @pytest.fixture(scope="session")
 def client() -> Generator[Client, None, None]:
     """RemoteControl2 API client."""
-    with MockClient("mock://lime.com", "user", "secret") as client:
+    with Client("mock://lime.com", "u", "p", requests_session=_Transport()) as client:
         yield client
 
 
-def test_export_timeline(client: MockClient):
+def test_export_timeline(client: Client):
     """Test export_timeline client method."""
     assert client.export_timeline(
         1,
@@ -70,7 +65,7 @@ def test_export_timeline(client: MockClient):
     }
 
 
-def test_invite_participants_unknown_status(client: MockClient):
+def test_invite_participants_unknown_status(client: Client):
     """Test invite_participants client method."""
     with pytest.raises(RuntimeError, match="Could not determine invitation status"):
         client.invite_participants(1)
