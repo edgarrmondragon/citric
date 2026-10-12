@@ -1998,7 +1998,7 @@ class Client:  # ruff: ignore[too-many-public-methods]
             override_all_conditions or {},
         )
         if r["error"] is not None or r["result"].get("status", "").startswith("Error:"):
-            handle_rpc_errors(r["result"], r["error"])
+            handle_rpc_errors(r["result"])
 
         return r["result"]
 
@@ -2040,6 +2040,6 @@ class Client:  # ruff: ignore[too-many-public-methods]
             continue_on_error,
         )
         if r["error"] is not None or r["result"].get("status", "").startswith("Error:"):
-            handle_rpc_errors(r["result"], r["error"])
+            handle_rpc_errors(r["result"])
 
         return r["result"]
