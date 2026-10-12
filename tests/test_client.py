@@ -12,6 +12,7 @@ from typing import TYPE_CHECKING, Any
 import pytest
 
 from citric.client import Client, ServerVersion
+from citric.session import Session
 
 if TYPE_CHECKING:
     from collections.abc import Generator
@@ -51,7 +52,7 @@ def client() -> Generator[Client, None, None]:
     """RemoteControl2 API client."""
     with pytest.warns(
         DeprecationWarning,
-        match="Using a custom class in `Client.session_class` is deprecated",
+        match="Parameter 'requests_session' is deprecated; use 'transport' instead",
     ):
         client = Client("mock://lime.com", "u", "p", requests_session=_Transport())
 
@@ -61,13 +62,19 @@ def client() -> Generator[Client, None, None]:
         client.close()
 
 
-def test_session_class_deprecation_location():
+def test_session_class_deprecation():
     """The ``session_class`` warning is attributed to the caller, not citric."""
+
+    class MockSession(Session): ...
+
+    class MockClient(Client):
+        session_class = MockSession
+
     with pytest.warns(
         DeprecationWarning,
         match="Using a custom class in `Client.session_class` is deprecated",
     ) as record:
-        Client("mock://lime.com", "user", "secret").close()
+        MockClient("mock://lime.com", "u", "p", transport=_Transport()).close()
 
     assert [w.filename for w in record] == [__file__]
 
