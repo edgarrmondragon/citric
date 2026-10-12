@@ -80,7 +80,7 @@ def _validate_rpc_response(request_id: int, data: RPCResponse) -> None:
         msg = f"Response ID {response_id} does not match request ID {request_id}"
         raise ResponseMismatchError(msg)
 
-    if error := data["error"]:
+    if (error := data["error"]) is not None:
         raise LimeSurveyApiError(error)
 
 
