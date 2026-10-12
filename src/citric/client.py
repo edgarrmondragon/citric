@@ -30,6 +30,7 @@ from typing import IO, TYPE_CHECKING, Any, Literal
 from citric import enums
 from citric.session import Session, _check_result_status
 from citric.transport._default import _transport_or_default
+from citric.transport.protocol import HTTPTransport  # ruff: ignore[typing-only-first-party-import]
 
 if TYPE_CHECKING:
     import sys
@@ -39,7 +40,6 @@ if TYPE_CHECKING:
 
     from citric import types
     from citric.objects import Participant
-    from citric.transport.protocol import HTTPTransport
     from citric.types import MailOutcome
 
     if sys.version_info >= (3, 11):
