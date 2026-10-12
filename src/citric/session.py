@@ -67,15 +67,6 @@ def _check_result_status(result: Any) -> None:  # ruff: ignore[any-type]
         )
 
 
-def _validate_rpc_response(request_id: int, data: RPCResponse) -> None:
-    if (response_id := data["id"]) != request_id:
-        msg = f"Response ID {response_id} does not match request ID {request_id}"
-        raise ResponseMismatchError(msg)
-
-    if error := data["error"]:
-        raise LimeSurveyApiError(error)
-
-
 class Session:
     """LimeSurvey RemoteControl 2 session.
 
