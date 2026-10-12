@@ -50,7 +50,10 @@ GET_SESSION_KEY = "get_session_key"
 logger: logging.Logger = logging.getLogger(__name__)
 
 
-def handle_rpc_errors(result: Result, error: str | None = None) -> None:
+def handle_rpc_errors(  # pragma: no cover
+    result: Result,
+    error: str | None = None,
+) -> None:
     """Handle RPC errors.
 
     Args:
@@ -62,7 +65,7 @@ def handle_rpc_errors(result: Result, error: str | None = None) -> None:
             a non-null status.
         LimeSurveyApiError: The response payload has a non-null error key.
     """
-    if error is not None:  # pragma: no cover
+    if error is not None:
         raise LimeSurveyApiError(error)
 
     if not isinstance(result, dict):
@@ -82,6 +85,14 @@ def _validate_rpc_response(request_id: int, data: RPCResponse) -> None:
 
     if (error := data["error"]) is not None:
         raise LimeSurveyApiError(error)
+
+
+def _check_result_status(result: Any) -> None:  # ruff: ignore[any-type]
+    if isinstance(result, dict) and result.get("status") not in {"OK", None}:
+        raise LimeSurveyStatusError(
+            result["status"],
+            error_code=result.get("error_code"),
+        )
 
 
 class Session:
@@ -201,7 +212,7 @@ class Session:
             An RPC result.
         """
         response = self.call(method, *params)
-        handle_rpc_errors(response["result"])
+        _check_result_status(response["result"])
         return response["result"]
 
     def _invoke(self, method: str, *params: Any) -> RPCResponse:
