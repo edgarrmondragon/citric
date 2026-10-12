@@ -124,6 +124,7 @@ def test_session_over_http_transport(
         assert session.__ok() == "OK"
 
     assert session.closed
+    assert session._transport is transport
 
 
 @transport_factories
@@ -151,6 +152,7 @@ def test_client_over_http_transport(
         assert client.session.key == SESSION_KEY
 
     assert client.session.closed
+    assert client.session._transport is transport
 
 
 @transport_factories
@@ -171,7 +173,7 @@ def test_rest_client_over_http_transport(
     with (
         effect,
         RESTClient(
-            httpserver.url_for("/"),
+            httpserver.url_for("/").rstrip("/"),
             "user",
             "password",
             **{parameter: transport},
@@ -179,6 +181,8 @@ def test_rest_client_over_http_transport(
     ):
         assert client.session_id == REST_SESSION_ID
         assert client.get_survey_details(1) == {"foo": "bar"}
+
+    assert client._transport is transport
 
 
 client_classes = pytest.mark.parametrize(
