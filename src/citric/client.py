@@ -27,7 +27,6 @@ from typing import IO, TYPE_CHECKING, Any, Literal
 import requests
 
 from citric import enums
-from citric.exceptions import LimeSurveyStatusError
 from citric.session import Session, _check_result_status
 
 if TYPE_CHECKING:
@@ -1948,8 +1947,6 @@ class Client:  # ruff: ignore[too-many-public-methods]
             Number of emails left to send.
 
         Raises:
-            LimeSurveyStatusError: If the number of emails left to send could not be
-                determined.
             RuntimeError: If an unexpected error occurs.
 
         .. versionadded:: 0.8.0
@@ -1971,12 +1968,7 @@ class Client:  # ruff: ignore[too-many-public-methods]
         ):
             return int(match[1])
 
-        if result.get("status") not in {"OK", None}:
-            raise LimeSurveyStatusError(
-                result["status"],
-                error_code=result.get("error_code"),
-            )
-
+        _check_result_status(result)
         msg = "Could not determine invitation status"
         raise RuntimeError(msg)
 
