@@ -4,8 +4,6 @@
 
 from __future__ import annotations
 
-import http
-
 __lazy_modules__ = {
     "citric.exceptions",
     "citric.method",
@@ -15,6 +13,7 @@ __lazy_modules__ = {
     "requests",
 }
 
+import http
 import json
 import logging
 import random
@@ -51,25 +50,17 @@ GET_SESSION_KEY = "get_session_key"
 logger: logging.Logger = logging.getLogger(__name__)
 
 
-def handle_rpc_errors(result: Result, error: str | None) -> None:
-    """Handle RPC errors.
+def _validate_rpc_response(request_id: int, data: RPCResponse) -> None:
+    if (response_id := data["id"]) != request_id:
+        msg = f"Response ID {response_id} does not match request ID {request_id}"
+        raise ResponseMismatchError(msg)
 
-    Args:
-        result: The result of the RPC call.
-        error: The error message of the RPC call.
-
-    Raises:
-        LimeSurveyStatusError: The response key from the response payload has
-            a non-null status.
-        LimeSurveyApiError: The response payload has a non-null error key.
-    """
-    if error is not None:
+    if (error := data["error"]) is not None:
         raise LimeSurveyApiError(error)
 
-    if not isinstance(result, dict):
-        return
 
-    if result.get("status") not in {"OK", None}:
+def _check_result_status(result: Any) -> None:  # ruff: ignore[any-type]
+    if isinstance(result, dict) and result.get("status") not in {"OK", None}:
         raise LimeSurveyStatusError(
             result["status"],
             error_code=result.get("error_code"),
@@ -193,7 +184,7 @@ class Session:
             An RPC result.
         """
         response = self.call(method, *params)
-        handle_rpc_errors(response["result"], response["error"])
+        _check_result_status(response["result"])
         return response["result"]
 
     def _invoke(self, method: str, *params: Any) -> RPCResponse:
@@ -208,7 +199,6 @@ class Session:
 
         Raises:
             LimeSurveyApiError: If the server responds with an error HTTP status code.
-            ResponseMismatchError: Request ID does not match the response ID.
             RPCInterfaceNotEnabledError: If the JSON RPC interface is not enabled
                 (empty response).
             InvalidJSONResponseError: If the response is not valid JSON.
@@ -245,10 +235,7 @@ class Session:
             raise InvalidJSONResponseError from e
 
         logger.info("Invoked RPC method %s with ID %d", method, request_id)
-
-        if (response_id := data["id"]) != request_id:
-            msg = f"Response ID {response_id} does not match request ID {request_id}"
-            raise ResponseMismatchError(msg)
+        _validate_rpc_response(request_id, data)
 
         return data
 
