@@ -22,7 +22,7 @@ from urllib.parse import quote
 
 import bs4
 import pytest
-from dirty_equals import IsPartialDict, IsPositiveInt
+from dirty_equals import IsPositiveInt
 from faker import Faker
 from typeguard import check_type
 
@@ -1413,7 +1413,7 @@ def test_missing_setting(client: citric.Client, server_version: semver.VersionIn
 
 
 @pytest.mark.integration_test
-def test_cpdb(faker: Faker, client: citric.Client):
+def test_cpdb(server_version: semver.VersionInfo, faker: Faker, client: citric.Client):
     """Test the CPDB methods."""
     participants = [
         Participant(
@@ -1433,10 +1433,19 @@ def test_cpdb(faker: Faker, client: citric.Client):
         ),
     ]
 
-    assert client.import_cpdb_participants(participants) == IsPartialDict(
-        ImportCount=2,
-        UpdateCount=0,
-    )
+    # TODO(edgarrmondragon): Update this version
+    # https://github.com/LimeSurvey/LimeSurvey/commit/d8b1b5f11f286dd47f85b35bf968560030a7705b
+    if server_version.major < 8:
+        assert client.import_cpdb_participants(participants) == {
+            "ImportCount": 2,
+            "UpdateCount": 0,
+        }
+    else:
+        assert client.import_cpdb_participants(participants) == {
+            "ImportCount": 2,
+            "UpdateCount": 0,
+            "RemoveCount": 0,
+        }
 
     more_participants = [
         Participant(
@@ -1455,13 +1464,32 @@ def test_cpdb(faker: Faker, client: citric.Client):
             participant_id=uuid.uuid4(),
         ),
     ]
-    assert client.import_cpdb_participants(
-        more_participants,
-        update=True,
-    ) == IsPartialDict(
-        ImportCount=1,
-        UpdateCount=1,
-    )
+    # TODO(edgarrmondragon): Update this version
+    # https://github.com/LimeSurvey/LimeSurvey/commit/d8b1b5f11f286dd47f85b35bf968560030a7705b
+    if server_version.major < 8:
+        assert client.import_cpdb_participants(more_participants, update=True) == {
+            "ImportCount": 1,
+            "UpdateCount": 1,
+        }
+    else:
+        assert client.import_cpdb_participants(more_participants, update=True) == {
+            "ImportCount": 1,
+            "UpdateCount": 1,
+            "RemoveCount": 0,
+        }
+
+    # TODO(edgarrmondragon): Update this version
+    # https://github.com/LimeSurvey/LimeSurvey/commit/d8b1b5f11f286dd47f85b35bf968560030a7705b
+    if server_version.major >= 8:
+        assert client.import_cpdb_participants(
+            more_participants[:1],
+            update=True,
+            remove=True,
+        ) == {
+            "ImportCount": 0,
+            "UpdateCount": 1,
+            "RemoveCount": 1,
+        }
 
 
 @pytest.mark.integration_test
