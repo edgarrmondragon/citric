@@ -17,7 +17,6 @@ import http
 import json
 import logging
 import random
-import warnings
 from importlib import metadata
 from typing import TYPE_CHECKING, Any, Type  # ruff: ignore[deprecated-import]
 
@@ -49,39 +48,6 @@ __all__ = ["Session"]
 GET_SESSION_KEY = "get_session_key"
 
 logger: logging.Logger = logging.getLogger(__name__)
-
-
-def handle_rpc_errors(  # pragma: no cover
-    result: Result,
-    error: str | None = None,
-) -> None:
-    """Handle RPC errors.
-
-    Args:
-        result: The result of the RPC call.
-        error: The error message of the RPC call.
-
-    Raises:
-        LimeSurveyStatusError: The response key from the response payload has
-            a non-null status.
-        LimeSurveyApiError: The response payload has a non-null error key.
-    """
-    warnings.warn(
-        "`handle_rpc_errors` will be removed in a future version",
-        DeprecationWarning,
-        stacklevel=2,
-    )
-    if error is not None:
-        raise LimeSurveyApiError(error)
-
-    if not isinstance(result, dict):
-        return
-
-    if result.get("status") not in {"OK", None}:
-        raise LimeSurveyStatusError(
-            result["status"],
-            error_code=result.get("error_code"),
-        )
 
 
 def _validate_rpc_response(request_id: int, data: RPCResponse) -> None:
