@@ -28,7 +28,7 @@ import requests
 
 from citric import enums
 from citric.exceptions import LimeSurveyStatusError
-from citric.session import Session, handle_rpc_errors
+from citric.session import Session, _check_result_status
 
 if TYPE_CHECKING:
     import sys
@@ -2010,8 +2010,8 @@ class Client:  # ruff: ignore[too-many-public-methods]
             survey_id,
             override_all_conditions or {},
         )
-        if r["result"].get("status", "").startswith("Error:"):
-            handle_rpc_errors(r["result"])
+        if r["error"] is not None or r["result"].get("status", "").startswith("Error:"):
+            _check_result_status(r["result"])
 
         return r["result"]
 
@@ -2052,7 +2052,7 @@ class Client:  # ruff: ignore[too-many-public-methods]
             token_ids,
             continue_on_error,
         )
-        if r["result"].get("status", "").startswith("Error:"):
-            handle_rpc_errors(r["result"])
+        if r["error"] is not None or r["result"].get("status", "").startswith("Error:"):
+            _check_result_status(r["result"])
 
         return r["result"]
