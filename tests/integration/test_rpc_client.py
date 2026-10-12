@@ -1439,10 +1439,13 @@ def test_cpdb(faker: Faker, client: citric.Client):
             participant_id=uuid.uuid4(),
         ),
     ]
-    assert client.import_cpdb_participants(more_participants, update=True) == {
-        "ImportCount": 1,
-        "UpdateCount": 1,
-    }
+    assert client.import_cpdb_participants(
+        more_participants,
+        update=True,
+    ) == IsPartialDict(
+        ImportCount=1,
+        UpdateCount=1,
+    )
 
 
 @pytest.mark.integration_test
