@@ -17,6 +17,7 @@ import http
 import json
 import logging
 import random
+import warnings
 from importlib import metadata
 from typing import TYPE_CHECKING, Any, Type  # ruff: ignore[deprecated-import]
 
@@ -65,6 +66,11 @@ def handle_rpc_errors(  # pragma: no cover
             a non-null status.
         LimeSurveyApiError: The response payload has a non-null error key.
     """
+    warnings.warn(
+        "`handle_rpc_errors` will be removed in a future version",
+        DeprecationWarning,
+        stacklevel=2,
+    )
     if error is not None:
         raise LimeSurveyApiError(error)
 
