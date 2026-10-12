@@ -4,43 +4,46 @@
 
 from __future__ import annotations
 
-import datetime
-import sys
+import datetime as dt
+import json
+from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any
 
 import pytest
 
 from citric.client import Client, ServerVersion
-from citric.session import Session
-
-if sys.version_info >= (3, 12):
-    from typing import override
-else:
-    from typing_extensions import override
 
 if TYPE_CHECKING:
     from collections.abc import Generator
 
+
 DUMMY_FILE_CONTENTS = b"FILE CONTENTS"
 
 
-class MockSession(Session):
-    """Mock RPC session with some hardcoded methods for testing."""
+@dataclass
+class _Response:
+    status_code: int
+    data: Any
 
-    @override
-    def rpc(self, method: str, *params: Any) -> dict[str, Any]:
-        """Process a mock RPC call."""
-        return {"method": method, "params": [*params]}
+    @property
+    def content(self) -> bytes:
+        return json.dumps(self.data).encode()
 
-    def export_timeline(self, *args: Any) -> dict[str, int]:
-        """Mock submission timeline."""
-        return {"2022-01-01": 4, "2022-01-02": 2}
+    def json(self) -> Any:  # ruff: ignore[any-type]
+        return self.data
 
 
-class MockClient(Client):
-    """A mock LimeSurvey client."""
+class _Transport:
+    def request(self, *args: Any, data: str | None = None, **kwargs: Any) -> _Response:
+        payload = json.loads(data)  # type: ignore[arg-type] # ty: ignore[invalid-argument-type]
+        if payload["method"] == "export_timeline":
+            result: dict[str, Any] = {"2022-01-01": 4, "2022-01-02": 2}
+        else:
+            result = {"method": payload["method"], "params": payload["params"]}
 
-    session_class = MockSession
+        return _Response(200, {"id": payload["id"], "result": result, "error": None})
+
+    def close(self) -> None: ...
 
 
 @pytest.fixture(scope="session")
@@ -50,7 +53,7 @@ def client() -> Generator[Client, None, None]:
         DeprecationWarning,
         match="Using a custom class in `Client.session_class` is deprecated",
     ):
-        client = MockClient("mock://lime.com", "user", "secret")
+        client = Client("mock://lime.com", "u", "p", requests_session=_Transport())
 
     try:
         yield client
@@ -64,24 +67,24 @@ def test_session_class_deprecation_location():
         DeprecationWarning,
         match="Using a custom class in `Client.session_class` is deprecated",
     ) as record:
-        MockClient("mock://lime.com", "user", "secret").close()
+        Client("mock://lime.com", "user", "secret").close()
 
     assert [w.filename for w in record] == [__file__]
 
 
-def test_export_timeline(client: MockClient):
+def test_export_timeline(client: Client):
     """Test export_timeline client method."""
     assert client.export_timeline(
         1,
         "hour",
-        datetime.datetime(2020, 1, 1, tzinfo=datetime.timezone.utc),
+        dt.datetime(2020, 1, 1, tzinfo=dt.timezone.utc),
     ) == {
         "2022-01-01": 4,
         "2022-01-02": 2,
     }
 
 
-def test_invite_participants_unknown_status(client: MockClient):
+def test_invite_participants_unknown_status(client: Client):
     """Test invite_participants client method."""
     with pytest.raises(RuntimeError, match="Could not determine invitation status"):
         client.invite_participants(1)

@@ -21,7 +21,7 @@ permissions: {}
 jobs:
   update-tags:
     name: Update tags
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     permissions:
       pull-requests: write  # to create and update PRs
     steps:

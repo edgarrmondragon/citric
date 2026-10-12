@@ -17,7 +17,7 @@ __lazy_modules__ = {
 }
 
 import base64
-import datetime
+import datetime as dt
 import io
 import json
 import logging
@@ -28,8 +28,7 @@ from pathlib import Path
 from typing import IO, TYPE_CHECKING, Any, Literal
 
 from citric import enums
-from citric.exceptions import LimeSurveyStatusError
-from citric.session import Session, handle_rpc_errors
+from citric.session import Session, _check_result_status
 from citric.transport._default import _transport_or_default
 
 if TYPE_CHECKING:
@@ -1027,8 +1026,8 @@ class Client:  # ruff: ignore[too-many-public-methods]
         self,
         survey_id: int,
         period: Literal["day", "hour"] | enums.TimelineAggregationPeriod,
-        start: datetime.datetime,
-        end: datetime.datetime | None = None,
+        start: dt.datetime,
+        end: dt.datetime | None = None,
     ) -> dict[str, int]:
         """Export survey submission timeline.
 
@@ -1052,7 +1051,7 @@ class Client:  # ruff: ignore[too-many-public-methods]
             (
                 end.isoformat()
                 if end
-                else datetime.datetime.now(tz=datetime.timezone.utc).isoformat()
+                else dt.datetime.now(tz=dt.timezone.utc).isoformat()
             ),
         )
 
@@ -1996,22 +1995,28 @@ class Client:  # ruff: ignore[too-many-public-methods]
             Number of emails left to send.
 
         Raises:
-            LimeSurveyStatusError: If the number of emails left to send could not be
-                determined.
             RuntimeError: If an unexpected error occurs.
 
         .. versionadded:: 0.8.0
         """
         email_flag = enums.EmailSendStrategy.to_flag(strategy)
-        try:
-            self.session.invite_participants(survey_id, token_ids, email_flag)
-        except LimeSurveyStatusError as error:
-            status_match = re.match(EMAILS_SENT_STATUS_PATTERN, error.args[0])
-            if not status_match:
-                raise
+        response = self.session.call(
+            "invite_participants",
+            survey_id,
+            token_ids,
+            email_flag,
+        )
+        result = response["result"]
 
-            return int(status_match[1])
+        if (
+            isinstance(result, dict)
+            and (status := result.get("status"))
+            and (isinstance(status, str))
+            and (match := re.match(EMAILS_SENT_STATUS_PATTERN, result["status"]))
+        ):
+            return int(match[1])
 
+        _check_result_status(result)
         msg = "Could not determine invitation status"
         raise RuntimeError(msg)
 
@@ -2046,7 +2051,7 @@ class Client:  # ruff: ignore[too-many-public-methods]
             override_all_conditions or {},
         )
         if r["error"] is not None or r["result"].get("status", "").startswith("Error:"):
-            handle_rpc_errors(r["result"], r["error"])
+            _check_result_status(r["result"])
 
         return r["result"]
 
@@ -2088,6 +2093,6 @@ class Client:  # ruff: ignore[too-many-public-methods]
             continue_on_error,
         )
         if r["error"] is not None or r["result"].get("status", "").startswith("Error:"):
-            handle_rpc_errors(r["result"], r["error"])
+            _check_result_status(r["result"])
 
         return r["result"]

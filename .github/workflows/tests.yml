@@ -66,11 +66,11 @@ jobs:
       matrix:
         include:
         - python-version: ["3.10"]
-          os: ubuntu-24.04
+          os: ubuntu-26.04
           session: lowest-requirements
 
         - python-version: ["3.10", "3.14"]
-          os: ubuntu-24.04
+          os: ubuntu-26.04
           session: xdoctest
 
         - python-version:
@@ -82,10 +82,10 @@ jobs:
           - "3.14t"
           - "3.15"
           - "3.15t"
-          os: ubuntu-24.04
+          os: ubuntu-26.04
 
         - python-version: ["3.16"]
-          os: ubuntu-24.04
+          os: ubuntu-26.04
 
         - python-version: ["3.14"]
           os: windows-2025
@@ -147,7 +147,7 @@ jobs:
 
   lint:
     name: Lint
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     permissions:
       contents: read
 
@@ -173,7 +173,7 @@ jobs:
 
   docker_tags:
     name: Get Docker tags
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     outputs:
       tags: ${{ steps.tags.outputs.tags }}
       includes: ${{ steps.tags.outputs.includes }}
@@ -200,7 +200,7 @@ jobs:
 
   integration:
     name: "Python ${{ matrix.python-version }} / ${{ matrix.image_tag || matrix.ref }} / ${{ matrix.database }}"
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     continue-on-error: true
     needs: [docker_tags]
     permissions:
@@ -277,7 +277,7 @@ jobs:
 
   coverage:
     name: Coverage
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     needs: [tests, integration]
     permissions:
       contents: read

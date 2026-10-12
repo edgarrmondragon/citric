@@ -31,7 +31,7 @@ jobs:
       - checkout
       - run: python --version
       - run:
-          name: Install Python dependencies
+          name: Install uv
           command: "curl -LsSf https://astral.sh/uv/install.sh | sh"
           no_output_timeout: 5m
       - run:

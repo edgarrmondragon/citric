@@ -3,7 +3,10 @@
 # Copyright (c) 2026 Edgar Ramírez-Mondragón
 
 # /// script
-# dependencies = ["nox>=2026.8.17"]
+# dependencies = [
+#   "nox>=2026.8.17",
+#   "pyyaml>=6",
+# ]
 # ///
 
 """Nox configuration."""
@@ -15,11 +18,15 @@ import shutil
 from pathlib import Path
 
 import nox
+import yaml
 
 GH_ACTIONS_ENV_VAR = "GITHUB_ACTIONS"
 FORCE_COLOR = "FORCE_COLOR"
 
-DOCS_PYTHON = "3.14"  # NOTE: Keep this in sync with .readthedocs.yaml
+with Path(".readthedocs.yaml").open(encoding="utf-8") as f:
+    readthedocs_config = yaml.safe_load(f)
+    DOCS_PYTHON = readthedocs_config["build"]["tools"]["python"]
+
 PYPROJECT = nox.project.load_toml()
 
 nox.needs_version = ">=2026.8.17"

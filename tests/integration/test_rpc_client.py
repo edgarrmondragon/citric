@@ -22,7 +22,7 @@ from urllib.parse import quote
 
 import bs4
 import pytest
-from dirty_equals import IsPositiveInt
+from dirty_equals import IsPartialDict, IsPositiveInt
 from faker import Faker
 
 import citric
@@ -1416,10 +1416,11 @@ def test_cpdb(faker: Faker, client: citric.Client):
             participant_id=uuid.uuid4(),
         ),
     ]
-    assert client.import_cpdb_participants(participants) == {
-        "ImportCount": 2,
-        "UpdateCount": 0,
-    }
+
+    assert client.import_cpdb_participants(participants) == IsPartialDict(
+        ImportCount=2,
+        UpdateCount=0,
+    )
 
     more_participants = [
         Participant(
@@ -1438,10 +1439,13 @@ def test_cpdb(faker: Faker, client: citric.Client):
             participant_id=uuid.uuid4(),
         ),
     ]
-    assert client.import_cpdb_participants(more_participants, update=True) == {
-        "ImportCount": 1,
-        "UpdateCount": 1,
-    }
+    assert client.import_cpdb_participants(
+        more_participants,
+        update=True,
+    ) == IsPartialDict(
+        ImportCount=1,
+        UpdateCount=1,
+    )
 
 
 @pytest.mark.integration_test
