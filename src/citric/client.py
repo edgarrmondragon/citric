@@ -15,7 +15,7 @@ __lazy_modules__ = {
 }
 
 import base64
-import datetime
+import datetime as dt
 import io
 import json
 import logging
@@ -978,8 +978,8 @@ class Client:  # ruff: ignore[too-many-public-methods]
         self,
         survey_id: int,
         period: Literal["day", "hour"] | enums.TimelineAggregationPeriod,
-        start: datetime.datetime,
-        end: datetime.datetime | None = None,
+        start: dt.datetime,
+        end: dt.datetime | None = None,
     ) -> dict[str, int]:
         """Export survey submission timeline.
 
@@ -1003,7 +1003,7 @@ class Client:  # ruff: ignore[too-many-public-methods]
             (
                 end.isoformat()
                 if end
-                else datetime.datetime.now(tz=datetime.timezone.utc).isoformat()
+                else dt.datetime.now(tz=dt.timezone.utc).isoformat()
             ),
         )
 

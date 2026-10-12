@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-import datetime
+import datetime as dt
 import json
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any
@@ -58,7 +58,7 @@ def test_export_timeline(client: Client):
     assert client.export_timeline(
         1,
         "hour",
-        datetime.datetime(2020, 1, 1, tzinfo=datetime.timezone.utc),
+        dt.datetime(2020, 1, 1, tzinfo=dt.timezone.utc),
     ) == {
         "2022-01-01": 4,
         "2022-01-02": 2,
