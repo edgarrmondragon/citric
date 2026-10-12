@@ -16,6 +16,7 @@ from citric.client import Client, ServerVersion
 if TYPE_CHECKING:
     from collections.abc import Generator
 
+
 DUMMY_FILE_CONTENTS = b"FILE CONTENTS"
 
 
