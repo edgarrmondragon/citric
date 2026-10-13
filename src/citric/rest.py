@@ -9,6 +9,7 @@ __lazy_modules__ = {
     "http",
     "json",
     "requests",
+    "urllib.parse",
 }
 
 import http

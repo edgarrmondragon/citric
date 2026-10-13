@@ -3,6 +3,7 @@
 """A client to the LimeSurvey Remote Control API 2, written in modern Python."""
 
 __lazy_modules__ = {
+    "citric",
     "citric.client",
     "citric.rest",
 }
