@@ -225,7 +225,7 @@ class Session:
 
         try:
             data = res.json()
-        except Exception as e:
+        except ValueError as e:
             raise InvalidJSONResponseError from e
 
         logger.info("Invoked RPC method %s with ID %d", method, request_id)
