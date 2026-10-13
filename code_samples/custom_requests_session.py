@@ -17,7 +17,7 @@ client = Client(
     "https://example.com/index.php/admin/remotecontrol",
     "iamadmin",
     "secret",
-    requests_session=cached_session,
+    transport=cached_session,
 )
 
 # Get all surveys from user "iamadmin".

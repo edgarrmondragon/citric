@@ -55,20 +55,9 @@ import them with {meth}`client.import_question() <citric.Client.import_question>
 :end-before: end example
 ```
 
-## Change the default HTTP session attributes
+## Change the default HTTP transport attributes
 
-```{literalinclude} ../code_samples/requests_session_attributes.py
-:start-after: start example
-:end-before: end example
-```
-
-## Use a custom `requests` session
-
-It's possible to use a custom session object to make requests. For example, to cache the requests
-and reduce the load on your server in read-intensive applications, you can use
-[`requests-cache`](inv:requests-cache:std#general):
-
-```{literalinclude} ../code_samples/custom_requests_session.py
+```{literalinclude} ../code_samples/transport_attributes.py
 :start-after: start example
 :end-before: end example
 ```
@@ -79,7 +68,7 @@ By default, {class}`Client <citric.Client>` and
 {class}`Session <citric.session.Session>` send requests with `requests`. Any
 object that implements the
 {class}`HTTPTransport <citric.transport.protocol.HTTPTransport>` protocol (a
-`request` method and a `close` method) can be passed as `requests_session`
+`request` method and a `close` method) can be passed as `transport`
 instead, including a plain
 [`requests.Session`](inv:requests:py:class:api/#requests.Session) with a custom
 adapter mounted.
@@ -97,6 +86,18 @@ dependency of citric itself, so install the one you want to use separately:
   want to rely on that.
 
 ```{literalinclude} ../code_samples/custom_transport.py
+:start-after: start example
+:end-before: end example
+```
+
+## Use a custom `requests`-based transport
+
+Any subclass of [`requests.Session`](inv:requests:py:class:api/#requests.Session)
+is also a valid transport, so you can use
+[`requests-cache`](inv:requests-cache:std#general) to cache the requests and
+reduce the load on your server in read-intensive applications:
+
+```{literalinclude} ../code_samples/custom_requests_session.py
 :start-after: start example
 :end-before: end example
 ```

@@ -8,6 +8,7 @@ import json
 import sys
 from typing import TYPE_CHECKING, Any, ClassVar
 
+import pytest
 import requests
 from requests.adapters import BaseAdapter
 
@@ -18,6 +19,11 @@ else:
 
 if TYPE_CHECKING:
     from collections.abc import Mapping
+
+requests_session_warning = pytest.warns(
+    DeprecationWarning,
+    match="Parameter 'requests_session' is deprecated",
+)
 
 
 class MailpitClient:

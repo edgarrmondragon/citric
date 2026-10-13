@@ -6,27 +6,32 @@ from __future__ import annotations
 
 __lazy_modules__ = {
     "base64",
+    "citric.transport._default",
+    "citric.transport.protocol",
     "datetime",
+    "inspect",
     "io",
     "json",
     "pathlib",
-    "requests",
+    "warnings",
 }
 
 import base64
 import datetime as dt
+import inspect
 import io
 import json
 import logging
 import re
+import warnings
 from dataclasses import dataclass
 from pathlib import Path
 from typing import IO, TYPE_CHECKING, Any, Literal
 
-import requests
-
 from citric import enums
 from citric.session import Session, _check_result_status
+from citric.transport._default import _transport_or_default
+from citric.transport.protocol import HTTPTransport  # ruff: ignore[typing-only-first-party-import]
 
 if TYPE_CHECKING:
     import sys
@@ -36,7 +41,6 @@ if TYPE_CHECKING:
 
     from citric import types
     from citric.objects import Participant
-    from citric.transport.protocol import HTTPTransport
     from citric.types import MailOutcome
 
     if sys.version_info >= (3, 11):
@@ -125,11 +129,12 @@ class Client:  # ruff: ignore[too-many-public-methods]
         url: LimeSurvey Remote Control endpoint.
         username: LimeSurvey user name.
         password: LimeSurvey password.
-        requests_session: An HTTP transport implementing
+        transport: An HTTP transport implementing
             :class:`~citric.transport.protocol.HTTPTransport`, e.g. a
             :py:class:`requests.Session <requests.Session>` or
             :class:`~citric.transport.httpx2.Httpx2Transport`. Defaults to a new
             :py:class:`requests.Session <requests.Session>`.
+        requests_session: Deprecated alias of ``transport``.
         auth_plugin: Name of the :ls_manual:`plugin <Authentication_plugins>` to use for
             authentication. For example,
             :ls_manual:`AuthLDAP <Authentication_plugins#LDAP>`. Defaults to using the
@@ -140,9 +145,16 @@ class Client:  # ruff: ignore[too-many-public-methods]
        Support Auth plugins with the ``auth_plugin`` parameter.
 
     .. versionchanged:: NEXT_VERSION
-       ``requests_session`` now accepts any object implementing
-       :class:`~citric.transport.protocol.HTTPTransport`, not just
-       :py:class:`requests.Session <requests.Session>`.
+        The ``requests_session`` parameter was deprecated in favor of its alias
+        ``transport``. It also now accepts any object implementing
+        :class:`~citric.transport.protocol.HTTPTransport`, not just
+        :py:class:`requests.Session <requests.Session>`.
+
+    .. deprecated:: NEXT_VERSION
+        The ``requests_session`` parameter, use ``transport`` instead.
+
+    .. deprecated:: NEXT_VERSION
+        Setting :attr:`~citric.Client.session_class` to a custom class.
     """
 
     session_class = Session
@@ -153,17 +165,16 @@ class Client:  # ruff: ignore[too-many-public-methods]
         username: str,
         password: str,
         *,
+        transport: HTTPTransport | None = None,
         requests_session: HTTPTransport | None = None,
         auth_plugin: str = "Authdb",
     ) -> None:
-        self.__session = self.session_class(
-            url,
-            username,
-            password,
-            requests_session=requests_session
-            if requests_session is not None
-            else requests.session(),
+        self.__session = self._get_rpc_session(
+            url=url,
+            username=username,
+            password=password,
             auth_plugin=auth_plugin,
+            transport=_transport_or_default(transport, requests_session),
         )
         self.__server_version: ServerVersion | None = None
 
@@ -171,6 +182,49 @@ class Client:  # ruff: ignore[too-many-public-methods]
         """Close client session."""
         self.__server_version = None
         self.session.close()
+
+    def _get_rpc_session(
+        self,
+        *,
+        url: str,
+        username: str,
+        password: str,
+        auth_plugin: str = "Authdb",
+        transport: HTTPTransport | None = None,
+    ) -> Session:
+        """Get the RPC session.
+
+        Returns:
+            The RPC session for this client.
+        """
+        if self.session_class is not Session:
+            warnings.warn(
+                "Using a custom class in `Client.session_class` is deprecated and will be removed in a future version",  # ruff: ignore[line-too-long]
+                DeprecationWarning,
+                stacklevel=3,  # _get_rpc_session -> Client.__init__ -> user code
+            )
+
+            # Custom classes written before `transport` existed only accept
+            # `requests_session`.
+            accepted = inspect.signature(self.session_class).parameters
+            if "transport" not in accepted and not any(
+                p.kind is inspect.Parameter.VAR_KEYWORD for p in accepted.values()
+            ):
+                return self.session_class(
+                    url,
+                    username,
+                    password,
+                    auth_plugin=auth_plugin,
+                    requests_session=transport,
+                )
+
+        return self.session_class(
+            url,
+            username,
+            password,
+            auth_plugin=auth_plugin,
+            transport=transport,
+        )
 
     def __enter__(self: Self) -> Self:
         """Create client context.

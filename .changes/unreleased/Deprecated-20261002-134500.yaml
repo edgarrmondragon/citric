@@ -1,0 +1,5 @@
+kind: Deprecated
+body: Deprecated setting `Client.session_class` to a custom class
+time: 2026-10-02T13:45:00.000000-06:00
+custom:
+    Issue: "1851"

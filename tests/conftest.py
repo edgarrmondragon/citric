@@ -13,7 +13,7 @@ import requests
 from dotenv import load_dotenv
 
 from citric.session import Session
-from tests.fixtures import LimeSurveyMockAdapter
+from tests.fixtures import LimeSurveyMockAdapter, requests_session_warning
 
 load_dotenv()
 
@@ -218,7 +218,8 @@ def session(
     mock_session: requests.Session,
 ):
     """Create a LimeSurvey Session fixture."""
-    session = Session(url, username, password, requests_session=mock_session)
+    with requests_session_warning:
+        session = Session(url, username, password, requests_session=mock_session)
 
     yield session
 
