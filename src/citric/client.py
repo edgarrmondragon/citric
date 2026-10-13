@@ -6,9 +6,8 @@ from __future__ import annotations
 
 __lazy_modules__ = {
     "base64",
-    "citric.exceptions",
-    "citric.transport",
     "citric.transport._default",
+    "citric.transport.protocol",
     "datetime",
     "io",
     "json",
@@ -53,7 +52,7 @@ __all__ = [
 
 logger: logging.Logger = logging.getLogger(__name__)
 
-EMAILS_SENT_STATUS_PATTERN: re.Pattern[str] = re.compile(r"(-?\d+) left to send")
+EMAILS_SENT_STATUS_PATTERN: re.Pattern[str] = re.compile(r"^(-?\d+) left to send$")
 _SEMVER_RE = re.compile(
     r"^(?P<major>0|[1-9]\d*)"
     r"\.(?P<minor>0|[1-9]\d*)"

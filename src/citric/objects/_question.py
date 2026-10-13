@@ -6,8 +6,6 @@ from __future__ import annotations
 
 __lazy_modules__ = {
     "io",
-    "xml",
-    "xml.etree",
     "xml.etree.ElementTree",
 }
 

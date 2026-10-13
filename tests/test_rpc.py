@@ -18,7 +18,6 @@ from citric.exceptions import (
     LimeSurveyApiError,
     LimeSurveyStatusError,
     ResponseMismatchError,
-    RPCInterfaceNotEnabledError,
 )
 from citric.method import Method
 from citric.session import Session
@@ -134,16 +133,13 @@ def test_closed_session(
         session.closed = False  # type: ignore[misc]  # ty:ignore[invalid-assignment]
 
 
-def test_empty_response(session: Session):
-    """Test empty response."""
-    with pytest.raises(RPCInterfaceNotEnabledError, match="RPC interface not enabled"):
-        session.__disabled()
-
-
 def test_non_json_response(session: Session):
     """Test non-JSON response."""
     with pytest.raises(InvalidJSONResponseError, match="Received a non-JSON response"):
         session.__not_json()
+
+    with pytest.raises(InvalidJSONResponseError, match="Received a non-JSON response"):
+        session.__disabled()
 
 
 @dataclasses.dataclass

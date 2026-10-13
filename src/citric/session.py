@@ -7,7 +7,6 @@ from __future__ import annotations
 __lazy_modules__ = {
     "citric.exceptions",
     "citric.method",
-    "citric.transport",
     "citric.transport._default",
     "http",
     "json",
@@ -26,7 +25,6 @@ from citric.exceptions import (
     LimeSurveyApiError,
     LimeSurveyStatusError,
     ResponseMismatchError,
-    RPCInterfaceNotEnabledError,
 )
 from citric.method import Method
 from citric.transport._default import _transport_or_default
@@ -202,8 +200,6 @@ class Session:
 
         Raises:
             LimeSurveyApiError: If the server responds with an error HTTP status code.
-            RPCInterfaceNotEnabledError: If the JSON RPC interface is not enabled
-                (empty response).
             InvalidJSONResponseError: If the response is not valid JSON.
         """
         request_id = random.randint(1, 999_999)  # ruff: ignore[suspicious-non-cryptographic-random-usage]
@@ -227,14 +223,11 @@ class Session:
             msg = f"Request to LimeSurvey server failed with status {res.status_code}"
             raise LimeSurveyApiError(msg)
 
-        if not res.content:
-            raise RPCInterfaceNotEnabledError
-
         data: RPCResponse
 
         try:
             data = res.json()
-        except json.JSONDecodeError as e:
+        except ValueError as e:
             raise InvalidJSONResponseError from e
 
         logger.info("Invoked RPC method %s with ID %d", method, request_id)

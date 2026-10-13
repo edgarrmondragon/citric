@@ -26,10 +26,6 @@ class _Response:
     status_code: int
     data: Any
 
-    @property
-    def content(self) -> bytes:
-        return json.dumps(self.data).encode()
-
     def json(self) -> Any:  # ruff: ignore[any-type]
         return self.data
 
