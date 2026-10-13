@@ -14,7 +14,14 @@ class ResponseMismatchError(Exception):
 
 
 class LimeSurveyError(Exception):
-    """Basic exception raised by LimeSurvey."""
+    """Basic exception raised by LimeSurvey.
+
+    Args:
+        message: Exception message. By default none, and a generic message is used.
+    """
+
+    def __init__(self, message: str) -> None:
+        super().__init__(message)
 
 
 class LimeSurveyStatusError(LimeSurveyError):
@@ -34,6 +41,13 @@ class LimeSurveyStatusError(LimeSurveyError):
 
 class LimeSurveyApiError(LimeSurveyError):
     """Exception raised when LimeSurvey responds with a non-null error."""
+
+
+class RPCInterfaceNotEnabledError(LimeSurveyError):
+    """RPC interface not enabled on LimeSurvey."""
+
+    def __init__(self) -> None:  # pragma: no cover
+        super().__init__("RPC interface not enabled")
 
 
 class InvalidJSONResponseError(LimeSurveyError):
