@@ -26,6 +26,7 @@ from citric.session import Session
 from citric.transport.httpx2 import Httpx2Transport
 from citric.transport.protocol import HTTPTransport
 from citric.transport.urllib3 import Urllib3Transport
+from tests.fixtures import requests_session_warning
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -39,11 +40,6 @@ if TYPE_CHECKING:
 
 SESSION_KEY = "session-key-from-httpserver"
 REST_SESSION_ID = "my-api-token"
-
-requests_session_warning = pytest.warns(
-    DeprecationWarning,
-    match="Parameter 'requests_session' is deprecated",
-)
 
 transport_factories = pytest.mark.parametrize(
     "transport_factory",

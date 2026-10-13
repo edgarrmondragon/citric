@@ -13,14 +13,9 @@ import requests
 from dotenv import load_dotenv
 
 from citric.session import Session
-from tests.fixtures import LimeSurveyMockAdapter
+from tests.fixtures import LimeSurveyMockAdapter, requests_session_warning
 
 load_dotenv()
-
-requests_session_warning = pytest.warns(
-    DeprecationWarning,
-    match="Parameter 'requests_session' is deprecated",
-)
 
 
 def _from_env_var(

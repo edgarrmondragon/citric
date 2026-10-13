@@ -21,7 +21,7 @@ from citric.exceptions import (
 )
 from citric.method import Method
 from citric.session import Session
-from tests.fixtures import LimeSurveyMockAdapter
+from tests.fixtures import LimeSurveyMockAdapter, requests_session_warning
 
 if TYPE_CHECKING:
     import requests
@@ -35,12 +35,6 @@ if sys.version_info >= (3, 12):
     from typing import override
 else:
     from typing_extensions import override
-
-
-requests_session_warning = pytest.warns(
-    DeprecationWarning,
-    match="Parameter 'requests_session' is deprecated",
-)
 
 
 class RPCOffAdapter(LimeSurveyMockAdapter):
