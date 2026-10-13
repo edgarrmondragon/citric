@@ -4,6 +4,11 @@
 
 from __future__ import annotations
 
+__all__ = [
+    "LimeSurveyError",
+    "LimeSurveyStatusError",
+]
+
 
 class ResponseMismatchError(Exception):
     """Exception raised when request and response ID don't match."""
@@ -42,7 +47,7 @@ class LimeSurveyApiError(LimeSurveyError):
 class RPCInterfaceNotEnabledError(LimeSurveyError):
     """RPC interface not enabled on LimeSurvey."""
 
-    def __init__(self) -> None:
+    def __init__(self) -> None:  # pragma: no cover
         super().__init__("RPC interface not enabled")
 
 

@@ -28,11 +28,6 @@ class HTTPResponse(Protocol):
     """The subset of a response object that citric relies on."""
 
     @property
-    def content(self) -> bytes:
-        """The response body."""
-        ...
-
-    @property
     def status_code(self) -> int:
         """The HTTP status of this response."""
         ...

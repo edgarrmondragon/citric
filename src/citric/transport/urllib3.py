@@ -36,11 +36,6 @@ class Urllib3ResponseWrapper:
         self._response = response
 
     @property
-    def content(self) -> bytes:
-        """The raw response bytes."""
-        return self._response.data
-
-    @property
     def status_code(self) -> int:
         """The HTTP status of this response."""
         return self._response.status
