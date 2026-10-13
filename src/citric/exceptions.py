@@ -40,13 +40,6 @@ class LimeSurveyApiError(LimeSurveyError):
     """Exception raised when LimeSurvey responds with a non-null error."""
 
 
-class RPCInterfaceNotEnabledError(LimeSurveyError):
-    """RPC interface not enabled on LimeSurvey."""
-
-    def __init__(self) -> None:
-        super().__init__("RPC interface not enabled")
-
-
 class InvalidJSONResponseError(LimeSurveyError):
     """RPC interface maybe not enabled on LimeSurvey."""
 
