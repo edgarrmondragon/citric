@@ -152,8 +152,7 @@ class Client:  # ruff: ignore[too-many-public-methods]
         The ``requests_session`` parameter, use ``transport`` instead.
 
     .. deprecated:: NEXT_VERSION
-        Setting :attr:`~citric.Client.session_class` to a custom class. Override
-        :meth:`~citric.Client.get_rpc_session` instead.
+        Setting :attr:`~citric.Client.session_class` to a custom class.
     """
 
     session_class = Session
@@ -168,7 +167,7 @@ class Client:  # ruff: ignore[too-many-public-methods]
         requests_session: HTTPTransport | None = None,
         auth_plugin: str = "Authdb",
     ) -> None:
-        self.__session = self.get_rpc_session(
+        self.__session = self._get_rpc_session(
             url=url,
             username=username,
             password=password,
@@ -182,7 +181,7 @@ class Client:  # ruff: ignore[too-many-public-methods]
         self.__server_version = None
         self.session.close()
 
-    def get_rpc_session(
+    def _get_rpc_session(
         self,
         *,
         url: str,
@@ -212,7 +211,7 @@ class Client:  # ruff: ignore[too-many-public-methods]
                 stacklevel=3,  # get_rpc_session -> Client.__init__ -> user code
             )
 
-        return self.session_class(
+        return Session(
             url,
             username,
             password,
