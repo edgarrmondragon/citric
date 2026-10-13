@@ -29,7 +29,7 @@ from pathlib import Path
 from typing import IO, TYPE_CHECKING, Any, Literal
 
 from citric import enums
-from citric.session import Session, _check_result_status
+from citric.session import _CONNECT_FUTURE_WARNING, Session, _check_result_status
 from citric.transport._default import _transport_or_default
 from citric.transport.protocol import HTTPTransport  # ruff: ignore[typing-only-first-party-import]
 
@@ -140,9 +140,18 @@ class Client:  # ruff: ignore[too-many-public-methods]
             :ls_manual:`AuthLDAP <Authentication_plugins#LDAP>`. Defaults to using the
             :ls_manual:`internal database <Authentication_plugins#Internal_database>`
             (``"Authdb"``).
+        connect: Whether to authenticate right away. If ``False``, the session key is
+            retrieved the first time it is needed. Deferred authentication is not
+            thread-safe: if several threads use a not-yet-connected session at the
+            same time, each may authenticate separately. A future version will make
+            ``False`` the default; until then, not passing ``connect`` explicitly
+            emits a :py:class:`FutureWarning`.
 
     .. versionadded:: 0.0.6
        Support Auth plugins with the ``auth_plugin`` parameter.
+
+    .. versionadded:: NEXT_VERSION
+       The ``connect`` parameter.
 
     .. versionchanged:: NEXT_VERSION
         The ``requests_session`` parameter was deprecated in favor of its alias
@@ -168,13 +177,23 @@ class Client:  # ruff: ignore[too-many-public-methods]
         transport: HTTPTransport | None = None,
         requests_session: HTTPTransport | None = None,
         auth_plugin: str = "Authdb",
+        connect: bool | None = None,
     ) -> None:
+        if connect is None:
+            warnings.warn(
+                _CONNECT_FUTURE_WARNING,
+                FutureWarning,
+                stacklevel=2,
+            )
+            connect = True
+
         self.__session = self._get_rpc_session(
             url=url,
             username=username,
             password=password,
             auth_plugin=auth_plugin,
             transport=_transport_or_default(transport, requests_session),
+            connect=connect,
         )
         self.__server_version: ServerVersion | None = None
 
@@ -191,6 +210,7 @@ class Client:  # ruff: ignore[too-many-public-methods]
         password: str,
         auth_plugin: str = "Authdb",
         transport: HTTPTransport | None = None,
+        connect: bool = True,
     ) -> Session:
         """Get the RPC session.
 
@@ -218,12 +238,23 @@ class Client:  # ruff: ignore[too-many-public-methods]
                     requests_session=transport,
                 )
 
+        # Custom session classes that don't know about `connect` keep working as long
+        # as they're not asked to defer the connection.
+        extra: dict[str, Any] = {"connect": connect}
+        if self.session_class is not Session and connect:
+            accepted = inspect.signature(self.session_class).parameters
+            if "connect" not in accepted and not any(
+                p.kind is inspect.Parameter.VAR_KEYWORD for p in accepted.values()
+            ):
+                extra = {}
+
         return self.session_class(
             url,
             username,
             password,
             auth_plugin=auth_plugin,
             transport=transport,
+            **extra,
         )
 
     def __enter__(self: Self) -> Self:

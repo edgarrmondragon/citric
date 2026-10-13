@@ -223,16 +223,36 @@ def test_requests_session_warning_location(
         rest_handler
     )
 
+    def make() -> Session | Client | RESTClient:
+        url = httpserver.url_for("/")
+        if client_class is RESTClient:
+            return RESTClient(
+                url,
+                "user",
+                "password",
+                requests_session=requests.Session(),
+            )
+        if client_class is Client:
+            return Client(
+                url,
+                "user",
+                "password",
+                requests_session=requests.Session(),
+                connect=True,
+            )
+        return Session(
+            url,
+            "user",
+            "password",
+            requests_session=requests.Session(),
+            connect=True,
+        )
+
     with pytest.warns(
         DeprecationWarning,
         match="Parameter 'requests_session' is deprecated",
     ) as record:
-        instance = client_class(
-            httpserver.url_for("/"),
-            "user",
-            "password",
-            requests_session=requests.Session(),
-        )
+        instance = make()
 
     instance.close()
     assert [w.filename for w in record] == [__file__]

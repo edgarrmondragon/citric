@@ -6,6 +6,8 @@ from __future__ import annotations
 
 import datetime as dt
 import json
+import sys
+import warnings
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any
 
@@ -13,6 +15,11 @@ import pytest
 
 from citric.client import Client, ServerVersion
 from citric.session import Session
+
+if sys.version_info >= (3, 12):
+    from typing import override
+else:
+    from typing_extensions import override
 
 if TYPE_CHECKING:
     from collections.abc import Generator
@@ -70,7 +77,13 @@ def test_session_class_deprecation():
         DeprecationWarning,
         match="Using a custom class in `Client.session_class` is deprecated",
     ) as record:
-        client = MockClient("mock://lime.com", "u", "p", transport=_Transport())
+        client = MockClient(
+            "mock://lime.com",
+            "u",
+            "p",
+            transport=_Transport(),
+            connect=True,
+        )
 
     assert isinstance(client.session, MockSession)
     client.close()
@@ -140,4 +153,84 @@ def test_session_class_requests_session_only():
         client = LegacyClient("mock://lime.com", "u", "p", transport=transport)
 
     assert client.session._transport is transport
+    client.close()
+
+
+class _RecordingTransport(_Transport):
+    def __init__(self) -> None:
+        self.methods: list[str] = []
+
+    @override
+    def request(self, *args: Any, data: str | None = None, **kwargs: Any) -> _Response:
+        self.methods.append(json.loads(data)["method"])  # type: ignore[arg-type] # ty: ignore[invalid-argument-type]
+        return super().request(*args, data=data, **kwargs)
+
+
+def test_lazy_connect():
+    """With ``connect=False`` no request is made until the key is needed."""
+    transport = _RecordingTransport()
+    client = Client("mock://lime.com", "u", "p", transport=transport, connect=False)
+    assert transport.methods == []
+
+    assert client.session.key is not None
+    assert transport.methods == ["get_session_key"]
+
+    client.close()
+    assert transport.methods == ["get_session_key", "release_session_key"]
+    assert client.session.closed
+
+
+def test_close_without_connecting():
+    """Closing a never-connected session doesn't hit the server."""
+    transport = _RecordingTransport()
+    Client("mock://lime.com", "u", "p", transport=transport, connect=False).close()
+    assert transport.methods == []
+
+
+@pytest.mark.parametrize("client_class", [Session, Client])
+def test_connect_future_warning(client_class: type[Session | Client]):
+    """Omitting ``connect`` warns, attributed to the caller; passing it doesn't."""
+    with pytest.warns(FutureWarning, match="default value of `connect`") as record:
+        instance = client_class("mock://lime.com", "u", "p", transport=_Transport())
+
+    assert [w.filename for w in record] == [__file__]
+    instance.close()
+
+    with warnings.catch_warnings():
+        warnings.simplefilter("error")
+        client_class(
+            "mock://lime.com", "u", "p", transport=_Transport(), connect=True
+        ).close()
+
+
+def test_session_class_without_connect_parameter():
+    """A custom ``session_class`` that doesn't accept ``connect`` still works."""
+
+    class NoConnectSession(Session):
+        def __init__(
+            self,
+            url: str,
+            username: str,
+            password: str,
+            *,
+            transport: _Transport,
+            auth_plugin: str,
+        ) -> None:
+            super().__init__(
+                url,
+                username,
+                password,
+                transport=transport,
+                auth_plugin=auth_plugin,
+                connect=True,
+            )
+
+    class NoConnectClient(Client):
+        session_class = NoConnectSession
+
+    transport = _Transport()
+    with pytest.warns(DeprecationWarning, match="`Client.session_class` is deprecated"):
+        client = NoConnectClient("mock://lime.com", "u", "p", transport=transport)
+
+    assert isinstance(client.session, NoConnectSession)
     client.close()

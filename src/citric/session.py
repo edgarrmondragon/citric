@@ -11,12 +11,14 @@ __lazy_modules__ = {
     "http",
     "json",
     "random",
+    "warnings",
 }
 
 import http
 import json
 import logging
 import random
+import warnings
 from importlib import metadata
 from typing import TYPE_CHECKING, Any, Type  # ruff: ignore[deprecated-import]
 
@@ -44,6 +46,11 @@ if TYPE_CHECKING:
 __all__ = ["Session"]
 
 GET_SESSION_KEY = "get_session_key"
+
+_CONNECT_FUTURE_WARNING = (
+    "The default value of `connect` will change from True to False in a future "
+    "version; pass `connect` explicitly to silence this warning"
+)
 
 logger: logging.Logger = logging.getLogger(__name__)
 
@@ -89,6 +96,12 @@ class Session:
             (``"Authdb"``).
         json_encoder: A :py:class:`json.Encoder <json.JSONEncoder>` subclass to use for
             encoding RPC parameters.
+        connect: Whether to authenticate right away. If ``False``, the session key is
+            retrieved the first time it is needed. Deferred authentication is not
+            thread-safe: if several threads use a not-yet-connected session at the
+            same time, each may authenticate separately. A future version will make
+            ``False`` the default; until then, not passing ``connect`` explicitly
+            emits a :py:class:`FutureWarning`.
 
     .. versionchanged:: 0.0.4
        Replaced the ``requests_session_factory`` parameter with ``requests_session``.
@@ -104,6 +117,9 @@ class Session:
         ``transport``. It also now accepts any object implementing
         :class:`~citric.transport.protocol.HTTPTransport`, not just
         :py:class:`requests.Session <requests.Session>`.
+
+    .. versionadded:: NEXT_VERSION
+        The ``connect`` parameter.
 
     .. deprecated:: NEXT_VERSION
         The ``requests_session`` parameter, use ``transport`` instead.
@@ -124,18 +140,31 @@ class Session:
         transport: HTTPTransport | None = None,
         requests_session: HTTPTransport | None = None,
         json_encoder: Type[json.JSONEncoder] | None = None,  # ruff: ignore[non-pep585-annotation]
+        connect: bool | None = None,
     ) -> None:
+        if connect is None:
+            warnings.warn(_CONNECT_FUTURE_WARNING, FutureWarning, stacklevel=2)
+            connect = True
+
         self.url: str = url
         self._transport = _transport_or_default(transport, requests_session)
         self._encoder = json_encoder or json.JSONEncoder
-
-        self.__key: str | None = self.get_session_key(
+        self.__closed = False
+        self.__key: str | None = None
+        self.__credentials: tuple[str, str, str] | None = (
             username,
             password,
             auth_plugin,
         )
 
-        self.__closed = False
+        if connect:
+            self._connect(self.__credentials)
+
+    def _connect(self, credentials: tuple[str, str, str]) -> None:
+        """Authenticate and store the session key."""
+        username, password, auth_plugin = credentials
+        self.__key = self.get_session_key(username, password, auth_plugin)
+        self.__credentials = None
 
     @property
     def closed(self) -> bool:
@@ -144,7 +173,13 @@ class Session:
 
     @property
     def key(self) -> str | None:
-        """RPC session key."""
+        """RPC session key.
+
+        If the session was created with ``connect=False``, accessing this property
+        authenticates with the server first.
+        """
+        if self.__credentials is not None:
+            self._connect(self.__credentials)
         return self.__key
 
     def __getattr__(self, name: str) -> Method[Result]:
@@ -241,9 +276,11 @@ class Session:
         Releases the session key with
         :ls_manual:`release_session_key <RemoteControl_2_API#release_session_key>`.
         """
-        self.release_session_key()
+        if self.__key is not None:
+            self.release_session_key()
         self._transport.close()
         self.__key = None
+        self.__credentials = None
         self.__closed = True
 
     def __enter__(self: Self) -> Self:
