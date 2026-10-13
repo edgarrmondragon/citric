@@ -192,17 +192,8 @@ class Client:  # ruff: ignore[too-many-public-methods]
     ) -> Session:
         """Get the RPC session.
 
-        Args:
-            url: The URL of the LimeSurvey server.
-            username: The username for authentication.
-            password: The password for authentication.
-            auth_plugin: The authentication plugin to use.
-            transport: The HTTP transport to use.
-
         Returns:
-            The RPC session.
-
-        .. versionadded:: NEXT_VERSION
+            The RPC session for this client.
         """
         if self.session_class is not Session:
             warnings.warn(
