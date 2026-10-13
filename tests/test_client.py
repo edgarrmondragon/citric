@@ -109,3 +109,35 @@ def test_invite_participants_unknown_status(client: Client):
 def test_parse_server_version(raw: str, parsed: tuple):
     """Test server version parsing."""
     assert ServerVersion.parse(raw) == parsed
+
+
+def test_session_class_requests_session_only():
+    """A custom ``session_class`` that only accepts ``requests_session`` still works."""
+    transport = _Transport()
+
+    class LegacySession(Session):
+        def __init__(
+            self,
+            url: str,
+            username: str,
+            password: str,
+            *,
+            requests_session: _Transport,
+            auth_plugin: str,
+        ) -> None:
+            super().__init__(
+                url,
+                username,
+                password,
+                transport=requests_session,
+                auth_plugin=auth_plugin,
+            )
+
+    class LegacyClient(Client):
+        session_class = LegacySession
+
+    with pytest.warns(DeprecationWarning, match="`Client.session_class` is deprecated"):
+        client = LegacyClient("mock://lime.com", "u", "p", transport=transport)
+
+    assert client.session._transport is transport
+    client.close()

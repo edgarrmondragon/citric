@@ -9,6 +9,7 @@ __lazy_modules__ = {
     "citric.transport._default",
     "citric.transport.protocol",
     "datetime",
+    "inspect",
     "io",
     "json",
     "pathlib",
@@ -17,6 +18,7 @@ __lazy_modules__ = {
 
 import base64
 import datetime as dt
+import inspect
 import io
 import json
 import logging
@@ -201,6 +203,20 @@ class Client:  # ruff: ignore[too-many-public-methods]
                 DeprecationWarning,
                 stacklevel=3,  # _get_rpc_session -> Client.__init__ -> user code
             )
+
+            # Custom classes written before `transport` existed only accept
+            # `requests_session`.
+            accepted = inspect.signature(self.session_class).parameters
+            if "transport" not in accepted and not any(
+                p.kind is inspect.Parameter.VAR_KEYWORD for p in accepted.values()
+            ):
+                return self.session_class(
+                    url,
+                    username,
+                    password,
+                    auth_plugin=auth_plugin,
+                    requests_session=transport,
+                )
 
         return self.session_class(
             url,
