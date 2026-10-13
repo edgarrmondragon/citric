@@ -14,11 +14,7 @@ class ResponseMismatchError(Exception):
 
 
 class LimeSurveyError(Exception):
-    """Basic exception raised by LimeSurvey.
-
-    Args:
-        message: Exception message. By default none, and a generic message is used.
-    """
+    """Basic exception raised by LimeSurvey."""
 
 
 class LimeSurveyStatusError(LimeSurveyError):
