@@ -20,9 +20,6 @@ class LimeSurveyError(Exception):
         message: Exception message. By default none, and a generic message is used.
     """
 
-    def __init__(self, message: str) -> None:
-        super().__init__(message)
-
 
 class LimeSurveyStatusError(LimeSurveyError):
     """Exception raised when LimeSurvey responds with an error status."""
