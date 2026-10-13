@@ -4,8 +4,7 @@
 
 from __future__ import annotations
 
-import warnings
-from typing import Any
+__all__ = []
 
 
 class ResponseMismatchError(Exception):
@@ -58,26 +57,3 @@ class InvalidJSONResponseError(LimeSurveyError):
             "enabled in global settings"
         )
         super().__init__(msg)
-
-
-class _RPCInterfaceNotEnabledError(LimeSurveyError):
-    """RPC interface not enabled on LimeSurvey."""
-
-    def __init__(self) -> None:
-        super().__init__("RPC interface not enabled")
-
-
-def __getattr__(name: str) -> Any:  # ruff: ignore[any-type] # pragma: no cover
-    if name == "RPCInterfaceNotEnabledError":
-        warnings.warn(
-            (
-                "The RPCInterfaceNotEnabledError exceptions is no longer raised and "
-                "will be removed in a future version."
-            ),
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return _RPCInterfaceNotEnabledError
-
-    msg = f"module {__name__} has no attribute {name}"
-    raise AttributeError(msg)

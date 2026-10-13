@@ -1,5 +1,0 @@
-kind: Deprecated
-body: '`citric.exceptions.RPCInterfaceNotEnabledError` is deprecated'
-time: 2026-10-12T21:46:39.100128-06:00
-custom:
-    Issue: "1864"
