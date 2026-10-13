@@ -70,7 +70,10 @@ def test_session_class_deprecation():
         DeprecationWarning,
         match="Using a custom class in `Client.session_class` is deprecated",
     ) as record:
-        MockClient("mock://lime.com", "u", "p", transport=_Transport()).close()
+        client = MockClient("mock://lime.com", "u", "p", transport=_Transport())
+
+    assert isinstance(client.session, MockSession)
+    client.close()
 
     assert [w.filename for w in record] == [__file__]
 
