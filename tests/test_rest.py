@@ -5,6 +5,7 @@
 from __future__ import annotations
 
 import json
+from concurrent.futures import ThreadPoolExecutor
 from typing import TYPE_CHECKING
 
 import pytest
@@ -355,4 +356,29 @@ def test_connect_future_warning(username: str, password: str, httpserver: HTTPSe
         client = RESTClient(httpserver.url_for("").rstrip("/"), username, password)
 
     assert [w.filename for w in record] == [__file__]
+    client.close()
+
+
+def test_lazy_connect_is_thread_safe(
+    username: str,
+    password: str,
+    httpserver: HTTPServer,
+):
+    """Concurrent users of a deferred client authenticate only once."""
+    httpserver.expect_request("/rest/v1/auth", method="POST").respond_with_json({
+        "token": "my-session-id"
+    })
+    httpserver.expect_request("/rest/v1/auth", method="DELETE").respond_with_data("")
+
+    client = RESTClient(
+        httpserver.url_for("").rstrip("/"),
+        username,
+        password,
+        connect=False,
+    )
+    with ThreadPoolExecutor(max_workers=8) as executor:
+        ids = list(executor.map(lambda _: client.session_id, range(32)))
+
+    assert ids == ["my-session-id"] * 32
+    assert [r.method for r, _ in httpserver.log] == ["POST"]
     client.close()

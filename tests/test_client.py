@@ -8,6 +8,7 @@ import datetime as dt
 import json
 import sys
 import warnings
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any
 
@@ -184,4 +185,17 @@ def test_lazy_connect_retries_after_failure():
 
     assert client.session.key is not None
     assert transport.methods == ["get_session_key", "get_session_key"]
+    client.close()
+
+
+def test_lazy_connect_is_thread_safe():
+    """Concurrent users of a deferred session authenticate only once."""
+    transport = _RecordingTransport()
+    client = Client("mock://lime.com", "u", "p", transport=transport, connect=False)
+
+    with ThreadPoolExecutor(max_workers=8) as executor:
+        keys = list(executor.map(lambda _: client.session.key, range(32)))
+
+    assert keys == [SESSION_KEY] * 32
+    assert transport.methods == ["get_session_key"]
     client.close()

@@ -11,6 +11,7 @@ __lazy_modules__ = {
     "http",
     "json",
     "random",
+    "threading",
     "warnings",
 }
 
@@ -18,6 +19,7 @@ import http
 import json
 import logging
 import random
+import threading
 import warnings
 from importlib import metadata
 from typing import TYPE_CHECKING, Any, Type  # ruff: ignore[deprecated-import]
@@ -147,6 +149,7 @@ class Session:
         self.url: str = url
         self._transport = _transport_or_default(transport, requests_session)
         self._encoder = json_encoder or json.JSONEncoder
+        self.__lock = threading.RLock()
         self.__closed = False
         self.__key: str | None = None
         self.__credentials: tuple[str, str, str] | None = (
@@ -176,9 +179,10 @@ class Session:
         If the session was created with ``connect=False``, accessing this property
         authenticates with the server first.
         """
-        if self.__credentials is not None:
-            self._connect(self.__credentials)
-        return self.__key
+        with self.__lock:
+            if self.__credentials is not None:
+                self._connect(self.__credentials)
+            return self.__key
 
     def __getattr__(self, name: str) -> Method[Result]:
         """Magic method dispatcher.
@@ -276,12 +280,14 @@ class Session:
         Releases the session key with
         :ls_manual:`release_session_key <RemoteControl_2_API#release_session_key>`.
         """
-        if self.__key is not None:
-            self.release_session_key()
-        self._transport.close()
-        self.__key = None
-        self.__credentials = None
-        self.__closed = True
+        # Wait for an in-flight deferred connection so its key gets released
+        with self.__lock:
+            if self.__key is not None:
+                self.release_session_key()
+            self._transport.close()
+            self.__key = None
+            self.__credentials = None
+            self.__closed = True
 
     def __enter__(self: Self) -> Self:
         """Context manager for RPC session.

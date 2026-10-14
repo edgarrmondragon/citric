@@ -10,12 +10,14 @@ __lazy_modules__ = {
     "citric.transport._default",
     "http",
     "json",
+    "threading",
     "urllib.parse",
     "warnings",
 }
 
 import http
 import json as _json
+import threading
 import warnings
 from importlib import metadata
 from typing import TYPE_CHECKING, Any, Type  # ruff: ignore[deprecated-import]
@@ -113,6 +115,7 @@ class RESTClient:
 
         self.url: str = url
         self._transport = _transport_or_default(transport, requests_session)
+        self.__lock = threading.RLock()
         self.__session_id: str | None = None
         self._headers = {
             "Accept": "application/json",
@@ -138,9 +141,10 @@ class RESTClient:
         If the client was created with ``connect=False``, accessing this property
         authenticates with the server first.
         """
-        if self.__credentials is not None:
-            self.authenticate(*self.__credentials)
-        return self.__session_id
+        with self.__lock:
+            if self.__credentials is not None:
+                self.authenticate(*self.__credentials)
+            return self.__session_id
 
     @session_id.setter
     def session_id(self, value: str | None) -> None:
@@ -175,14 +179,16 @@ class RESTClient:
 
     def close(self) -> None:
         """Delete the session."""
-        self.__credentials = None
+        # Wait for an in-flight deferred connection so its session gets deleted
+        with self.__lock:
+            self.__credentials = None
 
-        try:
-            if self.__session_id is not None:
-                _ = self.make_request("DELETE", self.AUTH_ENDPOINT)
-        finally:
-            self._transport.close()
-            self.session_id = None
+            try:
+                if self.__session_id is not None:
+                    _ = self.make_request("DELETE", self.AUTH_ENDPOINT)
+            finally:
+                self._transport.close()
+                self.session_id = None
 
     def make_request(
         self,
