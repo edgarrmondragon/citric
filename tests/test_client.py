@@ -66,32 +66,6 @@ def client() -> Generator[Client, None, None]:
         client.close()
 
 
-def test_session_class_deprecation():
-    """The ``session_class`` warning is attributed to the caller, not citric."""
-
-    class MockSession(Session): ...
-
-    class MockClient(Client):
-        session_class = MockSession
-
-    with pytest.warns(
-        DeprecationWarning,
-        match="Using a custom class in `Client.session_class` is deprecated",
-    ) as record:
-        client = MockClient(
-            "mock://lime.com",
-            "u",
-            "p",
-            transport=_Transport(),
-            connect=True,
-        )
-
-    assert isinstance(client.session, MockSession)
-    client.close()
-
-    assert [w.filename for w in record] == [__file__]
-
-
 def test_export_timeline(client: Client):
     """Test export_timeline client method."""
     assert client.export_timeline(
@@ -123,38 +97,6 @@ def test_invite_participants_unknown_status(client: Client):
 def test_parse_server_version(raw: str, parsed: tuple):
     """Test server version parsing."""
     assert ServerVersion.parse(raw) == parsed
-
-
-def test_session_class_requests_session_only():
-    """A custom ``session_class`` that only accepts ``requests_session`` still works."""
-    transport = _Transport()
-
-    class LegacySession(Session):
-        def __init__(
-            self,
-            url: str,
-            username: str,
-            password: str,
-            *,
-            requests_session: _Transport,
-            auth_plugin: str,
-        ) -> None:
-            super().__init__(
-                url,
-                username,
-                password,
-                transport=requests_session,
-                auth_plugin=auth_plugin,
-            )
-
-    class LegacyClient(Client):
-        session_class = LegacySession
-
-    with pytest.warns(DeprecationWarning, match="`Client.session_class` is deprecated"):
-        client = LegacyClient("mock://lime.com", "u", "p", transport=transport)
-
-    assert client.session._transport is transport
-    client.close()
 
 
 class _RecordingTransport(_Transport):
@@ -204,39 +146,6 @@ def test_connect_future_warning(client_class: type[Session | Client]):
         ).close()
 
 
-def test_session_class_without_connect_parameter():
-    """A custom ``session_class`` that doesn't accept ``connect`` still works."""
-
-    class NoConnectSession(Session):
-        def __init__(
-            self,
-            url: str,
-            username: str,
-            password: str,
-            *,
-            transport: _Transport,
-            auth_plugin: str,
-        ) -> None:
-            super().__init__(
-                url,
-                username,
-                password,
-                transport=transport,
-                auth_plugin=auth_plugin,
-                connect=True,
-            )
-
-    class NoConnectClient(Client):
-        session_class = NoConnectSession
-
-    transport = _Transport()
-    with pytest.warns(DeprecationWarning, match="`Client.session_class` is deprecated"):
-        client = NoConnectClient("mock://lime.com", "u", "p", transport=transport)
-
-    assert isinstance(client.session, NoConnectSession)
-    client.close()
-
-
 def test_lazy_connect_on_first_rpc_call():
     """The first authenticated RPC call triggers the deferred connection."""
     transport = _RecordingTransport()
@@ -269,37 +178,3 @@ def test_lazy_connect_retries_after_failure():
     assert client.session.key is not None
     assert transport.methods == ["get_session_key", "get_session_key"]
     client.close()
-
-
-def test_session_class_without_connect_parameter_cannot_defer():
-    """Deferring the connection with a class that can't do so fails clearly."""
-
-    class NoConnectSession(Session):
-        def __init__(
-            self,
-            url: str,
-            username: str,
-            password: str,
-            *,
-            transport: _Transport,
-            auth_plugin: str,
-        ) -> None:
-            super().__init__(
-                url,
-                username,
-                password,
-                transport=transport,
-                auth_plugin=auth_plugin,
-                connect=True,
-            )
-
-    class NoConnectClient(Client):
-        session_class = NoConnectSession
-
-    with (
-        pytest.warns(DeprecationWarning, match="`Client.session_class` is deprecated"),
-        pytest.raises(TypeError, match="does not accept a `connect` parameter"),
-    ):
-        NoConnectClient(
-            "mock://lime.com", "u", "p", transport=_Transport(), connect=False
-        )

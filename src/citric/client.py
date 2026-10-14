@@ -6,10 +6,10 @@ from __future__ import annotations
 
 __lazy_modules__ = {
     "base64",
+    "citric.session",
     "citric.transport._default",
     "citric.transport.protocol",
     "datetime",
-    "inspect",
     "io",
     "json",
     "pathlib",
@@ -18,7 +18,6 @@ __lazy_modules__ = {
 
 import base64
 import datetime as dt
-import inspect
 import io
 import json
 import logging
@@ -35,7 +34,7 @@ from citric.transport.protocol import HTTPTransport  # ruff: ignore[typing-only-
 
 if TYPE_CHECKING:
     import sys
-    from collections.abc import Callable, Generator, Iterable, Mapping, Sequence
+    from collections.abc import Generator, Iterable, Mapping, Sequence
     from os import PathLike
     from types import TracebackType
 
@@ -120,18 +119,6 @@ class ServerVersion:
         )
 
 
-def _accepts_parameter(callable_: Callable[..., Any], name: str) -> bool:
-    """Check if a callable accepts a keyword argument.
-
-    Returns:
-        Whether ``name`` is a parameter or the callable takes ``**kwargs``.
-    """
-    accepted = inspect.signature(callable_).parameters
-    return name in accepted or any(
-        p.kind is inspect.Parameter.VAR_KEYWORD for p in accepted.values()
-    )
-
-
 class Client:  # ruff: ignore[too-many-public-methods]
     """LimeSurvey RemoteControl 2 API client.
 
@@ -163,23 +150,18 @@ class Client:  # ruff: ignore[too-many-public-methods]
     .. versionadded:: 0.0.6
        Support Auth plugins with the ``auth_plugin`` parameter.
 
-    .. versionadded:: NEXT_VERSION
+    .. version-added:: NEXT_VERSION
        The ``connect`` parameter.
 
-    .. versionchanged:: NEXT_VERSION
-        The ``requests_session`` parameter was deprecated in favor of its alias
-        ``transport``. It also now accepts any object implementing
+    .. version-changed:: NEXT_VERSION
+        The ``requests_session`` parameter was deprecated, use ``transport`` instead.
+        It also now accepts any object implementing
         :class:`~citric.transport.protocol.HTTPTransport`, not just
         :py:class:`requests.Session <requests.Session>`.
 
-    .. deprecated:: NEXT_VERSION
-        The ``requests_session`` parameter, use ``transport`` instead.
-
-    .. deprecated:: NEXT_VERSION
-        Setting :attr:`~citric.Client.session_class` to a custom class.
+    .. version-changed:: NEXT_VERSION
+        The ``Client.session_class`` class attribute  was removed.
     """
-
-    session_class = Session
 
     def __init__(
         self,
@@ -215,7 +197,7 @@ class Client:  # ruff: ignore[too-many-public-methods]
         self.__server_version = None
         self.session.close()
 
-    def _get_rpc_session(
+    def _get_rpc_session(  # ruff: ignore[no-self-use]
         self,
         *,
         url: str,
@@ -229,50 +211,14 @@ class Client:  # ruff: ignore[too-many-public-methods]
 
         Returns:
             The RPC session for this client.
-
-        Raises:
-            TypeError: If ``connect`` is ``False`` and the custom session class
-                doesn't accept a ``connect`` parameter.
         """
-        if self.session_class is not Session:
-            warnings.warn(
-                "Using a custom class in `Client.session_class` is deprecated and will be removed in a future version",  # ruff: ignore[line-too-long]
-                DeprecationWarning,
-                stacklevel=3,  # _get_rpc_session -> Client.__init__ -> user code
-            )
-
-            # Custom classes written before `transport` existed only accept
-            # `requests_session`.
-            if not _accepts_parameter(self.session_class, "transport"):
-                return self.session_class(
-                    url,
-                    username,
-                    password,
-                    auth_plugin=auth_plugin,
-                    requests_session=transport,
-                )
-
-        # Custom session classes that don't know about `connect` keep working as long
-        # as they're not asked to defer the connection.
-        extra: dict[str, Any] = {"connect": connect}
-        if self.session_class is not Session and not _accepts_parameter(
-            self.session_class, "connect"
-        ):
-            if not connect:
-                msg = (
-                    f"{self.session_class.__name__} does not accept a `connect` "
-                    "parameter, so `connect=False` is not supported"
-                )
-                raise TypeError(msg)
-            extra = {}
-
-        return self.session_class(
+        return Session(
             url,
             username,
             password,
             auth_plugin=auth_plugin,
             transport=transport,
-            **extra,
+            connect=connect,
         )
 
     def __enter__(self: Self) -> Self:
