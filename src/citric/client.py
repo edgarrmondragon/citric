@@ -140,12 +140,11 @@ class Client:  # ruff: ignore[too-many-public-methods]
             :ls_manual:`internal database <Authentication_plugins#Internal_database>`
             (``"Authdb"``).
         connect: Whether to authenticate right away. If ``False``, the session key is
-            retrieved the first time it is needed. Deferred authentication is not
-            thread-safe: if several threads use a not-yet-connected session at the
-            same time, each may authenticate separately. The credentials are kept in
-            memory until the session connects or is closed. A future version will make
-            ``False`` the default; until then, not passing ``connect`` explicitly
-            emits a :py:class:`FutureWarning`.
+            retrieved the first time it is needed. Deferred authentication is
+            thread-safe: concurrent users of a not-yet-connected client authenticate
+            only once. The credentials are kept in memory until the client connects
+            or is closed. A future version will make ``False`` the default; until then,
+            not passing ``connect`` explicitly emits a :py:class:`FutureWarning`.
 
     .. versionadded:: 0.0.6
        Support Auth plugins with the ``auth_plugin`` parameter.
