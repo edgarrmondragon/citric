@@ -27,6 +27,7 @@ if TYPE_CHECKING:
 
 
 DUMMY_FILE_CONTENTS = b"FILE CONTENTS"
+SESSION_KEY = "my-session-key"
 
 
 @dataclass
@@ -105,7 +106,13 @@ class _RecordingTransport(_Transport):
 
     @override
     def request(self, *args: Any, data: str | None = None, **kwargs: Any) -> _Response:
-        self.methods.append(json.loads(data)["method"])  # type: ignore[arg-type] # ty: ignore[invalid-argument-type]
+        payload = json.loads(data)  # type: ignore[arg-type] # ty: ignore[invalid-argument-type]
+        self.methods.append(payload["method"])
+        if payload["method"] == "get_session_key":
+            return _Response(
+                200,
+                {"id": payload["id"], "result": SESSION_KEY, "error": None},
+            )
         return super().request(*args, data=data, **kwargs)
 
 
@@ -115,7 +122,7 @@ def test_lazy_connect():
     client = Client("mock://lime.com", "u", "p", transport=transport, connect=False)
     assert transport.methods == []
 
-    assert client.session.key is not None
+    assert client.session.key == SESSION_KEY
     assert transport.methods == ["get_session_key"]
 
     client.close()
