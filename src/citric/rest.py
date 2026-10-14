@@ -6,19 +6,23 @@ from __future__ import annotations
 
 __lazy_modules__ = {
     "citric.exceptions",
+    "citric.session",
     "citric.transport._default",
     "http",
     "json",
     "urllib.parse",
+    "warnings",
 }
 
 import http
 import json as _json
+import warnings
 from importlib import metadata
 from typing import TYPE_CHECKING, Any, Type  # ruff: ignore[deprecated-import]
 from urllib.parse import urlencode, urlsplit, urlunsplit
 
 from citric.exceptions import LimeSurveyApiError
+from citric.session import _CONNECT_FUTURE_WARNING
 from citric.transport._default import _transport_or_default
 
 if TYPE_CHECKING:
@@ -68,8 +72,18 @@ class RESTClient:
             :class:`~citric.transport.httpx2.Httpx2Transport`. Defaults to a new
             :py:class:`requests.Session <requests.Session>`.
         requests_session: Deprecated alias of ``transport``.
+        connect: Whether to authenticate right away. If ``False``, the session is
+            created the first time it is needed. Deferred authentication is not
+            thread-safe: if several threads use a not-yet-connected client at the
+            same time, each may authenticate separately. The credentials are kept in
+            memory until the client connects or is closed. A future version will make
+            ``False`` the default; until then, not passing ``connect`` explicitly
+            emits a :py:class:`FutureWarning`.
 
     .. versionadded:: 0.10.0.post1
+
+    .. version-added:: NEXT_VERSION
+        The ``connect`` parameter.
 
     .. versionchanged:: NEXT_VERSION
         The ``requests_session`` parameter was deprecated in favor of its alias
@@ -92,7 +106,12 @@ class RESTClient:
         *,
         transport: HTTPTransport | None = None,
         requests_session: HTTPTransport | None = None,
+        connect: bool | None = None,
     ) -> None:
+        if connect is None:
+            warnings.warn(_CONNECT_FUTURE_WARNING, FutureWarning, stacklevel=2)
+            connect = True
+
         self.url: str = url
         self._transport = _transport_or_default(transport, requests_session)
         self.__session_id: str | None = None
@@ -100,7 +119,10 @@ class RESTClient:
             "Accept": "application/json",
             "User-Agent": self.USER_AGENT,
         }
-        self.authenticate(username=username, password=password)
+        self.__credentials: tuple[str, str] | None = (username, password)
+
+        if connect:
+            self.authenticate(username=username, password=password)
 
     @property
     def _auth_headers(self) -> dict[str, str]:
@@ -112,7 +134,13 @@ class RESTClient:
 
     @property
     def session_id(self) -> str | None:
-        """Session ID."""
+        """Session ID.
+
+        If the client was created with ``connect=False``, accessing this property
+        authenticates with the server first.
+        """
+        if self.__credentials is not None:
+            self.authenticate(*self.__credentials)
         return self.__session_id
 
     @session_id.setter
@@ -139,6 +167,7 @@ class RESTClient:
             json={"username": username, "password": password},
         )
         self.session_id = response.json()["token"]
+        self.__credentials = None
 
     def refresh_token(self) -> None:
         """Refresh the session token."""
@@ -147,11 +176,11 @@ class RESTClient:
 
     def close(self) -> None:
         """Delete the session."""
-        if self.session_id is None:
-            return
+        self.__credentials = None
 
         try:
-            _ = self.make_request("DELETE", self.AUTH_ENDPOINT)
+            if self.__session_id is not None:
+                _ = self.make_request("DELETE", self.AUTH_ENDPOINT)
         finally:
             self._transport.close()
             self.session_id = None

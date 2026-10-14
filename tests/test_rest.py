@@ -256,3 +256,103 @@ def test_update_survey_details(
     assert isinstance(survey, Document)
     assert survey["anonymized"] is True
     assert survey["tokenLength"] == 10
+
+
+def test_lazy_connect(username: str, password: str, httpserver: HTTPServer):
+    """With ``connect=False`` no request is made until the session is needed."""
+    httpserver.expect_request(
+        "/rest/v1/auth",
+        method="POST",
+        json={"username": username, "password": password},
+    ).respond_with_json({"token": "my-session-id"})
+    httpserver.expect_request("/rest/v1/auth", method="DELETE").respond_with_data("")
+
+    client = RESTClient(
+        httpserver.url_for("").rstrip("/"),
+        username,
+        password,
+        connect=False,
+    )
+    assert httpserver.log == []
+
+    assert client.session_id == "my-session-id"
+    assert [r.method for r, _ in httpserver.log] == ["POST"]
+
+    client.close()
+    assert [r.method for r, _ in httpserver.log] == ["POST", "DELETE"]
+
+
+def test_lazy_connect_on_first_request(
+    username: str,
+    password: str,
+    httpserver: HTTPServer,
+):
+    """The first authenticated request triggers the deferred connection."""
+    httpserver.expect_request("/rest/v1/auth", method="POST").respond_with_json({
+        "token": "my-session-id"
+    })
+    httpserver.expect_request("/rest/v1/survey", method="GET").respond_with_json({})
+    httpserver.expect_request("/rest/v1/auth", method="DELETE").respond_with_data("")
+
+    client = RESTClient(
+        httpserver.url_for("").rstrip("/"),
+        username,
+        password,
+        connect=False,
+    )
+    _ = client.make_request("GET", "/rest/v1/survey")
+    assert [r.method for r, _ in httpserver.log] == ["POST", "GET"]
+    assert httpserver.log[1][0].headers["Authorization"] == "Bearer my-session-id"
+    client.close()
+
+
+def test_close_without_connecting(
+    username: str,
+    password: str,
+    httpserver: HTTPServer,
+):
+    """Closing a never-connected client doesn't hit the server."""
+    RESTClient(
+        httpserver.url_for("").rstrip("/"),
+        username,
+        password,
+        connect=False,
+    ).close()
+    assert httpserver.log == []
+
+
+def test_explicit_authenticate_discards_credentials(
+    username: str,
+    password: str,
+    httpserver: HTTPServer,
+):
+    """Authenticating explicitly doesn't trigger a second, deferred connection."""
+    httpserver.expect_request("/rest/v1/auth", method="POST").respond_with_json({
+        "token": "my-session-id"
+    })
+    httpserver.expect_request("/rest/v1/auth", method="DELETE").respond_with_data("")
+
+    client = RESTClient(
+        httpserver.url_for("").rstrip("/"),
+        username,
+        password,
+        connect=False,
+    )
+    client.authenticate(username, password)
+    assert client.session_id == "my-session-id"
+    assert [r.method for r, _ in httpserver.log] == ["POST"]
+    client.close()
+
+
+def test_connect_future_warning(username: str, password: str, httpserver: HTTPServer):
+    """Omitting ``connect`` warns, attributed to the caller."""
+    httpserver.expect_request("/rest/v1/auth", method="POST").respond_with_json({
+        "token": "my-session-id"
+    })
+    httpserver.expect_request("/rest/v1/auth", method="DELETE").respond_with_data("")
+
+    with pytest.warns(FutureWarning, match="default value of `connect`") as record:
+        client = RESTClient(httpserver.url_for("").rstrip("/"), username, password)
+
+    assert [w.filename for w in record] == [__file__]
+    client.close()

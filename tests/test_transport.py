@@ -223,8 +223,6 @@ def test_requests_session_warning_location(
         rest_handler
     )
 
-    kwargs = {} if client_class is RESTClient else {"connect": True}
-
     with pytest.warns(
         DeprecationWarning,
         match="Parameter 'requests_session' is deprecated",
@@ -234,7 +232,7 @@ def test_requests_session_warning_location(
             "user",
             "password",
             requests_session=requests.Session(),
-            **kwargs,  # type: ignore[arg-type] # ty: ignore[invalid-argument-type]
+            connect=True,
         )
 
     instance.close()

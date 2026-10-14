@@ -1,5 +1,5 @@
 kind: Added
-body: Added a `connect` parameter to `Client` and `Session` to defer authentication until the session key is first needed. A future version will make `connect=False` the default
+body: Added a `connect` parameter to `Client`, `Session` and `RESTClient` to defer authentication until the session key is first needed. A future version will make `connect=False` the default
 time: 2026-10-13T17:00:00.000000-06:00
 custom:
     Issue: "1865"
