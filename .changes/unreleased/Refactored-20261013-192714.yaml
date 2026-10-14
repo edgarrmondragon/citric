@@ -1,0 +1,5 @@
+kind: Refactored
+body: Centralize User-Agent header generation for both RPC and REST clients
+time: 2026-10-13T19:27:14.981749-06:00
+custom:
+    Issue: "1866"
