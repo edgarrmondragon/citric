@@ -150,7 +150,7 @@ class Session:
         self._transport = _transport_or_default(transport, requests_session)
         self._encoder = json_encoder or json.JSONEncoder
         self.__lock = threading.RLock()
-        self.__closed = False
+        self.__closed: bool = False
         self.__key: str | None = None
         self.__credentials: tuple[str, str, str] | None = (
             username,
@@ -288,9 +288,6 @@ class Session:
 
         # Wait for an in-flight deferred connection so its key gets released
         with self.__lock:
-            if self.__closed:
-                return
-
             try:
                 if self.__key is not None:
                     self.release_session_key()
