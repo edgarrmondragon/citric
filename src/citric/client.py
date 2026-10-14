@@ -142,6 +142,10 @@ class Client:  # ruff: ignore[too-many-public-methods]
        Support Auth plugins with the ``auth_plugin`` parameter.
 
     .. version-changed:: NEXT_VERSION
+        Authentication is deferred until the session key is first needed, instead of
+        happening on creation, so bad credentials are reported by the first request.
+
+    .. version-changed:: NEXT_VERSION
         The ``requests_session`` parameter was deprecated, use ``transport`` instead.
         It also now accepts any object implementing
         :class:`~citric.transport.protocol.HTTPTransport`, not just

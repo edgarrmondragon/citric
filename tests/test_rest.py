@@ -5,9 +5,12 @@
 from __future__ import annotations
 
 import json
+import sys
+from concurrent.futures import ThreadPoolExecutor
 from typing import TYPE_CHECKING
 
 import pytest
+import requests
 import tinydb
 import tinydb.storages
 import tinydb.table
@@ -16,6 +19,11 @@ from werkzeug.wrappers import Response
 
 from citric.exceptions import LimeSurveyApiError
 from citric.rest import RESTClient, _encode_params  # ruff: ignore[import-private-name]
+
+if sys.version_info >= (3, 12):
+    from typing import override
+else:
+    from typing_extensions import override
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Generator
@@ -256,3 +264,157 @@ def test_update_survey_details(
     assert isinstance(survey, Document)
     assert survey["anonymized"] is True
     assert survey["tokenLength"] == 10
+
+
+def test_lazy_connect(username: str, password: str, httpserver: HTTPServer):
+    """No request is made until the session is needed."""
+    httpserver.expect_request(
+        "/rest/v1/auth",
+        method="POST",
+        json={"username": username, "password": password},
+    ).respond_with_json({"token": "my-session-id"})
+    httpserver.expect_request("/rest/v1/auth", method="DELETE").respond_with_data("")
+
+    client = RESTClient(
+        httpserver.url_for("").rstrip("/"),
+        username,
+        password,
+    )
+    assert httpserver.log == []
+
+    assert client.session_id == "my-session-id"
+    assert [r.method for r, _ in httpserver.log] == ["POST"]
+
+    client.close()
+    assert [r.method for r, _ in httpserver.log] == ["POST", "DELETE"]
+
+
+def test_lazy_connect_on_first_request(
+    username: str,
+    password: str,
+    httpserver: HTTPServer,
+):
+    """The first authenticated request triggers the deferred connection."""
+    httpserver.expect_request("/rest/v1/auth", method="POST").respond_with_json({
+        "token": "my-session-id"
+    })
+    httpserver.expect_request("/rest/v1/survey", method="GET").respond_with_json({})
+    httpserver.expect_request("/rest/v1/auth", method="DELETE").respond_with_data("")
+
+    client = RESTClient(
+        httpserver.url_for("").rstrip("/"),
+        username,
+        password,
+    )
+    _ = client.make_request("GET", "/rest/v1/survey")
+    assert [r.method for r, _ in httpserver.log] == ["POST", "GET"]
+    assert httpserver.log[1][0].headers["Authorization"] == "Bearer my-session-id"
+    client.close()
+
+
+def test_close_without_connecting(
+    username: str,
+    password: str,
+    httpserver: HTTPServer,
+):
+    """Closing a never-connected client doesn't hit the server."""
+    RESTClient(
+        httpserver.url_for("").rstrip("/"),
+        username,
+        password,
+    ).close()
+    assert httpserver.log == []
+
+
+def test_explicit_authenticate_discards_credentials(
+    username: str,
+    password: str,
+    httpserver: HTTPServer,
+):
+    """Authenticating explicitly doesn't trigger a second, deferred connection."""
+    httpserver.expect_request("/rest/v1/auth", method="POST").respond_with_json({
+        "token": "my-session-id"
+    })
+    httpserver.expect_request("/rest/v1/auth", method="DELETE").respond_with_data("")
+
+    client = RESTClient(
+        httpserver.url_for("").rstrip("/"),
+        username,
+        password,
+    )
+    client.authenticate(username, password)
+    assert client.session_id == "my-session-id"
+    assert [r.method for r, _ in httpserver.log] == ["POST"]
+    client.close()
+
+
+def test_lazy_connect_is_thread_safe(
+    username: str,
+    password: str,
+    httpserver: HTTPServer,
+):
+    """Concurrent users of a deferred client authenticate only once."""
+    httpserver.expect_request("/rest/v1/auth", method="POST").respond_with_json({
+        "token": "my-session-id"
+    })
+    httpserver.expect_request("/rest/v1/auth", method="DELETE").respond_with_data("")
+
+    client = RESTClient(
+        httpserver.url_for("").rstrip("/"),
+        username,
+        password,
+    )
+    with ThreadPoolExecutor(max_workers=8) as executor:
+        ids = list(executor.map(lambda _: client.session_id, range(32)))
+
+    assert ids == ["my-session-id"] * 32
+    assert [r.method for r, _ in httpserver.log] == ["POST"]
+    client.close()
+
+
+def test_assigned_session_id_discards_credentials(
+    username: str,
+    password: str,
+    httpserver: HTTPServer,
+):
+    """Assigning a session ID replaces the pending deferred authentication."""
+    httpserver.expect_request("/rest/v1/auth", method="DELETE").respond_with_data("")
+
+    client = RESTClient(httpserver.url_for("").rstrip("/"), username, password)
+    client.session_id = "my-own-session-id"
+
+    assert client.session_id == "my-own-session-id"
+    assert [r.method for r, _ in httpserver.log] == []
+    client.close()
+    assert [r.method for r, _ in httpserver.log] == ["DELETE"]
+
+
+def test_close_is_idempotent(username: str, password: str, httpserver: HTTPServer):
+    """Closing a client again doesn't hit the server or the transport."""
+    httpserver.expect_request("/rest/v1/auth", method="POST").respond_with_json({
+        "token": "my-session-id"
+    })
+    httpserver.expect_request("/rest/v1/auth", method="DELETE").respond_with_data("")
+
+    class Transport(requests.Session):
+        closed = 0
+
+        @override
+        def close(self) -> None:
+            self.closed += 1
+            super().close()
+
+    transport = Transport()
+    client = RESTClient(
+        httpserver.url_for("").rstrip("/"),
+        username,
+        password,
+        transport=transport,
+    )
+    assert client.session_id == "my-session-id"
+
+    client.close()
+    client.close()
+
+    assert [r.method for r, _ in httpserver.log] == ["POST", "DELETE"]
+    assert transport.closed == 1

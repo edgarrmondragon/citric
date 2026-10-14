@@ -11,12 +11,14 @@ __lazy_modules__ = {
     "http",
     "json",
     "random",
+    "threading",
 }
 
 import http
 import json
 import logging
 import random
+import threading
 from importlib import metadata
 from typing import TYPE_CHECKING, Any, Type  # ruff: ignore[deprecated-import]
 
@@ -68,9 +70,11 @@ def _check_result_status(result: Any) -> None:  # ruff: ignore[any-type]
 class Session:
     """LimeSurvey RemoteControl 2 session.
 
-    Upon creation, retrieves a session key with
-    :ls_manual:`get_session_key <RemoteControl_2_API#get_session_key>` and stores it in
-    the `key`_ attribute. The key is released upon session `closure`_.
+    Retrieves a session key with
+    :ls_manual:`get_session_key <RemoteControl_2_API#get_session_key>` the first time
+    it is needed, and stores it in the `key`_ attribute. Creating a session doesn't
+    contact the server. The key is released upon session `closure`_, if one was
+    retrieved.
 
     Args:
         url: LimeSurvey Remote Control endpoint.
@@ -105,6 +109,12 @@ class Session:
         :class:`~citric.transport.protocol.HTTPTransport`, not just
         :py:class:`requests.Session <requests.Session>`.
 
+    .. version-changed:: NEXT_VERSION
+        Authentication is deferred until the session key is first needed, instead of
+        happening on creation. Credentials are kept in memory until then, or until
+        the session is closed. Deferred authentication is thread-safe: concurrent
+        users of a new session authenticate only once.
+
     .. _key: #citric.session.Session.key
     .. _closure: #citric.session.Session.close
     """
@@ -125,14 +135,20 @@ class Session:
         self.url: str = url
         self._transport = _transport_or_default(transport, requests_session)
         self._encoder = json_encoder or json.JSONEncoder
-
-        self.__key: str | None = self.get_session_key(
+        self.__lock = threading.RLock()
+        self.__closed: bool = False
+        self.__key: str | None = None
+        self.__credentials: tuple[str, str, str] | None = (
             username,
             password,
             auth_plugin,
         )
 
-        self.__closed = False
+    def _connect(self, credentials: tuple[str, str, str]) -> None:
+        """Authenticate and store the session key."""
+        username, password, auth_plugin = credentials
+        self.__key = self.get_session_key(username, password, auth_plugin)
+        self.__credentials = None
 
     @property
     def closed(self) -> bool:
@@ -141,8 +157,14 @@ class Session:
 
     @property
     def key(self) -> str | None:
-        """RPC session key."""
-        return self.__key
+        """RPC session key.
+
+        The first access authenticates with the server.
+        """
+        with self.__lock:
+            if self.__credentials is not None:
+                self._connect(self.__credentials)
+            return self.__key
 
     def __getattr__(self, name: str) -> Method[Result]:
         """Magic method dispatcher.
@@ -246,13 +268,17 @@ class Session:
         if self.__closed:
             return
 
-        try:
-            self.release_session_key()
-        finally:
-            # Update the state first, so it's consistent even if the transport fails
-            self.__key = None
-            self.__closed = True
-            self._transport.close()
+        # Wait for an in-flight deferred connection so its key gets released
+        with self.__lock:
+            try:
+                if self.__key is not None:
+                    self.release_session_key()
+            finally:
+                # Update the state first, so it's consistent if the transport fails
+                self.__key = None
+                self.__credentials = None
+                self.__closed = True
+                self._transport.close()
 
     def __enter__(self: Self) -> Self:
         """Context manager for RPC session.

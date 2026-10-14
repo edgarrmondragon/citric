@@ -9,11 +9,13 @@ __lazy_modules__ = {
     "citric.transport._default",
     "http",
     "json",
+    "threading",
     "urllib.parse",
 }
 
 import http
 import json as _json
+import threading
 from importlib import metadata
 from typing import TYPE_CHECKING, Any, Type  # ruff: ignore[deprecated-import]
 from urllib.parse import urlencode, urlsplit, urlunsplit
@@ -53,7 +55,8 @@ def _encode_params(url: str, params: Mapping[str, Any]) -> str:
 class RESTClient:
     """LimeSurvey REST API client.
 
-    Upon creation, retrieves a session ID that's used for authentication.
+    Retrieves a session ID, used for authentication, the first time it is needed.
+    Creating a client doesn't contact the server.
 
     .. warning::
        The REST API is still in early development, so the client is subject to changes.
@@ -70,6 +73,12 @@ class RESTClient:
         requests_session: Deprecated alias of ``transport``.
 
     .. versionadded:: 0.10.0.post1
+
+    .. version-changed:: NEXT_VERSION
+        Authentication is deferred until the session ID is first needed, instead of
+        happening on creation. Credentials are kept in memory until then, or until
+        the client is closed. Deferred authentication is thread-safe: concurrent
+        users of a new client authenticate only once.
 
     .. versionchanged:: NEXT_VERSION
         The ``requests_session`` parameter was deprecated in favor of its alias
@@ -95,12 +104,14 @@ class RESTClient:
     ) -> None:
         self.url: str = url
         self._transport = _transport_or_default(transport, requests_session)
+        self.__lock = threading.RLock()
+        self.__closed: bool = False
         self.__session_id: str | None = None
         self._headers = {
             "Accept": "application/json",
             "User-Agent": self.USER_AGENT,
         }
-        self.authenticate(username=username, password=password)
+        self.__credentials: tuple[str, str] | None = (username, password)
 
     @property
     def _auth_headers(self) -> dict[str, str]:
@@ -112,13 +123,21 @@ class RESTClient:
 
     @property
     def session_id(self) -> str | None:
-        """Session ID."""
-        return self.__session_id
+        """Session ID.
+
+        The first access authenticates with the server.
+        """
+        with self.__lock:
+            if self.__credentials is not None:
+                self.authenticate(*self.__credentials)
+            return self.__session_id
 
     @session_id.setter
     def session_id(self, value: str | None) -> None:
-        """Set the session ID."""
-        self.__session_id = value
+        """Set the session ID, replacing any pending deferred authentication."""
+        with self.__lock:
+            self.__credentials = None
+            self.__session_id = value
 
     @staticmethod
     def _raise_for_status(r: HTTPResponse) -> None:
@@ -133,28 +152,39 @@ class RESTClient:
             username: LimeSurvey user name.
             password: LimeSurvey password.
         """
-        response = self.make_request(
-            "POST",
-            path=self.AUTH_ENDPOINT,
-            json={"username": username, "password": password},
-        )
-        self.session_id = response.json()["token"]
+        with self.__lock:
+            response = self.make_request(
+                "POST",
+                path=self.AUTH_ENDPOINT,
+                json={"username": username, "password": password},
+            )
+            self.session_id = response.json()["token"]
 
     def refresh_token(self) -> None:
         """Refresh the session token."""
-        response = self.make_request("PUT", path=self.AUTH_ENDPOINT)
-        self.session_id = response.json()["token"]
+        with self.__lock:
+            response = self.make_request("PUT", path=self.AUTH_ENDPOINT)
+            self.session_id = response.json()["token"]
 
     def close(self) -> None:
-        """Delete the session."""
-        if self.session_id is None:
-            return
+        """Delete the session, if one was created.
 
-        try:
-            _ = self.make_request("DELETE", self.AUTH_ENDPOINT)
-        finally:
-            self._transport.close()
-            self.session_id = None
+        Closing a client more than once has no effect.
+        """
+        # Wait for an in-flight deferred connection so its session gets deleted
+        with self.__lock:
+            if self.__closed:
+                return
+
+            self.__credentials = None
+
+            try:
+                if self.__session_id is not None:
+                    _ = self.make_request("DELETE", self.AUTH_ENDPOINT)
+            finally:
+                self._transport.close()
+                self.session_id = None
+                self.__closed = True
 
     def make_request(
         self,
