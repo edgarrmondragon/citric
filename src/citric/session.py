@@ -33,8 +33,8 @@ if TYPE_CHECKING:
     import sys
     from types import TracebackType
 
-    from citric.transport.protocol import HTTPTransport
-    from citric.types import Result, RPCResponse
+    from citric.transport.protocol import HTTPResponse, HTTPTransport
+    from citric.types import Result, RPCRequest, RPCResponse
 
     if sys.version_info >= (3, 11):
         from typing import Self
@@ -188,6 +188,18 @@ class Session:
         _check_result_status(response["result"])
         return response["result"]
 
+    def _send_request(self, payload: RPCRequest) -> HTTPResponse:
+        return self._transport.request(
+            "POST",
+            self.url,
+            data=json.dumps(payload, cls=self._encoder),
+            headers={
+                "accept": "application/json",
+                "content-type": "application/json",
+                "User-Agent": self.USER_AGENT,
+            },
+        )
+
     def _invoke(self, method: str, *params: Any) -> RPCResponse:
         """Execute a LimeSurvey RPC with a JSON payload.
 
@@ -204,21 +216,11 @@ class Session:
         """
         request_id = random.randint(1, 999_999)  # ruff: ignore[suspicious-non-cryptographic-random-usage]
 
-        payload = {
+        res = self._send_request({
             "method": method,
             "params": [*params],
             "id": request_id,
-        }
-
-        res = self._transport.request(
-            "POST",
-            self.url,
-            data=json.dumps(payload, cls=self._encoder),
-            headers={
-                "content-type": "application/json",
-                "User-Agent": self.USER_AGENT,
-            },
-        )
+        })
         if res.status_code >= http.HTTPStatus.BAD_REQUEST:
             msg = f"Request to LimeSurvey server failed with status {res.status_code}"
             raise LimeSurveyApiError(msg)

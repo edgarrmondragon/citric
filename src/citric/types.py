@@ -505,6 +505,19 @@ class QuotaProperties(TypedDict, total=False):
     """Quota end-URL description for this language."""
 
 
+class RPCRequest(TypedDict):
+    """RPC response payload."""
+
+    method: str
+    """RPC method name."""
+
+    params: list[Any]
+    """RPC method parameters."""
+
+    id: int
+    """The ID of the request."""
+
+
 class RPCResponse(TypedDict):
     """RPC response payload."""
 
