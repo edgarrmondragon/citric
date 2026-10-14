@@ -124,3 +124,50 @@ def test_transport_is_closed_if_release_fails():
 
     assert transport.closed == 1
     assert session.closed
+
+
+def test_close_is_idempotent():
+    """Closing a session again doesn't hit the server or the transport."""
+
+    class RecordingTransport(_Transport):
+        def __init__(self) -> None:
+            self.methods: list[str] = []
+            self.closed = 0
+
+        @override
+        def request(
+            self, *args: Any, data: str | None = None, **kwargs: Any
+        ) -> _Response:
+            self.methods.append(json.loads(data)["method"])  # type: ignore[arg-type] # ty: ignore[invalid-argument-type]
+            return super().request(*args, data=data, **kwargs)
+
+        @override
+        def close(self) -> None:
+            self.closed += 1
+
+    transport = RecordingTransport()
+    session = Session("mock://lime.com", "u", "p", transport=transport)
+
+    session.close()
+    session.close()
+
+    assert transport.methods == ["get_session_key", "release_session_key"]
+    assert transport.closed == 1
+
+
+def test_session_is_closed_if_transport_close_fails():
+    """The session state is updated even if the transport fails to close."""
+
+    class FailingCloseTransport(_Transport):
+        @override
+        def close(self) -> None:
+            msg = "boom"
+            raise RuntimeError(msg)
+
+    session = Session("mock://lime.com", "u", "p", transport=FailingCloseTransport())
+
+    with pytest.raises(RuntimeError, match="boom"):
+        session.close()
+
+    assert session.closed
+    assert session.key is None
