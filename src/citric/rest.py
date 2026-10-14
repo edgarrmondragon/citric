@@ -73,12 +73,11 @@ class RESTClient:
             :py:class:`requests.Session <requests.Session>`.
         requests_session: Deprecated alias of ``transport``.
         connect: Whether to authenticate right away. If ``False``, the session is
-            created the first time it is needed. Deferred authentication is not
-            thread-safe: if several threads use a not-yet-connected client at the
-            same time, each may authenticate separately. The credentials are kept in
-            memory until the client connects or is closed. A future version will make
-            ``False`` the default; until then, not passing ``connect`` explicitly
-            emits a :py:class:`FutureWarning`.
+            created the first time it is needed. Deferred authentication is
+            thread-safe: concurrent users of a not-yet-connected client authenticate
+            only once. The credentials are kept in memory until the client connects
+            or is closed. A future version will make ``False`` the default; until then,
+            not passing ``connect`` explicitly emits a :py:class:`FutureWarning`.
 
     .. versionadded:: 0.10.0.post1
 
