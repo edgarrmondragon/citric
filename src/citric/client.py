@@ -143,7 +143,8 @@ class Client:  # ruff: ignore[too-many-public-methods]
         connect: Whether to authenticate right away. If ``False``, the session key is
             retrieved the first time it is needed. Deferred authentication is not
             thread-safe: if several threads use a not-yet-connected session at the
-            same time, each may authenticate separately. A future version will make
+            same time, each may authenticate separately. The credentials are kept in
+            memory until the session connects or is closed. A future version will make
             ``False`` the default; until then, not passing ``connect`` explicitly
             emits a :py:class:`FutureWarning`.
 
