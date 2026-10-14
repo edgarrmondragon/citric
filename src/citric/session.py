@@ -239,11 +239,20 @@ class Session:
 
         Releases the session key with
         :ls_manual:`release_session_key <RemoteControl_2_API#release_session_key>`.
+
+        Closing a session more than once has no effect. The session is closed, and its
+        HTTP transport released, even if releasing the session key fails.
         """
-        self.release_session_key()
-        self._transport.close()
-        self.__key = None
-        self.__closed = True
+        if self.__closed:
+            return
+
+        try:
+            self.release_session_key()
+        finally:
+            # Update the state first, so it's consistent even if the transport fails
+            self.__key = None
+            self.__closed = True
+            self._transport.close()
 
     def __enter__(self: Self) -> Self:
         """Context manager for RPC session.
