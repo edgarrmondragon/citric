@@ -151,7 +151,7 @@ class Client:  # ruff: ignore[too-many-public-methods]
         The ``requests_session`` parameter, use ``transport`` instead.
 
     .. version-changed:: NEXT_VERSION
-        The :attr:`~citric.Client.session_class` was removed.
+        The ``Client.session_class`` class attribute  was removed.
     """
 
     def __init__(
