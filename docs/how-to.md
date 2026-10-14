@@ -24,6 +24,27 @@ Otherwise, you can manually close the session with {meth}`client.close() <citric
 :end-before: end example
 ```
 
+## Run requests concurrently with `asyncio`
+
+Citric doesn't have an async API (yet), but its blocking client can be used from
+`asyncio` code with {func}`asyncio.to_thread`. Each call runs in a worker thread, so
+independent calls, like fetching the properties of many surveys, overlap instead of
+running one after the other. Authentication is thread-safe, so concurrent calls on a
+new client share a single session key.
+
+```{literalinclude} ../code_samples/asyncio_to_thread.py
+:start-after: start example
+:end-before: end example
+```
+
+To limit the load on the server, bound the concurrency with a semaphore and size the
+`requests` connection pool accordingly:
+
+```{literalinclude} ../code_samples/asyncio_to_thread_bounded.py
+:start-after: start example
+:end-before: end example
+```
+
 ## Create and import questions using Python objects
 
 Use {class}`citric.objects.Question` to compose questions programmatically and
