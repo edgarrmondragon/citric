@@ -5,7 +5,6 @@
 from __future__ import annotations
 
 __lazy_modules__ = {
-    "citric._common",
     "citric.exceptions",
     "citric.transport._default",
     "http",
@@ -15,10 +14,10 @@ __lazy_modules__ = {
 
 import http
 import json as _json
+from importlib import metadata
 from typing import TYPE_CHECKING, Any, Type  # ruff: ignore[deprecated-import]
 from urllib.parse import urlencode, urlsplit, urlunsplit
 
-from citric._common import _get_user_agent
 from citric.exceptions import LimeSurveyApiError
 from citric.transport._default import _transport_or_default
 
@@ -82,7 +81,7 @@ class RESTClient:
         The ``requests_session`` parameter, use ``transport`` instead.
     """
 
-    USER_AGENT: str | None = None
+    USER_AGENT = f"citric/{metadata.version('citric')}"
     AUTH_ENDPOINT = "/rest/v1/auth"
 
     def __init__(
@@ -99,7 +98,7 @@ class RESTClient:
         self.__session_id: str | None = None
         self._headers = {
             "Accept": "application/json",
-            "User-Agent": _get_user_agent(self.USER_AGENT),
+            "User-Agent": self.USER_AGENT,
         }
         self.authenticate(username=username, password=password)
 
