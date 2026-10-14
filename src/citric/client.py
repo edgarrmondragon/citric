@@ -6,24 +6,21 @@ from __future__ import annotations
 
 __lazy_modules__ = {
     "base64",
+    "citric.session",
     "citric.transport._default",
     "citric.transport.protocol",
     "datetime",
-    "inspect",
     "io",
     "json",
     "pathlib",
-    "warnings",
 }
 
 import base64
 import datetime as dt
-import inspect
 import io
 import json
 import logging
 import re
-import warnings
 from dataclasses import dataclass
 from pathlib import Path
 from typing import IO, TYPE_CHECKING, Any, Literal
@@ -153,11 +150,9 @@ class Client:  # ruff: ignore[too-many-public-methods]
     .. deprecated:: NEXT_VERSION
         The ``requests_session`` parameter, use ``transport`` instead.
 
-    .. deprecated:: NEXT_VERSION
-        Setting :attr:`~citric.Client.session_class` to a custom class.
+    .. version-changed:: NEXT_VERSION
+        The :attr:`~citric.Client.session_class` was removed.
     """
-
-    session_class = Session
 
     def __init__(
         self,
@@ -183,7 +178,7 @@ class Client:  # ruff: ignore[too-many-public-methods]
         self.__server_version = None
         self.session.close()
 
-    def _get_rpc_session(
+    def _get_rpc_session(  # ruff: ignore[no-self-use]
         self,
         *,
         url: str,
@@ -197,28 +192,7 @@ class Client:  # ruff: ignore[too-many-public-methods]
         Returns:
             The RPC session for this client.
         """
-        if self.session_class is not Session:
-            warnings.warn(
-                "Using a custom class in `Client.session_class` is deprecated and will be removed in a future version",  # ruff: ignore[line-too-long]
-                DeprecationWarning,
-                stacklevel=3,  # _get_rpc_session -> Client.__init__ -> user code
-            )
-
-            # Custom classes written before `transport` existed only accept
-            # `requests_session`.
-            accepted = inspect.signature(self.session_class).parameters
-            if "transport" not in accepted and not any(
-                p.kind is inspect.Parameter.VAR_KEYWORD for p in accepted.values()
-            ):
-                return self.session_class(
-                    url,
-                    username,
-                    password,
-                    auth_plugin=auth_plugin,
-                    requests_session=transport,
-                )
-
-        return self.session_class(
+        return Session(
             url,
             username,
             password,
