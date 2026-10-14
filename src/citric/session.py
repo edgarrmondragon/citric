@@ -240,10 +240,12 @@ class Session:
         Releases the session key with
         :ls_manual:`release_session_key <RemoteControl_2_API#release_session_key>`.
         """
-        self.release_session_key()
-        self._transport.close()
-        self.__key = None
-        self.__closed = True
+        try:
+            self.release_session_key()
+        finally:
+            self._transport.close()
+            self.__key = None
+            self.__closed = True
 
     def __enter__(self: Self) -> Self:
         """Context manager for RPC session.

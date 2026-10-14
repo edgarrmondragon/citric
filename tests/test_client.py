@@ -6,12 +6,20 @@ from __future__ import annotations
 
 import datetime as dt
 import json
+import sys
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any
 
 import pytest
 
 from citric.client import Client, ServerVersion
+from citric.exceptions import LimeSurveyApiError
+from citric.session import Session
+
+if sys.version_info >= (3, 12):
+    from typing import override
+else:
+    from typing_extensions import override
 
 if TYPE_CHECKING:
     from collections.abc import Generator
@@ -88,3 +96,31 @@ def test_invite_participants_unknown_status(client: Client):
 def test_parse_server_version(raw: str, parsed: tuple):
     """Test server version parsing."""
     assert ServerVersion.parse(raw) == parsed
+
+
+def test_transport_is_closed_if_release_fails():
+    """The transport is closed even if releasing the session key fails."""
+
+    class FailingReleaseTransport(_Transport):
+        closed = 0
+
+        @override
+        def request(
+            self, *args: Any, data: str | None = None, **kwargs: Any
+        ) -> _Response:
+            if json.loads(data)["method"] == "release_session_key":  # type: ignore[arg-type] # ty: ignore[invalid-argument-type]
+                return _Response(500, None)
+            return super().request(*args, data=data, **kwargs)
+
+        @override
+        def close(self) -> None:
+            self.closed += 1
+
+    transport = FailingReleaseTransport()
+    session = Session("mock://lime.com", "u", "p", transport=transport)
+
+    with pytest.raises(LimeSurveyApiError):
+        session.close()
+
+    assert transport.closed == 1
+    assert session.closed
