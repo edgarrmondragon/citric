@@ -172,7 +172,7 @@ def test_rest_client_over_http_transport(
             httpserver.url_for("/").rstrip("/"),
             "user",
             "password",
-            **{parameter: transport},  # type: ignore[arg-type] # ty: ignore[invalid-argument-type]
+            **{parameter: transport},
         ) as client,
     ):
         assert client.session_id == REST_SESSION_ID
