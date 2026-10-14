@@ -77,7 +77,8 @@ class Session:
 
     Upon creation, retrieves a session key with
     :ls_manual:`get_session_key <RemoteControl_2_API#get_session_key>` and stores it in
-    the `key`_ attribute. The key is released upon session `closure`_.
+    the `key`_ attribute. With ``connect=False``, the key is instead retrieved the
+    first time it is needed. The key is released upon session `closure`_.
 
     Args:
         url: LimeSurvey Remote Control endpoint.
@@ -97,12 +98,11 @@ class Session:
         json_encoder: A :py:class:`json.Encoder <json.JSONEncoder>` subclass to use for
             encoding RPC parameters.
         connect: Whether to authenticate right away. If ``False``, the session key is
-            retrieved the first time it is needed. Deferred authentication is not
-            thread-safe: if several threads use a not-yet-connected session at the
-            same time, each may authenticate separately. The credentials are kept in
-            memory until the session connects or is closed. A future version will make
-            ``False`` the default; until then, not passing ``connect`` explicitly
-            emits a :py:class:`FutureWarning`.
+            retrieved the first time it is needed. Deferred authentication is
+            thread-safe: concurrent users of a not-yet-connected session authenticate
+            only once. The credentials are kept in memory until the session connects
+            or is closed. A future version will make ``False`` the default; until then,
+            not passing ``connect`` explicitly emits a :py:class:`FutureWarning`.
 
     .. versionchanged:: 0.0.4
        Replaced the ``requests_session_factory`` parameter with ``requests_session``.
