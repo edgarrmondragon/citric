@@ -12,7 +12,6 @@ from typing import TYPE_CHECKING, Any
 import pytest
 
 from citric.client import Client, ServerVersion
-from citric.session import Session
 
 if TYPE_CHECKING:
     from collections.abc import Generator
@@ -58,26 +57,6 @@ def client() -> Generator[Client, None, None]:
         client.close()
 
 
-def test_session_class_deprecation():
-    """The ``session_class`` warning is attributed to the caller, not citric."""
-
-    class MockSession(Session): ...
-
-    class MockClient(Client):
-        session_class = MockSession
-
-    with pytest.warns(
-        DeprecationWarning,
-        match="Using a custom class in `Client.session_class` is deprecated",
-    ) as record:
-        client = MockClient("mock://lime.com", "u", "p", transport=_Transport())
-
-    assert isinstance(client.session, MockSession)
-    client.close()
-
-    assert [w.filename for w in record] == [__file__]
-
-
 def test_export_timeline(client: Client):
     """Test export_timeline client method."""
     assert client.export_timeline(
@@ -109,35 +88,3 @@ def test_invite_participants_unknown_status(client: Client):
 def test_parse_server_version(raw: str, parsed: tuple):
     """Test server version parsing."""
     assert ServerVersion.parse(raw) == parsed
-
-
-def test_session_class_requests_session_only():
-    """A custom ``session_class`` that only accepts ``requests_session`` still works."""
-    transport = _Transport()
-
-    class LegacySession(Session):
-        def __init__(
-            self,
-            url: str,
-            username: str,
-            password: str,
-            *,
-            requests_session: _Transport,
-            auth_plugin: str,
-        ) -> None:
-            super().__init__(
-                url,
-                username,
-                password,
-                transport=requests_session,
-                auth_plugin=auth_plugin,
-            )
-
-    class LegacyClient(Client):
-        session_class = LegacySession
-
-    with pytest.warns(DeprecationWarning, match="`Client.session_class` is deprecated"):
-        client = LegacyClient("mock://lime.com", "u", "p", transport=transport)
-
-    assert client.session._transport is transport
-    client.close()
