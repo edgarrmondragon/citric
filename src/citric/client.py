@@ -35,7 +35,7 @@ from citric.transport.protocol import HTTPTransport  # ruff: ignore[typing-only-
 
 if TYPE_CHECKING:
     import sys
-    from collections.abc import Generator, Iterable, Mapping, Sequence
+    from collections.abc import Callable, Generator, Iterable, Mapping, Sequence
     from os import PathLike
     from types import TracebackType
 
@@ -118,6 +118,18 @@ class ServerVersion:
             d.get("prerelease"),
             d.get("build"),
         )
+
+
+def _accepts_parameter(callable_: Callable[..., Any], name: str) -> bool:
+    """Check if a callable accepts a keyword argument.
+
+    Returns:
+        Whether ``name`` is a parameter or the callable takes ``**kwargs``.
+    """
+    accepted = inspect.signature(callable_).parameters
+    return name in accepted or any(
+        p.kind is inspect.Parameter.VAR_KEYWORD for p in accepted.values()
+    )
 
 
 class Client:  # ruff: ignore[too-many-public-methods]
@@ -217,6 +229,10 @@ class Client:  # ruff: ignore[too-many-public-methods]
 
         Returns:
             The RPC session for this client.
+
+        Raises:
+            TypeError: If ``connect`` is ``False`` and the custom session class
+                doesn't accept a ``connect`` parameter.
         """
         if self.session_class is not Session:
             warnings.warn(
@@ -227,10 +243,7 @@ class Client:  # ruff: ignore[too-many-public-methods]
 
             # Custom classes written before `transport` existed only accept
             # `requests_session`.
-            accepted = inspect.signature(self.session_class).parameters
-            if "transport" not in accepted and not any(
-                p.kind is inspect.Parameter.VAR_KEYWORD for p in accepted.values()
-            ):
+            if not _accepts_parameter(self.session_class, "transport"):
                 return self.session_class(
                     url,
                     username,
@@ -242,12 +255,16 @@ class Client:  # ruff: ignore[too-many-public-methods]
         # Custom session classes that don't know about `connect` keep working as long
         # as they're not asked to defer the connection.
         extra: dict[str, Any] = {"connect": connect}
-        if self.session_class is not Session and connect:
-            accepted = inspect.signature(self.session_class).parameters
-            if "connect" not in accepted and not any(
-                p.kind is inspect.Parameter.VAR_KEYWORD for p in accepted.values()
-            ):
-                extra = {}
+        if self.session_class is not Session and not _accepts_parameter(
+            self.session_class, "connect"
+        ):
+            if not connect:
+                msg = (
+                    f"{self.session_class.__name__} does not accept a `connect` "
+                    "parameter, so `connect=False` is not supported"
+                )
+                raise TypeError(msg)
+            extra = {}
 
         return self.session_class(
             url,

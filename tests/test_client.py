@@ -14,6 +14,7 @@ from typing import TYPE_CHECKING, Any
 import pytest
 
 from citric.client import Client, ServerVersion
+from citric.exceptions import LimeSurveyApiError
 from citric.session import Session
 
 if sys.version_info >= (3, 12):
@@ -234,3 +235,71 @@ def test_session_class_without_connect_parameter():
 
     assert isinstance(client.session, NoConnectSession)
     client.close()
+
+
+def test_lazy_connect_on_first_rpc_call():
+    """The first authenticated RPC call triggers the deferred connection."""
+    transport = _RecordingTransport()
+    client = Client("mock://lime.com", "u", "p", transport=transport, connect=False)
+
+    client.session.call("list_surveys", None)
+    assert transport.methods == ["get_session_key", "list_surveys"]
+    client.close()
+
+
+def test_lazy_connect_retries_after_failure():
+    """A failed deferred connection is retried on the next use."""
+
+    class FlakyTransport(_RecordingTransport):
+        @override
+        def request(
+            self, *args: Any, data: str | None = None, **kwargs: Any
+        ) -> _Response:
+            if not self.methods:
+                self.methods.append("get_session_key")
+                return _Response(500, None)
+            return super().request(*args, data=data, **kwargs)
+
+    transport = FlakyTransport()
+    client = Client("mock://lime.com", "u", "p", transport=transport, connect=False)
+
+    with pytest.raises(LimeSurveyApiError):
+        _ = client.session.key
+
+    assert client.session.key is not None
+    assert transport.methods == ["get_session_key", "get_session_key"]
+    client.close()
+
+
+def test_session_class_without_connect_parameter_cannot_defer():
+    """Deferring the connection with a class that can't do so fails clearly."""
+
+    class NoConnectSession(Session):
+        def __init__(
+            self,
+            url: str,
+            username: str,
+            password: str,
+            *,
+            transport: _Transport,
+            auth_plugin: str,
+        ) -> None:
+            super().__init__(
+                url,
+                username,
+                password,
+                transport=transport,
+                auth_plugin=auth_plugin,
+                connect=True,
+            )
+
+    class NoConnectClient(Client):
+        session_class = NoConnectSession
+
+    with (
+        pytest.warns(DeprecationWarning, match="`Client.session_class` is deprecated"),
+        pytest.raises(TypeError, match="does not accept a `connect` parameter"),
+    ):
+        NoConnectClient(
+            "mock://lime.com", "u", "p", transport=_Transport(), connect=False
+        )
