@@ -73,17 +73,15 @@ instead, including a plain
 [`requests.Session`](inv:requests:py:class:api/#requests.Session) with a custom
 adapter mounted.
 
-citric ships two ready-made alternative transports. Neither library is a
-dependency of citric itself, so install the one you want to use separately:
+citric ships two ready-made alternative transports:
 
 - {class}`citric.transport.httpx2.Httpx2Transport`, backed by
-  [`httpx2`](https://github.com/pydantic/httpx2). Install it with
-  `pip install httpx2`.
+  [`httpx2`](https://github.com/pydantic/httpx2). It isn't a dependency of
+  citric itself, so install it separately with `pip install httpx2`.
 - {class}`citric.transport.urllib3.Urllib3Transport`, backed by
   [`urllib3`](https://urllib3.readthedocs.io) directly, without `requests` in
-  the loop. `urllib3` is normally already installed as a dependency of
-  `requests`, but pin it explicitly with `pip install urllib3` if you don't
-  want to rely on that.
+  the loop. `urllib3` is a dependency of citric, so it is installed with it and
+  you don't need to install anything else.
 
 ```{literalinclude} ../code_samples/custom_transport.py
 :start-after: start example

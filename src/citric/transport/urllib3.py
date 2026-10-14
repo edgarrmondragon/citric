@@ -51,10 +51,8 @@ class Urllib3ResponseWrapper:
 class Urllib3Transport:
     """Citric transport protocol implementation for urllib3.
 
-    Requires the `urllib3 <https://urllib3.readthedocs.io>`_ package.
-    ``urllib3`` is usually already installed as a dependency of ``requests``,
-    but isn't a direct dependency of citric itself, so pin it explicitly
-    (``pip install urllib3``) if you don't want to rely on that.
+    Backed by the `urllib3 <https://urllib3.readthedocs.io>`_ package, which is
+    installed with citric, so there's nothing else to install.
 
     Wraps :py:class:`urllib3.PoolManager <urllib3.PoolManager>`.
 
