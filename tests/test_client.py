@@ -7,7 +7,6 @@ from __future__ import annotations
 import datetime as dt
 import json
 import sys
-import warnings
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any
@@ -104,11 +103,13 @@ def test_parse_server_version(raw: str, parsed: tuple):
 class _RecordingTransport(_Transport):
     def __init__(self) -> None:
         self.methods: list[str] = []
+        self.params: list[list[Any]] = []
 
     @override
     def request(self, *args: Any, data: str | None = None, **kwargs: Any) -> _Response:
         payload = json.loads(data)  # type: ignore[arg-type] # ty: ignore[invalid-argument-type]
         self.methods.append(payload["method"])
+        self.params.append(payload["params"])
         if payload["method"] == "get_session_key":
             return _Response(
                 200,
@@ -118,9 +119,9 @@ class _RecordingTransport(_Transport):
 
 
 def test_lazy_connect():
-    """With ``connect=False`` no request is made until the key is needed."""
+    """No request is made until the key is needed."""
     transport = _RecordingTransport()
-    client = Client("mock://lime.com", "u", "p", transport=transport, connect=False)
+    client = Client("mock://lime.com", "u", "p", transport=transport)
     assert transport.methods == []
 
     assert client.session.key == SESSION_KEY
@@ -134,33 +135,19 @@ def test_lazy_connect():
 def test_close_without_connecting():
     """Closing a never-connected session doesn't hit the server."""
     transport = _RecordingTransport()
-    Client("mock://lime.com", "u", "p", transport=transport, connect=False).close()
+    Client("mock://lime.com", "u", "p", transport=transport).close()
     assert transport.methods == []
-
-
-@pytest.mark.parametrize("client_class", [Session, Client])
-def test_connect_future_warning(client_class: type[Session | Client]):
-    """Omitting ``connect`` warns, attributed to the caller; passing it doesn't."""
-    with pytest.warns(FutureWarning, match="default value of `connect`") as record:
-        instance = client_class("mock://lime.com", "u", "p", transport=_Transport())
-
-    assert [w.filename for w in record] == [__file__]
-    instance.close()
-
-    with warnings.catch_warnings():
-        warnings.simplefilter("error")
-        client_class(
-            "mock://lime.com", "u", "p", transport=_Transport(), connect=True
-        ).close()
 
 
 def test_lazy_connect_on_first_rpc_call():
     """The first authenticated RPC call triggers the deferred connection."""
     transport = _RecordingTransport()
-    client = Client("mock://lime.com", "u", "p", transport=transport, connect=False)
+    client = Client("mock://lime.com", "u", "p", transport=transport)
 
     client.session.call("list_surveys", None)
     assert transport.methods == ["get_session_key", "list_surveys"]
+    assert transport.params[0] == ["u", "p", "Authdb"]
+    assert transport.params[1] == [SESSION_KEY, None]
     client.close()
 
 
@@ -178,7 +165,7 @@ def test_lazy_connect_retries_after_failure():
             return super().request(*args, data=data, **kwargs)
 
     transport = FlakyTransport()
-    client = Client("mock://lime.com", "u", "p", transport=transport, connect=False)
+    client = Client("mock://lime.com", "u", "p", transport=transport)
 
     with pytest.raises(LimeSurveyApiError):
         _ = client.session.key
@@ -191,7 +178,7 @@ def test_lazy_connect_retries_after_failure():
 def test_lazy_connect_is_thread_safe():
     """Concurrent users of a deferred session authenticate only once."""
     transport = _RecordingTransport()
-    client = Client("mock://lime.com", "u", "p", transport=transport, connect=False)
+    client = Client("mock://lime.com", "u", "p", transport=transport)
 
     with ThreadPoolExecutor(max_workers=8) as executor:
         keys = list(executor.map(lambda _: client.session.key, range(32)))
@@ -221,6 +208,7 @@ def test_transport_is_closed_if_release_fails():
 
     transport = FailingReleaseTransport()
     session = Session("mock://lime.com", "u", "p", transport=transport)
+    assert session.key is not None
 
     with pytest.raises(LimeSurveyApiError):
         session.close()
@@ -250,6 +238,7 @@ def test_close_is_idempotent():
 
     transport = RecordingTransport()
     session = Session("mock://lime.com", "u", "p", transport=transport)
+    assert session.key is not None
 
     session.close()
     session.close()

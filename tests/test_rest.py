@@ -9,6 +9,7 @@ from concurrent.futures import ThreadPoolExecutor
 from typing import TYPE_CHECKING
 
 import pytest
+import requests
 import tinydb
 import tinydb.storages
 import tinydb.table
@@ -260,7 +261,7 @@ def test_update_survey_details(
 
 
 def test_lazy_connect(username: str, password: str, httpserver: HTTPServer):
-    """With ``connect=False`` no request is made until the session is needed."""
+    """No request is made until the session is needed."""
     httpserver.expect_request(
         "/rest/v1/auth",
         method="POST",
@@ -272,7 +273,6 @@ def test_lazy_connect(username: str, password: str, httpserver: HTTPServer):
         httpserver.url_for("").rstrip("/"),
         username,
         password,
-        connect=False,
     )
     assert httpserver.log == []
 
@@ -299,7 +299,6 @@ def test_lazy_connect_on_first_request(
         httpserver.url_for("").rstrip("/"),
         username,
         password,
-        connect=False,
     )
     _ = client.make_request("GET", "/rest/v1/survey")
     assert [r.method for r, _ in httpserver.log] == ["POST", "GET"]
@@ -317,7 +316,6 @@ def test_close_without_connecting(
         httpserver.url_for("").rstrip("/"),
         username,
         password,
-        connect=False,
     ).close()
     assert httpserver.log == []
 
@@ -337,25 +335,10 @@ def test_explicit_authenticate_discards_credentials(
         httpserver.url_for("").rstrip("/"),
         username,
         password,
-        connect=False,
     )
     client.authenticate(username, password)
     assert client.session_id == "my-session-id"
     assert [r.method for r, _ in httpserver.log] == ["POST"]
-    client.close()
-
-
-def test_connect_future_warning(username: str, password: str, httpserver: HTTPServer):
-    """Omitting ``connect`` warns, attributed to the caller."""
-    httpserver.expect_request("/rest/v1/auth", method="POST").respond_with_json({
-        "token": "my-session-id"
-    })
-    httpserver.expect_request("/rest/v1/auth", method="DELETE").respond_with_data("")
-
-    with pytest.warns(FutureWarning, match="default value of `connect`") as record:
-        client = RESTClient(httpserver.url_for("").rstrip("/"), username, password)
-
-    assert [w.filename for w in record] == [__file__]
     client.close()
 
 
@@ -374,7 +357,6 @@ def test_lazy_connect_is_thread_safe(
         httpserver.url_for("").rstrip("/"),
         username,
         password,
-        connect=False,
     )
     with ThreadPoolExecutor(max_workers=8) as executor:
         ids = list(executor.map(lambda _: client.session_id, range(32)))
@@ -382,3 +364,50 @@ def test_lazy_connect_is_thread_safe(
     assert ids == ["my-session-id"] * 32
     assert [r.method for r, _ in httpserver.log] == ["POST"]
     client.close()
+
+
+def test_assigned_session_id_discards_credentials(
+    username: str,
+    password: str,
+    httpserver: HTTPServer,
+):
+    """Assigning a session ID replaces the pending deferred authentication."""
+    httpserver.expect_request("/rest/v1/auth", method="DELETE").respond_with_data("")
+
+    client = RESTClient(httpserver.url_for("").rstrip("/"), username, password)
+    client.session_id = "my-own-session-id"
+
+    assert client.session_id == "my-own-session-id"
+    assert [r.method for r, _ in httpserver.log] == []
+    client.close()
+    assert [r.method for r, _ in httpserver.log] == ["DELETE"]
+
+
+def test_close_is_idempotent(username: str, password: str, httpserver: HTTPServer):
+    """Closing a client again doesn't hit the server or the transport."""
+    httpserver.expect_request("/rest/v1/auth", method="POST").respond_with_json({
+        "token": "my-session-id"
+    })
+    httpserver.expect_request("/rest/v1/auth", method="DELETE").respond_with_data("")
+
+    class Transport(requests.Session):
+        closed = 0
+
+        def close(self) -> None:
+            self.closed += 1
+            super().close()
+
+    transport = Transport()
+    client = RESTClient(
+        httpserver.url_for("").rstrip("/"),
+        username,
+        password,
+        transport=transport,
+    )
+    assert client.session_id == "my-session-id"
+
+    client.close()
+    client.close()
+
+    assert [r.method for r, _ in httpserver.log] == ["POST", "DELETE"]
+    assert transport.closed == 1

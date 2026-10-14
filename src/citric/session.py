@@ -12,7 +12,6 @@ __lazy_modules__ = {
     "json",
     "random",
     "threading",
-    "warnings",
 }
 
 import http
@@ -20,7 +19,6 @@ import json
 import logging
 import random
 import threading
-import warnings
 from importlib import metadata
 from typing import TYPE_CHECKING, Any, Type  # ruff: ignore[deprecated-import]
 
@@ -49,11 +47,6 @@ __all__ = ["Session"]
 
 GET_SESSION_KEY = "get_session_key"
 
-_CONNECT_FUTURE_WARNING = (
-    "The default value of `connect` will change from True to False in a future "
-    "version; pass `connect` explicitly to silence this warning"
-)
-
 logger: logging.Logger = logging.getLogger(__name__)
 
 
@@ -77,10 +70,11 @@ def _check_result_status(result: Any) -> None:  # ruff: ignore[any-type]
 class Session:
     """LimeSurvey RemoteControl 2 session.
 
-    Upon creation, retrieves a session key with
-    :ls_manual:`get_session_key <RemoteControl_2_API#get_session_key>` and stores it in
-    the `key`_ attribute. With ``connect=False``, the key is instead retrieved the
-    first time it is needed. The key is released upon session `closure`_.
+    Retrieves a session key with
+    :ls_manual:`get_session_key <RemoteControl_2_API#get_session_key>` the first time
+    it is needed, and stores it in the `key`_ attribute. Creating a session doesn't
+    contact the server. The key is released upon session `closure`_, if one was
+    retrieved.
 
     Args:
         url: LimeSurvey Remote Control endpoint.
@@ -99,12 +93,6 @@ class Session:
             (``"Authdb"``).
         json_encoder: A :py:class:`json.Encoder <json.JSONEncoder>` subclass to use for
             encoding RPC parameters.
-        connect: Whether to authenticate right away. If ``False``, the session key is
-            retrieved the first time it is needed. Deferred authentication is
-            thread-safe: concurrent users of a not-yet-connected session authenticate
-            only once. The credentials are kept in memory until the session connects
-            or is closed. A future version will make ``False`` the default; until then,
-            not passing ``connect`` explicitly emits a :py:class:`FutureWarning`.
 
     .. versionchanged:: 0.0.4
        Replaced the ``requests_session_factory`` parameter with ``requests_session``.
@@ -121,8 +109,11 @@ class Session:
         :class:`~citric.transport.protocol.HTTPTransport`, not just
         :py:class:`requests.Session <requests.Session>`.
 
-    .. version-added:: NEXT_VERSION
-        The ``connect`` parameter.
+    .. version-changed:: NEXT_VERSION
+        Authentication is deferred until the session key is first needed, instead of
+        happening on creation. Credentials are kept in memory until then, or until
+        the session is closed. Deferred authentication is thread-safe: concurrent
+        users of a new session authenticate only once.
 
     .. _key: #citric.session.Session.key
     .. _closure: #citric.session.Session.close
@@ -140,12 +131,7 @@ class Session:
         transport: HTTPTransport | None = None,
         requests_session: HTTPTransport | None = None,
         json_encoder: Type[json.JSONEncoder] | None = None,  # ruff: ignore[non-pep585-annotation]
-        connect: bool | None = None,
     ) -> None:
-        if connect is None:
-            warnings.warn(_CONNECT_FUTURE_WARNING, FutureWarning, stacklevel=2)
-            connect = True
-
         self.url: str = url
         self._transport = _transport_or_default(transport, requests_session)
         self._encoder = json_encoder or json.JSONEncoder
@@ -157,9 +143,6 @@ class Session:
             password,
             auth_plugin,
         )
-
-        if connect:
-            self._connect(self.__credentials)
 
     def _connect(self, credentials: tuple[str, str, str]) -> None:
         """Authenticate and store the session key."""
@@ -176,8 +159,7 @@ class Session:
     def key(self) -> str | None:
         """RPC session key.
 
-        If the session was created with ``connect=False``, accessing this property
-        authenticates with the server first.
+        The first access authenticates with the server.
         """
         with self.__lock:
             if self.__credentials is not None:

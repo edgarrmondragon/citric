@@ -300,8 +300,6 @@ addopts = [
 ]
 filterwarnings = [
   "error",
-  # Most tests don't care about the upcoming change to the default of `connect`
-  "ignore:The default value of `connect` will change:FutureWarning",
 ]
 junit_suite_name = "citric"
 log_cli_level = "INFO"

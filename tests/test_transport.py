@@ -232,7 +232,6 @@ def test_requests_session_warning_location(
             "user",
             "password",
             requests_session=requests.Session(),
-            connect=True,
         )
 
     instance.close()

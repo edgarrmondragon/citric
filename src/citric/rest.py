@@ -6,25 +6,21 @@ from __future__ import annotations
 
 __lazy_modules__ = {
     "citric.exceptions",
-    "citric.session",
     "citric.transport._default",
     "http",
     "json",
     "threading",
     "urllib.parse",
-    "warnings",
 }
 
 import http
 import json as _json
 import threading
-import warnings
 from importlib import metadata
 from typing import TYPE_CHECKING, Any, Type  # ruff: ignore[deprecated-import]
 from urllib.parse import urlencode, urlsplit, urlunsplit
 
 from citric.exceptions import LimeSurveyApiError
-from citric.session import _CONNECT_FUTURE_WARNING
 from citric.transport._default import _transport_or_default
 
 if TYPE_CHECKING:
@@ -59,7 +55,8 @@ def _encode_params(url: str, params: Mapping[str, Any]) -> str:
 class RESTClient:
     """LimeSurvey REST API client.
 
-    Upon creation, retrieves a session ID that's used for authentication.
+    Retrieves a session ID, used for authentication, the first time it is needed.
+    Creating a client doesn't contact the server.
 
     .. warning::
        The REST API is still in early development, so the client is subject to changes.
@@ -74,17 +71,14 @@ class RESTClient:
             :class:`~citric.transport.httpx2.Httpx2Transport`. Defaults to a new
             :py:class:`requests.Session <requests.Session>`.
         requests_session: Deprecated alias of ``transport``.
-        connect: Whether to authenticate right away. If ``False``, the session is
-            created the first time it is needed. Deferred authentication is
-            thread-safe: concurrent users of a not-yet-connected client authenticate
-            only once. The credentials are kept in memory until the client connects
-            or is closed. A future version will make ``False`` the default; until then,
-            not passing ``connect`` explicitly emits a :py:class:`FutureWarning`.
 
     .. versionadded:: 0.10.0.post1
 
-    .. version-added:: NEXT_VERSION
-        The ``connect`` parameter.
+    .. version-changed:: NEXT_VERSION
+        Authentication is deferred until the session ID is first needed, instead of
+        happening on creation. Credentials are kept in memory until then, or until
+        the client is closed. Deferred authentication is thread-safe: concurrent
+        users of a new client authenticate only once.
 
     .. versionchanged:: NEXT_VERSION
         The ``requests_session`` parameter was deprecated in favor of its alias
@@ -107,24 +101,17 @@ class RESTClient:
         *,
         transport: HTTPTransport | None = None,
         requests_session: HTTPTransport | None = None,
-        connect: bool | None = None,
     ) -> None:
-        if connect is None:
-            warnings.warn(_CONNECT_FUTURE_WARNING, FutureWarning, stacklevel=2)
-            connect = True
-
         self.url: str = url
         self._transport = _transport_or_default(transport, requests_session)
         self.__lock = threading.RLock()
+        self.__closed: bool = False
         self.__session_id: str | None = None
         self._headers = {
             "Accept": "application/json",
             "User-Agent": self.USER_AGENT,
         }
         self.__credentials: tuple[str, str] | None = (username, password)
-
-        if connect:
-            self.authenticate(username=username, password=password)
 
     @property
     def _auth_headers(self) -> dict[str, str]:
@@ -138,8 +125,7 @@ class RESTClient:
     def session_id(self) -> str | None:
         """Session ID.
 
-        If the client was created with ``connect=False``, accessing this property
-        authenticates with the server first.
+        The first access authenticates with the server.
         """
         with self.__lock:
             if self.__credentials is not None:
@@ -148,8 +134,10 @@ class RESTClient:
 
     @session_id.setter
     def session_id(self, value: str | None) -> None:
-        """Set the session ID."""
-        self.__session_id = value
+        """Set the session ID, replacing any pending deferred authentication."""
+        with self.__lock:
+            self.__credentials = None
+            self.__session_id = value
 
     @staticmethod
     def _raise_for_status(r: HTTPResponse) -> None:
@@ -164,23 +152,30 @@ class RESTClient:
             username: LimeSurvey user name.
             password: LimeSurvey password.
         """
-        response = self.make_request(
-            "POST",
-            path=self.AUTH_ENDPOINT,
-            json={"username": username, "password": password},
-        )
-        self.session_id = response.json()["token"]
-        self.__credentials = None
+        with self.__lock:
+            response = self.make_request(
+                "POST",
+                path=self.AUTH_ENDPOINT,
+                json={"username": username, "password": password},
+            )
+            self.session_id = response.json()["token"]
 
     def refresh_token(self) -> None:
         """Refresh the session token."""
-        response = self.make_request("PUT", path=self.AUTH_ENDPOINT)
-        self.session_id = response.json()["token"]
+        with self.__lock:
+            response = self.make_request("PUT", path=self.AUTH_ENDPOINT)
+            self.session_id = response.json()["token"]
 
     def close(self) -> None:
-        """Delete the session."""
+        """Delete the session, if one was created.
+
+        Closing a client more than once has no effect.
+        """
         # Wait for an in-flight deferred connection so its session gets deleted
         with self.__lock:
+            if self.__closed:
+                return
+
             self.__credentials = None
 
             try:
@@ -189,6 +184,7 @@ class RESTClient:
             finally:
                 self._transport.close()
                 self.session_id = None
+                self.__closed = True
 
     def make_request(
         self,

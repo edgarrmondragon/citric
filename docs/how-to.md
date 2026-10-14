@@ -115,25 +115,6 @@ By default, this client uses the internal database for authentication but
 
 Common plugins are `Authdb` (default), `AuthLDAP` and `Authwebserver`.
 
-## Defer authentication until the session is needed
-
-By default, {class}`~citric.Client`, {class}`~citric.session.Session` and
-{class}`~citric.RESTClient` authenticate as soon as they are created. Pass
-`connect=False` to defer authentication until the first call that needs the
-session. Closing a client that never connected doesn't make any request to the
-server.
-
-```{literalinclude} ../code_samples/deferred_connection.py
-:start-after: start example
-:end-before: end example
-```
-
-```{note}
-`connect=False` will become the default in a future version. Until then, not
-passing `connect` explicitly emits a {py:class}`FutureWarning`. Pass `connect=True`
-to keep authenticating on creation and silence the warning.
-```
-
 ## Upload files and use them to update a response
 
 ```{literalinclude} ../code_samples/uploaded_to_response.py
