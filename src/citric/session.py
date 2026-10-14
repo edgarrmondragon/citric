@@ -18,7 +18,6 @@ import http
 import json
 import logging
 import random
-from importlib import metadata
 from typing import TYPE_CHECKING, Any, Type  # ruff: ignore[deprecated-import]
 
 from citric._common import _get_user_agent
@@ -114,7 +113,7 @@ class Session:
     .. _closure: #citric.session.Session.close
     """
 
-    USER_AGENT = f"citric/{metadata.version('citric')}"
+    USER_AGENT: str | None = None
 
     def __init__(
         self,

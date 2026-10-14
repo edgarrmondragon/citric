@@ -15,7 +15,6 @@ __lazy_modules__ = {
 
 import http
 import json as _json
-from importlib import metadata
 from typing import TYPE_CHECKING, Any, Type  # ruff: ignore[deprecated-import]
 from urllib.parse import urlencode, urlsplit, urlunsplit
 
@@ -83,7 +82,7 @@ class RESTClient:
         The ``requests_session`` parameter, use ``transport`` instead.
     """
 
-    USER_AGENT = f"citric/{metadata.version('citric')}"
+    USER_AGENT: str | None = None
     AUTH_ENDPOINT = "/rest/v1/auth"
 
     def __init__(

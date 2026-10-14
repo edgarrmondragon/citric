@@ -12,4 +12,4 @@ from importlib import metadata
 
 @cache
 def _get_user_agent(val: str | None) -> str:
-    return val or f"citric/{metadata.version('citric')}"
+    return val if val is not None else f"citric/{metadata.version('citric')}"
