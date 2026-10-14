@@ -141,14 +141,11 @@ class Client:  # ruff: ignore[too-many-public-methods]
     .. versionadded:: 0.0.6
        Support Auth plugins with the ``auth_plugin`` parameter.
 
-    .. versionchanged:: NEXT_VERSION
-        The ``requests_session`` parameter was deprecated in favor of its alias
-        ``transport``. It also now accepts any object implementing
+    .. version-changed:: NEXT_VERSION
+        The ``requests_session`` parameter was deprecated, use ``transport`` instead.
+        It also now accepts any object implementing
         :class:`~citric.transport.protocol.HTTPTransport`, not just
         :py:class:`requests.Session <requests.Session>`.
-
-    .. deprecated:: NEXT_VERSION
-        The ``requests_session`` parameter, use ``transport`` instead.
 
     .. version-changed:: NEXT_VERSION
         The ``Client.session_class`` class attribute  was removed.
