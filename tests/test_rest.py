@@ -5,6 +5,7 @@
 from __future__ import annotations
 
 import json
+import sys
 from concurrent.futures import ThreadPoolExecutor
 from typing import TYPE_CHECKING
 
@@ -18,6 +19,11 @@ from werkzeug.wrappers import Response
 
 from citric.exceptions import LimeSurveyApiError
 from citric.rest import RESTClient, _encode_params  # ruff: ignore[import-private-name]
+
+if sys.version_info >= (3, 12):
+    from typing import override
+else:
+    from typing_extensions import override
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Generator
@@ -393,6 +399,7 @@ def test_close_is_idempotent(username: str, password: str, httpserver: HTTPServe
     class Transport(requests.Session):
         closed = 0
 
+        @override
         def close(self) -> None:
             self.closed += 1
             super().close()
