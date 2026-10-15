@@ -18,7 +18,7 @@ async def main() -> None:
     """Fetch the language properties of all surveys concurrently."""
     with Client(LS_URL, "iamadmin", "secret") as client:
         # One blocking call to list the surveys...
-        surveys = await asyncio.to_thread(client.list_surveys, "iamadmin")
+        surveys = await asyncio.to_thread(client.list_surveys)
 
         # ...then one blocking call per survey, all running in worker threads.
         # `Session` authenticates lazily and thread-safely, so concurrent calls
