@@ -119,7 +119,7 @@ class LanguageProperties(TypedDict, total=False):
     surveyls_language: str
     """The language code."""
 
-    surveyls_title: Required[str]
+    surveyls_title: str
     """The survey title."""
 
     surveyls_description: str | None
