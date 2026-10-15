@@ -544,7 +544,7 @@ class SetQuotaPropertiesResult(TypedDict):
 class SurveyListElement(TypedDict):
     """List surveys result."""
 
-    sid: Required[int]
+    sid: int
     """The survey ID."""
 
     gsid: NotRequired[int | None]
