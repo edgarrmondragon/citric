@@ -91,7 +91,11 @@ class Urllib3Transport:
         )
         # Default to a 5s pool-acquisition timeout when blocking requests waiting for
         # a pool slot
-        self._pool_timeout = pool_timeout if not block else 5
+        self._pool_timeout = (
+            pool_timeout
+            if not block
+            else (pool_timeout if pool_timeout is not None else 5)
+        )
 
     def request(
         self,
