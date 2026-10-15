@@ -1153,7 +1153,7 @@ class RESTQuestion(TypedDict):
     moduleName: str | None
     relevance: str | None
     sameScript: bool
-    showAssessmentValue: bool
+    showAssessmentValue: NotRequired[bool]
 
     l10ns: dict[str, RESTQuestionL10n]
     """Localized question texts, keyed by language code."""
@@ -1296,7 +1296,7 @@ class RESTSurveyDetail(TypedDict):
     showXQuestions: bool
     showGroupInfo: RESTShowGroupInfo
     showNoAnswer: bool
-    preselectNoAnswer: bool
+    preselectNoAnswer: NotRequired[bool]
     showQNumCode: RESTShowQNumCode
     bounceTime: int | None
     bounceProcessing: bool
@@ -1317,8 +1317,8 @@ class RESTSurveyDetail(TypedDict):
     format: str
     access_mode: str | None
 
-    languageSettings: list[RESTSurveyLanguageSettings]
-    """Language settings, one per survey language."""
+    languageSettings: dict[str, RESTSurveyLanguageSettings]
+    """Language settings, keyed by survey language code."""
 
     languages: list[str]
     """All survey language codes."""
@@ -1328,18 +1328,23 @@ class RESTSurveyDetail(TypedDict):
 
     templateInherited: str
     formatInherited: str
-    isEditorCompatible: bool
+    isEditorCompatible: NotRequired[bool]
     hasTokens: bool
     previewLink: str
     surveyGroup: RESTSurveyGroup | None
     owner: RESTSurveyOwner | None
     ownerInherited: RESTSurveyOwner | None
-    questionTypeDefaultAttributeValues: dict[str, Any]
+    questionTypeDefaultAttributeValues: NotRequired[dict[str, Any] | list[Any]]
+    """An empty PHP array is serialized as a JSON list."""
     hasSurveyUpdatePermission: bool
     surveyMenus: dict[str, Any]
     googleAnalyticsApiKeySetting: str | None
     ownersList: list[dict[str, Any]]
-    availableThemes: list[dict[str, Any]]
-    groupsList: list[dict[str, Any]]
+    availableThemes: NotRequired[list[dict[str, Any]]]
+    groupsList: dict[str, str]
+    """Survey group names, keyed by survey group ID."""
+
     themesettings: dict[str, Any]
     templatePreview: str
+    noKeyboard: NotRequired[bool]
+    """Only returned by LimeSurvey 6."""
