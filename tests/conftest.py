@@ -5,15 +5,22 @@
 from __future__ import annotations
 
 import os
+import socket
 import sysconfig
 from importlib.metadata import version
+from typing import TYPE_CHECKING
 
 import pytest
 import requests
 from dotenv import load_dotenv
+from pytest_httpserver.pytest_plugin import PluginHTTPServer
 
 from citric.session import Session
 from tests.fixtures import LimeSurveyMockAdapter, requests_session_warning
+
+if TYPE_CHECKING:
+    from collections.abc import Iterator
+    from ssl import SSLContext
 
 load_dotenv()
 
@@ -140,6 +147,42 @@ def pytest_report_header(config: pytest.Config) -> list[str]:  # pragma: no cove
         lines.append("free-threaded Python build")
 
     return lines
+
+
+@pytest.fixture(scope="session")
+def httpserver_listen_address() -> tuple[str, int]:
+    """Bind the mock server to the IPv4 loopback address.
+
+    ``localhost`` can resolve to ``::1`` first on Windows, where each failed
+    connection attempt adds seconds of delay to every test using ``httpserver``.
+    """
+    return ("127.0.0.1", 0)
+
+
+@pytest.fixture(scope="session")
+def make_httpserver(
+    httpserver_listen_address: tuple[str, int],
+    httpserver_ssl_context: SSLContext | None,
+) -> Iterator[PluginHTTPServer]:
+    """Start the mock server without a reverse DNS lookup.
+
+    ``http.server.HTTPServer.server_bind`` calls ``socket.getfqdn``, which can take
+    tens of seconds on macOS runners.
+    """
+    host, port = httpserver_listen_address
+
+    with pytest.MonkeyPatch.context() as mp:
+        mp.setattr(socket, "getfqdn", lambda name="": name)
+        server = PluginHTTPServer(
+            host=host, port=port, ssl_context=httpserver_ssl_context
+        )
+        server.start()
+
+    yield server
+
+    server.clear()
+    if server.is_running():  # pragma: no branch
+        server.stop()
 
 
 @pytest.fixture(scope="session")

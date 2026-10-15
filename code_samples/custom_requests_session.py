@@ -1,5 +1,10 @@
 # Copyright (c) 2026 Edgar Ramírez-Mondragón
 
+# TODO(edgarrmondragon): Remove these ignore comments once the type is fixed upstream
+# https://github.com/requests-cache/requests-cache/pull/1206
+# mypy: disable-error-code="arg-type"
+# pyright: reportArgumentType=none
+
 """Example of using a custom requests.Session object with the client."""
 
 from __future__ import annotations
