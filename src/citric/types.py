@@ -46,6 +46,18 @@ __all__ = [
     "QuestionsListElement",
     "QuotaListElement",
     "QuotaProperties",
+    "RESTAnswer",
+    "RESTAnswerL10n",
+    "RESTQuestion",
+    "RESTQuestionGroup",
+    "RESTQuestionGroupL10n",
+    "RESTQuestionL10n",
+    "RESTShowGroupInfo",
+    "RESTShowQNumCode",
+    "RESTSurveyDetail",
+    "RESTSurveyGroup",
+    "RESTSurveyLanguageSettings",
+    "RESTSurveyOwner",
     "RPCResponse",
     "ReadableFile",
     "Result",
@@ -1067,3 +1079,267 @@ class ParticipantListElement(TypedDict, total=False):
 
     validuntil: str
     """End date of the participant access code."""
+
+
+class RESTSurveyLanguageSettings(TypedDict):
+    """Survey language settings, as returned by the REST API."""
+
+    sid: int
+    language: str
+    title: str
+    description: str | None
+    welcomeText: str | None
+    endText: str | None
+    policyNotice: str | None
+    policyError: str | None
+    alias: str | None
+    policyNoticeLabel: str | None
+    url: str | None
+    urlDescription: str | None
+    dateFormat: int
+    numberFormat: int
+
+
+class RESTAnswerL10n(TypedDict):
+    """Localized answer text, as returned by the REST API."""
+
+    id: int
+    aid: int
+    answer: str
+    language: str
+
+
+class RESTAnswer(TypedDict):
+    """Question answer option, as returned by the REST API."""
+
+    aid: int
+    qid: int
+    code: str
+    sortOrder: int
+    assessmentValue: int
+    scaleId: int
+    l10ns: dict[str, RESTAnswerL10n]
+    """Localized answer texts, keyed by language code."""
+
+
+class RESTQuestionL10n(TypedDict):
+    """Localized question text, as returned by the REST API."""
+
+    id: int
+    qid: int
+    question: str
+    help: str | None
+    script: str | None
+    language: str
+
+
+class RESTQuestion(TypedDict):
+    """Question or subquestion, as returned by the REST API."""
+
+    qid: int
+    parentQid: int
+    sid: int
+    gid: int
+    type: str
+    title: str
+    preg: str | None
+    other: bool
+    mandatory: bool | str
+    encrypted: bool
+    sortOrder: int
+    scaleId: int
+    sameDefault: bool
+    questionThemeName: str | None
+    moduleName: str | None
+    relevance: str | None
+    sameScript: bool
+    showAssessmentValue: bool
+
+    l10ns: dict[str, RESTQuestionL10n]
+    """Localized question texts, keyed by language code."""
+
+    attributes: dict[str, dict[str, str]]
+    """Question attributes, keyed by attribute name, then by language code."""
+
+    scenarios: Any
+    """Condition scenarios of the question."""
+
+    conditiontext: str
+    """Human-readable condition text."""
+
+    answers: list[RESTAnswer]
+    """Answer options."""
+
+    subquestions: NotRequired[list[RESTQuestion]]
+    """Subquestions, if the question has any."""
+
+
+class RESTQuestionGroupL10n(TypedDict):
+    """Localized question group text, as returned by the REST API."""
+
+    id: int
+    gid: int
+    groupName: str
+    description: str | None
+    language: str
+
+
+class RESTQuestionGroup(TypedDict):
+    """Question group, as returned by the REST API."""
+
+    gid: int
+    sid: int
+    sortOrder: int
+    randomizationGroup: str | None
+    gRelevance: str | None
+
+    l10ns: dict[str, RESTQuestionGroupL10n]
+    """Localized group texts, keyed by language code."""
+
+    questions: list[RESTQuestion]
+    """Questions in the group."""
+
+
+class RESTSurveyGroup(TypedDict):
+    """Survey group, as returned by the REST API."""
+
+    gsid: int
+    name: str
+    title: str | None
+    description: str | None
+    sortOrder: int
+    alwaysAvailable: bool | None
+
+
+class RESTSurveyOwner(TypedDict):
+    """Survey owner, as returned by the REST API."""
+
+    uid: int
+    name: str
+    fullName: str
+    parentId: int
+    lang: str
+    email: str
+    htmlEditorMode: str
+    templateEditorMode: str
+    questionSelectorMode: str
+    dateFormat: int
+    lastLogin: str | None
+    created: str | None
+    modified: str | None
+    userStatus: int
+
+
+class RESTShowGroupInfo(TypedDict):
+    """Whether to show group name and description."""
+
+    showGroupName: bool
+    showGroupDescription: bool
+
+
+class RESTShowQNumCode(TypedDict):
+    """Whether to show question number and code."""
+
+    showNumber: bool
+    showCode: bool
+
+
+class RESTSurveyDetail(TypedDict):
+    """Survey details, as returned by the REST API.
+
+    Derived from LimeSurvey's ``TransformerOutputSurveyDetail`` and
+    ``TransformerOutputSurvey``, not from its (inaccurate) OpenAPI schema.
+    """
+
+    sid: int
+    gsid: int
+    ownerId: int
+    active: bool
+    admin: str | None
+    adminEmail: str | None
+    language: str
+    additionalLanguages: str | None
+    expires: str | None
+    startDate: str | None
+    anonymized: bool
+    saveTimings: bool
+    datestamp: bool
+    useCookie: bool
+    allowRegister: bool
+    allowSave: bool
+    autoNumberStart: int
+    autoRedirect: bool
+    allowPrev: bool
+    printAnswers: bool
+    ipAddr: bool
+    ipAnonymize: bool
+    refUrl: bool
+    saveQuotaExit: NotRequired[bool]
+    dateCreated: str | None
+    publicStatistics: bool
+    publicGraphs: bool
+    listPublic: bool
+    sendConfirmation: bool
+    tokenAnswersPersistence: bool
+    htmlEmail: bool
+    assessments: bool
+    useCaptcha: str
+    useCaptchaAccess: bool
+    useCaptchaRegistration: bool
+    useCaptchaSaveLoad: bool
+    useTokens: bool
+    bounceEmail: str | None
+    attributeDescriptions: Any
+    emailResponseTo: str | None
+    emailNotificationTo: str | None
+    tokenLength: int
+    showXQuestions: bool
+    showGroupInfo: RESTShowGroupInfo
+    showNoAnswer: bool
+    preselectNoAnswer: bool
+    showQNumCode: RESTShowQNumCode
+    bounceTime: int | None
+    bounceProcessing: bool
+    bounceAccountType: str | None
+    bounceAccountHost: str | None
+    bounceAccountPass: str | None
+    bounceAccountEncryption: str | None
+    bounceAccountUser: str | None
+    showWelcome: bool
+    showProgress: bool
+    questionIndex: int
+    navigationDelay: int
+    allowedItAfterCompletion: bool
+    googleAnalyticsStyle: int | None
+    googleAnalyticsApiKey: str | None
+    showSurveyPolicyNotice: int
+    template: str
+    format: str
+    access_mode: str | None
+
+    languageSettings: list[RESTSurveyLanguageSettings]
+    """Language settings, one per survey language."""
+
+    languages: list[str]
+    """All survey language codes."""
+
+    questionGroups: list[RESTQuestionGroup]
+    """Question groups, with their questions and answers."""
+
+    templateInherited: str
+    formatInherited: str
+    isEditorCompatible: bool
+    hasTokens: bool
+    previewLink: str
+    surveyGroup: RESTSurveyGroup | None
+    owner: RESTSurveyOwner | None
+    ownerInherited: RESTSurveyOwner | None
+    questionTypeDefaultAttributeValues: dict[str, Any]
+    hasSurveyUpdatePermission: bool
+    surveyMenus: dict[str, Any]
+    googleAnalyticsApiKeySetting: str | None
+    ownersList: list[dict[str, Any]]
+    availableThemes: list[dict[str, Any]]
+    groupsList: list[dict[str, Any]]
+    themesettings: dict[str, Any]
+    templatePreview: str

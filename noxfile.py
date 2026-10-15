@@ -41,8 +41,6 @@ python_versions = [
     "3.15t",
 ]
 
-locations = "src", "tests", "docs/conf.py"
-
 
 @nox.session(name="deps", tags=["lint"], allow_parallel=True)
 def dependencies(session: nox.Session) -> None:
@@ -56,10 +54,11 @@ def dependencies(session: nox.Session) -> None:
 @nox.session(tags=["lint", "types"], allow_parallel=True)
 def typing(session: nox.Session) -> None:
     """Type-check using mypy."""
+    locations = ("src", "tests", "docs/conf.py", "code_samples")
     args = session.posargs or locations
     gha = os.getenv("GITHUB_ACTIONS") == "true"
 
-    session.install(".", "--group=typing")
+    session.install(".", "--group=typing", "--group=samples")
     session.run("mypy", "--version")
     session.run("mypy", *args)
 

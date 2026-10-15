@@ -7,12 +7,14 @@ from __future__ import annotations
 
 import contextlib
 import operator
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 import pytest
+from typeguard import check_type
 
 from citric.exceptions import LimeSurveyStatusError
 from citric.rest import RESTClient
+from citric.types import RESTSurveyDetail
 
 if TYPE_CHECKING:
     from collections.abc import Generator
@@ -61,7 +63,10 @@ def test_get_surveys(rest_client: RESTClient, survey_id: int) -> None:
 @pytest.mark.integration_test
 def test_get_survey_details(rest_client: RESTClient, survey_id: int) -> None:
     """Test getting surveys."""
-    survey = rest_client.get_survey_details(survey_id=survey_id)
+    survey = check_type(
+        rest_client.get_survey_details(survey_id=survey_id),
+        RESTSurveyDetail,
+    )
     assert survey["sid"] == survey_id
 
 
@@ -94,7 +99,7 @@ def test_update_question_answers(
 ) -> None:
     """Test updating question answers."""
 
-    def _question_answers(s: dict[str, Any]) -> tuple[int, list]:
+    def _question_answers(s: RESTSurveyDetail) -> tuple[int, list]:
         question = next(
             q for q in s["questionGroups"][0]["questions"] if q.get("answers")
         )
@@ -212,7 +217,7 @@ def test_patch_subquestions(
 ) -> None:
     """Test patching subquestions."""
 
-    def _subquestions(s: dict[str, Any]) -> tuple[int, list]:
+    def _subquestions(s: RESTSurveyDetail) -> tuple[int, list]:
         question = next(
             q for q in s["questionGroups"][0]["questions"] if q.get("subquestions")
         )

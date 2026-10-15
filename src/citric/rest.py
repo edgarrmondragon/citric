@@ -29,6 +29,7 @@ if TYPE_CHECKING:
     from types import TracebackType
 
     from citric.transport.protocol import HTTPResponse, HTTPTransport
+    from citric.types import RESTSurveyDetail
 
     if sys.version_info >= (3, 11):
         from typing import Self
@@ -257,7 +258,7 @@ class RESTClient:
         response = self.make_request("GET", "/rest/v1/survey")
         return response.json()["surveys"]
 
-    def get_survey_details(self, survey_id: int) -> dict[str, Any]:
+    def get_survey_details(self, survey_id: int) -> RESTSurveyDetail:
         """Get survey details.
 
         Args:
