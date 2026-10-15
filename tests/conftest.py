@@ -143,6 +143,16 @@ def pytest_report_header(config: pytest.Config) -> list[str]:  # pragma: no cove
 
 
 @pytest.fixture(scope="session")
+def httpserver_listen_address() -> tuple[str, int]:
+    """Bind the mock server to the IPv4 loopback address.
+
+    ``localhost`` can resolve to ``::1`` first on Windows, where each failed
+    connection attempt adds seconds of delay to every test using ``httpserver``.
+    """
+    return ("127.0.0.1", 0)
+
+
+@pytest.fixture(scope="session")
 def database_type(request: pytest.FixtureRequest) -> str:
     """Database type."""
     return request.config.getoption("--limesurvey-database-type")  # pyright: ignore[reportReturnType]
