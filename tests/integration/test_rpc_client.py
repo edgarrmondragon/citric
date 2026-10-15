@@ -28,10 +28,9 @@ from faker import Faker
 
 import citric
 import citric.objects
-from citric import enums, types
+from citric import enums
 from citric.exceptions import LimeSurveyApiError, LimeSurveyStatusError
 from citric.objects import Participant
-from citric.transport.urllib3 import Urllib3Transport
 
 if TYPE_CHECKING:
     from collections.abc import Generator, Iterable
@@ -1655,29 +1654,20 @@ async def test_async_to_thread(
     survey_id: int,
 ):
     """Test client concurrency."""
-    max_concurrency = 8
-
-    # `to_thread` uses the loop's default executor, which can grow to
-    # `min(32, cpu_count + 4)` threads. A semaphore keeps the load on the
-    # LimeSurvey server predictable regardless of that number.
-    semaphore = asyncio.Semaphore(max_concurrency)
     with citric.Client(
         f"{integration_url}/index.php/admin/remotecontrol",
         integration_username,
         integration_password,
-        transport=Urllib3Transport(maxsize=max_concurrency),
     ) as client:
-
-        async def question_props(qid: int) -> types.QuestionProperties:
-            async with semaphore:
-                return await asyncio.to_thread(client.get_question_properties, qid)
-
         questions = await asyncio.to_thread(client.list_questions, survey_id)
 
-        # TaskGroup cancels the remaining tasks if any request fails
-        async with asyncio.TaskGroup() as tg:
-            tasks = {
-                q["qid"]: tg.create_task(question_props(q["qid"])) for q in questions
-            }
-
-        assert all("question" in task.result() for task in tasks.values())
+        # ...then one blocking call per survey, all running in worker threads.
+        # `Session` authenticates lazily and thread-safely, so concurrent calls
+        # on a fresh client share a single session key.
+        props_list = await asyncio.gather(
+            *(
+                asyncio.to_thread(client.get_question_properties, q["qid"])
+                for q in questions
+            )
+        )
+        assert all("question" in props for props in props_list)
