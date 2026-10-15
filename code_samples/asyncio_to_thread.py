@@ -31,7 +31,7 @@ async def main() -> None:
         )
 
         for survey, props in zip(surveys, properties, strict=True):
-            print(survey["sid"], props["surveyls_welcometext"])
+            print(survey["sid"], props["surveyls_title"])
 
 
 asyncio.run(main())

@@ -119,7 +119,7 @@ class LanguageProperties(TypedDict, total=False):
     surveyls_language: str
     """The language code."""
 
-    surveyls_title: str
+    surveyls_title: Required[str]
     """The survey title."""
 
     surveyls_description: str | None
@@ -544,7 +544,7 @@ class SetQuotaPropertiesResult(TypedDict):
 class SurveyListElement(TypedDict, total=False):
     """List surveys result."""
 
-    sid: int
+    sid: Required[int]
     """The survey ID."""
 
     gsid: int
