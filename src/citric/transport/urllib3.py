@@ -63,6 +63,9 @@ class Urllib3Transport:
             connections above this number are discarded after use.
         block: Whether to block when a pool has ``maxsize`` connections in use,
             instead of opening additional, non-reusable ones.
+        pool_timeout: If set and the pool is set to ``block=True``, then this method
+            will block for ``pool_timeout`` seconds and raise an exception if no
+            connection is available within the time period.
         **pool_kwargs: Additional keyword arguments passed to
             :py:class:`urllib3.PoolManager <urllib3.PoolManager>`, e.g. ``timeout``
             or ``retries``.
@@ -76,6 +79,7 @@ class Urllib3Transport:
         num_pools: int = 10,
         maxsize: int = 1,
         block: bool = False,
+        pool_timeout: int | None = None,
         **pool_kwargs: Any,
     ) -> None:
         """Initialize the urllib3 transport."""
@@ -85,6 +89,7 @@ class Urllib3Transport:
             block=block,
             **pool_kwargs,
         )
+        self._pool_timeout = pool_timeout
 
     def request(
         self,
@@ -111,6 +116,7 @@ class Urllib3Transport:
                 url=url,
                 body=data,
                 headers=headers,
+                pool_timeout=self._pool_timeout,
             )
         )
 
