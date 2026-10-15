@@ -38,7 +38,10 @@ new client share a single session key.
 ```
 
 To limit the load on the server, bound the concurrency with a semaphore and size the
-`requests` connection pool accordingly:
+connection pool accordingly. With {class}`~citric.transport.urllib3.Urllib3Transport`
+that's `maxsize`; with {class}`~citric.transport.httpx2.Httpx2Transport`, it's
+`max_connections` and `max_keepalive_connections`; with {py:class}`requests.Session`,
+mount an {py:class}`~requests.adapters.HTTPAdapter` with `pool_maxsize`:
 
 ```{literalinclude} ../code_samples/asyncio_to_thread_bounded.py
 :start-after: start example
