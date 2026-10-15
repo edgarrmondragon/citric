@@ -39,12 +39,17 @@ async def main() -> None:
 
         surveys = await asyncio.to_thread(client.list_surveys, "iamadmin")
 
-        # TaskGroup cancels the remaining tasks if any request fails
-        async with asyncio.TaskGroup() as tg:
-            tasks = {s["sid"]: tg.create_task(questions_for(s["sid"])) for s in surveys}
+        # Wait for every worker thread, even if some calls fail: cancelling a task
+        # doesn't stop its thread, and the client must not be closed under it.
+        results = await asyncio.gather(
+            *(questions_for(s["sid"]) for s in surveys),
+            return_exceptions=True,
+        )
 
-        for sid, task in tasks.items():
-            print(sid, len(task.result()), "questions")
+        for survey, result in zip(surveys, results, strict=True):
+            if isinstance(result, BaseException):
+                raise result
+            print(survey["sid"], len(result), "questions")
 
 
 asyncio.run(main())

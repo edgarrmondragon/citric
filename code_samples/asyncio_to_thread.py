@@ -27,15 +27,21 @@ async def main() -> None:
         # ...then one blocking call per survey, all running in worker threads.
         # `Session` authenticates lazily and thread-safely, so concurrent calls
         # on a fresh client share a single session key.
-        properties = await asyncio.gather(
+        # `return_exceptions=True` makes `gather` wait for every worker thread, even
+        # if some calls fail. Cancelling a task doesn't stop its thread, and the
+        # client must not be closed while requests are still in flight.
+        results = await asyncio.gather(
             *(
                 asyncio.to_thread(client.get_language_properties, s["sid"])
                 for s in surveys
-            )
+            ),
+            return_exceptions=True,
         )
 
-        for survey, props in zip(surveys, properties, strict=True):
-            print(survey["sid"], props["surveyls_title"])
+        for survey, result in zip(surveys, results, strict=True):
+            if isinstance(result, BaseException):
+                raise result
+            print(survey["sid"], result["surveyls_title"])
 
 
 asyncio.run(main())
