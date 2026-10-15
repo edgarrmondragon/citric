@@ -31,6 +31,7 @@ import citric.objects
 from citric import enums
 from citric.exceptions import LimeSurveyApiError, LimeSurveyStatusError
 from citric.objects import Participant
+from citric.transport.urllib3 import Urllib3Transport
 
 if TYPE_CHECKING:
     from collections.abc import Generator, Iterable
@@ -1660,16 +1661,23 @@ async def test_async_to_thread(
         f"{integration_url}/index.php/admin/remotecontrol",
         integration_username,
         integration_password,
+        transport=Urllib3Transport(maxsize=8),
     ) as client:
         questions = await asyncio.to_thread(client.list_questions, survey_id)
 
         # ...then one blocking call per survey, all running in worker threads.
         # `Session` authenticates lazily and thread-safely, so concurrent calls
         # on a fresh client share a single session key.
-        props_list = await asyncio.gather(
+        # Wait for every worker thread, even if some calls fail, before the client
+        # is closed.
+        results = await asyncio.gather(
             *(
                 asyncio.to_thread(client.get_question_properties, q["qid"])
                 for q in questions
-            )
+            ),
+            return_exceptions=True,
         )
-        assert all("question" in props for props in props_list)
+        for result in results:
+            if isinstance(result, BaseException):
+                raise result
+        assert all("question" in props for props in results)
