@@ -56,12 +56,35 @@ class Urllib3Transport:
 
     Wraps :py:class:`urllib3.PoolManager <urllib3.PoolManager>`.
 
+    Args:
+        num_pools: Number of connection pools to cache, one per host.
+        maxsize: Maximum number of connections to keep alive in each pool. Set it to
+            at least the number of threads sharing the transport, otherwise
+            connections above this number are discarded after use.
+        block: Whether to block when a pool has ``maxsize`` connections in use,
+            instead of opening additional, non-reusable ones.
+        **pool_kwargs: Additional keyword arguments passed to
+            :py:class:`urllib3.PoolManager <urllib3.PoolManager>`, e.g. ``timeout``
+            or ``retries``.
+
     .. versionadded:: NEXT_VERSION
     """
 
-    def __init__(self) -> None:
+    def __init__(
+        self,
+        *,
+        num_pools: int = 10,
+        maxsize: int = 1,
+        block: bool = False,
+        **pool_kwargs: Any,
+    ) -> None:
         """Initialize the urllib3 transport."""
-        self._pool = urllib3.PoolManager()
+        self._pool = urllib3.PoolManager(
+            num_pools=num_pools,
+            maxsize=maxsize,
+            block=block,
+            **pool_kwargs,
+        )
 
     def request(
         self,
