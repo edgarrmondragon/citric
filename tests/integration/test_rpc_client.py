@@ -1648,6 +1648,7 @@ def test_save_statistics(client: citric.Client, survey_id: int, tmp_path: Path):
 
 @pytest.mark.integration_test
 @pytest.mark.anyio
+@pytest.mark.parametrize("anyio_backend", ["asyncio"])
 async def test_async_to_thread(
     integration_url: str,
     integration_username: str,
