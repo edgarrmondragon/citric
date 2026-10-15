@@ -16,6 +16,8 @@ import re
 from contextlib import nullcontext
 from typing import TYPE_CHECKING
 
+import httpcore2
+import httpx2
 import pytest
 import requests
 from werkzeug.wrappers import Response
@@ -236,3 +238,33 @@ def test_requests_session_warning_location(
 
     instance.close()
     assert [w.filename for w in record] == [__file__]
+
+
+def test_urllib3_transport_pool_options():
+    """Pool options are passed to the underlying `PoolManager`."""
+    transport = Urllib3Transport(num_pools=3, maxsize=16, block=True, timeout=7)
+    pool = transport._pool
+    assert pool.pools._maxsize == 3
+    assert pool.connection_pool_kw["maxsize"] == 16
+    assert pool.connection_pool_kw["block"] is True
+    assert pool.connection_pool_kw["timeout"] == 7
+    transport.close()
+
+
+def test_httpx2_transport_pool_options():
+    """Pool options are passed to the underlying `httpx2.Client`."""
+    transport = Httpx2Transport(
+        max_connections=32,
+        max_keepalive_connections=16,
+        keepalive_expiry=30,
+    )
+
+    inner_transport = transport._client._transport
+    assert isinstance(inner_transport, httpx2.HTTPTransport)
+
+    pool = inner_transport._pool
+    assert isinstance(pool, httpcore2.ConnectionPool)
+    assert pool._max_connections == 32
+    assert pool._max_keepalive_connections == 16
+    assert pool._keepalive_expiry == 30
+    transport.close()

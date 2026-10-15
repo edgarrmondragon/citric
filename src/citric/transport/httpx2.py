@@ -30,12 +30,33 @@ class Httpx2Transport:
 
     Wraps :py:class:`httpx2.Client <httpx2.Client>`.
 
+    Args:
+        max_connections: Maximum number of concurrent connections, or ``None`` for no
+            limit. Requests above this number wait for a free connection.
+        max_keepalive_connections: Maximum number of idle connections to keep alive,
+            or ``None`` for no limit. Set it to at least the number of threads
+            sharing the transport to reuse connections between requests.
+        keepalive_expiry: Seconds to keep idle connections alive, or ``None`` for no
+            limit.
+
     .. versionadded:: NEXT_VERSION
     """
 
-    def __init__(self) -> None:
+    def __init__(
+        self,
+        *,
+        max_connections: int | None = 100,
+        max_keepalive_connections: int | None = 20,
+        keepalive_expiry: float | None = 5.0,
+    ) -> None:
         """Initialize the httpx2 transport."""
-        self._client = httpx2.Client()
+        self._client = httpx2.Client(
+            limits=httpx2.Limits(
+                max_connections=max_connections,
+                max_keepalive_connections=max_keepalive_connections,
+                keepalive_expiry=keepalive_expiry,
+            ),
+        )
 
     def request(
         self,

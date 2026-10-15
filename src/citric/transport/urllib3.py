@@ -56,12 +56,41 @@ class Urllib3Transport:
 
     Wraps :py:class:`urllib3.PoolManager <urllib3.PoolManager>`.
 
+    Args:
+        num_pools: Number of connection pools to cache, one per host.
+        maxsize: Maximum number of connections to keep alive in each pool. Set it to
+            at least the number of threads sharing the transport, otherwise
+            connections above this number are discarded after use.
+        block: Whether to block when a pool has ``maxsize`` connections in use,
+            instead of opening additional, non-reusable ones.
+        pool_timeout: If set and the pool is set to ``block=True``, then this method
+            will block for ``pool_timeout`` seconds and raise an exception if no
+            connection is available within the time period. Set it to avoid hanging
+            indefinitely while requests are waiting for a pool slot.
+        **pool_kwargs: Additional keyword arguments passed to
+            :py:class:`urllib3.PoolManager <urllib3.PoolManager>`, e.g. ``timeout``
+            or ``retries``.
+
     .. versionadded:: NEXT_VERSION
     """
 
-    def __init__(self) -> None:
+    def __init__(
+        self,
+        *,
+        num_pools: int = 10,
+        maxsize: int = 1,
+        block: bool = False,
+        pool_timeout: int | None = None,
+        **pool_kwargs: Any,
+    ) -> None:
         """Initialize the urllib3 transport."""
-        self._pool = urllib3.PoolManager()
+        self._pool = urllib3.PoolManager(
+            num_pools=num_pools,
+            maxsize=maxsize,
+            block=block,
+            **pool_kwargs,
+        )
+        self._pool_timeout = pool_timeout
 
     def request(
         self,
@@ -88,6 +117,7 @@ class Urllib3Transport:
                 url=url,
                 body=data,
                 headers=headers,
+                pool_timeout=self._pool_timeout,
             )
         )
 
