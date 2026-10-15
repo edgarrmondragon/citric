@@ -13,6 +13,7 @@ import json
 import operator
 import random
 import string
+import sys
 import uuid
 from contextlib import contextmanager
 from datetime import datetime
@@ -32,6 +33,12 @@ from citric import enums
 from citric.exceptions import LimeSurveyApiError, LimeSurveyStatusError
 from citric.objects import Participant
 from citric.transport.urllib3 import Urllib3Transport
+
+if sys.version_info >= (3, 12):
+    from typing import override
+else:
+    from typing_extensions import override
+
 
 if TYPE_CHECKING:
     from collections.abc import Generator, Iterable, Mapping
@@ -1655,6 +1662,7 @@ class _RecordingTransport(Urllib3Transport):
         super().__init__(**kwargs)
         self.rpc_methods: list[str] = []
 
+    @override
     def request(
         self,
         method: str,
@@ -1702,9 +1710,8 @@ async def test_async_to_thread(
             return_exceptions=True,
         )
 
-    for result in results:
-        if isinstance(result, BaseException):
-            raise result
-
-    assert all("question" in props for props in results)
+    values = [r for r in results if not isinstance(r, BaseException)]
+    exceptions = [r for r in results if isinstance(r, BaseException)]
+    assert not exceptions
+    assert all("question" in props for props in values)
     assert transport.rpc_methods.count("get_session_key") == 1
