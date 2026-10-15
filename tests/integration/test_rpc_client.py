@@ -17,7 +17,7 @@ import uuid
 from contextlib import contextmanager
 from datetime import datetime
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 from unittest.mock import patch
 from urllib.parse import quote
 
@@ -34,10 +34,11 @@ from citric.objects import Participant
 from citric.transport.urllib3 import Urllib3Transport
 
 if TYPE_CHECKING:
-    from collections.abc import Generator, Iterable
+    from collections.abc import Generator, Iterable, Mapping
 
     import semver
 
+    from citric.transport.protocol import HTTPResponse
     from citric.types import (
         FileUploadResult,
         ParticipantData,
@@ -1647,6 +1648,26 @@ def test_save_statistics(client: citric.Client, survey_id: int, tmp_path: Path):
     assert len(tables) == 4  # One for each question
 
 
+class _RecordingTransport(Urllib3Transport):
+    """Transport that records the RPC method of every request it sends."""
+
+    def __init__(self, **kwargs: Any) -> None:
+        super().__init__(**kwargs)
+        self.rpc_methods: list[str] = []
+
+    def request(
+        self,
+        method: str,
+        url: str,
+        *,
+        data: str | None = None,
+        headers: Mapping[str, str] | None = None,
+    ) -> HTTPResponse:
+        if data is not None:
+            self.rpc_methods.append(json.loads(data)["method"])
+        return super().request(method, url, data=data, headers=headers)
+
+
 @pytest.mark.integration_test
 @pytest.mark.anyio
 @pytest.mark.parametrize("anyio_backend", ["asyncio"])
@@ -1654,30 +1675,36 @@ async def test_async_to_thread(
     integration_url: str,
     integration_username: str,
     integration_password: str,
+    client: citric.Client,
     survey_id: int,
 ):
-    """Test client concurrency."""
+    """Concurrent first calls on a new client authenticate only once."""
+    # Use a different, already authenticated client to look up the questions, so
+    # the client under test makes its first request from the worker threads.
+    question_ids = [q["qid"] for q in client.list_questions(survey_id)]
+    assert len(question_ids) > 1
+
+    transport = _RecordingTransport(maxsize=len(question_ids))
+
     with citric.Client(
         f"{integration_url}/index.php/admin/remotecontrol",
         integration_username,
         integration_password,
-        transport=Urllib3Transport(maxsize=8),
-    ) as client:
-        questions = await asyncio.to_thread(client.list_questions, survey_id)
-
-        # ...then one blocking call per survey, all running in worker threads.
-        # `Session` authenticates lazily and thread-safely, so concurrent calls
-        # on a fresh client share a single session key.
+        transport=transport,
+    ) as new_client:
         # Wait for every worker thread, even if some calls fail, before the client
         # is closed.
         results = await asyncio.gather(
             *(
-                asyncio.to_thread(client.get_question_properties, q["qid"])
-                for q in questions
+                asyncio.to_thread(new_client.get_question_properties, qid)
+                for qid in question_ids
             ),
             return_exceptions=True,
         )
-        for result in results:
-            if isinstance(result, BaseException):
-                raise result
-        assert all("question" in props for props in results)
+
+    for result in results:
+        if isinstance(result, BaseException):
+            raise result
+
+    assert all("question" in props for props in results)
+    assert transport.rpc_methods.count("get_session_key") == 1
