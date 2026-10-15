@@ -10,13 +10,17 @@ from __future__ import annotations
 import asyncio
 
 from citric import Client
+from citric.transport.urllib3 import Urllib3Transport
 
 LS_URL = "http://localhost:8001/index.php/admin/remotecontrol"
 
 
 async def main() -> None:
     """Fetch the language properties of all surveys concurrently."""
-    with Client(LS_URL, "iamadmin", "secret") as client:
+    # Worker threads share the transport, so use one that supports concurrent use
+    transport = Urllib3Transport(maxsize=8)
+
+    with Client(LS_URL, "iamadmin", "secret", transport=transport) as client:
         # One blocking call to list the surveys...
         surveys = await asyncio.to_thread(client.list_surveys)
 

@@ -32,6 +32,11 @@ independent calls, like fetching the properties of many surveys, overlap instead
 running one after the other. Authentication is thread-safe, so concurrent calls on a
 new client share a single session key.
 
+Worker threads share the client's HTTP transport, so use one that is safe for concurrent
+use, like {class}`~citric.transport.urllib3.Urllib3Transport` or
+{class}`~citric.transport.httpx2.Httpx2Transport`. {py:class}`requests.Session` is
+not guaranteed to be thread-safe.
+
 ```{literalinclude} ../code_samples/asyncio_to_thread.py
 :start-after: start example
 :end-before: end example
