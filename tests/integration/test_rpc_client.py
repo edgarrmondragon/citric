@@ -5,6 +5,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import csv
 import functools
 import io
@@ -27,9 +28,10 @@ from faker import Faker
 
 import citric
 import citric.objects
-from citric import enums
+from citric import enums, types
 from citric.exceptions import LimeSurveyApiError, LimeSurveyStatusError
 from citric.objects import Participant
+from citric.transport.urllib3 import Urllib3Transport
 
 if TYPE_CHECKING:
     from collections.abc import Generator, Iterable
@@ -1643,3 +1645,39 @@ def test_save_statistics(client: citric.Client, survey_id: int, tmp_path: Path):
     # Find the table elements
     tables = soup.find_all("table")
     assert len(tables) == 4  # One for each question
+
+
+@pytest.mark.integration_test
+async def test_async_to_thread(
+    integration_url: str,
+    integration_username: str,
+    integration_password: str,
+    survey_id: int,
+):
+    """Test client concurrency."""
+    max_concurrency = 8
+
+    # `to_thread` uses the loop's default executor, which can grow to
+    # `min(32, cpu_count + 4)` threads. A semaphore keeps the load on the
+    # LimeSurvey server predictable regardless of that number.
+    semaphore = asyncio.Semaphore(max_concurrency)
+    with citric.Client(
+        f"{integration_url}/index.php/admin/remotecontrol",
+        integration_username,
+        integration_password,
+        transport=Urllib3Transport(maxsize=max_concurrency),
+    ) as client:
+
+        async def question_props(qid: int) -> types.QuestionProperties:
+            async with semaphore:
+                return await asyncio.to_thread(client.get_question_properties, qid)
+
+        questions = await asyncio.to_thread(client.list_questions, survey_id)
+
+        # TaskGroup cancels the remaining tasks if any request fails
+        async with asyncio.TaskGroup() as tg:
+            tasks = {
+                q["qid"]: tg.create_task(question_props(q["qid"])) for q in questions
+            }
+
+        assert all("question" in task.result() for task in tasks.values())
