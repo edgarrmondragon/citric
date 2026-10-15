@@ -1671,8 +1671,8 @@ class _RecordingTransport(Urllib3Transport):
         data: str | None = None,
         headers: Mapping[str, str] | None = None,
     ) -> HTTPResponse:
-        if data is not None:
-            self.rpc_methods.append(json.loads(data)["method"])
+        assert data is not None
+        self.rpc_methods.append(json.loads(data)["method"])
         return super().request(method, url, data=data, headers=headers)
 
 
