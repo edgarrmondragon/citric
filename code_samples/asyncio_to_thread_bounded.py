@@ -31,7 +31,9 @@ async def main() -> None:
     # LimeSurvey server predictable regardless of that number.
     semaphore = asyncio.Semaphore(MAX_CONCURRENCY)
 
-    with Client(LS_URL, "iamadmin", "secret", transport=transport) as client:
+    client = Client(LS_URL, "iamadmin", "secret", transport=transport)
+
+    try:
 
         async def questions_for(sid: int) -> list[QuestionsListElement]:
             async with semaphore:
@@ -50,6 +52,11 @@ async def main() -> None:
             if isinstance(result, BaseException):
                 raise result
             print(survey["sid"], len(result), "questions")
+
+    finally:
+        # `close` sends a blocking request to release the session key, so keep it
+        # off the event loop.
+        await asyncio.to_thread(client.close)
 
 
 asyncio.run(main())
