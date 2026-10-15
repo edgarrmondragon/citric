@@ -65,7 +65,8 @@ class Urllib3Transport:
             instead of opening additional, non-reusable ones.
         pool_timeout: If set and the pool is set to ``block=True``, then this method
             will block for ``pool_timeout`` seconds and raise an exception if no
-            connection is available within the time period.
+            connection is available within the time period. Set it to avoid hanging
+            indefinitely while requests are waiting for a pool slot.
         **pool_kwargs: Additional keyword arguments passed to
             :py:class:`urllib3.PoolManager <urllib3.PoolManager>`, e.g. ``timeout``
             or ``retries``.
@@ -89,13 +90,7 @@ class Urllib3Transport:
             block=block,
             **pool_kwargs,
         )
-        # Default to a 5s pool-acquisition timeout when blocking requests waiting for
-        # a pool slot
-        self._pool_timeout = (
-            pool_timeout
-            if not block
-            else (pool_timeout if pool_timeout is not None else 5)
-        )
+        self._pool_timeout = pool_timeout
 
     def request(
         self,
