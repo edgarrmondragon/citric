@@ -99,10 +99,13 @@ samples = [
   "boto3>=1.37.38",
   "duckdb>=1.3",
   "pandas>=2.0.3",
+  "requests-cache>=1.3",
 ]
 typing = [
   "backports-strenum",
+  "boto3-stubs>=1.37",
   "mypy>=1.9",
+  "pandas-stubs>=2",
   "pyrefly>=0.60",
   "pyright>=1.1.408",
   "sphinx",

@@ -18,8 +18,8 @@ client = RESTClient(
 survey_id = 142423
 
 # Get survey details
-survey = client.get_survey(survey_id)
-print(survey)
+survey = client.get_survey_details(survey_id)
+print(f"Survey ID: {survey['sid']}. Active? {survey['active']}")
 
 # Inspect question 247 to find answer IDs
 for question in survey["questionGroups"][0]["questions"]:
