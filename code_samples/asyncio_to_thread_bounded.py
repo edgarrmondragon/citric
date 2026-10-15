@@ -8,9 +8,13 @@ from __future__ import annotations
 
 # start example
 import asyncio
+from typing import TYPE_CHECKING
 
 from citric import Client
 from citric.transport.urllib3 import Urllib3Transport
+
+if TYPE_CHECKING:
+    from citric.types import QuestionsListElement
 
 LS_URL = "http://localhost:8001/index.php/admin/remotecontrol"
 MAX_CONCURRENCY = 8
@@ -29,7 +33,7 @@ async def main() -> None:
 
     with Client(LS_URL, "iamadmin", "secret", transport=transport) as client:
 
-        async def questions_for(sid: int) -> list[dict]:
+        async def questions_for(sid: int) -> list[QuestionsListElement]:
             async with semaphore:
                 return await asyncio.to_thread(client.list_questions, sid)
 
