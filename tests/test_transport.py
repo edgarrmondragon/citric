@@ -16,6 +16,8 @@ import re
 from contextlib import nullcontext
 from typing import TYPE_CHECKING
 
+import httpcore2
+import httpx2
 import pytest
 import requests
 from werkzeug.wrappers import Response
@@ -256,7 +258,12 @@ def test_httpx2_transport_pool_options():
         max_keepalive_connections=16,
         keepalive_expiry=30,
     )
-    pool = transport._client._transport._pool
+
+    inner_transport = transport._client._transport
+    assert isinstance(inner_transport, httpx2.HTTPTransport)
+
+    pool = inner_transport._pool
+    assert isinstance(pool, httpcore2.ConnectionPool)
     assert pool._max_connections == 32
     assert pool._max_keepalive_connections == 16
     assert pool._keepalive_expiry == 30
