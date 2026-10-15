@@ -39,7 +39,7 @@ async def main() -> None:
             async with semaphore:
                 return await asyncio.to_thread(client.list_questions, sid)
 
-        surveys = await asyncio.to_thread(client.list_surveys, "iamadmin")
+        surveys = await asyncio.to_thread(client.list_surveys)
 
         # Wait for every worker thread, even if some calls fail: cancelling a task
         # doesn't stop its thread, and the client must not be closed under it.
