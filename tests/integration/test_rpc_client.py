@@ -26,6 +26,7 @@ import bs4
 import pytest
 from dirty_equals import IsPartialDict, IsPositiveInt
 from faker import Faker
+from typeguard import check_type
 
 import citric
 import citric.objects
@@ -33,12 +34,12 @@ from citric import enums
 from citric.exceptions import LimeSurveyApiError, LimeSurveyStatusError
 from citric.objects import Participant
 from citric.transport.urllib3 import Urllib3Transport
+from citric.types import SurveyListElement
 
 if sys.version_info >= (3, 12):
     from typing import override
 else:
     from typing_extensions import override
-
 
 if TYPE_CHECKING:
     from collections.abc import Generator, Iterable, Mapping
@@ -251,7 +252,8 @@ def test_survey(
     assert survey_props["savetimings"] == "N"
     assert survey_props["datestamp"] == "Y"
 
-    matched = next(s for s in client.list_surveys() if int(s["sid"]) == survey_id)
+    surveys = check_type(client.list_surveys(), list[SurveyListElement])
+    matched = next(s for s in surveys if int(s["sid"]) == survey_id)
     assert matched["surveyls_title"] == NEW_SURVEY_NAME
 
     with subtests.test(msg="survey group ID"):

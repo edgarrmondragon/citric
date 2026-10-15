@@ -16,9 +16,9 @@ from typing import Any, Literal, TypeAlias
 from citric import enums
 
 if sys.version_info >= (3, 11):
-    from typing import Required
+    from typing import NotRequired, Required
 else:
-    from typing_extensions import Required
+    from typing_extensions import NotRequired, Required
 
 if sys.version_info >= (3, 15):
     from typing import TypedDict
@@ -541,13 +541,13 @@ class SetQuotaPropertiesResult(TypedDict):
     """The quota properties."""
 
 
-class SurveyListElement(TypedDict, total=False):
+class SurveyListElement(TypedDict):
     """List surveys result."""
 
     sid: Required[int]
     """The survey ID."""
 
-    gsid: int
+    gsid: NotRequired[int | None]
     """The survey group ID.
 
     .. minlimesurveyattribute:: 6.10.0
@@ -556,10 +556,10 @@ class SurveyListElement(TypedDict, total=False):
     surveyls_title: str
     """The survey title."""
 
-    startdate: str
+    startdate: str | None
     """The survey start date."""
 
-    expires: str
+    expires: str | None
     """The survey expiration date."""
 
     active: YesNo

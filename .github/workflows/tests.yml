@@ -69,7 +69,7 @@ jobs:
           os: ubuntu-26.04
           session: lowest-requirements
 
-        - python-version: ["3.10", "3.14"]
+        - python-version: ["3.10", "3.15"]
           os: ubuntu-26.04
           session: xdoctest
 
@@ -87,10 +87,10 @@ jobs:
         - python-version: ["3.16"]
           os: ubuntu-26.04
 
-        - python-version: ["3.14"]
+        - python-version: ["3.15"]
           os: windows-2025
 
-        - python-version: ["3.14"]
+        - python-version: ["3.15"]
           os: macos-26
 
     steps:
@@ -126,7 +126,7 @@ jobs:
         NOXFORCEPYTHON: ${{ join(matrix.python-version, ',') }}
         NOXSESSION: ${{ matrix.session || 'test' }}
       run: |
-        nox --verbose --parallel=auto -- --junit-xml=tests.xml
+        nox --verbose --parallel=auto -- --durations=3 --junit-xml=tests.xml
 
     - name: Upload coverage data
       if: ${{ matrix.session != 'xdoctest' }}
@@ -216,7 +216,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.14"]
+        python-version: ["3.15"]
         database: ["postgres"]
         ref: [""]
         context: [""]
@@ -256,7 +256,7 @@ jobs:
         LS_DOCKER_CONTEXT: ${{ matrix.context }}
         LS_DOCKERFILE: Dockerfile
       run: |
-        nox -- --junit-xml=integration.xml
+        nox -- --durations=3 --junit-xml=integration.xml
 
     - name: Upload test results to Codecov
       if: ${{ !cancelled() }}
