@@ -126,7 +126,7 @@ jobs:
         NOXFORCEPYTHON: ${{ join(matrix.python-version, ',') }}
         NOXSESSION: ${{ matrix.session || 'test' }}
       run: |
-        nox --verbose --parallel=auto -- --durations=3 --junit-xml=tests.xml
+        nox --verbose -- --durations=3 --junit-xml=tests.xml
 
     - name: Upload coverage data
       if: ${{ matrix.session != 'xdoctest' }}
