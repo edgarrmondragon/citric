@@ -23,7 +23,7 @@ import logging
 import re
 from dataclasses import dataclass
 from pathlib import Path
-from typing import IO, TYPE_CHECKING, Any, Literal
+from typing import IO, TYPE_CHECKING, Any, Literal, overload
 
 from citric import enums
 from citric.session import Session, _check_result_status
@@ -1058,13 +1058,40 @@ class Client:  # ruff: ignore[too-many-public-methods]
         """
         return self.session.get_group_properties(group_id, settings, language)
 
+    @overload
+    def get_language_properties(
+        self,
+        survey_id: int,
+        *,
+        settings: None = None,
+        language: str | None = None,
+    ) -> types.LanguageProperties: ...
+
+    @overload
+    def get_language_properties(
+        self,
+        survey_id: int,
+        *,
+        settings: list[str],
+        language: str | None = None,
+    ) -> types.PartialLanguageProperties: ...
+
+    @overload
     def get_language_properties(
         self,
         survey_id: int,
         *,
         settings: list[str] | None = None,
         language: str | None = None,
-    ) -> types.LanguageProperties:
+    ) -> types.LanguageProperties | types.PartialLanguageProperties: ...
+
+    def get_language_properties(
+        self,
+        survey_id: int,
+        *,
+        settings: list[str] | None = None,
+        language: str | None = None,
+    ) -> types.LanguageProperties | types.PartialLanguageProperties:
         """Get survey language properties.
 
         Args:
@@ -1073,9 +1100,15 @@ class Client:  # ruff: ignore[too-many-public-methods]
             language: Specify language for multilingual surveys.
 
         Returns:
-            Dictionary of survey language properties.
+            Dictionary of survey language properties. If ``settings`` is given, only
+            those properties are included.
 
         .. versionadded:: 0.0.10
+
+        .. version-changed:: NEXT_VERSION
+            The result is typed as :class:`~citric.types.LanguageProperties`, with
+            all keys present, unless ``settings`` is given, in which case it is
+            typed as :class:`~citric.types.PartialLanguageProperties`.
         """
         return self.session.get_language_properties(survey_id, settings, language)
 
@@ -1791,7 +1824,7 @@ class Client:  # ruff: ignore[too-many-public-methods]
         self,
         survey_id: int,
         language: str | None = None,
-        **properties: Unpack[types.LanguageProperties],
+        **properties: Unpack[types.LanguagePropertiesUpdate],
     ) -> dict[str, Any]:
         """Set properties of a survey language.
 
@@ -1806,6 +1839,10 @@ class Client:  # ruff: ignore[too-many-public-methods]
             Mapping with status and updated properties.
 
         .. versionadded:: 0.0.11
+
+        .. version-changed:: NEXT_VERSION
+            The properties are typed as :class:`~citric.types.LanguagePropertiesUpdate`,
+            which excludes the survey ID and language, as they can't be changed.
         """
         return self.session.set_language_properties(survey_id, properties, language)
 

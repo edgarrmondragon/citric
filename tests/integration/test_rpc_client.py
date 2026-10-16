@@ -31,7 +31,11 @@ import citric.objects
 from citric import enums
 from citric.exceptions import LimeSurveyApiError, LimeSurveyStatusError
 from citric.objects import Participant
-from citric.types import SurveyListElement
+from citric.types import (
+    LanguageProperties,
+    PartialLanguageProperties,
+    SurveyListElement,
+)
 
 if TYPE_CHECKING:
     from collections.abc import Generator, Iterable
@@ -141,7 +145,10 @@ def test_language(client: citric.Client, survey_id: int, subtests: pytest.Subtes
         assert survey_props["additional_languages"] == "es ru"
 
     # Get language properties
-    language_props = client.get_language_properties(survey_id, language="es")
+    language_props = check_type(
+        client.get_language_properties(survey_id, language="es"),
+        LanguageProperties,
+    )
     assert language_props["surveyls_email_register_subj"] is not None
     assert language_props["surveyls_email_invite"] is not None
 
@@ -155,13 +162,18 @@ def test_language(client: citric.Client, survey_id: int, subtests: pytest.Subtes
     with subtests.test(msg="updated language properties"):
         assert response == {"status": "OK", "surveyls_email_confirm": True}
 
-    new_props = client.get_language_properties(
-        survey_id,
-        language="es",
-        settings=["surveyls_email_confirm"],
+    new_props = check_type(
+        client.get_language_properties(
+            survey_id,
+            language="es",
+            settings=["surveyls_email_confirm"],
+        ),
+        PartialLanguageProperties,
     )
     with subtests.test(msg="read updated language properties"):
-        assert new_props["surveyls_email_confirm"] == new_confirmation
+        assert new_props == {
+            "surveyls_email_confirm": new_confirmation,
+        }
 
     # Delete language
     delete_response = client.delete_language(survey_id, "ru")
