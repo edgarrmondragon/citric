@@ -5,29 +5,18 @@
 from __future__ import annotations
 
 __lazy_modules__ = {
-    "citric.exceptions",
+    "citric._rpc",
     "citric.method",
     "citric.transport._default",
-    "http",
     "json",
-    "random",
     "threading",
 }
 
-import http
 import json
-import logging
-import random
 import threading
-from importlib import metadata
 from typing import TYPE_CHECKING, Any, Type  # ruff: ignore[deprecated-import]
 
-from citric.exceptions import (
-    InvalidJSONResponseError,
-    LimeSurveyApiError,
-    LimeSurveyStatusError,
-    ResponseMismatchError,
-)
+from citric import _rpc
 from citric.method import Method
 from citric.transport._default import _transport_or_default
 
@@ -45,26 +34,7 @@ if TYPE_CHECKING:
 
 __all__ = ["Session"]
 
-GET_SESSION_KEY = "get_session_key"
-
-logger: logging.Logger = logging.getLogger(__name__)
-
-
-def _validate_rpc_response(request_id: int, data: RPCResponse) -> None:
-    if (response_id := data["id"]) != request_id:
-        msg = f"Response ID {response_id} does not match request ID {request_id}"
-        raise ResponseMismatchError(msg)
-
-    if (error := data["error"]) is not None:
-        raise LimeSurveyApiError(error)
-
-
-def _check_result_status(result: Any) -> None:  # ruff: ignore[any-type]
-    if isinstance(result, dict) and result.get("status") not in {"OK", None}:
-        raise LimeSurveyStatusError(
-            result["status"],
-            error_code=result.get("error_code"),
-        )
+logger = _rpc.logger
 
 
 class Session:
@@ -119,7 +89,7 @@ class Session:
     .. _closure: #citric.session.Session.close
     """
 
-    USER_AGENT = f"citric/{metadata.version('citric')}"
+    USER_AGENT = _rpc.USER_AGENT
 
     def __init__(
         self,
@@ -187,7 +157,7 @@ class Session:
         Returns:
             An RPC result.
         """
-        if method == GET_SESSION_KEY or method.startswith("system."):
+        if not _rpc.needs_session_key(method):
             return self._invoke(method, *params)
 
         # Methods requiring authentication
@@ -204,19 +174,15 @@ class Session:
             An RPC result.
         """
         response = self.call(method, *params)
-        _check_result_status(response["result"])
+        _rpc.check_result_status(response["result"])
         return response["result"]
 
     def _send_request(self, payload: RPCRequest) -> HTTPResponse:
         return self._transport.request(
             "POST",
             self.url,
-            data=json.dumps(payload, cls=self._encoder),
-            headers={
-                "accept": "application/json",
-                "content-type": "application/json",
-                "User-Agent": self.USER_AGENT,
-            },
+            data=_rpc.encode_request(payload, self._encoder),
+            headers=_rpc.request_headers(),
         )
 
     def _invoke(self, method: str, *params: Any) -> RPCResponse:
@@ -228,33 +194,9 @@ class Session:
 
         Returns:
             An RPC result.
-
-        Raises:
-            LimeSurveyApiError: If the server responds with an error HTTP status code.
-            InvalidJSONResponseError: If the response is not valid JSON.
         """
-        request_id = random.randint(1, 999_999)  # ruff: ignore[suspicious-non-cryptographic-random-usage]
-
-        res = self._send_request({
-            "method": method,
-            "params": [*params],
-            "id": request_id,
-        })
-        if res.status_code >= http.HTTPStatus.BAD_REQUEST:
-            msg = f"Request to LimeSurvey server failed with status {res.status_code}"
-            raise LimeSurveyApiError(msg)
-
-        data: RPCResponse
-
-        try:
-            data = res.json()
-        except ValueError as e:
-            raise InvalidJSONResponseError from e
-
-        logger.info("Invoked RPC method %s with ID %d", method, request_id)
-        _validate_rpc_response(request_id, data)
-
-        return data
+        payload = _rpc.new_request(method, params)
+        return _rpc.parse_response(self._send_request(payload), payload)
 
     def close(self) -> None:
         """Close RPC session.

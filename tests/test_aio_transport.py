@@ -102,10 +102,10 @@ async def test_httpx2_transport_concurrent_requests(httpserver: HTTPServer):
     """One transport serves concurrent requests."""
     httpserver.expect_request("/", method="POST").respond_with_handler(echo_handler)
 
+    results: list[str] = []
     transport = AsyncHttpx2Transport(max_connections=4)
     try:
         async with anyio.create_task_group() as tg:
-            results: list[str] = []
 
             async def post(n: int) -> None:
                 response = await transport.request(
