@@ -205,6 +205,16 @@ per-file-ignores."docs/notebooks/*" = [
   "module-import-not-at-top-of-file",
   "undocumented-public-module",
 ]
+per-file-ignores."scripts/generate_async_client.py" = [
+  "assert",
+  "class-as-data-structure",
+  "complex-structure",
+  "docstring-missing-exception",
+  "docstring-missing-returns",
+  "no-self-use",
+  "print",
+  "suspicious-subprocess-import",
+]
 per-file-ignores."src/*" = [
   "PD", # pandas-vet
 ]
