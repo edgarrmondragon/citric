@@ -40,7 +40,7 @@ __all__ = ["AsyncClient"]
 class AsyncClient(AsyncClientMethods):
     """Asynchronous LimeSurvey RemoteControl 2 API client.
 
-    The async counterpart of :class:`citric.client.Client`: its methods have the same
+    The async counterpart of :class:`citric.Client`: its methods have the same
     names and parameters, but are coroutines. Closing the client is done with
     :meth:`aclose`, and the client is an async context manager.
 
@@ -48,7 +48,7 @@ class AsyncClient(AsyncClientMethods):
 
        The async client only supports LimeSurvey 7.0 and later. Older servers aren't
        tested, and responses are always keyed by ``Q<question ID>`` fieldnames. Use
-       :class:`citric.client.Client` for older servers.
+       :class:`citric.Client` for older servers.
 
     Args:
         url: LimeSurvey Remote Control endpoint.
@@ -56,7 +56,8 @@ class AsyncClient(AsyncClientMethods):
         password: LimeSurvey password.
         transport: An HTTP transport implementing
             :class:`~citric.aio.transport.protocol.AsyncHTTPTransport`. Defaults to a
-            new :class:`~citric.aio.transport.httpx2.AsyncHttpx2Transport`.
+            new :class:`~citric.aio.transport.httpx2.AsyncHttpx2Transport`, which
+            requires ``httpx2`` to be installed (``pip install citric[async]``).
         auth_plugin: Name of the :ls_manual:`plugin <Authentication_plugins>` to use for
             authentication. For example,
             :ls_manual:`AuthLDAP <Authentication_plugins#LDAP>`. Defaults to using the

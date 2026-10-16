@@ -29,6 +29,27 @@ if TYPE_CHECKING:
 __all__ = ["AsyncSession"]
 
 
+def _default_transport() -> AsyncHTTPTransport:
+    """Create the default transport, which needs the optional ``httpx2`` package.
+
+    Returns:
+        A new :class:`~citric.aio.transport.httpx2.AsyncHttpx2Transport`.
+
+    Raises:
+        ImportError: If ``httpx2`` isn't installed.
+    """
+    from citric.aio.transport.httpx2 import AsyncHttpx2Transport  # ruff: ignore[import-outside-top-level]
+
+    try:
+        return AsyncHttpx2Transport()
+    except ImportError as e:
+        msg = (
+            "The default async transport requires httpx2. "
+            "Install it with `pip install citric[async]`, or pass a custom `transport`"
+        )
+        raise ImportError(msg) from e
+
+
 class AsyncSession:
     """Asynchronous LimeSurvey RemoteControl 2 session.
 
@@ -46,7 +67,7 @@ class AsyncSession:
         transport: An HTTP transport implementing
             :class:`~citric.aio.transport.protocol.AsyncHTTPTransport`. Defaults to a
             new :class:`~citric.aio.transport.httpx2.AsyncHttpx2Transport`, which
-            requires ``httpx2`` to be installed.
+            requires ``httpx2`` to be installed (``pip install citric[async]``).
         auth_plugin: Name of the :ls_manual:`plugin <Authentication_plugins>` to use for
             authentication. Defaults to the
             :ls_manual:`internal database <Authentication_plugins#Internal_database>`
@@ -70,9 +91,7 @@ class AsyncSession:
         json_encoder: Type[json.JSONEncoder] | None = None,  # ruff: ignore[non-pep585-annotation]
     ) -> None:
         if transport is None:
-            from citric.aio.transport.httpx2 import AsyncHttpx2Transport  # ruff: ignore[import-outside-top-level]
-
-            transport = AsyncHttpx2Transport()
+            transport = _default_transport()
 
         self.url: str = url
         self._transport = transport

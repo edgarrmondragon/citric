@@ -1,0 +1,7 @@
+kind: Added
+body: Added `citric.aio.AsyncClient` and `citric.aio.AsyncSession`, an async API for LimeSurvey 7+
+  based on the new `citric.aio.transport.protocol.AsyncHTTPTransport` protocol and the
+  `citric.aio.transport.httpx2.AsyncHttpx2Transport` implementation
+time: 2026-10-16T12:00:00.000000-06:00
+custom:
+    Issue: "1878"

@@ -5,6 +5,7 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
+from unittest.mock import patch
 
 import anyio
 import pytest
@@ -220,3 +221,18 @@ async def test_response_id_mismatch(server: RPCServer, session: AsyncSession):
     server.overrides["boom"] = lambda i: server.reply(i + 1, "OK")
     with pytest.raises(ResponseMismatchError):
         await session.boom()
+
+
+def test_default_transport_without_httpx2_suggests_the_extra(
+    server: RPCServer,
+):
+    """A missing httpx2 produces an actionable error."""
+    with (
+        patch.object(
+            AsyncHttpx2Transport,
+            "__init__",
+            side_effect=ModuleNotFoundError("No module named 'httpx2'"),
+        ),
+        pytest.raises(ImportError, match=r"pip install citric\[async\]"),
+    ):
+        AsyncSession(server.url, "user", "password")
