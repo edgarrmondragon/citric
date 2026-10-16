@@ -171,7 +171,9 @@ def test_language(client: citric.Client, survey_id: int, subtests: pytest.Subtes
         PartialLanguageProperties,
     )
     with subtests.test(msg="read updated language properties"):
-        assert new_props["surveyls_email_confirm"] == new_confirmation
+        assert new_props == {
+            "surveyls_email_confirm": new_confirmation,
+        }
 
     # Delete language
     delete_response = client.delete_language(survey_id, "ru")
