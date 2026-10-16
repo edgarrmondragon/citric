@@ -33,6 +33,7 @@ But also the latest 6.x and 7.x are tested continuously and are expected to work
 - [Export responses to a DuckDB database and analyze with SQL](how-to.md#export-responses-to-a-duckdb-database-and-analyze-with-sql)
 - [Change the default HTTP transport attributes](how-to.md#change-the-default-http-transport-attributes)
 - [Use a different HTTP transport](how-to.md#use-a-different-http-transport)
+- [Use the async client](how-to.md#use-the-async-client)
 - [Use a custom `requests`-based transport](how-to.md#use-a-custom-requests-based-transport)
 - [Use a different authentication plugin](how-to.md#use-a-different-authentication-plugin)
 - [Get files uploaded to a survey and move them to S3](how-to.md#get-files-uploaded-to-a-survey-and-move-them-to-s3)

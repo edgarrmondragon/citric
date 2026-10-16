@@ -88,6 +88,50 @@ citric ships two ready-made alternative transports:
 :end-before: end example
 ```
 
+## Use the async client
+
+{class}`AsyncClient <citric.aio.client.AsyncClient>` is the `asyncio` counterpart of
+{class}`Client <citric.Client>`. Its methods have the same names and parameters but are
+coroutines, so independent calls, like fetching the questions of many surveys, can run
+concurrently. It needs [`httpx2`](https://github.com/pydantic/httpx2) for its default
+transport:
+
+```sh
+pip install citric[async]
+```
+
+```{literalinclude} ../code_samples/async_client.py
+:start-after: start example
+:end-before: end example
+```
+
+`asyncio.TaskGroup` requires Python 3.11 or later. On 3.10, use
+{func}`asyncio.gather` with `return_exceptions=True` and wait for all the results before
+closing the client.
+
+Differences with the sync client to keep in mind:
+
+- It only supports LimeSurvey 7.0 and later.
+- Close it with {meth}`aclose() <citric.aio.client.AsyncClient.aclose>` or, better, use
+  `async with`.
+- There is no `server_version` property, since it would need a request. Use
+  `await client.get_server_version()`.
+- The session key is available with `await client.session.get_key()`.
+- {meth}`get_uploaded_file_objects() <citric.aio.client.AsyncClient.get_uploaded_file_objects>`
+  is an async generator: iterate over it with `async for`.
+- Methods that read or write local files by path, like `upload_file`, `download_files`,
+  `save_responses` and `save_statistics`, do the disk I/O in a worker thread. Methods
+  that take an open file, like `import_survey` and `upload_file_object`, read it
+  synchronously, so read large files in a thread first, for example
+  `io.BytesIO(await asyncio.to_thread(path.read_bytes))`.
+- Custom transports implement
+  {class}`AsyncHTTPTransport <citric.aio.transport.protocol.AsyncHTTPTransport>`, with
+  `async request` and `async aclose` methods.
+
+If you can't switch to `AsyncClient`, the blocking client can also be used from
+`asyncio` code with {func}`asyncio.to_thread`, as long as its transport is safe for
+concurrent use, like {class}`~citric.transport.urllib3.Urllib3Transport`.
+
 ## Use a custom `requests`-based transport
 
 Any subclass of [`requests.Session`](inv:requests:py:class:api/#requests.Session)

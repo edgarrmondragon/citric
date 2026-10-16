@@ -61,6 +61,8 @@ nitpick_ignore = {
     ("py:class", "YesNo"),
     ("py:class", "T"),
     ("py:obj", "T"),
+    # Private base class of `AsyncClient`, whose methods are documented on it
+    ("py:obj", "citric.aio._client_methods.AsyncClientMethods"),
 }
 
 # -- Options for internationalization --------------------------------------------------
@@ -159,6 +161,7 @@ autoapi_options = [
     "show-module-summary",
     "special-members",
     "imported-members",
+    "inherited-members",
 ]
 autoapi_root = "_api"
 

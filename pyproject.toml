@@ -46,6 +46,10 @@ email = "edgarrm358@gmail.com"
 [[project.authors]]
 name = "Edgar Ramírez-Mondragón"
 email = "edgarrm358@gmail.com"
+[project.optional-dependencies]
+async = [
+  "httpx2>=2.13.1",
+]
 [project.urls]
 Documentation = "https://citric.readthedocs.io"
 Funding = "https://github.com/sponsors/edgarrmondragon"
