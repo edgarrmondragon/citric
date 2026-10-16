@@ -137,7 +137,7 @@ def client(
     ) as client:
         yield client
 
-        with contextlib.suppress(LimeSurveyStatusError):
+        with contextlib.suppress(LimeSurveyStatusError):  # pragma: no cover
             for survey in client.list_surveys(integration_username):
                 client.delete_survey(survey["sid"])
 
