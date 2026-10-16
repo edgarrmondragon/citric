@@ -5,6 +5,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import csv
 import functools
 import io
@@ -12,11 +13,15 @@ import json
 import operator
 import random
 import string
+import sys
+import threading
+import time
 import uuid
+from concurrent.futures import ThreadPoolExecutor
 from contextlib import contextmanager
 from datetime import datetime
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 from unittest.mock import patch
 from urllib.parse import quote
 
@@ -31,17 +36,24 @@ import citric.objects
 from citric import enums
 from citric.exceptions import LimeSurveyApiError, LimeSurveyStatusError
 from citric.objects import Participant
+from citric.transport.urllib3 import Urllib3Transport
 from citric.types import (
     LanguageProperties,
     PartialLanguageProperties,
     SurveyListElement,
 )
 
+if sys.version_info >= (3, 12):
+    from typing import override
+else:
+    from typing_extensions import override
+
 if TYPE_CHECKING:
-    from collections.abc import Generator, Iterable
+    from collections.abc import Generator, Iterable, Mapping
 
     import semver
 
+    from citric.transport.protocol import HTTPResponse
     from citric.types import (
         FileUploadResult,
         ParticipantData,
@@ -1658,3 +1670,79 @@ def test_save_statistics(client: citric.Client, survey_id: int, tmp_path: Path):
     # Find the table elements
     tables = soup.find_all("table")
     assert len(tables) == 4  # One for each question
+
+
+class _RecordingTransport(Urllib3Transport):
+    """Transport that records the RPC method of every request it sends.
+
+    Authentication requests are slowed down, so that concurrent callers overlap with
+    it and would each start their own session if the session weren't locked.
+    """
+
+    def __init__(self, **kwargs: Any) -> None:
+        super().__init__(**kwargs)
+        self.rpc_methods: list[str] = []
+        self._lock = threading.Lock()
+
+    @override
+    def request(
+        self,
+        method: str,
+        url: str,
+        *,
+        data: str | None = None,
+        headers: Mapping[str, str] | None = None,
+    ) -> HTTPResponse:
+        rpc_method = json.loads(data)["method"] if isinstance(data, str) else None
+        if rpc_method is not None:
+            with self._lock:
+                self.rpc_methods.append(rpc_method)
+        if rpc_method == "get_session_key":
+            time.sleep(0.5)
+        return super().request(method, url, data=data, headers=headers)
+
+
+@pytest.mark.integration_test
+def test_async_to_thread(
+    integration_url: str,
+    integration_username: str,
+    integration_password: str,
+    client: citric.Client,
+    survey_id: int,
+):
+    """Concurrent first calls on a new client authenticate only once."""
+    # Use a different, already authenticated client to look up the questions, so
+    # the client under test makes its first request from the worker threads.
+    question_ids = [q["qid"] for q in client.list_questions(survey_id)]
+    assert len(question_ids) >= 3
+
+    transport = _RecordingTransport(maxsize=len(question_ids))
+
+    async def fetch_all(new_client: citric.Client) -> list[Any]:
+        # A dedicated executor with a thread per call guarantees the calls overlap.
+        with ThreadPoolExecutor(max_workers=len(question_ids)) as executor:
+            loop = asyncio.get_running_loop()
+            # Wait for every worker thread, even if some calls fail, before the
+            # client is closed.
+            return await asyncio.gather(
+                *(
+                    loop.run_in_executor(
+                        executor, new_client.get_question_properties, qid
+                    )
+                    for qid in question_ids
+                ),
+                return_exceptions=True,
+            )
+
+    with citric.Client(
+        f"{integration_url}/index.php/admin/remotecontrol",
+        integration_username,
+        integration_password,
+        transport=transport,
+    ) as new_client:
+        results = asyncio.run(fetch_all(new_client))
+
+    exceptions = [r for r in results if isinstance(r, BaseException)]
+    assert not exceptions
+    assert all("question" in props for props in results)
+    assert transport.rpc_methods.count("get_session_key") == 1

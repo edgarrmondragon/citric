@@ -24,6 +24,38 @@ Otherwise, you can manually close the session with {meth}`client.close() <citric
 :end-before: end example
 ```
 
+## Run requests concurrently with `asyncio`
+
+Citric doesn't have an async API (yet), but its blocking client can be used from
+`asyncio` code with {func}`asyncio.to_thread`. Each call runs in a worker thread, so
+independent calls, like fetching the properties of many surveys, overlap instead of
+running one after the other. Authentication is thread-safe, so concurrent calls on a
+new client share a single session key.
+
+Worker threads share the client's HTTP transport, so use one that is safe for concurrent
+use, like {class}`~citric.transport.urllib3.Urllib3Transport` or
+{class}`~citric.transport.httpx2.Httpx2Transport`. The default transport, a
+{py:class}`requests.Session`, is not guaranteed to be thread-safe, so pass `transport=`
+explicitly when sharing a client between threads.
+
+The samples use {class}`asyncio.TaskGroup`, which requires Python 3.11 or later.
+
+```{literalinclude} ../code_samples/asyncio_to_thread.py
+:start-after: start example
+:end-before: end example
+```
+
+To limit the load on the server, bound the concurrency with a semaphore and size the
+connection pool accordingly. With {class}`~citric.transport.urllib3.Urllib3Transport`
+that's `maxsize`; with {class}`~citric.transport.httpx2.Httpx2Transport`, it's
+`max_connections` and `max_keepalive_connections`; with {py:class}`requests.Session`,
+mount an {py:class}`~requests.adapters.HTTPAdapter` with `pool_maxsize`:
+
+```{literalinclude} ../code_samples/asyncio_to_thread_bounded.py
+:start-after: start example
+:end-before: end example
+```
+
 ## Create and import questions using Python objects
 
 Use {class}`citric.objects.Question` to compose questions programmatically and
