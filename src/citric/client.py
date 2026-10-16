@@ -26,7 +26,8 @@ from pathlib import Path
 from typing import IO, TYPE_CHECKING, Any, Literal, overload
 
 from citric import enums
-from citric.session import Session, _check_result_status
+from citric._rpc import check_result_status
+from citric.session import Session
 from citric.transport._default import _transport_or_default
 from citric.transport.protocol import HTTPTransport  # ruff: ignore[typing-only-first-party-import]
 
@@ -2024,7 +2025,7 @@ class Client:  # ruff: ignore[too-many-public-methods]
         ):
             return int(match[1])
 
-        _check_result_status(result)
+        check_result_status(result)
         msg = "Could not determine invitation status"
         raise RuntimeError(msg)
 
@@ -2059,7 +2060,7 @@ class Client:  # ruff: ignore[too-many-public-methods]
             override_all_conditions or {},
         )
         if r["error"] is not None or r["result"].get("status", "").startswith("Error:"):
-            _check_result_status(r["result"])
+            check_result_status(r["result"])
 
         return r["result"]
 
@@ -2101,6 +2102,6 @@ class Client:  # ruff: ignore[too-many-public-methods]
             continue_on_error,
         )
         if r["error"] is not None or r["result"].get("status", "").startswith("Error:"):
-            _check_result_status(r["result"])
+            check_result_status(r["result"])
 
         return r["result"]
