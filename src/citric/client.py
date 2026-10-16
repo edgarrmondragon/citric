@@ -1076,6 +1076,15 @@ class Client:  # ruff: ignore[too-many-public-methods]
         language: str | None = None,
     ) -> types.PartialLanguageProperties: ...
 
+    @overload
+    def get_language_properties(
+        self,
+        survey_id: int,
+        *,
+        settings: list[str] | None = None,
+        language: str | None = None,
+    ) -> types.LanguageProperties | types.PartialLanguageProperties: ...
+
     def get_language_properties(
         self,
         survey_id: int,
