@@ -14,7 +14,10 @@ import operator
 import random
 import string
 import sys
+import threading
+import time
 import uuid
+from concurrent.futures import ThreadPoolExecutor
 from contextlib import contextmanager
 from datetime import datetime
 from pathlib import Path
@@ -1670,11 +1673,16 @@ def test_save_statistics(client: citric.Client, survey_id: int, tmp_path: Path):
 
 
 class _RecordingTransport(Urllib3Transport):
-    """Transport that records the RPC method of every request it sends."""
+    """Transport that records the RPC method of every request it sends.
+
+    Authentication requests are slowed down, so that concurrent callers overlap with
+    it and would each start their own session if the session weren't locked.
+    """
 
     def __init__(self, **kwargs: Any) -> None:
         super().__init__(**kwargs)
         self.rpc_methods: list[str] = []
+        self._lock = threading.Lock()
 
     @override
     def request(
@@ -1685,15 +1693,17 @@ class _RecordingTransport(Urllib3Transport):
         data: str | None = None,
         headers: Mapping[str, str] | None = None,
     ) -> HTTPResponse:
-        assert data is not None
-        self.rpc_methods.append(json.loads(data)["method"])
+        rpc_method = json.loads(data)["method"] if isinstance(data, str) else None
+        if rpc_method is not None:
+            with self._lock:
+                self.rpc_methods.append(rpc_method)
+        if rpc_method == "get_session_key":
+            time.sleep(0.5)
         return super().request(method, url, data=data, headers=headers)
 
 
 @pytest.mark.integration_test
-@pytest.mark.anyio
-@pytest.mark.parametrize("anyio_backend", ["asyncio"])
-async def test_async_to_thread(
+def test_async_to_thread(
     integration_url: str,
     integration_username: str,
     integration_password: str,
@@ -1704,9 +1714,25 @@ async def test_async_to_thread(
     # Use a different, already authenticated client to look up the questions, so
     # the client under test makes its first request from the worker threads.
     question_ids = [q["qid"] for q in client.list_questions(survey_id)]
-    assert len(question_ids) > 1
+    assert len(question_ids) >= 3
 
     transport = _RecordingTransport(maxsize=len(question_ids))
+
+    async def fetch_all(new_client: citric.Client) -> list[Any]:
+        # A dedicated executor with a thread per call guarantees the calls overlap.
+        with ThreadPoolExecutor(max_workers=len(question_ids)) as executor:
+            loop = asyncio.get_running_loop()
+            # Wait for every worker thread, even if some calls fail, before the
+            # client is closed.
+            return await asyncio.gather(
+                *(
+                    loop.run_in_executor(
+                        executor, new_client.get_question_properties, qid
+                    )
+                    for qid in question_ids
+                ),
+                return_exceptions=True,
+            )
 
     with citric.Client(
         f"{integration_url}/index.php/admin/remotecontrol",
@@ -1714,18 +1740,9 @@ async def test_async_to_thread(
         integration_password,
         transport=transport,
     ) as new_client:
-        # Wait for every worker thread, even if some calls fail, before the client
-        # is closed.
-        results = await asyncio.gather(
-            *(
-                asyncio.to_thread(new_client.get_question_properties, qid)
-                for qid in question_ids
-            ),
-            return_exceptions=True,
-        )
+        results = asyncio.run(fetch_all(new_client))
 
-    values = [r for r in results if not isinstance(r, BaseException)]
     exceptions = [r for r in results if isinstance(r, BaseException)]
     assert not exceptions
-    assert all("question" in props for props in values)
+    assert all("question" in props for props in results)
     assert transport.rpc_methods.count("get_session_key") == 1
