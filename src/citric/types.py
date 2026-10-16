@@ -33,9 +33,11 @@ __all__ = [
     "FileUploadResult",
     "GroupProperties",
     "LanguageProperties",
+    "LanguagePropertiesUpdate",
     "MailOutcome",
     "MailParticipantOutcome",
     "OperationStatus",
+    "PartialLanguageProperties",
     "ParticipantData",
     "ParticipantInfo",
     "ParticipantListElement",
@@ -122,8 +124,12 @@ class GroupProperties(TypedDict, total=False):
     """The group description."""
 
 
-class LanguageProperties(TypedDict, total=False):
-    """Language properties."""
+class LanguageProperties(TypedDict):
+    """Language properties, as returned when all settings are requested.
+
+    Every column of the language settings table is present. Nullable columns are
+    ``None`` when unset.
+    """
 
     surveyls_survey_id: int
     """The survey ID."""
@@ -152,62 +158,157 @@ class LanguageProperties(TypedDict, total=False):
     surveyls_policy_notice_label: str | None
     """The survey policy notice label."""
 
-    surveyls_url: str
+    surveyls_url: str | None
     """The survey URL."""
 
     surveyls_urldescription: str | None
     """The survey URL description."""
 
-    surveyls_alias: str | None
-    """The survey alias."""
-
-    surveyls_email_invite_subj: str
+    surveyls_email_invite_subj: str | None
     """The survey email invite subject."""
 
-    surveyls_email_invite: str
+    surveyls_email_invite: str | None
     """The survey email invite."""
 
-    surveyls_email_remind_subj: str
+    surveyls_email_remind_subj: str | None
     """The survey email remind subject."""
 
-    surveyls_email_remind: str
+    surveyls_email_remind: str | None
     """The survey email remind."""
 
-    surveyls_email_register_subj: str
+    surveyls_email_register_subj: str | None
     """The survey email register subject."""
 
-    surveyls_email_register: str
+    surveyls_email_register: str | None
     """The survey email register."""
 
-    surveyls_email_confirm_subj: str
+    surveyls_email_confirm_subj: str | None
     """The survey email confirm subject."""
 
-    surveyls_email_confirm: str
+    surveyls_email_confirm: str | None
     """The survey email confirm."""
 
     surveyls_dateformat: int
     """The survey date format."""
 
+    surveyls_attributecaptions: str | None
+    """The survey attribute captions."""
+
+    surveyls_alias: str | None
+    """The survey alias."""
+
+    email_admin_notification_subj: str | None
+    """The email admin notification subject."""
+
+    email_admin_notification: str | None
+    """The email admin notification."""
+
+    email_admin_responses_subj: str | None
+    """The email admin responses subject."""
+
+    email_admin_responses: str | None
+    """The email admin responses."""
+
     surveyls_numberformat: int
     """The survey number format."""
+
+    attachments: str | None
+    """The attachments."""
+
+
+class LanguagePropertiesUpdate(TypedDict, total=False):
+    """Language properties the user can update.
+
+    The survey ID and language can't be changed.
+    """
+
+    surveyls_title: str
+    """The survey title."""
+
+    surveyls_description: str | None
+    """The survey description."""
+
+    surveyls_welcometext: str | None
+    """The survey welcome text."""
+
+    surveyls_endtext: str | None
+    """The survey end text."""
+
+    surveyls_policy_notice: str | None
+    """The survey policy notice."""
+
+    surveyls_policy_error: str | None
+    """The survey policy error."""
+
+    surveyls_policy_notice_label: str | None
+    """The survey policy notice label."""
+
+    surveyls_url: str | None
+    """The survey URL."""
+
+    surveyls_urldescription: str | None
+    """The survey URL description."""
+
+    surveyls_email_invite_subj: str | None
+    """The survey email invite subject."""
+
+    surveyls_email_invite: str | None
+    """The survey email invite."""
+
+    surveyls_email_remind_subj: str | None
+    """The survey email remind subject."""
+
+    surveyls_email_remind: str | None
+    """The survey email remind."""
+
+    surveyls_email_register_subj: str | None
+    """The survey email register subject."""
+
+    surveyls_email_register: str | None
+    """The survey email register."""
+
+    surveyls_email_confirm_subj: str | None
+    """The survey email confirm subject."""
+
+    surveyls_email_confirm: str | None
+    """The survey email confirm."""
+
+    surveyls_dateformat: int
+    """The survey date format."""
 
     surveyls_attributecaptions: str | None
     """The survey attribute captions."""
 
-    email_admin_notification_subj: str
+    surveyls_alias: str | None
+    """The survey alias."""
+
+    email_admin_notification_subj: str | None
     """The email admin notification subject."""
 
-    email_admin_notification: str
+    email_admin_notification: str | None
     """The email admin notification."""
 
-    email_admin_responses_subj: str
+    email_admin_responses_subj: str | None
     """The email admin responses subject."""
 
-    email_admin_responses: str
+    email_admin_responses: str | None
     """The email admin responses."""
+
+    surveyls_numberformat: int
+    """The survey number format."""
 
     attachments: str | None
     """The attachments."""
+
+
+class PartialLanguageProperties(LanguagePropertiesUpdate, total=False):
+    """Language properties, as returned when only some settings are requested."""
+
+    surveyls_survey_id: int
+    """The survey ID."""
+
+    surveyls_language: str
+    """The language code."""
 
 
 class MailParticipantOutcome(TypedDict):
