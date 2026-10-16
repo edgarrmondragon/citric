@@ -34,8 +34,11 @@ new client share a single session key.
 
 Worker threads share the client's HTTP transport, so use one that is safe for concurrent
 use, like {class}`~citric.transport.urllib3.Urllib3Transport` or
-{class}`~citric.transport.httpx2.Httpx2Transport`. {py:class}`requests.Session` is
-not guaranteed to be thread-safe.
+{class}`~citric.transport.httpx2.Httpx2Transport`. The default transport, a
+{py:class}`requests.Session`, is not guaranteed to be thread-safe, so pass `transport=`
+explicitly when sharing a client between threads.
+
+The samples use {class}`asyncio.TaskGroup`, which requires Python 3.11 or later.
 
 ```{literalinclude} ../code_samples/asyncio_to_thread.py
 :start-after: start example

@@ -20,28 +20,34 @@ async def main() -> None:
     # Worker threads share the transport, so use one that supports concurrent use
     transport = Urllib3Transport(maxsize=8)
 
-    with Client(LS_URL, "iamadmin", "secret", transport=transport) as client:
+    client = Client(LS_URL, "iamadmin", "secret", transport=transport)
+
+    try:
         # One blocking call to list the surveys...
         surveys = await asyncio.to_thread(client.list_surveys)
 
         # ...then one blocking call per survey, all running in worker threads.
         # `Session` authenticates lazily and thread-safely, so concurrent calls
         # on a fresh client share a single session key.
-        # `return_exceptions=True` makes `gather` wait for every worker thread, even
-        # if some calls fail. Cancelling a task doesn't stop its thread, and the
-        # client must not be closed while requests are still in flight.
-        results = await asyncio.gather(
-            *(
-                asyncio.to_thread(client.get_language_properties, s["sid"])
+        # If a call fails, the task group cancels the others and raises an
+        # `ExceptionGroup`. Cancelling a task doesn't stop its thread though, so
+        # calls already running may still be in flight when the client is closed.
+        async with asyncio.TaskGroup() as tg:
+            tasks = [
+                tg.create_task(
+                    asyncio.to_thread(client.get_language_properties, s["sid"])
+                )
                 for s in surveys
-            ),
-            return_exceptions=True,
-        )
+            ]
 
-        for survey, result in zip(surveys, results, strict=True):
-            if isinstance(result, BaseException):
-                raise result
-            print(survey["sid"], result["surveyls_title"])
+        for survey, task in zip(surveys, tasks, strict=True):
+            print(survey["sid"], task.result()["surveyls_title"])
+
+    finally:
+        # `close` sends a blocking request to release the session key, so keep it
+        # off the event loop. Shielding it lets the request finish even if this task
+        # is cancelled.
+        await asyncio.shield(asyncio.to_thread(client.close))
 
 
 asyncio.run(main())
