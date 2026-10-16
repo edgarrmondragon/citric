@@ -5,3 +5,10 @@ paths:
     ignore:
       - reusable workflow call "\$/.+" at "uses" is not following the format
       - specifying action "\$/.+" in invalid format because ref is missing
+
+# workaround for ubuntu-26.06 not being recognized by actionlint
+# https://github.com/rhysd/actionlint/issues/682
+self-hosted-runner:
+  labels:
+    - ubuntu-26.04
+    - ubuntu-26.04-arm
