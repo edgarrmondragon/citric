@@ -86,18 +86,13 @@ from citric._rpc import check_result_status
 from citric.client import EMAILS_SENT_STATUS_PATTERN
 
 if TYPE_CHECKING:
-    import sys
     from collections.abc import Iterable, Mapping, Sequence
+    from typing import Unpack
 
     from citric import types
     from citric.aio.session import AsyncSession
     from citric.objects import Participant
     from citric.types import MailOutcome
-
-    if sys.version_info >= (3, 11):
-        from typing import Unpack
-    else:
-        from typing_extensions import Unpack
 
 __all__ = ["AsyncClientMethods"]
 
