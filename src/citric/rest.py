@@ -24,17 +24,12 @@ from citric.exceptions import LimeSurveyApiError
 from citric.transport._default import _transport_or_default
 
 if TYPE_CHECKING:
-    import sys
     from collections.abc import Mapping
     from types import TracebackType
+    from typing import Self
 
     from citric.transport.protocol import HTTPResponse, HTTPTransport
     from citric.types import RESTSurveyDetail
-
-    if sys.version_info >= (3, 11):
-        from typing import Self
-    else:
-        from typing_extensions import Self
 
 __all__ = [
     "RESTClient",

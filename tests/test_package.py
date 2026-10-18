@@ -3,18 +3,13 @@
 """Test package metadata."""
 
 import pathlib
-import sys
+import tomllib
 from importlib.metadata import version
 
 from packaging.specifiers import SpecifierSet
 from packaging.version import Version
 
 import citric
-
-if sys.version_info >= (3, 11):
-    import tomllib
-else:
-    import tomli as tomllib
 
 
 def test_version() -> None:

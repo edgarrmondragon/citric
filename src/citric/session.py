@@ -32,16 +32,11 @@ from citric.method import Method
 from citric.transport._default import _transport_or_default
 
 if TYPE_CHECKING:
-    import sys
     from types import TracebackType
+    from typing import Self
 
     from citric.transport.protocol import HTTPResponse, HTTPTransport
     from citric.types import Result, RPCRequest, RPCResponse
-
-    if sys.version_info >= (3, 11):
-        from typing import Self
-    else:
-        from typing_extensions import Self
 
 __all__ = ["Session"]
 

@@ -26,10 +26,7 @@ from tests.fixtures import LimeSurveyMockAdapter, requests_session_warning
 if TYPE_CHECKING:
     import requests
 
-if sys.version_info >= (3, 11):
-    SET_PROPERTY_MESSAGE_REGEX = "property .* of 'Session' object has no setter"
-else:
-    SET_PROPERTY_MESSAGE_REGEX = "can't set attribute"
+SET_PROPERTY_MESSAGE_REGEX = "property .* of 'Session' object has no setter"
 
 if sys.version_info >= (3, 12):
     from typing import override

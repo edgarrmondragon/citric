@@ -11,14 +11,9 @@ __lazy_modules__ = {
 
 import io
 import sys
-from typing import Any, Literal, TypeAlias
+from typing import Any, Literal, NotRequired, Required, TypeAlias
 
 from citric import enums
-
-if sys.version_info >= (3, 11):
-    from typing import NotRequired, Required
-else:
-    from typing_extensions import NotRequired, Required
 
 if sys.version_info >= (3, 15):
     from typing import TypedDict
