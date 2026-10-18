@@ -113,7 +113,7 @@ typing = [
 ]
 
 [tool.uv]
-required-version = ">=0.9.17"
+required-version = ">=0.13.1"
 preview = true
 
 [tool.ruff]
