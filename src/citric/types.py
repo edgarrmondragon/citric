@@ -706,7 +706,7 @@ class SurveyProperties(TypedDict, total=False):
     faxto: str
     """The survey fax number."""
 
-    format: Literal["A", "G", "S", "I"]
+    format: enums.NewSurveyType | Literal["A", "G", "S", "I"]
     """The survey format.
 
     Options: all in one, group by group, question by question, or inherit.

@@ -233,7 +233,7 @@ def test_survey(
     # Update survey properties
     response = client.set_survey_properties(
         survey_id,
-        format=enums.NewSurveyType.ALL_ON_ONE_PAGE,  # type: ignore[arg-type] # ty: ignore[invalid-argument-type]
+        format=enums.NewSurveyType.ALL_ON_ONE_PAGE,
         savetimings="N",
         datestamp="Y",
     )
