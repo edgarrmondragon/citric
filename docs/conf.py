@@ -168,6 +168,11 @@ autoapi_root = "_api"
 
 myst_heading_anchors = 2
 
+# -- Options for sphinx-llm ------------------------------------------------------------
+# https://github.com/NVIDIA/sphinx-llm#configuration
+
+llms_txt_suppress_unknown_node_warnings = ["abbreviation", "meta"]
+
 
 # ruff: disable[unused-function-argument]
 def skip_member_filter(
