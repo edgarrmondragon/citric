@@ -69,4 +69,4 @@ jobs:
       env:
         REF: ${{ steps.set-ref.outputs.ref }}
       run: |
-        nox -- "${REF}"
+        ./noxfile.py -- "${REF}"

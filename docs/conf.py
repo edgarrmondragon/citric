@@ -118,6 +118,7 @@ intersphinx_mapping = {
     "requests": ("https://requests.readthedocs.io/en/stable/", None),
     "requests-cache": ("https://requests-cache.readthedocs.io/en/stable/", None),
     "python": ("https://docs.python.org/3/", None),
+    "typeguard": ("https://typeguard.readthedocs.io/en/latest/", None),
     "urllib3": ("https://urllib3.readthedocs.io/en/stable/", None),
 }
 
