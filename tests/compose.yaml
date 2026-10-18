@@ -1,3 +1,6 @@
+# Host ports are fixed by default for manual use (`docker compose up`). Setting a
+# `LS_*_PUBLISH` variable to an empty string lets Docker pick a free host port instead,
+# which is what the integration tests do so they can run alongside a manual stack.
 services:
   limesurvey:
     image: martialblog/limesurvey:${LS_IMAGE_TAG:-latest}
@@ -8,7 +11,7 @@ services:
     depends_on:
       - db
     ports:
-      - "${LS_PORT:-8001}:8080"
+      - "${LS_HTTP_PUBLISH-${LS_PORT:-8001}:}8080"
     environment:
       DB_TYPE: pgsql
       DB_HOST: db
@@ -36,7 +39,7 @@ services:
       POSTGRES_DB: limesurvey
       POSTGRES_PASSWORD: secret
     ports:
-      - 5433:5432
+      - "${LS_DB_PUBLISH-5433:}5432"
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "limesurvey"]
       interval: 15s
@@ -49,8 +52,8 @@ services:
       MP_SMTP_AUTH: "citric@example.com:secret"
       MP_SMTP_AUTH_ALLOW_INSECURE: "true"
     ports:
-      - "1025:1025"
-      - "8025:8025"
+      - "${LS_SMTP_PUBLISH-1025:}1025"
+      - "${LS_MAILPIT_PUBLISH-8025:}8025"
 
 volumes:
   apache:

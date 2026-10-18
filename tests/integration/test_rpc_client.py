@@ -35,6 +35,7 @@ from citric.types import (
     LanguageProperties,
     PartialLanguageProperties,
     SurveyListElement,
+    SurveyProperties,
 )
 
 if TYPE_CHECKING:
@@ -225,14 +226,14 @@ def test_survey(
     assert copied["status"] == "OK"
 
     # Get default properties
-    survey_props = client.get_survey_properties(survey_id)
+    survey_props = check_type(client.get_survey_properties(survey_id), SurveyProperties)
     assert survey_props["language"] == "es"
     assert survey_props["format"] == enums.NewSurveyType.GROUP_BY_GROUP
 
     # Update survey properties
     response = client.set_survey_properties(
         survey_id,
-        format=enums.NewSurveyType.ALL_ON_ONE_PAGE,
+        format=enums.NewSurveyType.ALL_ON_ONE_PAGE,  # type: ignore[arg-type] # ty: ignore[invalid-argument-type]
         savetimings="N",
         datestamp="Y",
     )

@@ -1,0 +1,5 @@
+kind: Documentation
+body: Added a contributing guide for common development tasks, and cross-referenced `typeguard` through intersphinx
+time: 2026-10-17T20:26:30-06:00
+custom:
+    Issue: "1876"

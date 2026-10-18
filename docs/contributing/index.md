@@ -4,6 +4,7 @@
 getting-started
 environment
 testing
+dev-tasks
 docs
 docker
 release

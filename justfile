@@ -36,7 +36,7 @@ pre-commit:
 lint:
     ./noxfile.py -t lint
 
-# Run all default nox sessions
+# Run all default Nox sessions
 nox:
     -./noxfile.py
 
@@ -44,7 +44,7 @@ venv:
     uv venv .venv --clear
     uv pip install --python .venv/bin/python --group dev -e .
 
-# Clean build artifacts, coverage files, and nox venvs
+# Clean build artifacts, coverage files, and Nox venvs
 clean:
     rm -rf build docker_tags.sqlite .coverage.* .nox/ .venv/
     find . -type d -name '__pycache__' -exec rm -r {} +

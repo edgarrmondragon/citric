@@ -698,6 +698,7 @@
    <fieldname>tokenencryptionoptions</fieldname>
    <fieldname>access_mode</fieldname>
    <fieldname>lastmodified</fieldname>
+   <fieldname>welcome_image</fieldname>
   </fields>
   <rows>
    <row>
@@ -750,6 +751,7 @@
     <tokenencryptionoptions/>
     <access_mode><![CDATA[O]]></access_mode>
     <lastmodified><![CDATA[2026-02-15 06:47:46]]></lastmodified>
+    <welcome_image><![CDATA[{"image_path":"/upload/surveys/637257/images/welcome.png","image_align":"left","image_opacity":100,"image_brightness":0,"image_radius":0,"image_alt_text":"","image_styles":"border-radius: 0px; filter: brightness(1); opacity: 1;"}]]></welcome_image>
    </row>
   </rows>
  </surveys>
