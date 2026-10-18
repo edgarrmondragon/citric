@@ -56,6 +56,7 @@ class NewSurveyType(StrEnum):
     ALL_ON_ONE_PAGE = "A"
     GROUP_BY_GROUP = "G"
     SINGLE_QUESTIONS = "S"
+    INHERIT = "I"
 
 
 class StatisticsExportFormat(StrEnum):
