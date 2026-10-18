@@ -9,13 +9,8 @@ __lazy_modules__ = {
 }
 
 import enum
-import sys
+from enum import StrEnum
 from typing import Type  # ruff: ignore[deprecated-import]
-
-if sys.version_info >= (3, 11):
-    from enum import StrEnum
-else:
-    from backports.strenum import StrEnum
 
 __all__ = [
     "EmailSendStrategy",

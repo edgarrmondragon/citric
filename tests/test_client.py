@@ -72,7 +72,7 @@ def test_export_timeline(client: Client):
     assert client.export_timeline(
         1,
         "hour",
-        dt.datetime(2020, 1, 1, tzinfo=dt.timezone.utc),
+        dt.datetime(2020, 1, 1, tzinfo=dt.UTC),
     ) == {
         "2022-01-01": 4,
         "2022-01-02": 2,
