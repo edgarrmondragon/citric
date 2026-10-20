@@ -896,14 +896,17 @@ class SurveyProperties(TypedDict, total=False):
     """
 
 
-class CPDBParticipantImportResult(TypedDict):
+class CPDBParticipantImportResult(TypedDict, total=False):
     """CPDB participant import result."""
 
-    ImportCount: int
+    ImportCount: Required[int]
     """The number of participants imported."""
 
-    UpdateCount: int
+    UpdateCount: Required[int]
     """The number of participants updated."""
+
+    RemoveCount: int
+    """The number of participants removed."""
 
 
 class SurveyUserActivationSettings(TypedDict, total=False):
