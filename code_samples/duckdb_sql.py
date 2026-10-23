@@ -28,7 +28,8 @@ top_10 = duckdb.execute("""
     FROM responses
     ORDER BY 2 DESC
     LIMIT 10
-""").df()
+""").fetchall()
 
-print(top_10)
+for token, duration in top_10:
+    print(f"Respondent {token} took {round(duration.total_seconds() / 60, 1)} minutes")
 # end example
