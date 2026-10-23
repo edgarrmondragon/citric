@@ -26,6 +26,7 @@ top_10 = duckdb.execute("""
         token,
         submitdate - startdate AS duration
     FROM responses
+    WHERE submitdate IS NOT NULL
     ORDER BY 2 DESC
     LIMIT 10
 """).fetchall()
