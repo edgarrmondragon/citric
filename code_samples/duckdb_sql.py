@@ -2,6 +2,8 @@
 
 """Export survey responses to a DuckDB database."""
 
+# ruff: file-ignore[print]
+
 from __future__ import annotations
 
 # start example
@@ -19,12 +21,14 @@ client = citric.Client(
 Path("responses.csv").write_bytes(client.export_responses(12345, file_format="csv"))
 
 duckdb.execute("CREATE TABLE responses AS SELECT * FROM 'responses.csv'")
-duckdb.sql("""
+top_10 = duckdb.execute("""
     SELECT
         token,
         submitdate - startdate AS duration
     FROM responses
     ORDER BY 2 DESC
     LIMIT 10
-""").show()
+""").df()
+
+print(top_10)
 # end example
