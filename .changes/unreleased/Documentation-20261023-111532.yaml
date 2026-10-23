@@ -1,0 +1,5 @@
+kind: Documentation
+body: Update DuckDB example to print a Pandas dataframe
+time: 2026-10-23T11:15:32.774337-06:00
+custom:
+    Issue: "1887"
