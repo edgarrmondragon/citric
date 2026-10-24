@@ -1479,3 +1479,5 @@ class RESTSurveyDetail(TypedDict):
     templatePreview: str
     noKeyboard: NotRequired[bool]
     """Only returned by LimeSurvey 6."""
+
+    hasResponsesTable: NotRequired[bool]
