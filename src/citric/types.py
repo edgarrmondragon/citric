@@ -1479,3 +1479,9 @@ class RESTSurveyDetail(TypedDict):
     templatePreview: str
     noKeyboard: NotRequired[bool]
     """Only returned by LimeSurvey 6."""
+
+    hasResponsesTable: NotRequired[bool]
+    """Whether the survey has a responses table in the backend.
+
+    .. version-added:: NEXT_VERSION
+    """
