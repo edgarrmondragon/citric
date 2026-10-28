@@ -618,6 +618,7 @@ class Client:  # ruff: ignore[too-many-public-methods]
         participants: Sequence[Participant],
         *,
         update: bool = False,
+        remove: bool = False,
     ) -> types.CPDBParticipantImportResult:
         """Import CPDB participants.
 
@@ -626,15 +627,21 @@ class Client:  # ruff: ignore[too-many-public-methods]
         Args:
             participants: CPDB participant data.
             update: Whether to update existing participants.
+            remove: If true, delete all participants from the CPDB whose ID is not in
+                the import list. Requires the global participant panel delete
+                permission and a non-empty import list.
 
         Returns:
             IDs of the new participants.
 
         .. versionadded:: 0.7.0
+        .. versionchanged:: NEXT_VERSION
+           Added the ``remove`` parameter.
         """
         return self.session.cpd_importParticipants(
             [participant.to_dict() for participant in participants],
             update,
+            remove,
         )
 
     def delete_group(self, survey_id: int, group_id: int) -> int:
