@@ -1485,3 +1485,9 @@ class RESTSurveyDetail(TypedDict):
 
     .. version-added:: NEXT_VERSION
     """
+
+    participantEncryptedAttributes: NotRequired[list[str] | None]
+    """List of encrypted attributes in the survey.
+
+    .. version-added:: NEXT_VERSION
+    """
