@@ -118,6 +118,7 @@ intersphinx_mapping = {
     "requests": ("https://requests.readthedocs.io/en/stable/", None),
     "requests-cache": ("https://requests-cache.readthedocs.io/en/stable/", None),
     "python": ("https://docs.python.org/3/", None),
+    "typeguard": ("https://typeguard.readthedocs.io/en/latest/", None),
     "urllib3": ("https://urllib3.readthedocs.io/en/stable/", None),
 }
 
@@ -166,6 +167,11 @@ autoapi_root = "_api"
 # https://myst-parser.readthedocs.io/en/latest/configuration.html
 
 myst_heading_anchors = 2
+
+# -- Options for sphinx-llm ------------------------------------------------------------
+# https://github.com/NVIDIA/sphinx-llm#configuration
+
+llms_txt_suppress_unknown_node_warnings = ["abbreviation", "meta"]
 
 
 # ruff: disable[unused-function-argument]

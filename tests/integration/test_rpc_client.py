@@ -41,6 +41,7 @@ from citric.types import (
     LanguageProperties,
     PartialLanguageProperties,
     SurveyListElement,
+    SurveyProperties,
 )
 
 if sys.version_info >= (3, 12):
@@ -237,7 +238,7 @@ def test_survey(
     assert copied["status"] == "OK"
 
     # Get default properties
-    survey_props = client.get_survey_properties(survey_id)
+    survey_props = check_type(client.get_survey_properties(survey_id), SurveyProperties)
     assert survey_props["language"] == "es"
     assert survey_props["format"] == enums.NewSurveyType.GROUP_BY_GROUP
 

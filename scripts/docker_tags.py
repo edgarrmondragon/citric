@@ -4,7 +4,7 @@
 
 # /// script
 # dependencies = ["requests", "requests-cache"]
-# requires-python = ">=3.10"
+# requires-python = ">=3.11"
 # ///
 
 """Get all tags from the Docker Hub."""

@@ -42,6 +42,15 @@ def env_file(
     dotenv.set_key(env_file, "LS_USER", integration_username)
     dotenv.set_key(env_file, "LS_PASSWORD", integration_password)
 
+    # Let Docker choose free host ports so the tests don't clash with other stacks
+    for name in (
+        "LS_HTTP_PUBLISH",
+        "LS_DB_PUBLISH",
+        "LS_SMTP_PUBLISH",
+        "LS_MAILPIT_PUBLISH",
+    ):
+        dotenv.set_key(env_file, name, "")
+
     if git_reference:  # pragma: no cover
         archive_url = (
             f"https://github.com/LimeSurvey/LimeSurvey/archive/{git_reference}.tar.gz"
@@ -137,7 +146,7 @@ def client(
     ) as client:
         yield client
 
-        with contextlib.suppress(LimeSurveyStatusError):
+        with contextlib.suppress(LimeSurveyStatusError):  # pragma: no cover
             for survey in client.list_surveys(integration_username):
                 client.delete_survey(survey["sid"])
 

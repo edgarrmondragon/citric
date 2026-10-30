@@ -1,0 +1,5 @@
+kind: Packaging
+body: Bump minimum required typing-extensions to 4.13.0
+time: 2026-10-16T09:19:37.537548-06:00
+custom:
+    Issue: "1874"

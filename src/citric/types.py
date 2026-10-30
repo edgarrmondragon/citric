@@ -11,14 +11,9 @@ __lazy_modules__ = {
 
 import io
 import sys
-from typing import Any, Literal, TypeAlias
+from typing import Any, Literal, NotRequired, Required, TypeAlias
 
 from citric import enums
-
-if sys.version_info >= (3, 11):
-    from typing import NotRequired, Required
-else:
-    from typing_extensions import NotRequired, Required
 
 if sys.version_info >= (3, 15):
     from typing import TypedDict
@@ -706,8 +701,11 @@ class SurveyProperties(TypedDict, total=False):
     faxto: str
     """The survey fax number."""
 
-    format: enums.NewSurveyType
-    """The survey format."""
+    format: enums.NewSurveyType | Literal["A", "G", "S", "I"]
+    """The survey format.
+
+    Options: all in one, group by group, question by question, or inherit.
+    """
 
     savetimings: YesNo
     """Whether the survey saves timing."""
@@ -754,7 +752,7 @@ class SurveyProperties(TypedDict, total=False):
     datecreated: str
     """The survey creation date."""
 
-    showsurveypolicynotice: YesNo
+    showsurveypolicynotice: Literal[0, 1, 2]
     """Whether the survey shows policy notice."""
 
     publicstatistics: YesNo
@@ -799,13 +797,13 @@ class SurveyProperties(TypedDict, total=False):
     showxquestions: YesNo
     """Whether the survey shows x questions."""
 
-    showgroupinfo: YesNo
+    showgroupinfo: Literal["B", "N", "D", "X", "I"]
     """Whether the survey shows group info."""
 
     shownoanswer: YesNo
     """Whether the survey shows no answer."""
 
-    showqnumcode: YesNo
+    showqnumcode: Literal["B", "N", "C", "X", "I"]
     """Whether the survey shows question number code."""
 
     showwelcome: YesNo
@@ -850,7 +848,7 @@ class SurveyProperties(TypedDict, total=False):
     sendconfirmation: YesNo
     """Whether the survey sends confirmation."""
 
-    bounce_email: str
+    bounce_email: str | None
     """The survey bounce email."""
 
     emailresponseto: str | None
@@ -870,6 +868,32 @@ class SurveyProperties(TypedDict, total=False):
 
     additional_languages: str
     """The survey additional languages."""
+
+    access_mode: str
+    """Whether the access mode is open (O) or closed (C).
+
+    If O token-based participation may be supported, if C, it's enforced."""
+
+    adminemail: str
+    """Survey administrator email address."""
+
+    lastmodified: str
+    """Last modification date as an SQL datetime (``YYYY-MM-DD HH:mm:ss``)."""
+
+    preselectnoanswer: Literal["Y", "N", "I"]
+    """Whether to preselect "No answer" (yes, no or inherit)."""
+
+    showregisterpolicy: Literal["Y", "N", "I"]
+    """Whether to show the registration policy (yes, no or inherit)."""
+
+    showtokenpolicy: Literal["Y", "N", "I"]
+    """Whether to show the token policy (yes, no or inherit)."""
+
+    welcome_image: str | None
+    """JSON-encoded path and settings for image to be displayed on welcome screen.
+
+    https://github.com/LimeSurvey/LimeSurvey/blob/122c67a50a6ad313ee3fd18b3c563d4112aee39f/application/models/Survey.php#L156
+    """
 
 
 class CPDBParticipantImportResult(TypedDict):
@@ -1418,6 +1442,12 @@ class RESTSurveyDetail(TypedDict):
     format: str
     access_mode: str | None
 
+    welcomeImage: NotRequired[str | None]
+    """JSON-encoded path and settings for image to be displayed on welcome screen.
+
+    https://github.com/LimeSurvey/LimeSurvey/blob/122c67a50a6ad313ee3fd18b3c563d4112aee39f/application/models/Survey.php#L156
+    """
+
     languageSettings: dict[str, RESTSurveyLanguageSettings]
     """Language settings, keyed by survey language code."""
 
@@ -1449,3 +1479,15 @@ class RESTSurveyDetail(TypedDict):
     templatePreview: str
     noKeyboard: NotRequired[bool]
     """Only returned by LimeSurvey 6."""
+
+    hasResponsesTable: NotRequired[bool]
+    """Whether the survey has a responses table in the backend.
+
+    .. version-added:: NEXT_VERSION
+    """
+
+    participantEncryptedAttributes: NotRequired[list[str] | None]
+    """List of encrypted attributes in the survey.
+
+    .. version-added:: NEXT_VERSION
+    """

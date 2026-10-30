@@ -49,9 +49,9 @@ concurrency:
 env:
   FORCE_COLOR: "1"
   # renovate: datasource=pypi depName=nox
-  NOX_VERSION: 2026.8.17
+  NOX_VERSION: 2026.10.20
   # renovate: datasource=pypi depName=uv
-  UV_VERSION: 0.12.19
+  UV_VERSION: 0.13.1
 
 jobs:
   tests:
@@ -65,16 +65,15 @@ jobs:
       fail-fast: false
       matrix:
         include:
-        - python-version: ["3.10"]
+        - python-version: ["3.11"]
           os: ubuntu-26.04
           session: lowest-requirements
 
-        - python-version: ["3.10", "3.15"]
+        - python-version: ["3.11", "3.15"]
           os: ubuntu-26.04
           session: xdoctest
 
         - python-version:
-          - "3.10"
           - "3.11"
           - "3.12"
           - "3.13"
@@ -126,7 +125,7 @@ jobs:
         NOXFORCEPYTHON: ${{ join(matrix.python-version, ',') }}
         NOXSESSION: ${{ matrix.session || 'test' }}
       run: |
-        nox --verbose --parallel=auto -- --durations=3 --junit-xml=tests.xml
+        uv run noxfile.py --verbose -- --durations=3 --junit-xml=tests.xml
 
     - name: Upload coverage data
       if: ${{ matrix.session != 'xdoctest' }}
@@ -169,7 +168,7 @@ jobs:
         uv-cache-suffix: lint
 
     - uses: j178/prek-action@4e14d07f9231acabce116ccfca13b13dd9755ece # v3.0.0
-    - run: nox -t lint
+    - run: ./noxfile.py -t lint
 
   docker_tags:
     name: Get Docker tags
@@ -256,7 +255,7 @@ jobs:
         LS_DOCKER_CONTEXT: ${{ matrix.context }}
         LS_DOCKERFILE: Dockerfile
       run: |
-        nox -- --durations=3 --junit-xml=integration.xml
+        ./noxfile.py -- --durations=3 --junit-xml=integration.xml
 
     - name: Upload test results to Codecov
       if: ${{ !cancelled() }}
@@ -314,11 +313,11 @@ jobs:
     - name: Combine coverage data and display human readable report
       continue-on-error: true
       run: |
-        nox
+        ./noxfile.py
 
     - name: Create coverage report
       run: |
-        nox -- xml
+        ./noxfile.py -- xml
 
     - name: Upload coverage report
       uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1

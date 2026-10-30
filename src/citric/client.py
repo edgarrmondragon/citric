@@ -31,19 +31,14 @@ from citric.transport._default import _transport_or_default
 from citric.transport.protocol import HTTPTransport  # ruff: ignore[typing-only-first-party-import]
 
 if TYPE_CHECKING:
-    import sys
     from collections.abc import Generator, Iterable, Mapping, Sequence
     from os import PathLike
     from types import TracebackType
+    from typing import Self, Unpack
 
     from citric import types
     from citric.objects import Participant
     from citric.types import MailOutcome
-
-    if sys.version_info >= (3, 11):
-        from typing import Self, Unpack
-    else:
-        from typing_extensions import Self, Unpack
 
 __all__ = [
     "Client",
@@ -1028,11 +1023,7 @@ class Client:  # ruff: ignore[too-many-public-methods]
             survey_id,
             enums.TimelineAggregationPeriod(period),
             start.isoformat(),
-            (
-                end.isoformat()
-                if end
-                else dt.datetime.now(tz=dt.timezone.utc).isoformat()
-            ),
+            end.isoformat() if end else dt.datetime.now(tz=dt.UTC).isoformat(),
         )
 
     def get_group_properties(
