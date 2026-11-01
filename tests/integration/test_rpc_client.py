@@ -32,6 +32,7 @@ from citric import enums
 from citric.exceptions import LimeSurveyApiError, LimeSurveyStatusError
 from citric.objects import Participant
 from citric.types import (
+    CPDBParticipantImportResult,
     LanguageProperties,
     PartialLanguageProperties,
     QuestionProperties,
@@ -1418,6 +1419,17 @@ def test_missing_setting(client: citric.Client, server_version: semver.VersionIn
 @pytest.mark.integration_test
 def test_cpdb(faker: Faker, client: citric.Client):
     """Test the CPDB methods."""
+
+    def check_response(
+        participants: list[Participant],
+        *,
+        update: bool = False,
+    ) -> CPDBParticipantImportResult:
+        return check_type(
+            client.import_cpdb_participants(participants, update=update),
+            CPDBParticipantImportResult,
+        )
+
     participants = [
         Participant(
             email=faker.email(),
@@ -1436,7 +1448,7 @@ def test_cpdb(faker: Faker, client: citric.Client):
         ),
     ]
 
-    assert client.import_cpdb_participants(participants) == IsPartialDict(
+    assert check_response(participants) == IsPartialDict(
         ImportCount=2,
         UpdateCount=0,
     )
@@ -1458,10 +1470,7 @@ def test_cpdb(faker: Faker, client: citric.Client):
             participant_id=uuid.uuid4(),
         ),
     ]
-    assert client.import_cpdb_participants(
-        more_participants,
-        update=True,
-    ) == IsPartialDict(
+    assert check_response(more_participants, update=True) == IsPartialDict(
         ImportCount=1,
         UpdateCount=1,
     )
