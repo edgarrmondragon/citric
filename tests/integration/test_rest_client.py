@@ -144,9 +144,13 @@ def test_export_survey_responses(
 
     # Older versions don't reject unknown languages
     # https://github.com/LimeSurvey/LimeSurvey/commit/325d98e7fd98d00b07be1f40f972eb88a39c0c05
-    if server_version >= semver.Version(7, 6, 0):
-        with pytest.raises(LimeSurveyApiError, match="Invalid language specified"):
-            _ = rest_client.export_survey_responses(survey_id, language="zz")
+    effect = (
+        contextlib.nullcontext()
+        if server_version < semver.Version(7, 6, 0)
+        else pytest.raises(LimeSurveyApiError, match="Invalid language specified")
+    )
+    with effect:
+        _ = rest_client.export_survey_responses(survey_id, language="zz")
 
 
 @pytest.mark.integration_test
