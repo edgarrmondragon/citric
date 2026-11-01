@@ -1708,9 +1708,9 @@ class _RecordingTransport(Urllib3Transport):
         timeout: float | None = None,
     ) -> HTTPResponse:
         rpc_method = json.loads(data)["method"] if isinstance(data, str) else None
-        if rpc_method is not None:
-            with self._lock:
-                self.rpc_methods.append(rpc_method)
+        assert rpc_method is not None, "RPC method should not be None"
+        with self._lock:
+            self.rpc_methods.append(rpc_method)
         if rpc_method == "get_session_key":
             time.sleep(0.5)
         return super().request(method, url, data=data, headers=headers)
