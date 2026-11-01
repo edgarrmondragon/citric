@@ -36,7 +36,7 @@ class _Response:
     data: Any
 
     @property
-    def content(self) -> bytes:
+    def content(self) -> bytes:  # pragma: no cover
         return json.dumps(self.data).encode()
 
     def json(self) -> Any:  # ruff: ignore[any-type]
