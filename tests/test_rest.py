@@ -8,7 +8,7 @@ import io
 import json
 import sys
 from concurrent.futures import ThreadPoolExecutor
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, assert_type
 
 import pytest
 import requests
@@ -24,6 +24,7 @@ from citric.rest import (
     _encode_params,  # ruff: ignore[import-private-name]
     _MultipartBody,  # ruff: ignore[import-private-name]
 )
+from citric.types import RESTSurveyFilesPage, RESTSurveyResponsesPage
 
 if sys.version_info >= (3, 12):
     from typing import override
@@ -492,6 +493,40 @@ def test_get_survey_responses(rest_client: RESTClient, httpserver: HTTPServer):
             "unnestFiles": True,
         },
     ]
+
+
+def test_get_survey_responses_overloads(
+    rest_client: RESTClient,
+    httpserver: HTTPServer,
+):
+    """Test the return type of `get_survey_responses` for each `unnest_files` type."""
+    httpserver.expect_request(
+        "/rest/v1/survey-responses/12345",
+        method="POST",
+    ).respond_with_json({})
+
+    assert_type(
+        rest_client.get_survey_responses(12345),
+        RESTSurveyResponsesPage,
+    )
+    assert_type(
+        rest_client.get_survey_responses(12345, unnest_files=False),
+        RESTSurveyResponsesPage,
+    )
+    assert_type(
+        rest_client.get_survey_responses(12345, unnest_files=True),
+        RESTSurveyFilesPage,
+    )
+
+    def get_page(
+        unnest_files: bool,  # ruff: ignore[boolean-type-hint-positional-argument]
+    ) -> RESTSurveyResponsesPage | RESTSurveyFilesPage:
+        return rest_client.get_survey_responses(12345, unnest_files=unnest_files)
+
+    assert_type(
+        get_page(unnest_files=False),
+        RESTSurveyResponsesPage | RESTSurveyFilesPage,
+    )
 
 
 def test_make_request_json_and_multipart(rest_client: RESTClient):

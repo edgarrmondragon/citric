@@ -548,6 +548,20 @@ class RESTClient:
         unnest_files: Literal[True],
     ) -> RESTSurveyFilesPage: ...
 
+    @overload
+    def get_survey_responses(
+        self,
+        survey_id: int,
+        *,
+        filters: Sequence[Mapping[str, Any]] | None = None,
+        sort: Mapping[str, Any] | None = None,
+        page_size: int | None = None,
+        current_page: int | None = None,
+        fields: Sequence[str] | None = None,
+        language: str | None = None,
+        unnest_files: bool,
+    ) -> RESTSurveyResponsesPage | RESTSurveyFilesPage: ...
+
     def get_survey_responses(
         self,
         survey_id: int,
