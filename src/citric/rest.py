@@ -33,10 +33,15 @@ if TYPE_CHECKING:
 
     from citric.transport.protocol import HTTPResponse, HTTPTransport
     from citric.types import (
+        RESTStatisticsGlance,
+        RESTStatisticsOverviewResponse,
+        RESTStatisticsPage,
         RESTSurveyDetail,
         RESTSurveyFilesPage,
+        RESTSurveyGroupList,
         RESTSurveyImportResult,
         RESTSurveyResponsesPage,
+        RESTVersionInfo,
     )
 
 __all__ = [
@@ -620,4 +625,190 @@ class RESTClient:
             f"/rest/v1/survey-responses/{survey_id}",
             json={key: value for key, value in body.items() if value is not None},
         )
+        return response.json()
+
+    def export_survey_responses(
+        self,
+        survey_id: int,
+        *,
+        export_format: Literal[
+            "csv",
+            "html",
+            "pdf",
+            "excel",
+            "word",
+            "json",
+            "spss",
+            "stata",
+            "r_syntax",
+            "r_data",
+        ] = "csv",
+        language: str | None = None,
+        answer_format: Literal["long", "short"] | None = None,
+        csv_separator: Literal[",", ";", "\t"] | None = None,
+        filters: Sequence[Mapping[str, Any]] | None = None,
+    ) -> bytes:
+        """Export the responses of a survey to a file.
+
+        Args:
+            survey_id: Survey ID.
+            export_format: Format of the exported file.
+            language: Language of the question and answer texts. Defaults to the
+                survey's base language.
+            answer_format: Whether to export the full answer texts (``long``) or
+                the answer codes (``short``).
+            csv_separator: Field separator, for CSV exports.
+            filters: Filters, in the same format as for :meth:`get_survey_responses`.
+                All responses are exported if not given.
+
+        Returns:
+            The content of the exported file.
+
+        .. minlimesurvey:: 7.0.0
+
+        .. versionadded:: NEXT_VERSION
+        """
+        body: dict[str, Any] = {
+            "type": export_format,
+            "language": language,
+            "answerFormat": answer_format,
+            "csvSeparator": csv_separator,
+            "filters": filters,
+        }
+        response = self.make_request(
+            "POST",
+            f"/rest/v1/survey-responses-export/{survey_id}",
+            json={key: value for key, value in body.items() if value is not None},
+        )
+        return response.content
+
+    def get_statistics_overview(
+        self,
+        survey_id: int,
+        *,
+        language: str | None = None,
+    ) -> RESTStatisticsOverviewResponse:
+        """Get the statistics overview of a survey.
+
+        It includes the response counts, the daily activity for the last 30 days
+        and the latest responses.
+
+        Args:
+            survey_id: Survey ID.
+            language: Language of the question and answer texts. Defaults to the
+                survey's base language.
+
+        Returns:
+            The statistics overview.
+
+        .. minlimesurvey:: 7.0.0
+
+        .. versionadded:: NEXT_VERSION
+        """
+        response = self.make_request(
+            "GET",
+            f"/rest/v1/statistics-overview/{survey_id}",
+            params={"language": language} if language is not None else None,
+        )
+        return response.json()
+
+    def get_statistics_glance(
+        self,
+        survey_id: int,
+        *,
+        language: str | None = None,
+    ) -> RESTStatisticsGlance:
+        """Get the statistics of a survey at a glance.
+
+        Args:
+            survey_id: Survey ID.
+            language: Language of the question and answer texts. Defaults to the
+                survey's base language.
+
+        Returns:
+            The response counts and completion figures.
+
+        .. minlimesurvey:: 7.0.0
+
+        .. versionadded:: NEXT_VERSION
+        """
+        response = self.make_request(
+            "GET",
+            f"/rest/v1/statistics-glance/{survey_id}",
+            params={"language": language} if language is not None else None,
+        )
+        return response.json()
+
+    def get_statistics(
+        self,
+        survey_id: int,
+        *,
+        min_id: int | None = None,
+        max_id: int | None = None,
+        completed: bool | None = None,
+        search: Sequence[str] | None = None,
+        language: str | None = None,
+        page_size: int | None = None,
+        current_page: int | None = None,
+    ) -> RESTStatisticsPage:
+        """Get one page of the statistics of a survey, per question.
+
+        Args:
+            survey_id: Survey ID.
+            min_id: Only include responses with an ID of at least this.
+            max_id: Only include responses with an ID of at most this.
+            completed: Only include complete (``True``) or incomplete (``False``)
+                responses.
+            search: Search terms, to only include responses containing them.
+            language: Language of the question and answer texts. Defaults to the
+                survey's base language.
+            page_size: Number of questions per page.
+            current_page: Zero-based page number.
+
+        Returns:
+            The page of statistics.
+
+        .. minlimesurvey:: 7.0.0
+
+        .. versionadded:: NEXT_VERSION
+        """
+        params: dict[str, Any] = {
+            "minId": min_id,
+            "maxId": max_id,
+            "completed": None if completed is None else str(completed).lower(),
+            "search[]": search,
+            "language": language,
+            "pageSize": page_size,
+            "page": current_page,
+        }
+        response = self.make_request(
+            "GET",
+            f"/rest/v1/statistics/{survey_id}",
+            params={key: value for key, value in params.items() if value is not None},
+        )
+        return response.json()
+
+    def get_version_info(self) -> RESTVersionInfo:
+        """Get the version information of the LimeSurvey instance.
+
+        Returns:
+            The database and assets versions.
+
+        .. versionadded:: NEXT_VERSION
+        """
+        response = self.make_request("GET", "/rest/v1/version-info")
+        return response.json()
+
+    def get_survey_groups(self) -> RESTSurveyGroupList:
+        """Get the survey groups.
+
+        LimeSurvey serves the same list from ``survey-groups`` and
+        ``survey-group-list``. This method uses ``survey-groups``.
+
+        Returns:
+            The survey groups.
+
+        .. versionadded:: NEXT_VERSION
+        """
+        response = self.make_request("GET", "/rest/v1/survey-groups")
         return response.json()

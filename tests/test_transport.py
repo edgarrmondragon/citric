@@ -116,6 +116,7 @@ def test_transport_bytes(httpserver: HTTPServer, transport_factory: TransportFac
         headers={"Content-Type": "application/json"},
     )
     assert response.status_code == 200
+    assert json.loads(response.content) == {"status": "ok"}
     assert response.json() == {"status": "ok"}
 
 

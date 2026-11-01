@@ -51,16 +51,25 @@ __all__ = [
     "RESTQuestionL10n",
     "RESTShowGroupInfo",
     "RESTShowQNumCode",
+    "RESTStatisticsDataPoint",
+    "RESTStatisticsGlance",
+    "RESTStatisticsItem",
+    "RESTStatisticsOverview",
+    "RESTStatisticsOverviewData",
+    "RESTStatisticsOverviewResponse",
+    "RESTStatisticsPage",
     "RESTSurveyDetail",
     "RESTSurveyFile",
     "RESTSurveyFilesPage",
     "RESTSurveyGroup",
+    "RESTSurveyGroupList",
     "RESTSurveyImportResult",
     "RESTSurveyLanguageSettings",
     "RESTSurveyOwner",
     "RESTSurveyResponsesMeta",
     "RESTSurveyResponsesPage",
     "RESTSurveyResponsesPagination",
+    "RESTVersionInfo",
     "RPCResponse",
     "ReadableFile",
     "Result",
@@ -1614,6 +1623,137 @@ class RESTSurveyFilesPage(TypedDict):
 
     _meta: RESTSurveyResponsesMeta
     """Pagination, filters and sort."""
+
+
+class RESTVersionInfo(TypedDict):
+    """Version information, as returned by the REST API.
+
+    .. version-added:: NEXT_VERSION
+    """
+
+    dbVersion: int | None
+    """Version of the database schema."""
+
+    assetsVersionNumber: str | None
+    """Version number used to bust the cache of static assets."""
+
+    needsDbUpdate: bool | None
+    """Whether the database needs to be updated."""
+
+
+class RESTSurveyGroupList(TypedDict):
+    """List of survey groups, as returned by the REST API.
+
+    .. version-added:: NEXT_VERSION
+    """
+
+    surveyGroups: list[RESTSurveyGroup]
+    """The survey groups."""
+
+
+class RESTStatisticsOverview(TypedDict):
+    """Response counts and completion figures of a survey.
+
+    .. version-added:: NEXT_VERSION
+    """
+
+    totalResponses: int
+    """Number of responses."""
+
+    incompleteResponses: int
+    """Number of incomplete responses."""
+
+    completionRate: float
+    """Percentage of complete responses, rounded to two decimals."""
+
+    avgCompletionTime: float | None
+    """Average time to complete, rounded to two decimals.
+
+    ``None`` if there are no completed responses.
+    """
+
+
+class RESTStatisticsGlance(TypedDict):
+    """Survey statistics at a glance, as returned by the REST API.
+
+    .. version-added:: NEXT_VERSION
+    """
+
+    statistics: RESTStatisticsOverview
+    """Response counts and completion figures."""
+
+
+class RESTStatisticsDataPoint(TypedDict):
+    """A data point of a statistics item."""
+
+    key: str
+    """Identifier of the data point."""
+
+    title: str
+    """Display title of the data point."""
+
+    value: int
+    """Count for the data point."""
+
+
+class RESTStatisticsItem(TypedDict):
+    """Statistics of a question or metric."""
+
+    title: str
+    """Title of the item."""
+
+    legend: list[str]
+    """Labels of the data points."""
+
+    data: list[RESTStatisticsDataPoint]
+    """The data points."""
+
+    total: int | None
+    """Total count, if applicable."""
+
+    meta: NotRequired[dict[str, Any]]
+    """Additional metadata, like the ``period`` of the daily activity.
+
+    Omitted if empty. Defined by the ``$meta`` argument of LimeSurvey's
+    `StatisticsChartDTO
+    <https://github.com/LimeSurvey/LimeSurvey/blob/master/application/models/services/SurveyStatistics/Charts/StatisticsChartDTO.php>`_.
+    """
+
+
+class RESTStatisticsOverviewData(TypedDict):
+    """Content of the statistics overview of a survey."""
+
+    statistics: RESTStatisticsOverview
+    """Response counts and completion figures."""
+
+    dailyActivity: RESTStatisticsItem
+    """Responses per day, for the last 30 days."""
+
+    responses: list[dict[str, Any]]
+    """The latest responses, with their answers."""
+
+
+class RESTStatisticsOverviewResponse(TypedDict):
+    """Statistics overview of a survey, as returned by the REST API.
+
+    .. version-added:: NEXT_VERSION
+    """
+
+    overview: RESTStatisticsOverviewData
+    """The overview."""
+
+
+class RESTStatisticsPage(TypedDict):
+    """A page of survey statistics from the REST API.
+
+    .. version-added:: NEXT_VERSION
+    """
+
+    statistics: list[RESTStatisticsItem]
+    """Statistics for each question or metric."""
+
+    pagination: dict[str, Any] | None
+    """Pagination metadata."""
 
 
 class RESTSurveyImportResult(TypedDict):
