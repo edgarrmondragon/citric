@@ -22,7 +22,7 @@ from urllib.parse import quote
 
 import bs4
 import pytest
-from dirty_equals import IsPartialDict, IsPositiveInt
+from dirty_equals import IsPositiveInt
 from faker import Faker
 from typeguard import check_type
 
@@ -1417,16 +1417,17 @@ def test_missing_setting(client: citric.Client, server_version: semver.VersionIn
 
 
 @pytest.mark.integration_test
-def test_cpdb(faker: Faker, client: citric.Client):
+def test_cpdb(server_version: semver.VersionInfo, faker: Faker, client: citric.Client):
     """Test the CPDB methods."""
 
     def check_response(
         participants: list[Participant],
         *,
         update: bool = False,
+        remove: bool = False,
     ) -> CPDBParticipantImportResult:
         return check_type(
-            client.import_cpdb_participants(participants, update=update),
+            client.import_cpdb_participants(participants, update=update, remove=remove),
             CPDBParticipantImportResult,
         )
 
@@ -1448,10 +1449,19 @@ def test_cpdb(faker: Faker, client: citric.Client):
         ),
     ]
 
-    assert check_response(participants) == IsPartialDict(
-        ImportCount=2,
-        UpdateCount=0,
-    )
+    # TODO(edgarrmondragon): Update this version
+    # https://github.com/LimeSurvey/LimeSurvey/commit/d8b1b5f11f286dd47f85b35bf968560030a7705b
+    if server_version.major < 8:
+        assert check_response(participants) == {
+            "ImportCount": 2,
+            "UpdateCount": 0,
+        }
+    else:
+        assert check_response(participants) == {
+            "ImportCount": 2,
+            "UpdateCount": 0,
+            "RemoveCount": 0,
+        }
 
     more_participants = [
         Participant(
@@ -1470,10 +1480,32 @@ def test_cpdb(faker: Faker, client: citric.Client):
             participant_id=uuid.uuid4(),
         ),
     ]
-    assert check_response(more_participants, update=True) == IsPartialDict(
-        ImportCount=1,
-        UpdateCount=1,
-    )
+    # TODO(edgarrmondragon): Update this version
+    # https://github.com/LimeSurvey/LimeSurvey/commit/d8b1b5f11f286dd47f85b35bf968560030a7705b
+    if server_version.major < 8:
+        assert check_response(more_participants, update=True) == {
+            "ImportCount": 1,
+            "UpdateCount": 1,
+        }
+    else:
+        assert check_response(more_participants, update=True) == {
+            "ImportCount": 1,
+            "UpdateCount": 1,
+            "RemoveCount": 0,
+        }
+
+    # TODO(edgarrmondragon): Update this version
+    # https://github.com/LimeSurvey/LimeSurvey/commit/d8b1b5f11f286dd47f85b35bf968560030a7705b
+    if server_version.major >= 8:
+        assert check_response(
+            more_participants[:1],
+            update=True,
+            remove=True,
+        ) == {
+            "ImportCount": 0,
+            "UpdateCount": 1,
+            "RemoveCount": 1,
+        }
 
 
 @pytest.mark.integration_test
