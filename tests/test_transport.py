@@ -14,7 +14,7 @@ from __future__ import annotations
 import io
 import json
 import re
-import time
+import socket
 from contextlib import nullcontext
 from typing import TYPE_CHECKING, Any
 from unittest.mock import patch
@@ -360,24 +360,26 @@ def test_clients_pass_timeout_to_transport(
 
 
 @transport_factories
-def test_transport_timeout(httpserver: HTTPServer, transport_factory: TransportFactory):
-    """A request that takes longer than the timeout fails."""
+def test_transport_timeout(transport_factory: TransportFactory):
+    """A request to a server that never responds fails after the timeout."""
+    # Connections complete in the kernel's backlog, but nothing ever reads or
+    # replies. Unlike a slow `httpserver` handler, this leaves no thread behind that
+    # would log a request in a later test.
+    with socket.socket() as server:
+        server.bind(("127.0.0.1", 0))
+        server.listen()
+        port = server.getsockname()[1]
 
-    def slow_handler(request: Request) -> Response:
-        time.sleep(0.1)
-        return Response("{}", content_type="application/json")
-
-    httpserver.expect_request("/slow").respond_with_handler(slow_handler)
-
-    transport = transport_factory()
-    with pytest.raises(
-        (
-            requests.exceptions.RequestException,
-            httpx2.TimeoutException,
-            urllib3.exceptions.HTTPError,
-        ),
-    ):
-        transport.request("GET", httpserver.url_for("/slow"), timeout=0.05)
+        transport = transport_factory()
+        with pytest.raises(
+            (
+                requests.exceptions.RequestException,
+                httpx2.TimeoutException,
+                urllib3.exceptions.HTTPError,
+            ),
+        ):
+            transport.request("GET", f"http://127.0.0.1:{port}/", timeout=0.1)
+        transport.close()
 
 
 def test_urllib3_transport_default_timeout():
