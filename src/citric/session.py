@@ -29,6 +29,7 @@ from citric.exceptions import (
     ResponseMismatchError,
 )
 from citric.method import Method
+from citric.transport._constants import DEFAULT_TIMEOUT
 from citric.transport._default import _transport_or_default
 
 if TYPE_CHECKING:
@@ -88,6 +89,9 @@ class Session:
             (``"Authdb"``).
         json_encoder: A :py:class:`json.Encoder <json.JSONEncoder>` subclass to use for
             encoding RPC parameters.
+        timeout: Seconds to wait to connect to the server, and then to receive each
+            chunk of the response. Use ``None`` to defer to the transport's own
+            default. Defaults to 300 seconds.
 
     .. versionchanged:: 0.0.4
        Replaced the ``requests_session_factory`` parameter with ``requests_session``.
@@ -110,6 +114,9 @@ class Session:
         the session is closed. Deferred authentication is thread-safe: concurrent
         users of a new session authenticate only once.
 
+    .. version-added:: NEXT_VERSION
+        The ``timeout`` parameter.
+
     .. _key: #citric.session.Session.key
     .. _closure: #citric.session.Session.close
     """
@@ -126,8 +133,10 @@ class Session:
         transport: HTTPTransport | None = None,
         requests_session: HTTPTransport | None = None,
         json_encoder: Type[json.JSONEncoder] | None = None,  # ruff: ignore[non-pep585-annotation]
+        timeout: float | None = DEFAULT_TIMEOUT,
     ) -> None:
         self.url: str = url
+        self._timeout = timeout
         self._transport = _transport_or_default(transport, requests_session)
         self._encoder = json_encoder or json.JSONEncoder
         self.__lock = threading.RLock()
@@ -212,6 +221,7 @@ class Session:
                 "content-type": "application/json",
                 "User-Agent": self.USER_AGENT,
             },
+            timeout=self._timeout,
         )
 
     def _invoke(self, method: str, *params: Any) -> RPCResponse:
