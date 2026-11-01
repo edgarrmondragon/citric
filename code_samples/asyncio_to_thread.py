@@ -29,19 +29,20 @@ async def main() -> None:
         # ...then one blocking call per survey, all running in worker threads.
         # `Session` authenticates lazily and thread-safely, so concurrent calls
         # on a fresh client share a single session key.
-        # If a call fails, the task group cancels the others and raises an
-        # `ExceptionGroup`. Cancelling a task doesn't stop its thread though, so
-        # calls already running may still be in flight when the client is closed.
-        async with asyncio.TaskGroup() as tg:
-            tasks = [
-                tg.create_task(
-                    asyncio.to_thread(client.get_language_properties, s["sid"])
-                )
+        # Cancelling a task doesn't stop its thread, so gather every result, even
+        # failed ones, to wait for all the threads before the client is closed.
+        results = await asyncio.gather(
+            *(
+                asyncio.to_thread(client.get_language_properties, s["sid"])
                 for s in surveys
-            ]
+            ),
+            return_exceptions=True,
+        )
 
-        for survey, task in zip(surveys, tasks, strict=True):
-            print(survey["sid"], task.result()["surveyls_title"])
+        for survey, result in zip(surveys, results, strict=True):
+            if isinstance(result, BaseException):
+                raise result
+            print(survey["sid"], result["surveyls_title"])
 
     finally:
         # `close` sends a blocking request to release the session key, so keep it

@@ -38,7 +38,10 @@ use, like {class}`~citric.transport.urllib3.Urllib3Transport` or
 {py:class}`requests.Session`, is not guaranteed to be thread-safe, so pass `transport=`
 explicitly when sharing a client between threads.
 
-The samples use {class}`asyncio.TaskGroup`, which requires Python 3.11 or later.
+The samples use {func}`asyncio.gather` with `return_exceptions=True` so that every worker
+thread has finished before the client is closed. Cancelling an `asyncio` task doesn't stop
+its thread, so if the surrounding coroutine itself is cancelled, calls already running
+may still be in flight when the client closes.
 
 ```{literalinclude} ../code_samples/asyncio_to_thread.py
 :start-after: start example
