@@ -32,6 +32,7 @@ from citric import enums
 from citric.exceptions import LimeSurveyApiError, LimeSurveyStatusError
 from citric.objects import Participant
 from citric.types import (
+    CPDBParticipantImportResult,
     LanguageProperties,
     PartialLanguageProperties,
     QuestionProperties,
@@ -1418,6 +1419,18 @@ def test_missing_setting(client: citric.Client, server_version: semver.VersionIn
 @pytest.mark.integration_test
 def test_cpdb(server_version: semver.VersionInfo, faker: Faker, client: citric.Client):
     """Test the CPDB methods."""
+
+    def check_response(
+        participants: list[Participant],
+        *,
+        update: bool = False,
+        remove: bool = False,
+    ) -> CPDBParticipantImportResult:
+        return check_type(
+            client.import_cpdb_participants(participants, update=update, remove=remove),
+            CPDBParticipantImportResult,
+        )
+
     participants = [
         Participant(
             email=faker.email(),
@@ -1439,12 +1452,12 @@ def test_cpdb(server_version: semver.VersionInfo, faker: Faker, client: citric.C
     # TODO(edgarrmondragon): Update this version
     # https://github.com/LimeSurvey/LimeSurvey/commit/d8b1b5f11f286dd47f85b35bf968560030a7705b
     if server_version.major < 8:
-        assert client.import_cpdb_participants(participants) == {
+        assert check_response(participants) == {
             "ImportCount": 2,
             "UpdateCount": 0,
         }
     else:
-        assert client.import_cpdb_participants(participants) == {
+        assert check_response(participants) == {
             "ImportCount": 2,
             "UpdateCount": 0,
             "RemoveCount": 0,
@@ -1470,12 +1483,12 @@ def test_cpdb(server_version: semver.VersionInfo, faker: Faker, client: citric.C
     # TODO(edgarrmondragon): Update this version
     # https://github.com/LimeSurvey/LimeSurvey/commit/d8b1b5f11f286dd47f85b35bf968560030a7705b
     if server_version.major < 8:
-        assert client.import_cpdb_participants(more_participants, update=True) == {
+        assert check_response(more_participants, update=True) == {
             "ImportCount": 1,
             "UpdateCount": 1,
         }
     else:
-        assert client.import_cpdb_participants(more_participants, update=True) == {
+        assert check_response(more_participants, update=True) == {
             "ImportCount": 1,
             "UpdateCount": 1,
             "RemoveCount": 0,
@@ -1484,7 +1497,7 @@ def test_cpdb(server_version: semver.VersionInfo, faker: Faker, client: citric.C
     # TODO(edgarrmondragon): Update this version
     # https://github.com/LimeSurvey/LimeSurvey/commit/d8b1b5f11f286dd47f85b35bf968560030a7705b
     if server_version.major >= 8:
-        assert client.import_cpdb_participants(
+        assert check_response(
             more_participants[:1],
             update=True,
             remove=True,
