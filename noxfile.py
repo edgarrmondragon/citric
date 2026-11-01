@@ -5,7 +5,7 @@
 # /// script
 # dependencies = [
 #   "nox>=2026.8.17",
-#   "pyyaml>=6",
+#   "yamlstar>=0.1.28",
 # ]
 # ///
 
@@ -18,14 +18,14 @@ import shutil
 from pathlib import Path
 
 import nox
-import yaml
+import yamlstar
 
 GH_ACTIONS_ENV_VAR = "GITHUB_ACTIONS"
 FORCE_COLOR = "FORCE_COLOR"
 
-with Path(".readthedocs.yaml").open(encoding="utf-8") as f:
-    readthedocs_config = yaml.safe_load(f)
-    DOCS_PYTHON = readthedocs_config["build"]["tools"]["python"]
+ys = yamlstar.YAMLStar()
+readthedocs_config = ys.load(Path(".readthedocs.yaml").read_text(encoding="utf-8"))
+DOCS_PYTHON = readthedocs_config["build"]["tools"]["python"]
 
 PYPROJECT = nox.project.load_toml()
 
