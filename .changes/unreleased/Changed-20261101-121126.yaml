@@ -1,0 +1,5 @@
+kind: Changed
+body: Added a `timeout` parameter to the `HTTPProtocol.request()` method
+time: 2026-11-01T12:11:26.690361-06:00
+custom:
+    Issue: "1895"

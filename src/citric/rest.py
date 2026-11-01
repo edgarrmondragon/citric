@@ -341,6 +341,7 @@ class RESTClient:
             url=url,
             data=body,
             headers=headers,
+            timeout=30.0,
         )
         self._raise_for_status(response)
         return response

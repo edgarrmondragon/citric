@@ -8,12 +8,14 @@ __lazy_modules__ = {
     "json",
     "urllib3",
     "urllib3.response",
+    "urllib3.util",
 }
 
 from typing import TYPE_CHECKING, Any
 
 import urllib3
 import urllib3.response
+import urllib3.util
 
 if TYPE_CHECKING:
     from collections.abc import Iterable, Mapping
@@ -99,6 +101,7 @@ class Urllib3Transport:
         *,
         data: str | bytes | Iterable[bytes] | None = None,
         headers: Mapping[str, str] | None = None,
+        timeout: float | None = None,
     ) -> HTTPResponse:
         """Send an HTTP request.
 
@@ -107,6 +110,7 @@ class Urllib3Transport:
             url: The server URL.
             data: The request body.
             headers: The HTTP headers.
+            timeout: The timeout for the HTTP request, in seconds.
 
         Returns:
             A response object.
@@ -118,6 +122,7 @@ class Urllib3Transport:
                 body=data,
                 headers=headers,
                 pool_timeout=self._pool_timeout,
+                timeout=urllib3.util.Timeout(total=timeout),
             )
         )
 

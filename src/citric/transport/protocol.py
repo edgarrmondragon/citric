@@ -58,6 +58,7 @@ class HTTPTransport(Protocol):
         *,
         data: str | bytes | Iterable[bytes] | None = None,
         headers: Mapping[str, str] | None = None,
+        timeout: float | None = None,
     ) -> HTTPResponse:
         """Send an HTTP request.
 
@@ -66,6 +67,7 @@ class HTTPTransport(Protocol):
             url: The server URL.
             data: The request body.
             headers: The HTTP headers.
+            timeout: The timeout for the HTTP request, in seconds.
 
         Returns:
             A response object.

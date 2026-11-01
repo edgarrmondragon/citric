@@ -212,6 +212,7 @@ class Session:
                 "content-type": "application/json",
                 "User-Agent": self.USER_AGENT,
             },
+            timeout=30.0,
         )
 
     def _invoke(self, method: str, *params: Any) -> RPCResponse:

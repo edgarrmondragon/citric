@@ -65,6 +65,7 @@ class Httpx2Transport:
         *,
         data: str | bytes | Iterable[bytes] | None = None,
         headers: Mapping[str, str] | None = None,
+        timeout: float | None = None,
     ) -> HTTPResponse:
         """Send an HTTP request.
 
@@ -73,6 +74,7 @@ class Httpx2Transport:
             url: The server URL.
             data: The request body.
             headers: The HTTP headers.
+            timeout: The timeout for the HTTP request, in seconds.
 
         Returns:
             A response object.
@@ -82,6 +84,7 @@ class Httpx2Transport:
             url=url,
             content=data,
             headers=headers,
+            timeout=timeout,
         )
 
     def close(self) -> None:
