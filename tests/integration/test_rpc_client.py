@@ -1713,7 +1713,13 @@ class _RecordingTransport(Urllib3Transport):
             self.rpc_methods.append(rpc_method)
         if rpc_method == "get_session_key":
             time.sleep(0.5)
-        return super().request(method, url, data=data, headers=headers)
+        return super().request(
+            method,
+            url,
+            data=data,
+            headers=headers,
+            timeout=timeout,
+        )
 
 
 @pytest.mark.integration_test
