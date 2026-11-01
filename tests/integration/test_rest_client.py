@@ -129,8 +129,12 @@ def test_export_survey_responses(
     client: Client,
     rest_client: RESTClient,
     survey_id: int,
+    server_version: semver.Version,
 ):
     """Test exporting survey responses."""
+    if server_version < semver.Version(7, 8, 0):
+        pytest.skip("REST survey responses export requires LimeSurvey 7.8.0")
+
     client.activate_survey(survey_id)
     client.add_response(survey_id, {"submitdate": "2026-01-01 00:00:00"})
 
@@ -143,8 +147,16 @@ def test_export_survey_responses(
 
 
 @pytest.mark.integration_test
-def test_get_statistics(client: Client, rest_client: RESTClient, survey_id: int):
+def test_get_statistics(
+    client: Client,
+    rest_client: RESTClient,
+    survey_id: int,
+    server_version: semver.Version,
+):
     """Test getting the statistics of a survey."""
+    if server_version < semver.Version(7, 8, 0):
+        pytest.skip("REST statistics require LimeSurvey 7.8.0")
+
     client.activate_survey(survey_id)
     client.add_response(survey_id, {"submitdate": "2026-01-01 00:00:00"})
 

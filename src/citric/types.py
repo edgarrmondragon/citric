@@ -1711,8 +1711,13 @@ class RESTStatisticsItem(TypedDict):
     total: int | None
     """Total count, if applicable."""
 
-    meta: dict[str, Any]
-    """Additional metadata."""
+    meta: NotRequired[dict[str, Any]]
+    """Additional metadata, like the ``period`` of the daily activity.
+
+    Omitted if empty. Defined by the ``$meta`` argument of LimeSurvey's
+    `StatisticsChartDTO
+    <https://github.com/LimeSurvey/LimeSurvey/blob/master/application/models/services/SurveyStatistics/Charts/StatisticsChartDTO.php>`_.
+    """
 
 
 class RESTStatisticsOverviewData(TypedDict):
