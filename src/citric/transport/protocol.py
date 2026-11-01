@@ -56,10 +56,20 @@ class HTTPTransport(Protocol):
         method: str,
         url: str,
         *,
-        data: str | None = None,
+        data: str | bytes | None = None,
         headers: Mapping[str, str] | None = None,
     ) -> HTTPResponse:
-        """Send an HTTP request."""
+        """Send an HTTP request.
+
+        Args:
+            method: The HTTP method.
+            url: The server URL.
+            data: The request body.
+            headers: The HTTP headers.
+
+        Returns:
+            A response object.
+        """
         ...
 
     def close(self) -> None:

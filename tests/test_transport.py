@@ -97,6 +97,23 @@ def test_transport_satisfies_protocol(transport_factory: TransportFactory):
 
 
 @transport_factories
+def test_transport_bytes(httpserver: HTTPServer, transport_factory: TransportFactory):
+    """Test that the transport can handle bytes data."""
+    path = re.compile(r"^/path/to/endpoint")
+    httpserver.expect_request(path).respond_with_json({"status": "ok"})
+
+    transport = transport_factory()
+    response = transport.request(
+        "POST",
+        httpserver.url_for("/path/to/endpoint"),
+        data=b'{"username": "user", "password": "password"}',
+        headers={"Content-Type": "application/json"},
+    )
+    assert response.status_code == 200
+    assert response.json() == {"status": "ok"}
+
+
+@transport_factories
 @transport_parameters
 def test_session_over_http_transport(
     httpserver: HTTPServer,

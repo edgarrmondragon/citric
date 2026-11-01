@@ -97,7 +97,7 @@ class Urllib3Transport:
         method: str,
         url: str,
         *,
-        data: str | None = None,
+        data: str | bytes | None = None,
         headers: Mapping[str, str] | None = None,
     ) -> HTTPResponse:
         """Send an HTTP request.
