@@ -936,11 +936,14 @@ class CPDBParticipantImportResult(TypedDict):
     UpdateCount: int
     """The number of participants updated."""
 
+    RemoveCount: NotRequired[int]
+    """The number of participants removed."""
+
     InvalidParticipantIds: NotRequired[list[str]]
     """The list of invalid participant IDs.
 
-    .. minlimesurveyattribute:: 6.17.19
-    .. minlimesurveyattribute:: 7.9.0
+    .. minlimesurveyattribute:: 6.X.Y
+    .. minlimesurveyattribute:: 7.X.Y
     """
 
 

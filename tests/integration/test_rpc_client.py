@@ -1423,6 +1423,17 @@ def test_cpdb(
     server_version: semver.VersionInfo,
 ) -> None:
     """Test the CPDB methods."""
+
+    def check_response(
+        participants: list[Participant],
+        *,
+        update: bool = False,
+    ) -> CPDBParticipantImportResult:
+        return check_type(
+            client.import_cpdb_participants(participants, update=update),
+            CPDBParticipantImportResult,
+        )
+
     participants = [
         Participant(
             email=faker.email(),
@@ -1452,16 +1463,6 @@ def test_cpdb(
         # 7.9.0 and later
         server_version >= (7, 9, 0)
     )
-
-    def check_response(
-        participants: list[Participant],
-        *,
-        update: bool = False,
-    ) -> CPDBParticipantImportResult:
-        return check_type(
-            client.import_cpdb_participants(participants, update=update),
-            CPDBParticipantImportResult,
-        )
 
     if validates_participant_ids:
         assert check_response(participants) == {
