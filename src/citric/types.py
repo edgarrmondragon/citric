@@ -940,7 +940,11 @@ class CPDBParticipantImportResult(TypedDict):
     """The number of participants removed."""
 
     InvalidParticipantIds: NotRequired[list[str]]
-    """The list of invalid participant IDs."""
+    """The list of invalid participant IDs.
+
+    .. minlimesurveyattribute:: 6.17.19
+    .. minlimesurveyattribute:: 7.9.0
+    """
 
 
 class SurveyUserActivationSettings(TypedDict, total=False):
