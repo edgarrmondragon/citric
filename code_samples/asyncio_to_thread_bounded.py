@@ -5,16 +5,11 @@
 # ruff: file-ignore[print]
 
 # start example
-from __future__ import annotations
-
 import asyncio
-from typing import TYPE_CHECKING
 
 from citric import Client
 from citric.transport.urllib3 import Urllib3Transport
-
-if TYPE_CHECKING:
-    from citric.types import QuestionsListElement
+from citric.types import QuestionsListElement
 
 LS_URL = "http://localhost:8001/index.php/admin/remotecontrol"
 MAX_CONCURRENCY = 8
