@@ -255,7 +255,7 @@ class RESTClient:
     @staticmethod
     def _raise_for_status(r: HTTPResponse) -> None:
         if r.status_code >= http.HTTPStatus.BAD_REQUEST:
-            msg = f"Request to LimeSurvey server failed with status {r.status_code}"
+            msg = f"Request to LimeSurvey server failed with status {r.status_code}) ({r.content.decode(errors='replace')})"  # ruff: ignore[line-too-long]
             raise LimeSurveyApiError(msg)
 
     def authenticate(self, username: str, password: str) -> None:
