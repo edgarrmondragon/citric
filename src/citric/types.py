@@ -1514,30 +1514,70 @@ class RESTSurveyImportResult(TypedDict):
     """ID of the survey in the imported file."""
 
     languages: int
+    """Number of languages supported by the survey."""
+
     surveys: int
+    """Number of surveys imported."""
+
     groups: int
+    """Number of question groups imported."""
+
     questions: int
+    """Number of questions imported."""
+
     subquestions: int
+    """Number of subquestions imported."""
+
     answers: int
+    """Number of answers imported."""
+
     question_attributes: int
+    """Number of question attributes imported."""
+
     defaultvalues: int
+    """Number of default values imported."""
+
     assessments: int
+    """Number of assessments imported."""
+
     quota: int
+    """Number of quotas imported."""
+
     quotals: int
+    """Number of quota language settings imported."""
+
     quotamembers: int
+    """Number of quota members imported."""
+
     plugin_settings: int
+    """Number of plugin settings imported."""
+
     themes: int
+    """Number of themes imported."""
+
     survey_url_parameters: int
+    """Number of survey URL parameters imported."""
+
     conditions: NotRequired[int]
+    """Number of conditions imported."""
 
     importwarnings: list[str]
     """Warnings generated during the import, possibly containing HTML."""
 
     access_mode: str
+    """Survey access mode, either ``O`` (open) or ``C`` (closed)."""
+
     theme_options_original_data: str
+    """JSON-encoded theme options data from the imported survey."""
+
     theme_options_differences: list[Any]
+    """Differences between the imported survey's theme options and the current one's."""
+
     theme_original: NotRequired[str]
+    """JSON-encoded theme data from the imported survey."""
+
     template_deleted: NotRequired[str]
+    """Flag indicating whether the template used by the imported survey was deleted."""
 
     FieldReMap: dict[str, str] | list[Any]
     """Mapping of old to new response field names.
