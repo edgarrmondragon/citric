@@ -936,6 +936,9 @@ class CPDBParticipantImportResult(TypedDict):
     UpdateCount: int
     """The number of participants updated."""
 
+    InvalidParticipantIds: NotRequired[list[str]]
+    """The list of invalid participant IDs."""
+
 
 class SurveyUserActivationSettings(TypedDict, total=False):
     """User settings for survey activation."""
