@@ -32,6 +32,11 @@ class HTTPResponse(Protocol):
         """The HTTP status of this response."""
         ...
 
+    @property
+    def content(self) -> bytes:
+        """The raw body of this response."""
+        ...
+
     def json(self) -> Any:  # ruff: ignore[any-type]
         """Decode the response body as JSON."""
         ...

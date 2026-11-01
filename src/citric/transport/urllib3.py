@@ -41,6 +41,11 @@ class Urllib3ResponseWrapper:
         """The HTTP status of this response."""
         return self._response.status
 
+    @property
+    def content(self) -> bytes:
+        """The raw body of this response."""
+        return self._response.data
+
     def json(self) -> Any:  # ruff: ignore[any-type]
         """The JSON data contained in the response.
 

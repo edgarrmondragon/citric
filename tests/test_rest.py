@@ -529,6 +529,113 @@ def test_get_survey_responses_overloads(
     )
 
 
+def test_export_survey_responses(rest_client: RESTClient, httpserver: HTTPServer):
+    """Test exporting survey responses, only sending the given options."""
+    bodies: list[dict] = []
+
+    def handler(request: Request) -> Response:
+        bodies.append(request.get_json())
+        return Response(b"id,token\n1,abc\n", content_type="text/csv")
+
+    httpserver.expect_request(
+        "/rest/v1/survey-responses-export/12345",
+        method="POST",
+    ).respond_with_handler(handler)
+
+    assert rest_client.export_survey_responses(12345) == b"id,token\n1,abc\n"
+    rest_client.export_survey_responses(
+        12345,
+        export_format="json",
+        language="es",
+        answer_format="short",
+        csv_separator=";",
+        filters=[{"key": ["id"], "filterMethod": "equal", "value": 1}],
+    )
+
+    assert bodies == [
+        {"type": "csv"},
+        {
+            "type": "json",
+            "language": "es",
+            "answerFormat": "short",
+            "csvSeparator": ";",
+            "filters": [{"key": ["id"], "filterMethod": "equal", "value": 1}],
+        },
+    ]
+
+
+def test_get_statistics_overview_and_glance(
+    rest_client: RESTClient,
+    httpserver: HTTPServer,
+):
+    """Test getting the statistics overview and glance."""
+    httpserver.expect_request(
+        "/rest/v1/statistics-overview/12345",
+        method="GET",
+        query_string="language=es",
+    ).respond_with_json({"overview": {}})
+    httpserver.expect_request(
+        "/rest/v1/statistics-glance/12345",
+        method="GET",
+        query_string="",
+    ).respond_with_json({"statistics": {}})
+
+    assert rest_client.get_statistics_overview(12345, language="es") == {
+        "overview": {},
+    }
+    assert rest_client.get_statistics_glance(12345) == {"statistics": {}}
+
+
+def test_get_statistics(rest_client: RESTClient, httpserver: HTTPServer):
+    """Test getting statistics, encoding the filters like LimeSurvey expects."""
+    httpserver.expect_request(
+        "/rest/v1/statistics/12345",
+        method="GET",
+        query_string="",
+    ).respond_with_json({"statistics": [], "pagination": None})
+    httpserver.expect_request(
+        "/rest/v1/statistics/12345",
+        method="GET",
+        query_string=(
+            "minId=1&maxId=10&completed=false&search%5B%5D=a&search%5B%5D=b"
+            "&language=es&pageSize=5&page=0"
+        ),
+    ).respond_with_json({"statistics": [], "pagination": {}})
+
+    assert rest_client.get_statistics(12345) == {"statistics": [], "pagination": None}
+    assert rest_client.get_statistics(
+        12345,
+        min_id=1,
+        max_id=10,
+        completed=False,
+        search=["a", "b"],
+        language="es",
+        page_size=5,
+        current_page=0,
+    ) == {"statistics": [], "pagination": {}}
+
+
+def test_get_version_info(rest_client: RESTClient, httpserver: HTTPServer):
+    """Test getting the version information."""
+    info = {"dbVersion": 718, "assetsVersionNumber": "1", "needsDbUpdate": False}
+    httpserver.expect_request(
+        "/rest/v1/version-info",
+        method="GET",
+    ).respond_with_json(info)
+
+    assert rest_client.get_version_info() == info
+
+
+def test_get_survey_groups(rest_client: RESTClient, httpserver: HTTPServer):
+    """Test getting the survey groups."""
+    httpserver.expect_request(
+        "/rest/v1/survey-groups",
+        method="GET",
+    ).respond_with_json({"surveyGroups": []})
+
+    assert rest_client.get_survey_groups() == {"surveyGroups": []}
+
+
 def test_make_request_json_and_multipart(rest_client: RESTClient):
     """Test a request can't have both a JSON and a multipart body."""
     with pytest.raises(ValueError, match="can't be combined"):

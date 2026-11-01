@@ -16,9 +16,14 @@ from typeguard import check_type
 from citric.exceptions import LimeSurveyApiError, LimeSurveyStatusError
 from citric.rest import RESTClient
 from citric.types import (
+    RESTStatisticsGlance,
+    RESTStatisticsOverviewResponse,
+    RESTStatisticsPage,
     RESTSurveyDetail,
+    RESTSurveyGroupList,
     RESTSurveyImportResult,
     RESTSurveyResponsesPage,
+    RESTVersionInfo,
 )
 
 if TYPE_CHECKING:
@@ -117,6 +122,59 @@ def test_get_survey_responses(
     # No file upload question in the survey, so asking for files is a bad request
     with pytest.raises(LimeSurveyApiError):
         rest_client.get_survey_responses(survey_id, fields=["id"], unnest_files=True)
+
+
+@pytest.mark.integration_test
+def test_export_survey_responses(
+    client: Client,
+    rest_client: RESTClient,
+    survey_id: int,
+):
+    """Test exporting survey responses."""
+    client.activate_survey(survey_id)
+    client.add_response(survey_id, {"submitdate": "2026-01-01 00:00:00"})
+
+    content = rest_client.export_survey_responses(survey_id)
+    assert content
+    assert b"Response ID" in content
+
+    with pytest.raises(LimeSurveyApiError):
+        rest_client.export_survey_responses(survey_id, language="zz")
+
+
+@pytest.mark.integration_test
+def test_get_statistics(client: Client, rest_client: RESTClient, survey_id: int):
+    """Test getting the statistics of a survey."""
+    client.activate_survey(survey_id)
+    client.add_response(survey_id, {"submitdate": "2026-01-01 00:00:00"})
+
+    glance = check_type(
+        rest_client.get_statistics_glance(survey_id),
+        RESTStatisticsGlance,
+    )
+    assert glance["statistics"]["totalResponses"] == 1
+
+    check_type(
+        rest_client.get_statistics_overview(survey_id),
+        RESTStatisticsOverviewResponse,
+    )
+    check_type(
+        rest_client.get_statistics(survey_id, completed=True, page_size=5),
+        RESTStatisticsPage,
+    )
+
+
+@pytest.mark.integration_test
+def test_get_version_info(rest_client: RESTClient):
+    """Test getting the version information."""
+    check_type(rest_client.get_version_info(), RESTVersionInfo)
+
+
+@pytest.mark.integration_test
+def test_get_survey_groups(rest_client: RESTClient):
+    """Test getting the survey groups."""
+    groups = check_type(rest_client.get_survey_groups(), RESTSurveyGroupList)
+    assert groups["surveyGroups"]
 
 
 @pytest.mark.integration_test
