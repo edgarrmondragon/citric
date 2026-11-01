@@ -4,9 +4,9 @@
 
 # ruff: file-ignore[print]
 
+# start example
 from __future__ import annotations
 
-# start example
 import asyncio
 from typing import TYPE_CHECKING
 
