@@ -1,0 +1,5 @@
+kind: Typing
+body: Added `InvalidParticipantIds` key to `citric.types.CPDBParticipantImportResult` to reflect an upstream security fix
+time: 2026-11-01T14:48:23.508152-06:00
+custom:
+    Issue: "1912"
