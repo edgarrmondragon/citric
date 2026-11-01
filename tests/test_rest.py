@@ -455,6 +455,45 @@ def test_import_survey(rest_client: RESTClient, httpserver: HTTPServer):
     assert result == {"newsid": 12345}
 
 
+def test_get_survey_responses(rest_client: RESTClient, httpserver: HTTPServer):
+    """Test getting survey responses, only sending the given options."""
+    bodies: list[dict] = []
+
+    def handler(request: Request) -> Response:
+        bodies.append(request.get_json())
+        return Response(
+            json.dumps({"responses": [], "_meta": {}}),
+            content_type="application/json",
+        )
+
+    httpserver.expect_request(
+        "/rest/v1/survey-responses/12345",
+        method="POST",
+    ).respond_with_handler(handler)
+
+    assert rest_client.get_survey_responses(12345) == {"responses": [], "_meta": {}}
+    rest_client.get_survey_responses(
+        12345,
+        filters=[{"key": ["id"], "filterMethod": "equal", "value": 1}],
+        page_size=5,
+        current_page=2,
+        fields=["id"],
+        language="es",
+        unnest_files=True,
+    )
+
+    assert bodies == [
+        {},
+        {
+            "filters": [{"key": ["id"], "filterMethod": "equal", "value": 1}],
+            "page": {"pageSize": 5, "currentPage": 2},
+            "fields": ["id"],
+            "language": "es",
+            "unnestFiles": True,
+        },
+    ]
+
+
 def test_make_request_json_and_multipart(rest_client: RESTClient):
     """Test a request can't have both a JSON and a multipart body."""
     with pytest.raises(ValueError, match="can't be combined"):

@@ -13,9 +13,13 @@ import pytest
 import semver
 from typeguard import check_type
 
-from citric.exceptions import LimeSurveyStatusError
+from citric.exceptions import LimeSurveyApiError, LimeSurveyStatusError
 from citric.rest import RESTClient
-from citric.types import RESTSurveyDetail, RESTSurveyImportResult
+from citric.types import (
+    RESTSurveyDetail,
+    RESTSurveyImportResult,
+    RESTSurveyResponsesPage,
+)
 
 if TYPE_CHECKING:
     from collections.abc import Generator
@@ -87,6 +91,32 @@ def test_import_survey(
 
     assert int(result["newsid"])
     assert result["questions"] > 0
+
+
+@pytest.mark.integration_test
+def test_get_survey_responses(
+    client: Client,
+    rest_client: RESTClient,
+    survey_id: int,
+    server_version: semver.Version,
+):
+    """Test getting survey responses."""
+    if server_version < semver.Version(7, 8, 0):
+        pytest.skip("REST survey responses require LimeSurvey 7.8.0")
+
+    client.activate_survey(survey_id)
+    client.add_response(survey_id, {"submitdate": "2026-01-01 00:00:00"})
+
+    result = check_type(
+        rest_client.get_survey_responses(survey_id, page_size=10),
+        RESTSurveyResponsesPage,
+    )
+    assert len(result["responses"]) == 1
+    assert result["_meta"]["pagination"]["totalItems"] == 1
+
+    # No file upload question in the survey, so asking for files is a bad request
+    with pytest.raises(LimeSurveyApiError):
+        rest_client.get_survey_responses(survey_id, fields=["id"], unnest_files=True)
 
 
 @pytest.mark.integration_test

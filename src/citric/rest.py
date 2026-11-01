@@ -19,19 +19,24 @@ import json as _json
 import threading
 import uuid
 from importlib import metadata
-from typing import TYPE_CHECKING, Any, Type  # ruff: ignore[deprecated-import]
+from typing import TYPE_CHECKING, Any, Type, overload  # ruff: ignore[deprecated-import]
 from urllib.parse import urlencode, urlsplit, urlunsplit
 
 from citric.exceptions import LimeSurveyApiError
 from citric.transport._default import _transport_or_default
 
 if TYPE_CHECKING:
-    from collections.abc import Iterator, Mapping
+    from collections.abc import Iterator, Mapping, Sequence
     from types import TracebackType
     from typing import IO, Literal, Self
 
     from citric.transport.protocol import HTTPResponse, HTTPTransport
-    from citric.types import RESTSurveyDetail, RESTSurveyImportResult
+    from citric.types import (
+        RESTSurveyDetail,
+        RESTSurveyFilesPage,
+        RESTSurveyImportResult,
+        RESTSurveyResponsesPage,
+    )
 
 __all__ = [
     "RESTClient",
@@ -502,5 +507,93 @@ class RESTClient:
                 "translinksfields": "1" if translate_links else "0",
             },
             files={"file": (f"survey.{file_type}", file)},
+        )
+        return response.json()
+
+    @overload
+    def get_survey_responses(
+        self,
+        survey_id: int,
+        *,
+        filters: Sequence[Mapping[str, Any]] | None = None,
+        sort: Mapping[str, Any] | None = None,
+        page_size: int | None = None,
+        current_page: int | None = None,
+        fields: Sequence[str] | None = None,
+        language: str | None = None,
+        unnest_files: Literal[False] = False,
+    ) -> RESTSurveyResponsesPage: ...
+
+    @overload
+    def get_survey_responses(
+        self,
+        survey_id: int,
+        *,
+        filters: Sequence[Mapping[str, Any]] | None = None,
+        sort: Mapping[str, Any] | None = None,
+        page_size: int | None = None,
+        current_page: int | None = None,
+        fields: Sequence[str] | None = None,
+        language: str | None = None,
+        unnest_files: Literal[True],
+    ) -> RESTSurveyFilesPage: ...
+
+    def get_survey_responses(
+        self,
+        survey_id: int,
+        *,
+        filters: Sequence[Mapping[str, Any]] | None = None,
+        sort: Mapping[str, Any] | None = None,
+        page_size: int | None = None,
+        current_page: int | None = None,
+        fields: Sequence[str] | None = None,
+        language: str | None = None,
+        unnest_files: bool = False,
+    ) -> RESTSurveyResponsesPage | RESTSurveyFilesPage:
+        """Get one page of the responses of a survey.
+
+        Args:
+            survey_id: Survey ID.
+            filters: Filters, each a mapping with ``key`` (response column names),
+                ``filterMethod`` (e.g. ``equal`` or ``contain``) and ``value``.
+            sort: Sort definition, as accepted by LimeSurvey.
+            page_size: Number of responses per page. LimeSurvey defaults to 15.
+            current_page: Zero-based page number.
+            fields: Response columns to return. The columns LimeSurvey needs to
+                describe each response, like ``id`` and ``submitdate``, are always
+                included.
+            language: Language of the question and answer texts. Defaults to the
+                survey's base language.
+            unnest_files: Whether to list the files of a single file upload
+                column in ``fields``, one entry per file.
+
+        Returns:
+            The page of responses, or of files if ``unnest_files`` is set.
+
+        .. note::
+           The columns of each response depend on the survey, so they aren't typed.
+
+        .. minlimesurvey:: 7.8.0
+
+        .. versionadded:: NEXT_VERSION
+        """
+        page: dict[str, int] = {}
+        if page_size is not None:
+            page["pageSize"] = page_size
+        if current_page is not None:
+            page["currentPage"] = current_page
+
+        body: dict[str, Any] = {
+            "filters": filters,
+            "sort": sort,
+            "page": page or None,
+            "fields": fields,
+            "language": language,
+            "unnestFiles": unnest_files or None,
+        }
+        response = self.make_request(
+            "POST",
+            f"/rest/v1/survey-responses/{survey_id}",
+            json={key: value for key, value in body.items() if value is not None},
         )
         return response.json()
