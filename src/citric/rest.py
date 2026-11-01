@@ -10,12 +10,14 @@ __lazy_modules__ = {
     "http",
     "json",
     "threading",
+    "uuid",
     "urllib.parse",
 }
 
 import http
 import json as _json
 import threading
+import uuid
 from importlib import metadata
 from typing import TYPE_CHECKING, Any, Type  # ruff: ignore[deprecated-import]
 from urllib.parse import urlencode, urlsplit, urlunsplit
@@ -26,10 +28,10 @@ from citric.transport._default import _transport_or_default
 if TYPE_CHECKING:
     from collections.abc import Mapping
     from types import TracebackType
-    from typing import Self
+    from typing import IO, Literal, Self
 
     from citric.transport.protocol import HTTPResponse, HTTPTransport
-    from citric.types import RESTSurveyDetail
+    from citric.types import RESTSurveyDetail, RESTSurveyImportResult
 
 __all__ = [
     "RESTClient",
@@ -46,6 +48,41 @@ def _encode_params(url: str, params: Mapping[str, Any]) -> str:
         query = f"{split.query}&{query}"
 
     return urlunsplit(split._replace(query=query))
+
+
+def _encode_multipart(
+    form: Mapping[str, str],
+    files: Mapping[str, tuple[str, bytes]],
+) -> tuple[bytes, str]:
+    """Encode a ``multipart/form-data`` body.
+
+    Args:
+        form: Text fields.
+        files: Mapping of field name to ``(filename, content)``.
+
+    Returns:
+        The encoded body and its ``Content-Type`` header value.
+    """
+    boundary = uuid.uuid4().hex
+    parts: list[bytes] = []
+    for name, value in form.items():
+        parts.append(
+            f'--{boundary}\r\nContent-Disposition: form-data; name="{name}"\r\n\r\n'
+            f"{value}\r\n".encode()
+        )
+    for name, (filename, content) in files.items():
+        parts.append(
+            (
+                f"--{boundary}\r\n"
+                f'Content-Disposition: form-data; name="{name}"; '
+                f'filename="{filename}"\r\n'
+                "Content-Type: application/octet-stream\r\n\r\n"
+            ).encode()
+            + content
+            + b"\r\n"
+        )
+    parts.append(f"--{boundary}--\r\n".encode())
+    return b"".join(parts), f"multipart/form-data; boundary={boundary}"
 
 
 class RESTClient:
@@ -189,6 +226,8 @@ class RESTClient:
         *,
         params: Mapping[str, Any] | None = None,
         json: Any | None = None,  # ruff: ignore[any-type]
+        form: Mapping[str, str] | None = None,
+        files: Mapping[str, tuple[str, bytes]] | None = None,
     ) -> HTTPResponse:
         """Make a request to the REST API.
 
@@ -197,17 +236,35 @@ class RESTClient:
             path: URL path.
             params: Query parameters.
             json: JSON data.
+            form: Text fields for a ``multipart/form-data`` body.
+            files: Mapping of field name to ``(filename, content)`` for a
+                ``multipart/form-data`` body.
 
         Returns:
             Response.
+
+        Raises:
+            ValueError: If ``json`` is combined with ``form`` or ``files``.
+
+        .. versionchanged:: NEXT_VERSION
+           Added the ``form`` and ``files`` parameters.
         """
+        if json is not None and (form or files):
+            msg = "'json' can't be combined with 'form' or 'files'"
+            raise ValueError(msg)
+
         headers = (
             self._headers
             if path == self.AUTH_ENDPOINT and method == "POST"
             else self._auth_headers
         )
+        body: str | bytes | None = None
         if json is not None:
             headers = {**headers, "Content-Type": "application/json"}
+            body = _json.dumps(json)
+        elif form or files:
+            body, content_type = _encode_multipart(form or {}, files or {})
+            headers = {**headers, "Content-Type": content_type}
 
         url = f"{self.url}{path}"
         url = _encode_params(url, params) if params else url
@@ -215,7 +272,7 @@ class RESTClient:
         response = self._transport.request(
             method=method,
             url=url,
-            data=_json.dumps(json) if json is not None else None,
+            data=body,
             headers=headers,
         )
         self._raise_for_status(response)
@@ -341,3 +398,42 @@ class RESTClient:
                 },
             ],
         )
+
+    def import_survey(
+        self,
+        file: IO[bytes],
+        *,
+        file_type: Literal["lss", "lsa", "txt", "tsv"] = "lss",
+        group_strategy: Literal["default", "from_survey"] = "default",
+        translate_links: bool = True,
+    ) -> RESTSurveyImportResult:
+        """Import a complete survey from a file.
+
+        Args:
+            file: Binary file object.
+            file_type: Type of file. One of LSS, LSA, TXT and TSV.
+            group_strategy: Whether to put the survey in the default survey group
+                or the one defined in the file.
+            translate_links: Whether to convert links to the old survey.
+
+        Returns:
+            The import result.
+
+        .. note::
+           The result is typed for LSS files. Other file types may return
+           additional keys.
+
+        .. minlimesurvey:: 7.8.0
+
+        .. versionadded:: NEXT_VERSION
+        """
+        response = self.make_request(
+            "POST",
+            "/rest/v1/survey-import",
+            form={
+                "surveysgroup": group_strategy,
+                "translinksfields": "1" if translate_links else "0",
+            },
+            files={"file": (f"survey.{file_type}", file.read())},
+        )
+        return response.json()

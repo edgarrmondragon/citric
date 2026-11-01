@@ -53,6 +53,7 @@ __all__ = [
     "RESTShowQNumCode",
     "RESTSurveyDetail",
     "RESTSurveyGroup",
+    "RESTSurveyImportResult",
     "RESTSurveyLanguageSettings",
     "RESTSurveyOwner",
     "RPCResponse",
@@ -1490,4 +1491,57 @@ class RESTSurveyDetail(TypedDict):
     """List of encrypted attributes in the survey.
 
     .. version-added:: NEXT_VERSION
+    """
+
+
+class RESTSurveyImportResult(TypedDict):
+    """Result of importing a survey with the REST API.
+
+    Derived from the value returned by LimeSurvey's ``XMLImportSurvey`` for
+    LSS files, which ``importSurveyFile`` passes through.
+
+    .. version-added:: NEXT_VERSION
+    """
+
+    newsid: int | str
+    """ID of the new survey.
+
+    LimeSurvey keeps the ID read from the file as a string, and only uses an
+    integer when it has to assign a new, random ID.
+    """
+
+    oldsid: str
+    """ID of the survey in the imported file."""
+
+    languages: int
+    surveys: int
+    groups: int
+    questions: int
+    subquestions: int
+    answers: int
+    question_attributes: int
+    defaultvalues: int
+    assessments: int
+    quota: int
+    quotals: int
+    quotamembers: int
+    plugin_settings: int
+    themes: int
+    survey_url_parameters: int
+    conditions: NotRequired[int]
+
+    importwarnings: list[str]
+    """Warnings generated during the import, possibly containing HTML."""
+
+    access_mode: str
+    theme_options_original_data: str
+    theme_options_differences: list[Any]
+    theme_original: NotRequired[str]
+    template_deleted: NotRequired[str]
+
+    FieldReMap: dict[str, str] | list[Any]
+    """Mapping of old to new response field names.
+
+    LimeSurvey returns an empty list instead of an empty object when there is
+    nothing to map.
     """
