@@ -1703,8 +1703,9 @@ class _RecordingTransport(Urllib3Transport):
         method: str,
         url: str,
         *,
-        data: str | None = None,
+        data: str | bytes | Iterable[bytes] | None = None,
         headers: Mapping[str, str] | None = None,
+        timeout: float | None = None,
     ) -> HTTPResponse:
         rpc_method = json.loads(data)["method"] if isinstance(data, str) else None
         if rpc_method is not None:
