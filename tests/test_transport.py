@@ -344,16 +344,19 @@ def test_clients_pass_timeout_to_transport(
     session = Session("mock://lime.com", "u", "p", transport=transport, **kwargs)
     session.get_session_key("u", "p")
     assert transport.timeouts == [expected]
+    transport.close()
 
     transport = _RecordingTransport()
     client = Client("mock://lime.com", "u", "p", transport=transport, **kwargs)
     client.session.get_session_key("u", "p")
     assert transport.timeouts == [expected]
+    transport.close()
 
     transport = _RecordingTransport()
     rest = RESTClient("mock://lime.com", "u", "p", transport=transport, **kwargs)
     rest.authenticate("u", "p")
     assert transport.timeouts == [expected]
+    transport.close()
 
 
 @transport_factories
