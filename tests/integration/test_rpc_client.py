@@ -22,7 +22,7 @@ from urllib.parse import quote
 
 import bs4
 import pytest
-from dirty_equals import IsPartialDict, IsPositiveInt
+from dirty_equals import IsPositiveInt
 from faker import Faker
 from typeguard import check_type
 
@@ -1417,7 +1417,11 @@ def test_missing_setting(client: citric.Client, server_version: semver.VersionIn
 
 
 @pytest.mark.integration_test
-def test_cpdb(faker: Faker, client: citric.Client):
+def test_cpdb(
+    faker: Faker,
+    client: citric.Client,
+    server_version: semver.VersionInfo,
+) -> None:
     """Test the CPDB methods."""
 
     def check_response(
@@ -1448,10 +1452,29 @@ def test_cpdb(faker: Faker, client: citric.Client):
         ),
     ]
 
-    assert check_response(participants) == IsPartialDict(
-        ImportCount=2,
-        UpdateCount=0,
+    # Versions 3.0.0 to 7.8.0 don't return InvalidParticipantIds
+    # https://github.com/LimeSurvey/LimeSurvey/commit/072449e7b87f94ca6c69771e98abcd56435e9697
+    # https://github.com/LimeSurvey/LimeSurvey/commit/4cd281828422abf94468052016eba8897d5ec9aa
+
+    validates_participant_ids = (
+        # 6.17.19 and later 6.x
+        server_version.major == 6 and server_version >= (6, 17, 19)
+    ) or (
+        # 7.9.0 and later
+        server_version >= (7, 9, 0)
     )
+
+    if validates_participant_ids:
+        assert check_response(participants) == {
+            "ImportCount": 2,
+            "UpdateCount": 0,
+            "InvalidParticipantIds": [],
+        }
+    else:
+        assert check_response(participants) == {
+            "ImportCount": 2,
+            "UpdateCount": 0,
+        }
 
     more_participants = [
         Participant(
@@ -1470,10 +1493,37 @@ def test_cpdb(faker: Faker, client: citric.Client):
             participant_id=uuid.uuid4(),
         ),
     ]
-    assert check_response(more_participants, update=True) == IsPartialDict(
-        ImportCount=1,
-        UpdateCount=1,
+
+    if validates_participant_ids:
+        assert check_response(more_participants, update=True) == {
+            "ImportCount": 1,
+            "UpdateCount": 1,
+            "InvalidParticipantIds": [],
+        }
+    else:
+        assert check_response(more_participants, update=True) == {
+            "ImportCount": 1,
+            "UpdateCount": 1,
+        }
+
+    invalid_participant_id = Participant(
+        email=faker.email(),
+        firstname=faker.first_name(),
+        lastname=faker.last_name(),
+        participant_id="not-a-valid-uuid",  # type: ignore[arg-type] # ty: ignore[invalid-argument-type]
     )
+
+    if validates_participant_ids:
+        assert check_response([invalid_participant_id]) == {
+            "ImportCount": 0,
+            "UpdateCount": 0,
+            "InvalidParticipantIds": ["not-a-valid-uuid"],
+        }
+    else:
+        assert check_response([invalid_participant_id]) == {
+            "ImportCount": 1,
+            "UpdateCount": 0,
+        }
 
 
 @pytest.mark.integration_test
