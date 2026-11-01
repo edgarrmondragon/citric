@@ -23,6 +23,7 @@ from typing import TYPE_CHECKING, Any, Type  # ruff: ignore[deprecated-import]
 from urllib.parse import urlencode, urlsplit, urlunsplit
 
 from citric.exceptions import LimeSurveyApiError
+from citric.transport._constants import DEFAULT_TIMEOUT
 from citric.transport._default import _transport_or_default
 
 if TYPE_CHECKING:
@@ -165,6 +166,9 @@ class RESTClient:
             :class:`~citric.transport.httpx2.Httpx2Transport`. Defaults to a new
             :py:class:`requests.Session <requests.Session>`.
         requests_session: Deprecated alias of ``transport``.
+        timeout: Seconds to wait to connect to the server, and then to receive each
+            chunk of the response. Use ``None`` to defer to the transport's own
+            default. Defaults to 300 seconds.
 
     .. versionadded:: 0.10.0.post1
 
@@ -182,6 +186,9 @@ class RESTClient:
 
     .. deprecated:: NEXT_VERSION
         The ``requests_session`` parameter, use ``transport`` instead.
+
+    .. version-added:: NEXT_VERSION
+        The ``timeout`` parameter.
     """
 
     USER_AGENT = f"citric/{metadata.version('citric')}"
@@ -195,8 +202,10 @@ class RESTClient:
         *,
         transport: HTTPTransport | None = None,
         requests_session: HTTPTransport | None = None,
+        timeout: float | None = DEFAULT_TIMEOUT,
     ) -> None:
         self.url: str = url
+        self._timeout = timeout
         self._transport = _transport_or_default(transport, requests_session)
         self.__lock = threading.RLock()
         self.__closed: bool = False
@@ -341,7 +350,7 @@ class RESTClient:
             url=url,
             data=body,
             headers=headers,
-            timeout=30.0,
+            timeout=self._timeout,
         )
         self._raise_for_status(response)
         return response

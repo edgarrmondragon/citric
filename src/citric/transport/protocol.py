@@ -67,7 +67,9 @@ class HTTPTransport(Protocol):
             url: The server URL.
             data: The request body.
             headers: The HTTP headers.
-            timeout: The timeout for the HTTP request, in seconds.
+            timeout: Seconds to wait to connect to the server, and then to receive
+                each chunk of the response. If ``None``, use the transport's own
+                default.
 
         Returns:
             A response object.

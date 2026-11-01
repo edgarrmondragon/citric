@@ -110,11 +110,16 @@ class Urllib3Transport:
             url: The server URL.
             data: The request body.
             headers: The HTTP headers.
-            timeout: The timeout for the HTTP request, in seconds.
+            timeout: Seconds to wait to connect, and then to receive each chunk of the
+                response. If ``None``, use the timeout of the underlying pool.
 
         Returns:
             A response object.
         """
+        kwargs: dict[str, Any] = {}
+        if timeout is not None:
+            kwargs["timeout"] = urllib3.util.Timeout(connect=timeout, read=timeout)
+
         return Urllib3ResponseWrapper(
             self._pool.request(
                 method=method,
@@ -122,7 +127,7 @@ class Urllib3Transport:
                 body=data,
                 headers=headers,
                 pool_timeout=self._pool_timeout,
-                timeout=urllib3.util.Timeout(total=timeout),
+                **kwargs,
             )
         )
 
