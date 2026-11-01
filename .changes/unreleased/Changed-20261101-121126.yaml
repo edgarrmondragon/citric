@@ -1,0 +1,5 @@
+kind: Changed
+body: Requests to LimeSurvey now time out after 300 seconds by default. Set a different limit with the new `timeout` parameter of `Client`, `Session` and `RESTClient`, and implement the new `timeout` parameter in custom `HTTPTransport.request()` methods
+time: 2026-11-01T12:11:26.690361-06:00
+custom:
+    Issue: "1895"

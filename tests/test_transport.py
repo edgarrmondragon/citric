@@ -11,15 +11,21 @@ behavior.
 
 from __future__ import annotations
 
+import io
 import json
 import re
+import time
 from contextlib import nullcontext
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
+from unittest.mock import patch
 
 import httpcore2
 import httpx2
 import pytest
 import requests
+import urllib3
+import urllib3.exceptions
+import urllib3.util
 from werkzeug.wrappers import Response
 
 from citric.client import Client
@@ -31,7 +37,7 @@ from citric.transport.urllib3 import Urllib3Transport
 from tests.fixtures import requests_session_warning
 
 if TYPE_CHECKING:
-    from collections.abc import Callable
+    from collections.abc import Callable, Iterable, Mapping
     from contextlib import AbstractContextManager
     from typing import TypeAlias
 
@@ -191,7 +197,7 @@ def test_rest_client_over_http_transport(
             httpserver.url_for("/").rstrip("/"),
             "user",
             "password",
-            **{parameter: transport},
+            **{parameter: transport},  # type: ignore[arg-type] # ty: ignore[invalid-argument-type]
         ) as client,
     ):
         assert client.session_id == REST_SESSION_ID
@@ -284,4 +290,129 @@ def test_httpx2_transport_pool_options():
     assert pool._max_connections == 32
     assert pool._max_keepalive_connections == 16
     assert pool._keepalive_expiry == 30
+    transport.close()
+
+
+class _RecordingTransport:
+    """Transport that records the timeout of each request."""
+
+    def __init__(self) -> None:
+        self.timeouts: list[float | None] = []
+
+    def request(
+        self,
+        method: str,
+        url: str,
+        *,
+        data: str | bytes | Iterable[bytes] | None = None,
+        headers: Mapping[str, str] | None = None,
+        timeout: float | None = None,
+    ) -> requests.Response:
+        self.timeouts.append(timeout)
+        response = requests.Response()
+        response.status_code = 200
+        payload = json.loads(data) if data else {}  # type: ignore[arg-type] # ty: ignore[invalid-argument-type]
+        request_id = payload.get("id")
+        response._content = json.dumps(
+            {
+                "id": request_id,
+                "result": SESSION_KEY,
+                "error": None,
+                "token": REST_SESSION_ID,
+            },
+        ).encode()
+        return response
+
+    def close(self) -> None:
+        pass
+
+
+@pytest.mark.parametrize(
+    ("kwargs", "expected"),
+    [
+        pytest.param({}, 300.0, id="default"),
+        pytest.param({"timeout": 5}, 5, id="custom"),
+        pytest.param({"timeout": None}, None, id="none"),
+    ],
+)
+def test_clients_pass_timeout_to_transport(
+    kwargs: dict[str, Any],
+    expected: float | None,
+):
+    """`Session`, `Client` and `RESTClient` pass their timeout to the transport."""
+    transport = _RecordingTransport()
+    session = Session("mock://lime.com", "u", "p", transport=transport, **kwargs)
+    session.get_session_key("u", "p")
+    assert transport.timeouts == [expected]
+    transport.close()
+
+    transport = _RecordingTransport()
+    client = Client("mock://lime.com", "u", "p", transport=transport, **kwargs)
+    client.session.get_session_key("u", "p")
+    assert transport.timeouts == [expected]
+    transport.close()
+
+    transport = _RecordingTransport()
+    rest = RESTClient("mock://lime.com", "u", "p", transport=transport, **kwargs)
+    rest.authenticate("u", "p")
+    assert transport.timeouts == [expected]
+    transport.close()
+
+
+@transport_factories
+def test_transport_timeout(httpserver: HTTPServer, transport_factory: TransportFactory):
+    """A request that takes longer than the timeout fails."""
+
+    def slow_handler(request: Request) -> Response:
+        time.sleep(0.1)
+        return Response("{}", content_type="application/json")
+
+    httpserver.expect_request("/slow").respond_with_handler(slow_handler)
+
+    transport = transport_factory()
+    with pytest.raises(
+        (
+            requests.exceptions.RequestException,
+            httpx2.TimeoutException,
+            urllib3.exceptions.HTTPError,
+        ),
+    ):
+        transport.request("GET", httpserver.url_for("/slow"), timeout=0.05)
+
+
+def test_urllib3_transport_default_timeout():
+    """Without a timeout, the pool's own timeout applies."""
+    transport = Urllib3Transport(timeout=7)
+    calls: list[dict[str, object]] = []
+
+    def request(**kwargs: object) -> urllib3.HTTPResponse:
+        calls.append(kwargs)
+        return urllib3.HTTPResponse(body=io.BytesIO(b"{}"), status=200)
+
+    with patch.object(transport._pool, "request", request):
+        transport.request("GET", "http://example.com")
+        transport.request("GET", "http://example.com", timeout=3)
+
+    assert "timeout" not in calls[0]
+    timeout = calls[1]["timeout"]
+    assert isinstance(timeout, urllib3.util.Timeout)
+    assert (timeout.connect_timeout, timeout.read_timeout) == (3, 3)
+    transport.close()
+
+
+def test_httpx2_transport_default_timeout():
+    """Without a timeout, the client's own timeout applies."""
+    transport = Httpx2Transport()
+    calls: list[dict[str, object]] = []
+
+    def request(**kwargs: object) -> httpx2.Response:
+        calls.append(kwargs)
+        return httpx2.Response(200, json={})
+
+    with patch.object(transport._client, "request", request):
+        transport.request("GET", "http://example.com")
+        transport.request("GET", "http://example.com", timeout=3)
+
+    assert "timeout" not in calls[0]
+    assert calls[1]["timeout"] == 3
     transport.close()

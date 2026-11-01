@@ -8,7 +8,7 @@ __lazy_modules__ = {
     "httpx2",
 }
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 import httpx2
 
@@ -65,6 +65,7 @@ class Httpx2Transport:
         *,
         data: str | bytes | Iterable[bytes] | None = None,
         headers: Mapping[str, str] | None = None,
+        timeout: float | None = None,
     ) -> HTTPResponse:
         """Send an HTTP request.
 
@@ -73,15 +74,22 @@ class Httpx2Transport:
             url: The server URL.
             data: The request body.
             headers: The HTTP headers.
+            timeout: Seconds to wait to connect, send and receive each chunk of data.
+                If ``None``, use the timeout of the underlying client.
 
         Returns:
             A response object.
         """
+        kwargs: dict[str, Any] = {}
+        if timeout is not None:
+            kwargs["timeout"] = timeout
+
         return self._client.request(
             method=method,
             url=url,
             content=data,
             headers=headers,
+            **kwargs,
         )
 
     def close(self) -> None:
