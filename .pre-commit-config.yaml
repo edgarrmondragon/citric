@@ -76,6 +76,9 @@ repos:
     hooks:
       - id: mdformat
         exclude: \.github/pull_request_template\.md
+        args: [--strict-front-matter]
+        additional_dependencies:
+        - mdformat-front-matters
 
   - repo: https://github.com/henryiii/check-sdist
     rev: v1.6.0

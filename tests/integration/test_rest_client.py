@@ -10,11 +10,21 @@ import operator
 from typing import TYPE_CHECKING
 
 import pytest
+import semver
 from typeguard import check_type
 
-from citric.exceptions import LimeSurveyStatusError
+from citric.exceptions import LimeSurveyApiError, LimeSurveyStatusError
 from citric.rest import RESTClient
-from citric.types import RESTSurveyDetail
+from citric.types import (
+    RESTStatisticsGlance,
+    RESTStatisticsOverviewResponse,
+    RESTStatisticsPage,
+    RESTSurveyDetail,
+    RESTSurveyGroupList,
+    RESTSurveyImportResult,
+    RESTSurveyResponsesPage,
+    RESTVersionInfo,
+)
 
 if TYPE_CHECKING:
     from collections.abc import Generator
@@ -68,6 +78,118 @@ def test_get_survey_details(rest_client: RESTClient, survey_id: int) -> None:
         RESTSurveyDetail,
     )
     assert survey["sid"] == survey_id
+
+
+@pytest.mark.integration_test
+def test_import_survey(
+    request: pytest.FixtureRequest,
+    rest_client: RESTClient,
+    server_version: semver.Version,
+):
+    """Test importing a survey."""
+    if server_version < semver.Version(7, 8, 0):
+        pytest.skip("REST survey import requires LimeSurvey 7.8.0")
+
+    filepath = request.config.rootpath / "examples" / "survey.lss"
+    with filepath.open("rb") as f:
+        result = check_type(rest_client.import_survey(f), RESTSurveyImportResult)
+
+    assert int(result["newsid"])
+    assert result["questions"] > 0
+
+
+@pytest.mark.integration_test
+def test_get_survey_responses(
+    client: Client,
+    rest_client: RESTClient,
+    survey_id: int,
+    server_version: semver.Version,
+):
+    """Test getting survey responses."""
+    if server_version < semver.Version(7, 8, 0):
+        pytest.skip("REST survey responses require LimeSurvey 7.8.0")
+
+    client.activate_survey(survey_id)
+    client.add_response(survey_id, {"submitdate": "2026-01-01 00:00:00"})
+
+    result = check_type(
+        rest_client.get_survey_responses(survey_id, page_size=10),
+        RESTSurveyResponsesPage,
+    )
+    assert len(result["responses"]) == 1
+    assert result["_meta"]["pagination"]["totalItems"] == 1
+
+    # No file upload question in the survey, so asking for files is a bad request
+    with pytest.raises(LimeSurveyApiError):
+        rest_client.get_survey_responses(survey_id, fields=["id"], unnest_files=True)
+
+
+@pytest.mark.integration_test
+def test_export_survey_responses(
+    client: Client,
+    rest_client: RESTClient,
+    survey_id: int,
+    server_version: semver.Version,
+):
+    """Test exporting survey responses."""
+    if server_version < semver.Version(7, 0, 0):
+        pytest.skip("REST survey responses export requires LimeSurvey 7.0.0")
+
+    client.activate_survey(survey_id)
+    client.add_response(survey_id, {"submitdate": "2026-01-01 00:00:00"})
+
+    content = rest_client.export_survey_responses(survey_id)
+    assert content
+    assert b"Response ID" in content
+
+    # Older versions don't reject unknown languages
+    # https://github.com/LimeSurvey/LimeSurvey/commit/325d98e7fd98d00b07be1f40f972eb88a39c0c05
+    if server_version >= semver.Version(7, 6, 0):
+        with pytest.raises(LimeSurveyApiError, match="Invalid language specified"):
+            _ = rest_client.export_survey_responses(survey_id, language="zz")
+
+
+@pytest.mark.integration_test
+def test_get_statistics(
+    client: Client,
+    rest_client: RESTClient,
+    survey_id: int,
+    server_version: semver.Version,
+):
+    """Test getting the statistics of a survey."""
+    if server_version < semver.Version(7, 0, 0):
+        pytest.skip("REST statistics require LimeSurvey 7.0.0")
+
+    client.activate_survey(survey_id)
+    client.add_response(survey_id, {"submitdate": "2026-01-01 00:00:00"})
+
+    glance = check_type(
+        rest_client.get_statistics_glance(survey_id),
+        RESTStatisticsGlance,
+    )
+    assert glance["statistics"]["totalResponses"] == 1
+
+    check_type(
+        rest_client.get_statistics_overview(survey_id),
+        RESTStatisticsOverviewResponse,
+    )
+    check_type(
+        rest_client.get_statistics(survey_id, completed=True, page_size=5),
+        RESTStatisticsPage,
+    )
+
+
+@pytest.mark.integration_test
+def test_get_version_info(rest_client: RESTClient):
+    """Test getting the version information."""
+    check_type(rest_client.get_version_info(), RESTVersionInfo)
+
+
+@pytest.mark.integration_test
+def test_get_survey_groups(rest_client: RESTClient):
+    """Test getting the survey groups."""
+    groups = check_type(rest_client.get_survey_groups(), RESTSurveyGroupList)
+    assert groups["surveyGroups"]
 
 
 @pytest.mark.integration_test

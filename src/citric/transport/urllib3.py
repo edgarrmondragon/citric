@@ -8,15 +8,17 @@ __lazy_modules__ = {
     "json",
     "urllib3",
     "urllib3.response",
+    "urllib3.util",
 }
 
 from typing import TYPE_CHECKING, Any
 
 import urllib3
 import urllib3.response
+import urllib3.util
 
 if TYPE_CHECKING:
-    from collections.abc import Mapping
+    from collections.abc import Iterable, Mapping
 
     from citric.transport.protocol import HTTPResponse
 
@@ -38,6 +40,11 @@ class Urllib3ResponseWrapper:
     def status_code(self) -> int:
         """The HTTP status of this response."""
         return self._response.status
+
+    @property
+    def content(self) -> bytes:
+        """The raw body of this response."""
+        return self._response.data
 
     def json(self) -> Any:  # ruff: ignore[any-type]
         """The JSON data contained in the response.
@@ -97,8 +104,9 @@ class Urllib3Transport:
         method: str,
         url: str,
         *,
-        data: str | None = None,
+        data: str | bytes | Iterable[bytes] | None = None,
         headers: Mapping[str, str] | None = None,
+        timeout: float | None = None,
     ) -> HTTPResponse:
         """Send an HTTP request.
 
@@ -107,10 +115,16 @@ class Urllib3Transport:
             url: The server URL.
             data: The request body.
             headers: The HTTP headers.
+            timeout: Seconds to wait to connect, and then to receive each chunk of the
+                response. If ``None``, use the timeout of the underlying pool.
 
         Returns:
             A response object.
         """
+        kwargs: dict[str, Any] = {}
+        if timeout is not None:
+            kwargs["timeout"] = urllib3.util.Timeout(connect=timeout, read=timeout)
+
         return Urllib3ResponseWrapper(
             self._pool.request(
                 method=method,
@@ -118,6 +132,7 @@ class Urllib3Transport:
                 body=data,
                 headers=headers,
                 pool_timeout=self._pool_timeout,
+                **kwargs,
             )
         )
 

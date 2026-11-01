@@ -23,7 +23,7 @@ else:
     from typing_extensions import override
 
 if TYPE_CHECKING:
-    from collections.abc import Generator
+    from collections.abc import Generator, Iterable
 
 
 DUMMY_FILE_CONTENTS = b"FILE CONTENTS"
@@ -35,12 +35,21 @@ class _Response:
     status_code: int
     data: Any
 
+    @property
+    def content(self) -> bytes:  # pragma: no cover
+        return json.dumps(self.data).encode()
+
     def json(self) -> Any:  # ruff: ignore[any-type]
         return self.data
 
 
 class _Transport:
-    def request(self, *args: Any, data: str | None = None, **kwargs: Any) -> _Response:
+    def request(
+        self,
+        *args: Any,
+        data: str | bytes | Iterable[bytes] | None = None,
+        **kwargs: Any,
+    ) -> _Response:
         payload = json.loads(data)  # type: ignore[arg-type] # ty: ignore[invalid-argument-type]
         if payload["method"] == "export_timeline":
             result: dict[str, Any] = {"2022-01-01": 4, "2022-01-02": 2}
@@ -106,7 +115,12 @@ class _RecordingTransport(_Transport):
         self.params: list[list[Any]] = []
 
     @override
-    def request(self, *args: Any, data: str | None = None, **kwargs: Any) -> _Response:
+    def request(
+        self,
+        *args: Any,
+        data: str | bytes | Iterable[bytes] | None = None,
+        **kwargs: Any,
+    ) -> _Response:
         payload = json.loads(data)  # type: ignore[arg-type] # ty: ignore[invalid-argument-type]
         self.methods.append(payload["method"])
         self.params.append(payload["params"])
@@ -157,7 +171,10 @@ def test_lazy_connect_retries_after_failure():
     class FlakyTransport(_RecordingTransport):
         @override
         def request(
-            self, *args: Any, data: str | None = None, **kwargs: Any
+            self,
+            *args: Any,
+            data: str | bytes | Iterable[bytes] | None = None,
+            **kwargs: Any,
         ) -> _Response:
             if not self.methods:
                 self.methods.append("get_session_key")
@@ -196,7 +213,10 @@ def test_transport_is_closed_if_release_fails():
 
         @override
         def request(
-            self, *args: Any, data: str | None = None, **kwargs: Any
+            self,
+            *args: Any,
+            data: str | bytes | Iterable[bytes] | None = None,
+            **kwargs: Any,
         ) -> _Response:
             if json.loads(data)["method"] == "release_session_key":  # type: ignore[arg-type] # ty: ignore[invalid-argument-type]
                 return _Response(500, None)
@@ -227,7 +247,10 @@ def test_close_is_idempotent():
 
         @override
         def request(
-            self, *args: Any, data: str | None = None, **kwargs: Any
+            self,
+            *args: Any,
+            data: str | bytes | Iterable[bytes] | None = None,
+            **kwargs: Any,
         ) -> _Response:
             self.methods.append(json.loads(data)["method"])  # type: ignore[arg-type] # ty: ignore[invalid-argument-type]
             return super().request(*args, data=data, **kwargs)

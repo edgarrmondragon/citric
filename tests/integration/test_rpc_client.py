@@ -38,8 +38,10 @@ from citric.exceptions import LimeSurveyApiError, LimeSurveyStatusError
 from citric.objects import Participant
 from citric.transport.urllib3 import Urllib3Transport
 from citric.types import (
+    CPDBParticipantImportResult,
     LanguageProperties,
     PartialLanguageProperties,
+    QuestionProperties,
     SurveyListElement,
     SurveyProperties,
 )
@@ -581,9 +583,11 @@ def test_import_question_answer_options(
 
     for language in ["en", "es"]:
         with subtests.test(msg=f"{language=}"):
-            props = get_props(language=language)
+            props = check_type(get_props(language=language), QuestionProperties)
+            answer_options_by_code = props["answeroptions"]
+            assert isinstance(answer_options_by_code, dict)
             options = sorted(
-                props["answeroptions"].values(),
+                answer_options_by_code.values(),
                 key=operator.itemgetter("order"),
             )
 
@@ -1427,6 +1431,17 @@ def test_missing_setting(client: citric.Client, server_version: semver.VersionIn
 @pytest.mark.integration_test
 def test_cpdb(faker: Faker, client: citric.Client):
     """Test the CPDB methods."""
+
+    def check_response(
+        participants: list[Participant],
+        *,
+        update: bool = False,
+    ) -> CPDBParticipantImportResult:
+        return check_type(
+            client.import_cpdb_participants(participants, update=update),
+            CPDBParticipantImportResult,
+        )
+
     participants = [
         Participant(
             email=faker.email(),
@@ -1445,7 +1460,7 @@ def test_cpdb(faker: Faker, client: citric.Client):
         ),
     ]
 
-    assert client.import_cpdb_participants(participants) == IsPartialDict(
+    assert check_response(participants) == IsPartialDict(
         ImportCount=2,
         UpdateCount=0,
     )
@@ -1467,10 +1482,7 @@ def test_cpdb(faker: Faker, client: citric.Client):
             participant_id=uuid.uuid4(),
         ),
     ]
-    assert client.import_cpdb_participants(
-        more_participants,
-        update=True,
-    ) == IsPartialDict(
+    assert check_response(more_participants, update=True) == IsPartialDict(
         ImportCount=1,
         UpdateCount=1,
     )

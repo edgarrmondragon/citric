@@ -1,0 +1,5 @@
+kind: Added
+body: Added `RESTClient.export_survey_responses`, `get_statistics`, `get_statistics_overview`, `get_statistics_glance`, `get_version_info` and `get_survey_groups` for the `survey-responses-export`, `statistics`, `statistics-overview`, `statistics-glance`, `version-info` and `survey-groups` REST endpoints
+time: 2026-11-01T13:00:00.000000-06:00
+custom:
+    Issue: "1910"

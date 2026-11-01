@@ -51,10 +51,25 @@ __all__ = [
     "RESTQuestionL10n",
     "RESTShowGroupInfo",
     "RESTShowQNumCode",
+    "RESTStatisticsDataPoint",
+    "RESTStatisticsGlance",
+    "RESTStatisticsItem",
+    "RESTStatisticsOverview",
+    "RESTStatisticsOverviewData",
+    "RESTStatisticsOverviewResponse",
+    "RESTStatisticsPage",
     "RESTSurveyDetail",
+    "RESTSurveyFile",
+    "RESTSurveyFilesPage",
     "RESTSurveyGroup",
+    "RESTSurveyGroupList",
+    "RESTSurveyImportResult",
     "RESTSurveyLanguageSettings",
     "RESTSurveyOwner",
+    "RESTSurveyResponsesMeta",
+    "RESTSurveyResponsesPage",
+    "RESTSurveyResponsesPagination",
+    "RESTVersionInfo",
     "RPCResponse",
     "ReadableFile",
     "Result",
@@ -466,11 +481,19 @@ class QuestionProperties(TypedDict, total=False):
     same_script: int
     """The question same script."""
 
-    available_answers: Any
-    """The available answers."""
+    available_answers: dict[str, Any] | list[Any]
+    """The available answers, keyed by answer code.
 
-    answeroptions: Any
-    """The answer options."""
+    LimeSurvey versions before 7.8.0+ may return a list instead of a mapping when
+    all the codes are numeric (``0``, ``1``, ...).
+    """
+
+    answeroptions: dict[str, Any] | list[Any]
+    """The answer options, keyed by answer code.
+
+    LimeSurvey versions before 7.8.0+ may return a list instead of a mapping when
+    all the codes are numeric (``0``, ``1``, ...).
+    """
 
     subquestions: Any
     """The subquestions."""
@@ -533,11 +556,19 @@ class QuestionPropertiesUpdate(TypedDict, total=False):
     same_script: int
     """The question same script."""
 
-    available_answers: Any
-    """The available answers."""
+    available_answers: dict[str, Any] | list[Any]
+    """The available answers, keyed by answer code.
 
-    answeroptions: Any
-    """The answer options."""
+    LimeSurvey versions before 7.8.0+ may return a list instead of a mapping when
+    all the codes are numeric (``0``, ``1``, ...).
+    """
+
+    answeroptions: dict[str, Any] | list[Any]
+    """The answer options, keyed by answer code.
+
+    LimeSurvey versions before 7.8.0+ may return a list instead of a mapping when
+    all the codes are numeric (``0``, ``1``, ...).
+    """
 
     subquestions: Any
     """The subquestions."""
@@ -904,6 +935,12 @@ class CPDBParticipantImportResult(TypedDict):
 
     UpdateCount: int
     """The number of participants updated."""
+
+    RemoveCount: NotRequired[int]
+    """The number of participants removed."""
+
+    InvalidParticipantIds: NotRequired[list[str]]
+    """The list of invalid participant IDs."""
 
 
 class SurveyUserActivationSettings(TypedDict, total=False):
@@ -1490,4 +1527,329 @@ class RESTSurveyDetail(TypedDict):
     """List of encrypted attributes in the survey.
 
     .. version-added:: NEXT_VERSION
+    """
+
+
+class RESTSurveyResponsesPagination(TypedDict):
+    """Pagination metadata of a page of survey responses.
+
+    .. version-added:: NEXT_VERSION
+    """
+
+    pageSize: int
+    """Number of items per page."""
+
+    currentPage: int
+    """Zero-based page number."""
+
+    totalItems: int
+    """Total number of items across all pages."""
+
+    totalPages: int
+    """Total number of pages."""
+
+
+class RESTSurveyResponsesMeta(TypedDict):
+    """Metadata of a page of survey responses.
+
+    .. version-added:: NEXT_VERSION
+    """
+
+    pagination: RESTSurveyResponsesPagination
+    """Pagination metadata."""
+
+    filters: Any
+    """The filters sent in the request."""
+
+    sort: Any
+    """The sort definition sent in the request."""
+
+
+class RESTSurveyResponsesPage(TypedDict):
+    """A page of survey responses from the REST API.
+
+    .. version-added:: NEXT_VERSION
+    """
+
+    responses: list[dict[str, Any]]
+    """The responses, keyed by response column name.
+
+    The columns depend on the survey.
+    """
+
+    surveyQuestions: Any
+    """Metadata of the question columns."""
+
+    timingFields: list[dict[str, Any]]
+    """Metadata of the timing columns.
+
+    Empty if the survey doesn't save timings.
+    """
+
+    _meta: RESTSurveyResponsesMeta
+    """Pagination, filters and sort."""
+
+
+class RESTSurveyFile(TypedDict):
+    """An uploaded file in a response to a file upload question.
+
+    .. version-added:: NEXT_VERSION
+    """
+
+    responseId: int
+    """ID of the response the file belongs to."""
+
+    index: int | str
+    """Position of the file in the response's list of files."""
+
+    name: str
+    """File name."""
+
+    title: str
+    """File title."""
+
+    comment: str
+    """File comment."""
+
+    size: float
+    """File size, in kilobytes."""
+
+    ext: str
+    """Lowercase file extension."""
+
+
+class RESTSurveyFilesPage(TypedDict):
+    """A page of files uploaded in survey responses from the REST API.
+
+    .. version-added:: NEXT_VERSION
+    """
+
+    files: list[RESTSurveyFile]
+    """The files, one per entry."""
+
+    _meta: RESTSurveyResponsesMeta
+    """Pagination, filters and sort."""
+
+
+class RESTVersionInfo(TypedDict):
+    """Version information, as returned by the REST API.
+
+    .. version-added:: NEXT_VERSION
+    """
+
+    dbVersion: int | None
+    """Version of the database schema."""
+
+    assetsVersionNumber: str | None
+    """Version number used to bust the cache of static assets."""
+
+    needsDbUpdate: bool | None
+    """Whether the database needs to be updated."""
+
+
+class RESTSurveyGroupList(TypedDict):
+    """List of survey groups, as returned by the REST API.
+
+    .. version-added:: NEXT_VERSION
+    """
+
+    surveyGroups: list[RESTSurveyGroup]
+    """The survey groups."""
+
+
+class RESTStatisticsOverview(TypedDict):
+    """Response counts and completion figures of a survey.
+
+    .. version-added:: NEXT_VERSION
+    """
+
+    totalResponses: int
+    """Number of responses."""
+
+    incompleteResponses: int
+    """Number of incomplete responses."""
+
+    completionRate: float
+    """Percentage of complete responses, rounded to two decimals."""
+
+    avgCompletionTime: float | None
+    """Average time to complete, rounded to two decimals.
+
+    ``None`` if there are no completed responses.
+    """
+
+
+class RESTStatisticsGlance(TypedDict):
+    """Survey statistics at a glance, as returned by the REST API.
+
+    .. version-added:: NEXT_VERSION
+    """
+
+    statistics: RESTStatisticsOverview
+    """Response counts and completion figures."""
+
+
+class RESTStatisticsDataPoint(TypedDict):
+    """A data point of a statistics item."""
+
+    key: str
+    """Identifier of the data point."""
+
+    title: str
+    """Display title of the data point."""
+
+    value: int
+    """Count for the data point."""
+
+
+class RESTStatisticsItem(TypedDict):
+    """Statistics of a question or metric."""
+
+    title: str
+    """Title of the item."""
+
+    legend: list[str]
+    """Labels of the data points."""
+
+    data: list[RESTStatisticsDataPoint]
+    """The data points."""
+
+    total: int | None
+    """Total count, if applicable."""
+
+    meta: NotRequired[dict[str, Any]]
+    """Additional metadata, like the ``period`` of the daily activity.
+
+    Omitted if empty. Defined by the ``$meta`` argument of LimeSurvey's
+    `StatisticsChartDTO
+    <https://github.com/LimeSurvey/LimeSurvey/blob/master/application/models/services/SurveyStatistics/Charts/StatisticsChartDTO.php>`_.
+    """
+
+
+class RESTStatisticsOverviewData(TypedDict):
+    """Content of the statistics overview of a survey."""
+
+    statistics: RESTStatisticsOverview
+    """Response counts and completion figures."""
+
+    dailyActivity: RESTStatisticsItem
+    """Responses per day, for the last 30 days."""
+
+    responses: list[dict[str, Any]]
+    """The latest responses, with their answers."""
+
+
+class RESTStatisticsOverviewResponse(TypedDict):
+    """Statistics overview of a survey, as returned by the REST API.
+
+    .. version-added:: NEXT_VERSION
+    """
+
+    overview: RESTStatisticsOverviewData
+    """The overview."""
+
+
+class RESTStatisticsPage(TypedDict):
+    """A page of survey statistics from the REST API.
+
+    .. version-added:: NEXT_VERSION
+    """
+
+    statistics: list[RESTStatisticsItem]
+    """Statistics for each question or metric."""
+
+    pagination: dict[str, Any] | None
+    """Pagination metadata."""
+
+
+class RESTSurveyImportResult(TypedDict):
+    """Result of importing a survey with the REST API.
+
+    Derived from the value returned by LimeSurvey's ``XMLImportSurvey`` for
+    LSS files, which ``importSurveyFile`` passes through.
+
+    .. version-added:: NEXT_VERSION
+    """
+
+    newsid: int | str
+    """ID of the new survey.
+
+    LimeSurvey keeps the ID read from the file as a string, and only uses an
+    integer when it has to assign a new, random ID.
+    """
+
+    oldsid: str
+    """ID of the survey in the imported file."""
+
+    languages: int
+    """Number of languages supported by the survey."""
+
+    surveys: int
+    """Number of surveys imported."""
+
+    groups: int
+    """Number of question groups imported."""
+
+    questions: int
+    """Number of questions imported."""
+
+    subquestions: int
+    """Number of subquestions imported."""
+
+    answers: int
+    """Number of answers imported."""
+
+    question_attributes: int
+    """Number of question attributes imported."""
+
+    defaultvalues: int
+    """Number of default values imported."""
+
+    assessments: int
+    """Number of assessments imported."""
+
+    quota: int
+    """Number of quotas imported."""
+
+    quotals: int
+    """Number of quota language settings imported."""
+
+    quotamembers: int
+    """Number of quota members imported."""
+
+    plugin_settings: int
+    """Number of plugin settings imported."""
+
+    themes: int
+    """Number of themes imported."""
+
+    survey_url_parameters: int
+    """Number of survey URL parameters imported."""
+
+    conditions: NotRequired[int]
+    """Number of conditions imported."""
+
+    importwarnings: list[str]
+    """Warnings generated during the import, possibly containing HTML."""
+
+    access_mode: str
+    """Survey access mode, either ``O`` (open) or ``C`` (closed)."""
+
+    theme_options_original_data: str
+    """JSON-encoded theme options data from the imported survey."""
+
+    theme_options_differences: list[Any]
+    """Differences between the imported survey's theme options and the current one's."""
+
+    theme_original: NotRequired[str]
+    """JSON-encoded theme data from the imported survey."""
+
+    template_deleted: NotRequired[str]
+    """Flag indicating whether the template used by the imported survey was deleted."""
+
+    FieldReMap: dict[str, str] | list[Any]
+    """Mapping of old to new response field names.
+
+    LimeSurvey returns an empty list instead of an empty object when there is
+    nothing to map.
     """

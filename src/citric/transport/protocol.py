@@ -15,7 +15,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, Protocol, runtime_checkable
 
 if TYPE_CHECKING:
-    from collections.abc import Mapping
+    from collections.abc import Iterable, Mapping
 
 __all__ = [
     "HTTPResponse",
@@ -30,6 +30,11 @@ class HTTPResponse(Protocol):
     @property
     def status_code(self) -> int:
         """The HTTP status of this response."""
+        ...
+
+    @property
+    def content(self) -> bytes:
+        """The raw body of this response."""
         ...
 
     def json(self) -> Any:  # ruff: ignore[any-type]
@@ -56,10 +61,24 @@ class HTTPTransport(Protocol):
         method: str,
         url: str,
         *,
-        data: str | None = None,
+        data: str | bytes | Iterable[bytes] | None = None,
         headers: Mapping[str, str] | None = None,
+        timeout: float | None = None,
     ) -> HTTPResponse:
-        """Send an HTTP request."""
+        """Send an HTTP request.
+
+        Args:
+            method: The HTTP method.
+            url: The server URL.
+            data: The request body.
+            headers: The HTTP headers.
+            timeout: Seconds to wait to connect to the server, and then to receive
+                each chunk of the response. If ``None``, use the transport's own
+                default.
+
+        Returns:
+            A response object.
+        """
         ...
 
     def close(self) -> None:

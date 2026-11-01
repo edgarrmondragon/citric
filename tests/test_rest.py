@@ -4,10 +4,11 @@
 
 from __future__ import annotations
 
+import io
 import json
 import sys
 from concurrent.futures import ThreadPoolExecutor
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, assert_type
 
 import pytest
 import requests
@@ -18,7 +19,12 @@ from tinydb.table import Document
 from werkzeug.wrappers import Response
 
 from citric.exceptions import LimeSurveyApiError
-from citric.rest import RESTClient, _encode_params  # ruff: ignore[import-private-name]
+from citric.rest import (
+    RESTClient,
+    _encode_params,  # ruff: ignore[import-private-name]
+    _MultipartBody,  # ruff: ignore[import-private-name]
+)
+from citric.types import RESTSurveyFilesPage, RESTSurveyResponsesPage
 
 if sys.version_info >= (3, 12):
     from typing import override
@@ -418,3 +424,246 @@ def test_close_is_idempotent(username: str, password: str, httpserver: HTTPServe
 
     assert [r.method for r, _ in httpserver.log] == ["POST", "DELETE"]
     assert transport.closed == 1
+
+
+def test_import_survey(rest_client: RESTClient, httpserver: HTTPServer):
+    """Test importing a survey, a multipart request."""
+
+    def handler(request: Request) -> Response:
+        assert request.content_type is not None
+        assert request.content_type.startswith("multipart/form-data; boundary=")
+        assert request.form["surveysgroup"] == "from_survey"
+        assert request.form["translinksfields"] == "0"
+        upload = request.files["file"]
+        assert upload.filename == "survey.lsa"
+        assert upload.read() == b"PK\x03\x04\x00binary\r\n--"
+        return Response(
+            json.dumps({"newsid": 12345}),
+            content_type="application/json",
+        )
+
+    httpserver.expect_request(
+        "/rest/v1/survey-import",
+        method="POST",
+    ).respond_with_handler(handler)
+
+    result = rest_client.import_survey(
+        io.BytesIO(b"PK\x03\x04\x00binary\r\n--"),
+        file_type="lsa",
+        group_strategy="from_survey",
+        translate_links=False,
+    )
+    assert result == {"newsid": 12345}
+
+
+def test_get_survey_responses(rest_client: RESTClient, httpserver: HTTPServer):
+    """Test getting survey responses, only sending the given options."""
+    bodies: list[dict] = []
+
+    def handler(request: Request) -> Response:
+        bodies.append(request.get_json())
+        return Response(
+            json.dumps({"responses": [], "_meta": {}}),
+            content_type="application/json",
+        )
+
+    httpserver.expect_request(
+        "/rest/v1/survey-responses/12345",
+        method="POST",
+    ).respond_with_handler(handler)
+
+    assert rest_client.get_survey_responses(12345) == {"responses": [], "_meta": {}}
+    rest_client.get_survey_responses(
+        12345,
+        filters=[{"key": ["id"], "filterMethod": "equal", "value": 1}],
+        page_size=5,
+        current_page=2,
+        fields=["id"],
+        language="es",
+        unnest_files=True,
+    )
+
+    assert bodies == [
+        {},
+        {
+            "filters": [{"key": ["id"], "filterMethod": "equal", "value": 1}],
+            "page": {"pageSize": 5, "currentPage": 2},
+            "fields": ["id"],
+            "language": "es",
+            "unnestFiles": True,
+        },
+    ]
+
+
+def test_get_survey_responses_overloads(
+    rest_client: RESTClient,
+    httpserver: HTTPServer,
+):
+    """Test the return type of `get_survey_responses` for each `unnest_files` type."""
+    httpserver.expect_request(
+        "/rest/v1/survey-responses/12345",
+        method="POST",
+    ).respond_with_json({})
+
+    assert_type(
+        rest_client.get_survey_responses(12345),
+        RESTSurveyResponsesPage,
+    )
+    assert_type(
+        rest_client.get_survey_responses(12345, unnest_files=False),
+        RESTSurveyResponsesPage,
+    )
+    assert_type(
+        rest_client.get_survey_responses(12345, unnest_files=True),
+        RESTSurveyFilesPage,
+    )
+
+    def get_page(
+        unnest_files: bool,  # ruff: ignore[boolean-type-hint-positional-argument]
+    ) -> RESTSurveyResponsesPage | RESTSurveyFilesPage:
+        return rest_client.get_survey_responses(12345, unnest_files=unnest_files)
+
+    assert_type(
+        get_page(unnest_files=False),
+        RESTSurveyResponsesPage | RESTSurveyFilesPage,
+    )
+
+
+def test_export_survey_responses(rest_client: RESTClient, httpserver: HTTPServer):
+    """Test exporting survey responses, only sending the given options."""
+    bodies: list[dict] = []
+
+    def handler(request: Request) -> Response:
+        bodies.append(request.get_json())
+        return Response(b"id,token\n1,abc\n", content_type="text/csv")
+
+    httpserver.expect_request(
+        "/rest/v1/survey-responses-export/12345",
+        method="POST",
+    ).respond_with_handler(handler)
+
+    assert rest_client.export_survey_responses(12345) == b"id,token\n1,abc\n"
+    rest_client.export_survey_responses(
+        12345,
+        export_format="json",
+        language="es",
+        answer_format="short",
+        csv_separator=";",
+        filters=[{"key": ["id"], "filterMethod": "equal", "value": 1}],
+    )
+
+    assert bodies == [
+        {"type": "csv"},
+        {
+            "type": "json",
+            "language": "es",
+            "answerFormat": "short",
+            "csvSeparator": ";",
+            "filters": [{"key": ["id"], "filterMethod": "equal", "value": 1}],
+        },
+    ]
+
+
+def test_get_statistics_overview_and_glance(
+    rest_client: RESTClient,
+    httpserver: HTTPServer,
+):
+    """Test getting the statistics overview and glance."""
+    httpserver.expect_request(
+        "/rest/v1/statistics-overview/12345",
+        method="GET",
+        query_string="language=es",
+    ).respond_with_json({"overview": {}})
+    httpserver.expect_request(
+        "/rest/v1/statistics-glance/12345",
+        method="GET",
+        query_string="",
+    ).respond_with_json({"statistics": {}})
+
+    assert rest_client.get_statistics_overview(12345, language="es") == {
+        "overview": {},
+    }
+    assert rest_client.get_statistics_glance(12345) == {"statistics": {}}
+
+
+def test_get_statistics(rest_client: RESTClient, httpserver: HTTPServer):
+    """Test getting statistics, encoding the filters like LimeSurvey expects."""
+    httpserver.expect_request(
+        "/rest/v1/statistics/12345",
+        method="GET",
+        query_string="",
+    ).respond_with_json({"statistics": [], "pagination": None})
+    httpserver.expect_request(
+        "/rest/v1/statistics/12345",
+        method="GET",
+        query_string=(
+            "minId=1&maxId=10&completed=false&search%5B%5D=a&search%5B%5D=b"
+            "&language=es&pageSize=5&page=0"
+        ),
+    ).respond_with_json({"statistics": [], "pagination": {}})
+
+    assert rest_client.get_statistics(12345) == {"statistics": [], "pagination": None}
+    assert rest_client.get_statistics(
+        12345,
+        min_id=1,
+        max_id=10,
+        completed=False,
+        search=["a", "b"],
+        language="es",
+        page_size=5,
+        current_page=0,
+    ) == {"statistics": [], "pagination": {}}
+
+
+def test_get_version_info(rest_client: RESTClient, httpserver: HTTPServer):
+    """Test getting the version information."""
+    info = {"dbVersion": 718, "assetsVersionNumber": "1", "needsDbUpdate": False}
+    httpserver.expect_request(
+        "/rest/v1/version-info",
+        method="GET",
+    ).respond_with_json(info)
+
+    assert rest_client.get_version_info() == info
+
+
+def test_get_survey_groups(rest_client: RESTClient, httpserver: HTTPServer):
+    """Test getting the survey groups."""
+    httpserver.expect_request(
+        "/rest/v1/survey-groups",
+        method="GET",
+    ).respond_with_json({"surveyGroups": []})
+
+    assert rest_client.get_survey_groups() == {"surveyGroups": []}
+
+
+def test_make_request_json_and_multipart(rest_client: RESTClient):
+    """Test a request can't have both a JSON and a multipart body."""
+    with pytest.raises(ValueError, match="can't be combined"):
+        rest_client.make_request(
+            "POST",
+            "/rest/v1/survey-import",
+            json={},
+            form={"foo": "bar"},
+        )
+
+
+def test_multipart_body_bytes_content():
+    """Bytes content is included as is."""
+    body = _MultipartBody({"a": "b"}, {"file": ("f.lss", b"abc")})
+    data = b"".join(body)
+    assert len(data) == len(body)
+    assert b"\r\n\r\nabc\r\n" in data
+
+
+def test_multipart_body_rejects_line_breaks_in_field_name():
+    """Line breaks in field names are rejected."""
+    with pytest.raises(ValueError, match="Invalid multipart"):
+        _MultipartBody({"a\nb": "x"}, {})
+
+
+def test_multipart_body_file_shrinks_while_streaming():
+    """A file shorter than expected ends the stream early."""
+    file = io.BytesIO(b"x" * 10)
+    body = _MultipartBody({}, {"file": ("f.lss", file)})
+    _ = file.truncate(4)
+    assert b"".join(body).count(b"x") == 4

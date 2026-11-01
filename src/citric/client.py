@@ -27,6 +27,7 @@ from typing import IO, TYPE_CHECKING, Any, Literal, overload
 
 from citric import enums
 from citric.session import Session, _check_result_status
+from citric.transport._constants import DEFAULT_TIMEOUT
 from citric.transport._default import _transport_or_default
 from citric.transport.protocol import HTTPTransport  # ruff: ignore[typing-only-first-party-import]
 
@@ -132,6 +133,9 @@ class Client:  # ruff: ignore[too-many-public-methods]
             :ls_manual:`AuthLDAP <Authentication_plugins#LDAP>`. Defaults to using the
             :ls_manual:`internal database <Authentication_plugins#Internal_database>`
             (``"Authdb"``).
+        timeout: Seconds to wait to connect to the server, and then to receive each
+            chunk of the response. Use ``None`` to defer to the transport's own
+            default. Defaults to 300 seconds.
 
     .. versionadded:: 0.0.6
        Support Auth plugins with the ``auth_plugin`` parameter.
@@ -148,6 +152,9 @@ class Client:  # ruff: ignore[too-many-public-methods]
 
     .. version-changed:: NEXT_VERSION
         The ``Client.session_class`` class attribute  was removed.
+
+    .. version-added:: NEXT_VERSION
+        The ``timeout`` parameter.
     """
 
     def __init__(
@@ -159,6 +166,7 @@ class Client:  # ruff: ignore[too-many-public-methods]
         transport: HTTPTransport | None = None,
         requests_session: HTTPTransport | None = None,
         auth_plugin: str = "Authdb",
+        timeout: float | None = DEFAULT_TIMEOUT,
     ) -> None:
         self.__session = self._get_rpc_session(
             url=url,
@@ -166,6 +174,7 @@ class Client:  # ruff: ignore[too-many-public-methods]
             password=password,
             auth_plugin=auth_plugin,
             transport=_transport_or_default(transport, requests_session),
+            timeout=timeout,
         )
         self.__server_version: ServerVersion | None = None
 
@@ -182,6 +191,7 @@ class Client:  # ruff: ignore[too-many-public-methods]
         password: str,
         auth_plugin: str = "Authdb",
         transport: HTTPTransport | None = None,
+        timeout: float | None = DEFAULT_TIMEOUT,
     ) -> Session:
         """Get the RPC session.
 
@@ -194,6 +204,7 @@ class Client:  # ruff: ignore[too-many-public-methods]
             password,
             auth_plugin=auth_plugin,
             transport=transport,
+            timeout=timeout,
         )
 
     def __enter__(self: Self) -> Self:

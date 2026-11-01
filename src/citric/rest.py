@@ -10,26 +10,39 @@ __lazy_modules__ = {
     "http",
     "json",
     "threading",
+    "uuid",
     "urllib.parse",
 }
 
 import http
 import json as _json
 import threading
+import uuid
 from importlib import metadata
-from typing import TYPE_CHECKING, Any, Type  # ruff: ignore[deprecated-import]
+from typing import TYPE_CHECKING, Any, Type, overload  # ruff: ignore[deprecated-import]
 from urllib.parse import urlencode, urlsplit, urlunsplit
 
 from citric.exceptions import LimeSurveyApiError
+from citric.transport._constants import DEFAULT_TIMEOUT
 from citric.transport._default import _transport_or_default
 
 if TYPE_CHECKING:
-    from collections.abc import Mapping
+    from collections.abc import Iterator, Mapping, Sequence
     from types import TracebackType
-    from typing import Self
+    from typing import IO, Literal, Self
 
     from citric.transport.protocol import HTTPResponse, HTTPTransport
-    from citric.types import RESTSurveyDetail
+    from citric.types import (
+        RESTStatisticsGlance,
+        RESTStatisticsOverviewResponse,
+        RESTStatisticsPage,
+        RESTSurveyDetail,
+        RESTSurveyFilesPage,
+        RESTSurveyGroupList,
+        RESTSurveyImportResult,
+        RESTSurveyResponsesPage,
+        RESTVersionInfo,
+    )
 
 __all__ = [
     "RESTClient",
@@ -46,6 +59,102 @@ def _encode_params(url: str, params: Mapping[str, Any]) -> str:
         query = f"{split.query}&{query}"
 
     return urlunsplit(split._replace(query=query))
+
+
+def _quote_header_value(value: str) -> str:
+    """Make a name or filename safe to use in a ``Content-Disposition`` header.
+
+    Returns:
+        The value with backslashes and double quotes escaped.
+
+    Raises:
+        ValueError: If the value contains CR or LF.
+    """
+    if "\r" in value or "\n" in value:
+        msg = f"Invalid multipart field name or filename: {value!r}"
+        raise ValueError(msg)
+    return value.replace("\\", "\\\\").replace('"', '\\"')
+
+
+class _MultipartBody:
+    """A ``multipart/form-data`` body that streams its file contents.
+
+    Iterating yields the body in chunks, and the length is known up front so that
+    transports send a ``Content-Length`` header instead of chunked encoding.
+    """
+
+    _CHUNK_SIZE = 64 * 1024
+
+    def __init__(
+        self,
+        form: Mapping[str, str],
+        files: Mapping[str, tuple[str, bytes | IO[bytes]]],
+    ) -> None:
+        self.boundary = uuid.uuid4().hex
+        self.content_type = f"multipart/form-data; boundary={self.boundary}"
+
+        # Each item is either literal bytes or a (file, size) pair.
+        self._items: list[bytes | tuple[IO[bytes], int]] = []
+        for name, value in form.items():
+            quoted = _quote_header_value(name)
+            self._items.append(
+                (
+                    f"--{self.boundary}\r\n"
+                    f'Content-Disposition: form-data; name="{quoted}"'
+                    f"\r\n\r\n{value}\r\n"
+                ).encode()
+            )
+        for name, (filename, content) in files.items():
+            quoted = _quote_header_value(name)
+            quoted_filename = _quote_header_value(filename)
+            self._items.append(
+                (
+                    f"--{self.boundary}\r\n"
+                    f'Content-Disposition: form-data; name="{quoted}"; '
+                    f'filename="{quoted_filename}"\r\n'
+                    "Content-Type: application/octet-stream\r\n\r\n"
+                ).encode()
+            )
+            if isinstance(content, bytes):
+                self._items.append(content)
+            else:
+                self._items.append((content, self._remaining(content)))
+            self._items.append(b"\r\n")
+        self._items.append(f"--{self.boundary}--\r\n".encode())
+
+    @staticmethod
+    def _remaining(file: IO[bytes]) -> int:
+        """Get the number of bytes left to read from a seekable file.
+
+        Returns:
+            The number of remaining bytes.
+        """
+        start = file.tell()
+        end = file.seek(0, 2)
+        _ = file.seek(start)
+        return end - start
+
+    def __len__(self) -> int:
+        return sum(
+            len(item) if isinstance(item, bytes) else item[1] for item in self._items
+        )
+
+    def __iter__(self) -> Iterator[bytes]:
+        for item in self._items:
+            if isinstance(item, bytes):
+                yield item
+                continue
+
+            file, size = item
+            start = file.tell()
+            remaining = size
+            while remaining > 0:
+                chunk = file.read(min(self._CHUNK_SIZE, remaining))
+                if not chunk:
+                    break
+                remaining -= len(chunk)
+                yield chunk
+            _ = file.seek(start)
 
 
 class RESTClient:
@@ -67,6 +176,9 @@ class RESTClient:
             :class:`~citric.transport.httpx2.Httpx2Transport`. Defaults to a new
             :py:class:`requests.Session <requests.Session>`.
         requests_session: Deprecated alias of ``transport``.
+        timeout: Seconds to wait to connect to the server, and then to receive each
+            chunk of the response. Use ``None`` to defer to the transport's own
+            default. Defaults to 300 seconds.
 
     .. versionadded:: 0.10.0.post1
 
@@ -84,6 +196,9 @@ class RESTClient:
 
     .. deprecated:: NEXT_VERSION
         The ``requests_session`` parameter, use ``transport`` instead.
+
+    .. version-added:: NEXT_VERSION
+        The ``timeout`` parameter.
     """
 
     USER_AGENT = f"citric/{metadata.version('citric')}"
@@ -97,8 +212,10 @@ class RESTClient:
         *,
         transport: HTTPTransport | None = None,
         requests_session: HTTPTransport | None = None,
+        timeout: float | None = DEFAULT_TIMEOUT,
     ) -> None:
         self.url: str = url
+        self._timeout = timeout
         self._transport = _transport_or_default(transport, requests_session)
         self.__lock = threading.RLock()
         self.__closed: bool = False
@@ -138,7 +255,7 @@ class RESTClient:
     @staticmethod
     def _raise_for_status(r: HTTPResponse) -> None:
         if r.status_code >= http.HTTPStatus.BAD_REQUEST:
-            msg = f"Request to LimeSurvey server failed with status {r.status_code}"
+            msg = f"Request to LimeSurvey server failed with status {r.status_code}) ({r.content.decode(errors='replace')})"  # ruff: ignore[line-too-long]
             raise LimeSurveyApiError(msg)
 
     def authenticate(self, username: str, password: str) -> None:
@@ -189,6 +306,8 @@ class RESTClient:
         *,
         params: Mapping[str, Any] | None = None,
         json: Any | None = None,  # ruff: ignore[any-type]
+        form: Mapping[str, str] | None = None,
+        files: Mapping[str, tuple[str, bytes | IO[bytes]]] | None = None,
     ) -> HTTPResponse:
         """Make a request to the REST API.
 
@@ -197,17 +316,41 @@ class RESTClient:
             path: URL path.
             params: Query parameters.
             json: JSON data.
+            form: Text fields for a ``multipart/form-data`` body.
+            files: Mapping of field name to ``(filename, content)`` for a
+                ``multipart/form-data`` body. The content is either bytes or a
+                seekable binary file, which is streamed.
 
         Returns:
             Response.
+
+        Raises:
+            ValueError: If ``json`` is combined with ``form`` or ``files``, or if a
+                field name or filename contains a line break.
+
+        .. versionchanged:: NEXT_VERSION
+           Added the ``form`` and ``files`` parameters.
         """
+        if json is not None and (form or files):
+            msg = "'json' can't be combined with 'form' or 'files'"
+            raise ValueError(msg)
+
         headers = (
             self._headers
             if path == self.AUTH_ENDPOINT and method == "POST"
             else self._auth_headers
         )
+        body: str | _MultipartBody | None = None
         if json is not None:
             headers = {**headers, "Content-Type": "application/json"}
+            body = _json.dumps(json)
+        elif form or files:
+            body = _MultipartBody(form or {}, files or {})
+            headers = {
+                **headers,
+                "Content-Type": body.content_type,
+                "Content-Length": str(len(body)),
+            }
 
         url = f"{self.url}{path}"
         url = _encode_params(url, params) if params else url
@@ -215,8 +358,9 @@ class RESTClient:
         response = self._transport.request(
             method=method,
             url=url,
-            data=_json.dumps(json) if json is not None else None,
+            data=body,
             headers=headers,
+            timeout=self._timeout,
         )
         self._raise_for_status(response)
         return response
@@ -341,3 +485,330 @@ class RESTClient:
                 },
             ],
         )
+
+    def import_survey(
+        self,
+        file: IO[bytes],
+        *,
+        file_type: Literal["lss", "lsa", "txt", "tsv"] = "lss",
+        group_strategy: Literal["default", "from_survey"] = "default",
+        translate_links: bool = True,
+    ) -> RESTSurveyImportResult:
+        """Import a complete survey from a file.
+
+        Args:
+            file: Binary file object.
+            file_type: Type of file. One of LSS, LSA, TXT and TSV.
+            group_strategy: Whether to put the survey in the default survey group
+                or the one defined in the file.
+            translate_links: Whether to convert links to the old survey.
+
+        Returns:
+            The import result.
+
+        .. note::
+           The result is typed for LSS files. Other file types may return
+           additional keys.
+
+        .. minlimesurvey:: 7.8.0
+
+        .. versionadded:: NEXT_VERSION
+        """
+        response = self.make_request(
+            "POST",
+            "/rest/v1/survey-import",
+            form={
+                "surveysgroup": group_strategy,
+                "translinksfields": "1" if translate_links else "0",
+            },
+            files={"file": (f"survey.{file_type}", file)},
+        )
+        return response.json()
+
+    @overload
+    def get_survey_responses(
+        self,
+        survey_id: int,
+        *,
+        filters: Sequence[Mapping[str, Any]] | None = None,
+        sort: Mapping[str, Any] | None = None,
+        page_size: int | None = None,
+        current_page: int | None = None,
+        fields: Sequence[str] | None = None,
+        language: str | None = None,
+        unnest_files: Literal[False] = False,
+    ) -> RESTSurveyResponsesPage: ...
+
+    @overload
+    def get_survey_responses(
+        self,
+        survey_id: int,
+        *,
+        filters: Sequence[Mapping[str, Any]] | None = None,
+        sort: Mapping[str, Any] | None = None,
+        page_size: int | None = None,
+        current_page: int | None = None,
+        fields: Sequence[str] | None = None,
+        language: str | None = None,
+        unnest_files: Literal[True],
+    ) -> RESTSurveyFilesPage: ...
+
+    @overload
+    def get_survey_responses(
+        self,
+        survey_id: int,
+        *,
+        filters: Sequence[Mapping[str, Any]] | None = None,
+        sort: Mapping[str, Any] | None = None,
+        page_size: int | None = None,
+        current_page: int | None = None,
+        fields: Sequence[str] | None = None,
+        language: str | None = None,
+        unnest_files: bool,
+    ) -> RESTSurveyResponsesPage | RESTSurveyFilesPage: ...
+
+    def get_survey_responses(
+        self,
+        survey_id: int,
+        *,
+        filters: Sequence[Mapping[str, Any]] | None = None,
+        sort: Mapping[str, Any] | None = None,
+        page_size: int | None = None,
+        current_page: int | None = None,
+        fields: Sequence[str] | None = None,
+        language: str | None = None,
+        unnest_files: bool = False,
+    ) -> RESTSurveyResponsesPage | RESTSurveyFilesPage:
+        """Get one page of the responses of a survey.
+
+        Args:
+            survey_id: Survey ID.
+            filters: Filters, each a mapping with ``key`` (response column names),
+                ``filterMethod`` (e.g. ``equal`` or ``contain``) and ``value``.
+            sort: Sort definition, as accepted by LimeSurvey.
+            page_size: Number of responses per page. LimeSurvey defaults to 15.
+            current_page: Zero-based page number.
+            fields: Response columns to return. The columns LimeSurvey needs to
+                describe each response, like ``id`` and ``submitdate``, are always
+                included.
+            language: Language of the question and answer texts. Defaults to the
+                survey's base language.
+            unnest_files: Whether to list the files of a single file upload
+                column in ``fields``, one entry per file.
+
+        Returns:
+            The page of responses, or of files if ``unnest_files`` is set.
+
+        .. note::
+           The columns of each response depend on the survey, so they aren't typed.
+
+        .. minlimesurvey:: 7.8.0
+
+        .. versionadded:: NEXT_VERSION
+        """
+        page: dict[str, int] = {}
+        if page_size is not None:
+            page["pageSize"] = page_size
+        if current_page is not None:
+            page["currentPage"] = current_page
+
+        body: dict[str, Any] = {
+            "filters": filters,
+            "sort": sort,
+            "page": page or None,
+            "fields": fields,
+            "language": language,
+            "unnestFiles": unnest_files or None,
+        }
+        response = self.make_request(
+            "POST",
+            f"/rest/v1/survey-responses/{survey_id}",
+            json={key: value for key, value in body.items() if value is not None},
+        )
+        return response.json()
+
+    def export_survey_responses(
+        self,
+        survey_id: int,
+        *,
+        export_format: Literal[
+            "csv",
+            "html",
+            "pdf",
+            "excel",
+            "word",
+            "json",
+            "spss",
+            "stata",
+            "r_syntax",
+            "r_data",
+        ] = "csv",
+        language: str | None = None,
+        answer_format: Literal["long", "short"] | None = None,
+        csv_separator: Literal[",", ";", "\t"] | None = None,
+        filters: Sequence[Mapping[str, Any]] | None = None,
+    ) -> bytes:
+        """Export the responses of a survey to a file.
+
+        Args:
+            survey_id: Survey ID.
+            export_format: Format of the exported file.
+            language: Language of the question and answer texts. Defaults to the
+                survey's base language.
+            answer_format: Whether to export the full answer texts (``long``) or
+                the answer codes (``short``).
+            csv_separator: Field separator, for CSV exports.
+            filters: Filters, in the same format as for :meth:`get_survey_responses`.
+                All responses are exported if not given.
+
+        Returns:
+            The content of the exported file.
+
+        .. minlimesurvey:: 7.0.0
+
+        .. versionadded:: NEXT_VERSION
+        """
+        body: dict[str, Any] = {
+            "type": export_format,
+            "language": language,
+            "answerFormat": answer_format,
+            "csvSeparator": csv_separator,
+            "filters": filters,
+        }
+        response = self.make_request(
+            "POST",
+            f"/rest/v1/survey-responses-export/{survey_id}",
+            json={key: value for key, value in body.items() if value is not None},
+        )
+        return response.content
+
+    def get_statistics_overview(
+        self,
+        survey_id: int,
+        *,
+        language: str | None = None,
+    ) -> RESTStatisticsOverviewResponse:
+        """Get the statistics overview of a survey.
+
+        It includes the response counts, the daily activity for the last 30 days
+        and the latest responses.
+
+        Args:
+            survey_id: Survey ID.
+            language: Language of the question and answer texts. Defaults to the
+                survey's base language.
+
+        Returns:
+            The statistics overview.
+
+        .. minlimesurvey:: 7.0.0
+
+        .. versionadded:: NEXT_VERSION
+        """
+        response = self.make_request(
+            "GET",
+            f"/rest/v1/statistics-overview/{survey_id}",
+            params={"language": language} if language is not None else None,
+        )
+        return response.json()
+
+    def get_statistics_glance(
+        self,
+        survey_id: int,
+        *,
+        language: str | None = None,
+    ) -> RESTStatisticsGlance:
+        """Get the statistics of a survey at a glance.
+
+        Args:
+            survey_id: Survey ID.
+            language: Language of the question and answer texts. Defaults to the
+                survey's base language.
+
+        Returns:
+            The response counts and completion figures.
+
+        .. minlimesurvey:: 7.0.0
+
+        .. versionadded:: NEXT_VERSION
+        """
+        response = self.make_request(
+            "GET",
+            f"/rest/v1/statistics-glance/{survey_id}",
+            params={"language": language} if language is not None else None,
+        )
+        return response.json()
+
+    def get_statistics(
+        self,
+        survey_id: int,
+        *,
+        min_id: int | None = None,
+        max_id: int | None = None,
+        completed: bool | None = None,
+        search: Sequence[str] | None = None,
+        language: str | None = None,
+        page_size: int | None = None,
+        current_page: int | None = None,
+    ) -> RESTStatisticsPage:
+        """Get one page of the statistics of a survey, per question.
+
+        Args:
+            survey_id: Survey ID.
+            min_id: Only include responses with an ID of at least this.
+            max_id: Only include responses with an ID of at most this.
+            completed: Only include complete (``True``) or incomplete (``False``)
+                responses.
+            search: Search terms, to only include responses containing them.
+            language: Language of the question and answer texts. Defaults to the
+                survey's base language.
+            page_size: Number of questions per page.
+            current_page: Zero-based page number.
+
+        Returns:
+            The page of statistics.
+
+        .. minlimesurvey:: 7.0.0
+
+        .. versionadded:: NEXT_VERSION
+        """
+        params: dict[str, Any] = {
+            "minId": min_id,
+            "maxId": max_id,
+            "completed": None if completed is None else str(completed).lower(),
+            "search[]": search,
+            "language": language,
+            "pageSize": page_size,
+            "page": current_page,
+        }
+        response = self.make_request(
+            "GET",
+            f"/rest/v1/statistics/{survey_id}",
+            params={key: value for key, value in params.items() if value is not None},
+        )
+        return response.json()
+
+    def get_version_info(self) -> RESTVersionInfo:
+        """Get the version information of the LimeSurvey instance.
+
+        Returns:
+            The database and assets versions.
+
+        .. versionadded:: NEXT_VERSION
+        """
+        response = self.make_request("GET", "/rest/v1/version-info")
+        return response.json()
+
+    def get_survey_groups(self) -> RESTSurveyGroupList:
+        """Get the survey groups.
+
+        LimeSurvey serves the same list from ``survey-groups`` and
+        ``survey-group-list``. This method uses ``survey-groups``.
+
+        Returns:
+            The survey groups.
+
+        .. versionadded:: NEXT_VERSION
+        """
+        response = self.make_request("GET", "/rest/v1/survey-groups")
+        return response.json()
