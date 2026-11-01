@@ -19,7 +19,11 @@ from tinydb.table import Document
 from werkzeug.wrappers import Response
 
 from citric.exceptions import LimeSurveyApiError
-from citric.rest import RESTClient, _encode_params  # ruff: ignore[import-private-name]
+from citric.rest import (
+    RESTClient,
+    _encode_params,  # ruff: ignore[import-private-name]
+    _MultipartBody,  # ruff: ignore[import-private-name]
+)
 
 if sys.version_info >= (3, 12):
     from typing import override
@@ -460,3 +464,25 @@ def test_make_request_json_and_multipart(rest_client: RESTClient):
             json={},
             form={"foo": "bar"},
         )
+
+
+def test_multipart_body_bytes_content():
+    """Bytes content is included as is."""
+    body = _MultipartBody({"a": "b"}, {"file": ("f.lss", b"abc")})
+    data = b"".join(body)
+    assert len(data) == len(body)
+    assert b"\r\n\r\nabc\r\n" in data
+
+
+def test_multipart_body_rejects_line_breaks_in_field_name():
+    """Line breaks in field names are rejected."""
+    with pytest.raises(ValueError, match="Invalid multipart"):
+        _MultipartBody({"a\nb": "x"}, {})
+
+
+def test_multipart_body_file_shrinks_while_streaming():
+    """A file shorter than expected ends the stream early."""
+    file = io.BytesIO(b"x" * 10)
+    body = _MultipartBody({}, {"file": ("f.lss", file)})
+    _ = file.truncate(4)
+    assert b"".join(body).count(b"x") == 4
