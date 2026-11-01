@@ -10,12 +10,14 @@ __lazy_modules__ = {
     "http",
     "json",
     "threading",
+    "uuid",
     "urllib.parse",
 }
 
 import http
 import json as _json
 import threading
+import uuid
 from importlib import metadata
 from typing import TYPE_CHECKING, Any, Type  # ruff: ignore[deprecated-import]
 from urllib.parse import urlencode, urlsplit, urlunsplit
@@ -24,12 +26,12 @@ from citric.exceptions import LimeSurveyApiError
 from citric.transport._default import _transport_or_default
 
 if TYPE_CHECKING:
-    from collections.abc import Mapping
+    from collections.abc import Iterator, Mapping
     from types import TracebackType
-    from typing import Self
+    from typing import IO, Literal, Self
 
     from citric.transport.protocol import HTTPResponse, HTTPTransport
-    from citric.types import RESTSurveyDetail
+    from citric.types import RESTSurveyDetail, RESTSurveyImportResult
 
 __all__ = [
     "RESTClient",
@@ -46,6 +48,102 @@ def _encode_params(url: str, params: Mapping[str, Any]) -> str:
         query = f"{split.query}&{query}"
 
     return urlunsplit(split._replace(query=query))
+
+
+def _quote_header_value(value: str) -> str:
+    """Make a name or filename safe to use in a ``Content-Disposition`` header.
+
+    Returns:
+        The value with backslashes and double quotes escaped.
+
+    Raises:
+        ValueError: If the value contains CR or LF.
+    """
+    if "\r" in value or "\n" in value:
+        msg = f"Invalid multipart field name or filename: {value!r}"
+        raise ValueError(msg)
+    return value.replace("\\", "\\\\").replace('"', '\\"')
+
+
+class _MultipartBody:
+    """A ``multipart/form-data`` body that streams its file contents.
+
+    Iterating yields the body in chunks, and the length is known up front so that
+    transports send a ``Content-Length`` header instead of chunked encoding.
+    """
+
+    _CHUNK_SIZE = 64 * 1024
+
+    def __init__(
+        self,
+        form: Mapping[str, str],
+        files: Mapping[str, tuple[str, bytes | IO[bytes]]],
+    ) -> None:
+        self.boundary = uuid.uuid4().hex
+        self.content_type = f"multipart/form-data; boundary={self.boundary}"
+
+        # Each item is either literal bytes or a (file, size) pair.
+        self._items: list[bytes | tuple[IO[bytes], int]] = []
+        for name, value in form.items():
+            quoted = _quote_header_value(name)
+            self._items.append(
+                (
+                    f"--{self.boundary}\r\n"
+                    f'Content-Disposition: form-data; name="{quoted}"'
+                    f"\r\n\r\n{value}\r\n"
+                ).encode()
+            )
+        for name, (filename, content) in files.items():
+            quoted = _quote_header_value(name)
+            quoted_filename = _quote_header_value(filename)
+            self._items.append(
+                (
+                    f"--{self.boundary}\r\n"
+                    f'Content-Disposition: form-data; name="{quoted}"; '
+                    f'filename="{quoted_filename}"\r\n'
+                    "Content-Type: application/octet-stream\r\n\r\n"
+                ).encode()
+            )
+            if isinstance(content, bytes):
+                self._items.append(content)
+            else:
+                self._items.append((content, self._remaining(content)))
+            self._items.append(b"\r\n")
+        self._items.append(f"--{self.boundary}--\r\n".encode())
+
+    @staticmethod
+    def _remaining(file: IO[bytes]) -> int:
+        """Get the number of bytes left to read from a seekable file.
+
+        Returns:
+            The number of remaining bytes.
+        """
+        start = file.tell()
+        end = file.seek(0, 2)
+        _ = file.seek(start)
+        return end - start
+
+    def __len__(self) -> int:
+        return sum(
+            len(item) if isinstance(item, bytes) else item[1] for item in self._items
+        )
+
+    def __iter__(self) -> Iterator[bytes]:
+        for item in self._items:
+            if isinstance(item, bytes):
+                yield item
+                continue
+
+            file, size = item
+            start = file.tell()
+            remaining = size
+            while remaining > 0:
+                chunk = file.read(min(self._CHUNK_SIZE, remaining))
+                if not chunk:
+                    break
+                remaining -= len(chunk)
+                yield chunk
+            _ = file.seek(start)
 
 
 class RESTClient:
@@ -189,6 +287,8 @@ class RESTClient:
         *,
         params: Mapping[str, Any] | None = None,
         json: Any | None = None,  # ruff: ignore[any-type]
+        form: Mapping[str, str] | None = None,
+        files: Mapping[str, tuple[str, bytes | IO[bytes]]] | None = None,
     ) -> HTTPResponse:
         """Make a request to the REST API.
 
@@ -197,17 +297,41 @@ class RESTClient:
             path: URL path.
             params: Query parameters.
             json: JSON data.
+            form: Text fields for a ``multipart/form-data`` body.
+            files: Mapping of field name to ``(filename, content)`` for a
+                ``multipart/form-data`` body. The content is either bytes or a
+                seekable binary file, which is streamed.
 
         Returns:
             Response.
+
+        Raises:
+            ValueError: If ``json`` is combined with ``form`` or ``files``, or if a
+                field name or filename contains a line break.
+
+        .. versionchanged:: NEXT_VERSION
+           Added the ``form`` and ``files`` parameters.
         """
+        if json is not None and (form or files):
+            msg = "'json' can't be combined with 'form' or 'files'"
+            raise ValueError(msg)
+
         headers = (
             self._headers
             if path == self.AUTH_ENDPOINT and method == "POST"
             else self._auth_headers
         )
+        body: str | _MultipartBody | None = None
         if json is not None:
             headers = {**headers, "Content-Type": "application/json"}
+            body = _json.dumps(json)
+        elif form or files:
+            body = _MultipartBody(form or {}, files or {})
+            headers = {
+                **headers,
+                "Content-Type": body.content_type,
+                "Content-Length": str(len(body)),
+            }
 
         url = f"{self.url}{path}"
         url = _encode_params(url, params) if params else url
@@ -215,7 +339,7 @@ class RESTClient:
         response = self._transport.request(
             method=method,
             url=url,
-            data=_json.dumps(json) if json is not None else None,
+            data=body,
             headers=headers,
         )
         self._raise_for_status(response)
@@ -341,3 +465,42 @@ class RESTClient:
                 },
             ],
         )
+
+    def import_survey(
+        self,
+        file: IO[bytes],
+        *,
+        file_type: Literal["lss", "lsa", "txt", "tsv"] = "lss",
+        group_strategy: Literal["default", "from_survey"] = "default",
+        translate_links: bool = True,
+    ) -> RESTSurveyImportResult:
+        """Import a complete survey from a file.
+
+        Args:
+            file: Binary file object.
+            file_type: Type of file. One of LSS, LSA, TXT and TSV.
+            group_strategy: Whether to put the survey in the default survey group
+                or the one defined in the file.
+            translate_links: Whether to convert links to the old survey.
+
+        Returns:
+            The import result.
+
+        .. note::
+           The result is typed for LSS files. Other file types may return
+           additional keys.
+
+        .. minlimesurvey:: 7.8.0
+
+        .. versionadded:: NEXT_VERSION
+        """
+        response = self.make_request(
+            "POST",
+            "/rest/v1/survey-import",
+            form={
+                "surveysgroup": group_strategy,
+                "translinksfields": "1" if translate_links else "0",
+            },
+            files={"file": (f"survey.{file_type}", file)},
+        )
+        return response.json()

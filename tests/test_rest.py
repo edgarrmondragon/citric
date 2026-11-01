@@ -4,6 +4,7 @@
 
 from __future__ import annotations
 
+import io
 import json
 import sys
 from concurrent.futures import ThreadPoolExecutor
@@ -18,7 +19,11 @@ from tinydb.table import Document
 from werkzeug.wrappers import Response
 
 from citric.exceptions import LimeSurveyApiError
-from citric.rest import RESTClient, _encode_params  # ruff: ignore[import-private-name]
+from citric.rest import (
+    RESTClient,
+    _encode_params,  # ruff: ignore[import-private-name]
+    _MultipartBody,  # ruff: ignore[import-private-name]
+)
 
 if sys.version_info >= (3, 12):
     from typing import override
@@ -418,3 +423,66 @@ def test_close_is_idempotent(username: str, password: str, httpserver: HTTPServe
 
     assert [r.method for r, _ in httpserver.log] == ["POST", "DELETE"]
     assert transport.closed == 1
+
+
+def test_import_survey(rest_client: RESTClient, httpserver: HTTPServer):
+    """Test importing a survey, a multipart request."""
+
+    def handler(request: Request) -> Response:
+        assert request.content_type is not None
+        assert request.content_type.startswith("multipart/form-data; boundary=")
+        assert request.form["surveysgroup"] == "from_survey"
+        assert request.form["translinksfields"] == "0"
+        upload = request.files["file"]
+        assert upload.filename == "survey.lsa"
+        assert upload.read() == b"PK\x03\x04\x00binary\r\n--"
+        return Response(
+            json.dumps({"newsid": 12345}),
+            content_type="application/json",
+        )
+
+    httpserver.expect_request(
+        "/rest/v1/survey-import",
+        method="POST",
+    ).respond_with_handler(handler)
+
+    result = rest_client.import_survey(
+        io.BytesIO(b"PK\x03\x04\x00binary\r\n--"),
+        file_type="lsa",
+        group_strategy="from_survey",
+        translate_links=False,
+    )
+    assert result == {"newsid": 12345}
+
+
+def test_make_request_json_and_multipart(rest_client: RESTClient):
+    """Test a request can't have both a JSON and a multipart body."""
+    with pytest.raises(ValueError, match="can't be combined"):
+        rest_client.make_request(
+            "POST",
+            "/rest/v1/survey-import",
+            json={},
+            form={"foo": "bar"},
+        )
+
+
+def test_multipart_body_bytes_content():
+    """Bytes content is included as is."""
+    body = _MultipartBody({"a": "b"}, {"file": ("f.lss", b"abc")})
+    data = b"".join(body)
+    assert len(data) == len(body)
+    assert b"\r\n\r\nabc\r\n" in data
+
+
+def test_multipart_body_rejects_line_breaks_in_field_name():
+    """Line breaks in field names are rejected."""
+    with pytest.raises(ValueError, match="Invalid multipart"):
+        _MultipartBody({"a\nb": "x"}, {})
+
+
+def test_multipart_body_file_shrinks_while_streaming():
+    """A file shorter than expected ends the stream early."""
+    file = io.BytesIO(b"x" * 10)
+    body = _MultipartBody({}, {"file": ("f.lss", file)})
+    _ = file.truncate(4)
+    assert b"".join(body).count(b"x") == 4

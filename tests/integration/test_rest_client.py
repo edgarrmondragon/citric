@@ -10,11 +10,12 @@ import operator
 from typing import TYPE_CHECKING
 
 import pytest
+import semver
 from typeguard import check_type
 
 from citric.exceptions import LimeSurveyStatusError
 from citric.rest import RESTClient
-from citric.types import RESTSurveyDetail
+from citric.types import RESTSurveyDetail, RESTSurveyImportResult
 
 if TYPE_CHECKING:
     from collections.abc import Generator
@@ -68,6 +69,24 @@ def test_get_survey_details(rest_client: RESTClient, survey_id: int) -> None:
         RESTSurveyDetail,
     )
     assert survey["sid"] == survey_id
+
+
+@pytest.mark.integration_test
+def test_import_survey(
+    request: pytest.FixtureRequest,
+    rest_client: RESTClient,
+    server_version: semver.Version,
+):
+    """Test importing a survey."""
+    if server_version < semver.Version(7, 8, 0):
+        pytest.skip("REST survey import requires LimeSurvey 7.8.0")
+
+    filepath = request.config.rootpath / "examples" / "survey.lss"
+    with filepath.open("rb") as f:
+        result = check_type(rest_client.import_survey(f), RESTSurveyImportResult)
+
+    assert int(result["newsid"])
+    assert result["questions"] > 0
 
 
 @pytest.mark.integration_test
