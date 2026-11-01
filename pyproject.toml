@@ -44,6 +44,10 @@ email = "edgarrm358@gmail.com"
 [[project.authors]]
 name = "Edgar Ramírez-Mondragón"
 email = "edgarrm358@gmail.com"
+[project.optional-dependencies]
+async = [
+  "httpx2>=2.13.1",
+]
 [project.urls]
 Documentation = "https://citric.readthedocs.io"
 Funding = "https://github.com/sponsors/edgarrmondragon"
@@ -62,6 +66,7 @@ dev = [
   { include-group = "typing" },
 ]
 test = [
+  "anyio>=4.15.1",
   "beautifulsoup4>=4.13.4",
   "coverage[toml]>=7.4.2",
   "dirty-equals>=0.11",
@@ -201,6 +206,16 @@ per-file-ignores."docs/notebooks/*" = [
   "missing-required-import",
   "module-import-not-at-top-of-file",
   "undocumented-public-module",
+]
+per-file-ignores."scripts/generate_async_client.py" = [
+  "assert",
+  "class-as-data-structure",
+  "complex-structure",
+  "docstring-missing-exception",
+  "docstring-missing-returns",
+  "no-self-use",
+  "print",
+  "suspicious-subprocess-import",
 ]
 per-file-ignores."src/*" = [
   "PD", # pandas-vet
