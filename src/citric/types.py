@@ -52,10 +52,15 @@ __all__ = [
     "RESTShowGroupInfo",
     "RESTShowQNumCode",
     "RESTSurveyDetail",
+    "RESTSurveyFile",
+    "RESTSurveyFilesPage",
     "RESTSurveyGroup",
     "RESTSurveyImportResult",
     "RESTSurveyLanguageSettings",
     "RESTSurveyOwner",
+    "RESTSurveyResponsesMeta",
+    "RESTSurveyResponsesPage",
+    "RESTSurveyResponsesPagination",
     "RPCResponse",
     "ReadableFile",
     "Result",
@@ -1508,6 +1513,107 @@ class RESTSurveyDetail(TypedDict):
 
     .. version-added:: NEXT_VERSION
     """
+
+
+class RESTSurveyResponsesPagination(TypedDict):
+    """Pagination metadata of a page of survey responses.
+
+    .. version-added:: NEXT_VERSION
+    """
+
+    pageSize: int
+    """Number of items per page."""
+
+    currentPage: int
+    """Zero-based page number."""
+
+    totalItems: int
+    """Total number of items across all pages."""
+
+    totalPages: int
+    """Total number of pages."""
+
+
+class RESTSurveyResponsesMeta(TypedDict):
+    """Metadata of a page of survey responses.
+
+    .. version-added:: NEXT_VERSION
+    """
+
+    pagination: RESTSurveyResponsesPagination
+    """Pagination metadata."""
+
+    filters: Any
+    """The filters sent in the request."""
+
+    sort: Any
+    """The sort definition sent in the request."""
+
+
+class RESTSurveyResponsesPage(TypedDict):
+    """A page of survey responses from the REST API.
+
+    .. version-added:: NEXT_VERSION
+    """
+
+    responses: list[dict[str, Any]]
+    """The responses, keyed by response column name.
+
+    The columns depend on the survey.
+    """
+
+    surveyQuestions: Any
+    """Metadata of the question columns."""
+
+    timingFields: list[dict[str, Any]]
+    """Metadata of the timing columns.
+
+    Empty if the survey doesn't save timings.
+    """
+
+    _meta: RESTSurveyResponsesMeta
+    """Pagination, filters and sort."""
+
+
+class RESTSurveyFile(TypedDict):
+    """An uploaded file in a response to a file upload question.
+
+    .. version-added:: NEXT_VERSION
+    """
+
+    responseId: int
+    """ID of the response the file belongs to."""
+
+    index: int | str
+    """Position of the file in the response's list of files."""
+
+    name: str
+    """File name."""
+
+    title: str
+    """File title."""
+
+    comment: str
+    """File comment."""
+
+    size: float
+    """File size, in kilobytes."""
+
+    ext: str
+    """Lowercase file extension."""
+
+
+class RESTSurveyFilesPage(TypedDict):
+    """A page of files uploaded in survey responses from the REST API.
+
+    .. version-added:: NEXT_VERSION
+    """
+
+    files: list[RESTSurveyFile]
+    """The files, one per entry."""
+
+    _meta: RESTSurveyResponsesMeta
+    """Pagination, filters and sort."""
 
 
 class RESTSurveyImportResult(TypedDict):

@@ -7,3 +7,5 @@
 | `GET /rest/v1/survey` | [Yes](citric.RESTClient.get_surveys) |
 | `GET /rest/v1/survey-detail/{survey_id}` | [Yes](citric.RESTClient.get_survey_details) |
 | `PATCH /rest/v1/survey-detail/{survey_id}` | [Yes](citric.RESTClient.patch_survey) |
+| `POST /rest/v1/survey-import` | [Yes](citric.RESTClient.import_survey) |
+| `POST /rest/v1/survey-responses/{survey_id}` | [Yes](citric.RESTClient.get_survey_responses) |
