@@ -15,7 +15,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, Protocol, runtime_checkable
 
 if TYPE_CHECKING:
-    from collections.abc import Mapping
+    from collections.abc import Iterable, Mapping
 
 __all__ = [
     "HTTPResponse",
@@ -56,7 +56,7 @@ class HTTPTransport(Protocol):
         method: str,
         url: str,
         *,
-        data: str | bytes | None = None,
+        data: str | bytes | Iterable[bytes] | None = None,
         headers: Mapping[str, str] | None = None,
     ) -> HTTPResponse:
         """Send an HTTP request.

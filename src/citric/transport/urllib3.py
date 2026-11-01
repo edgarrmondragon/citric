@@ -16,7 +16,7 @@ import urllib3
 import urllib3.response
 
 if TYPE_CHECKING:
-    from collections.abc import Mapping
+    from collections.abc import Iterable, Mapping
 
     from citric.transport.protocol import HTTPResponse
 
@@ -97,7 +97,7 @@ class Urllib3Transport:
         method: str,
         url: str,
         *,
-        data: str | bytes | None = None,
+        data: str | bytes | Iterable[bytes] | None = None,
         headers: Mapping[str, str] | None = None,
     ) -> HTTPResponse:
         """Send an HTTP request.

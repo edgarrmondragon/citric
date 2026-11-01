@@ -23,7 +23,7 @@ else:
     from typing_extensions import override
 
 if TYPE_CHECKING:
-    from collections.abc import Generator
+    from collections.abc import Generator, Iterable
 
 
 DUMMY_FILE_CONTENTS = b"FILE CONTENTS"
@@ -43,7 +43,7 @@ class _Transport:
     def request(
         self,
         *args: Any,
-        data: str | bytes | None = None,
+        data: str | bytes | Iterable[bytes] | None = None,
         **kwargs: Any,
     ) -> _Response:
         payload = json.loads(data)  # type: ignore[arg-type] # ty: ignore[invalid-argument-type]
@@ -114,7 +114,7 @@ class _RecordingTransport(_Transport):
     def request(
         self,
         *args: Any,
-        data: str | bytes | None = None,
+        data: str | bytes | Iterable[bytes] | None = None,
         **kwargs: Any,
     ) -> _Response:
         payload = json.loads(data)  # type: ignore[arg-type] # ty: ignore[invalid-argument-type]
@@ -169,7 +169,7 @@ def test_lazy_connect_retries_after_failure():
         def request(
             self,
             *args: Any,
-            data: str | bytes | None = None,
+            data: str | bytes | Iterable[bytes] | None = None,
             **kwargs: Any,
         ) -> _Response:
             if not self.methods:
@@ -211,7 +211,7 @@ def test_transport_is_closed_if_release_fails():
         def request(
             self,
             *args: Any,
-            data: str | bytes | None = None,
+            data: str | bytes | Iterable[bytes] | None = None,
             **kwargs: Any,
         ) -> _Response:
             if json.loads(data)["method"] == "release_session_key":  # type: ignore[arg-type] # ty: ignore[invalid-argument-type]
@@ -245,7 +245,7 @@ def test_close_is_idempotent():
         def request(
             self,
             *args: Any,
-            data: str | bytes | None = None,
+            data: str | bytes | Iterable[bytes] | None = None,
             **kwargs: Any,
         ) -> _Response:
             self.methods.append(json.loads(data)["method"])  # type: ignore[arg-type] # ty: ignore[invalid-argument-type]
