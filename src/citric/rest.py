@@ -664,7 +664,7 @@ class RESTClient:
         Returns:
             The content of the exported file.
 
-        .. minlimesurvey:: 7.8.0
+        .. minlimesurvey:: 7.0.0
 
         .. versionadded:: NEXT_VERSION
         """
@@ -701,7 +701,7 @@ class RESTClient:
         Returns:
             The statistics overview.
 
-        .. minlimesurvey:: 7.8.0
+        .. minlimesurvey:: 7.0.0
 
         .. versionadded:: NEXT_VERSION
         """
@@ -728,7 +728,7 @@ class RESTClient:
         Returns:
             The response counts and completion figures.
 
-        .. minlimesurvey:: 7.8.0
+        .. minlimesurvey:: 7.0.0
 
         .. versionadded:: NEXT_VERSION
         """
@@ -768,7 +768,7 @@ class RESTClient:
         Returns:
             The page of statistics.
 
-        .. minlimesurvey:: 7.8.0
+        .. minlimesurvey:: 7.0.0
 
         .. versionadded:: NEXT_VERSION
         """

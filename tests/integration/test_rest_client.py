@@ -132,8 +132,8 @@ def test_export_survey_responses(
     server_version: semver.Version,
 ):
     """Test exporting survey responses."""
-    if server_version < semver.Version(7, 8, 0):
-        pytest.skip("REST survey responses export requires LimeSurvey 7.8.0")
+    if server_version < semver.Version(7, 0, 0):
+        pytest.skip("REST survey responses export requires LimeSurvey 7.0.0")
 
     client.activate_survey(survey_id)
     client.add_response(survey_id, {"submitdate": "2026-01-01 00:00:00"})
@@ -154,8 +154,8 @@ def test_get_statistics(
     server_version: semver.Version,
 ):
     """Test getting the statistics of a survey."""
-    if server_version < semver.Version(7, 8, 0):
-        pytest.skip("REST statistics require LimeSurvey 7.8.0")
+    if server_version < semver.Version(7, 0, 0):
+        pytest.skip("REST statistics require LimeSurvey 7.0.0")
 
     client.activate_survey(survey_id)
     client.add_response(survey_id, {"submitdate": "2026-01-01 00:00:00"})
