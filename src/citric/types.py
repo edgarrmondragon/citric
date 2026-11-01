@@ -467,11 +467,19 @@ class QuestionProperties(TypedDict, total=False):
     same_script: int
     """The question same script."""
 
-    available_answers: Any
-    """The available answers."""
+    available_answers: dict[str, Any] | list[Any]
+    """The available answers, keyed by answer code.
 
-    answeroptions: Any
-    """The answer options."""
+    LimeSurvey versions before 7.8.0+ may return a list instead of a mapping when
+    all the codes are numeric (``0``, ``1``, ...).
+    """
+
+    answeroptions: dict[str, Any] | list[Any]
+    """The answer options, keyed by answer code.
+
+    LimeSurvey versions before 7.8.0+ may return a list instead of a mapping when
+    all the codes are numeric (``0``, ``1``, ...).
+    """
 
     subquestions: Any
     """The subquestions."""
@@ -534,11 +542,19 @@ class QuestionPropertiesUpdate(TypedDict, total=False):
     same_script: int
     """The question same script."""
 
-    available_answers: Any
-    """The available answers."""
+    available_answers: dict[str, Any] | list[Any]
+    """The available answers, keyed by answer code.
 
-    answeroptions: Any
-    """The answer options."""
+    LimeSurvey versions before 7.8.0+ may return a list instead of a mapping when
+    all the codes are numeric (``0``, ``1``, ...).
+    """
+
+    answeroptions: dict[str, Any] | list[Any]
+    """The answer options, keyed by answer code.
+
+    LimeSurvey versions before 7.8.0+ may return a list instead of a mapping when
+    all the codes are numeric (``0``, ``1``, ...).
+    """
 
     subquestions: Any
     """The subquestions."""

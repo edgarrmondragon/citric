@@ -34,6 +34,7 @@ from citric.objects import Participant
 from citric.types import (
     LanguageProperties,
     PartialLanguageProperties,
+    QuestionProperties,
     SurveyListElement,
     SurveyProperties,
 )
@@ -569,9 +570,11 @@ def test_import_question_answer_options(
 
     for language in ["en", "es"]:
         with subtests.test(msg=f"{language=}"):
-            props = get_props(language=language)
+            props = check_type(get_props(language=language), QuestionProperties)
+            answer_options_by_code = props["answeroptions"]
+            assert isinstance(answer_options_by_code, dict)
             options = sorted(
-                props["answeroptions"].values(),
+                answer_options_by_code.values(),
                 key=operator.itemgetter("order"),
             )
 
