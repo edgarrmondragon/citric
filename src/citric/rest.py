@@ -182,22 +182,22 @@ class RESTClient:
 
     .. versionadded:: 0.10.0.post1
 
-    .. version-changed:: NEXT_VERSION
+    .. version-changed:: 3.0.0-rc1
         Authentication is deferred until the session ID is first needed, instead of
         happening on creation. Credentials are kept in memory until then, or until
         the client is closed. Deferred authentication is thread-safe: concurrent
         users of a new client authenticate only once.
 
-    .. versionchanged:: NEXT_VERSION
+    .. versionchanged:: 3.0.0-rc1
         The ``requests_session`` parameter was deprecated in favor of its alias
         ``transport``. It also now accepts any object implementing
         :class:`~citric.transport.protocol.HTTPTransport`, not just
         :py:class:`requests.Session <requests.Session>`.
 
-    .. deprecated:: NEXT_VERSION
+    .. deprecated:: 3.0.0-rc1
         The ``requests_session`` parameter, use ``transport`` instead.
 
-    .. version-added:: NEXT_VERSION
+    .. version-added:: 3.0.0-rc1
         The ``timeout`` parameter.
     """
 
@@ -328,7 +328,7 @@ class RESTClient:
             ValueError: If ``json`` is combined with ``form`` or ``files``, or if a
                 field name or filename contains a line break.
 
-        .. versionchanged:: NEXT_VERSION
+        .. versionchanged:: 3.0.0-rc1
            Added the ``form`` and ``files`` parameters.
         """
         if json is not None and (form or files):
@@ -512,7 +512,7 @@ class RESTClient:
 
         .. minlimesurvey:: 7.8.0
 
-        .. versionadded:: NEXT_VERSION
+        .. versionadded:: 3.0.0-rc1
         """
         response = self.make_request(
             "POST",
@@ -604,7 +604,7 @@ class RESTClient:
 
         .. minlimesurvey:: 7.8.0
 
-        .. versionadded:: NEXT_VERSION
+        .. versionadded:: 3.0.0-rc1
         """
         page: dict[str, int] = {}
         if page_size is not None:
@@ -666,7 +666,7 @@ class RESTClient:
 
         .. minlimesurvey:: 7.0.0
 
-        .. versionadded:: NEXT_VERSION
+        .. versionadded:: 3.0.0-rc1
         """
         body: dict[str, Any] = {
             "type": export_format,
@@ -703,7 +703,7 @@ class RESTClient:
 
         .. minlimesurvey:: 7.0.0
 
-        .. versionadded:: NEXT_VERSION
+        .. versionadded:: 3.0.0-rc1
         """
         response = self.make_request(
             "GET",
@@ -730,7 +730,7 @@ class RESTClient:
 
         .. minlimesurvey:: 7.0.0
 
-        .. versionadded:: NEXT_VERSION
+        .. versionadded:: 3.0.0-rc1
         """
         response = self.make_request(
             "GET",
@@ -770,7 +770,7 @@ class RESTClient:
 
         .. minlimesurvey:: 7.0.0
 
-        .. versionadded:: NEXT_VERSION
+        .. versionadded:: 3.0.0-rc1
         """
         params: dict[str, Any] = {
             "minId": min_id,
@@ -794,7 +794,7 @@ class RESTClient:
         Returns:
             The database and assets versions.
 
-        .. versionadded:: NEXT_VERSION
+        .. versionadded:: 3.0.0-rc1
         """
         response = self.make_request("GET", "/rest/v1/version-info")
         return response.json()
@@ -808,7 +808,7 @@ class RESTClient:
         Returns:
             The survey groups.
 
-        .. versionadded:: NEXT_VERSION
+        .. versionadded:: 3.0.0-rc1
         """
         response = self.make_request("GET", "/rest/v1/survey-groups")
         return response.json()

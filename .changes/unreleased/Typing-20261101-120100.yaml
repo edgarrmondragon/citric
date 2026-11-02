@@ -1,5 +1,0 @@
-kind: Typing
-body: Narrowed `available_answers` and `answeroptions` in the question properties types to a mapping or list
-time: 2026-11-01T12:01:00.000000-06:00
-custom:
-    Issue: "1893"

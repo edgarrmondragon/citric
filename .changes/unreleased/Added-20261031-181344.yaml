@@ -1,5 +1,0 @@
-kind: Added
-body: Added `RESTClient.import_survey` to import a survey with the `survey-import` REST endpoint (LimeSurvey 7.8.0+)
-time: 2026-10-31T18:13:44.566574-06:00
-custom:
-    Issue: "1892"

@@ -1,5 +1,0 @@
-kind: Typing
-body: Add `RESTSurveyDetail` and related `TypedDict`s, and use them as the return type of `RESTClient.get_survey_details`
-time: 2026-10-15T12:00:00.000000-06:00
-custom:
-    Issue: "1872"

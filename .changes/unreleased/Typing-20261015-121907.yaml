@@ -1,5 +1,0 @@
-kind: Typing
-body: Split `types.LanguageProperties` into read and write types
-time: 2026-10-15T12:19:07.929197-06:00
-custom:
-    Issue: "1873"

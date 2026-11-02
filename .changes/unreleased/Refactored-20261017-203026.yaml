@@ -1,5 +1,0 @@
-kind: Refactored
-body: Integration tests now use ephemeral host ports so they can run alongside a manually started Docker Compose stack
-time: 2026-10-17T20:30:26-06:00
-custom:
-    Issue: "1876"

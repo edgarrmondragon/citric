@@ -102,19 +102,19 @@ class Session:
     .. versionadded:: 0.5.0
        The ``json_encoder`` parameter.
 
-    .. version-changed:: NEXT_VERSION
+    .. version-changed:: 3.0.0-rc1
         The ``requests_session`` parameter was deprecated, use ``transport`` instead.
         It also now accepts any object implementing
         :class:`~citric.transport.protocol.HTTPTransport`, not just
         :py:class:`requests.Session <requests.Session>`.
 
-    .. version-changed:: NEXT_VERSION
+    .. version-changed:: 3.0.0-rc1
         Authentication is deferred until the session key is first needed, instead of
         happening on creation. Credentials are kept in memory until then, or until
         the session is closed. Deferred authentication is thread-safe: concurrent
         users of a new session authenticate only once.
 
-    .. version-added:: NEXT_VERSION
+    .. version-added:: 3.0.0-rc1
         The ``timeout`` parameter.
 
     .. _key: #citric.session.Session.key

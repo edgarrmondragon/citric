@@ -12,6 +12,6 @@ from citric import objects
 from citric.client import Client, ServerVersion
 from citric.rest import RESTClient
 
-__version__: str = "2.3.0"
+__version__: str = "3.0.0-rc1"
 
 __all__ = ["Client", "RESTClient", "ServerVersion", "objects"]

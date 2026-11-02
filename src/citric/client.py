@@ -140,20 +140,20 @@ class Client:  # ruff: ignore[too-many-public-methods]
     .. versionadded:: 0.0.6
        Support Auth plugins with the ``auth_plugin`` parameter.
 
-    .. version-changed:: NEXT_VERSION
+    .. version-changed:: 3.0.0-rc1
         Authentication is deferred until the session key is first needed, instead of
         happening on creation, so bad credentials are reported by the first request.
 
-    .. version-changed:: NEXT_VERSION
+    .. version-changed:: 3.0.0-rc1
         The ``requests_session`` parameter was deprecated, use ``transport`` instead.
         It also now accepts any object implementing
         :class:`~citric.transport.protocol.HTTPTransport`, not just
         :py:class:`requests.Session <requests.Session>`.
 
-    .. version-changed:: NEXT_VERSION
+    .. version-changed:: 3.0.0-rc1
         The ``Client.session_class`` class attribute  was removed.
 
-    .. version-added:: NEXT_VERSION
+    .. version-added:: 3.0.0-rc1
         The ``timeout`` parameter.
     """
 
@@ -1107,7 +1107,7 @@ class Client:  # ruff: ignore[too-many-public-methods]
 
         .. versionadded:: 0.0.10
 
-        .. version-changed:: NEXT_VERSION
+        .. version-changed:: 3.0.0-rc1
             The result is typed as :class:`~citric.types.LanguageProperties`, with
             all keys present, unless ``settings`` is given, in which case it is
             typed as :class:`~citric.types.PartialLanguageProperties`.
@@ -1842,7 +1842,7 @@ class Client:  # ruff: ignore[too-many-public-methods]
 
         .. versionadded:: 0.0.11
 
-        .. version-changed:: NEXT_VERSION
+        .. version-changed:: 3.0.0-rc1
             The properties are typed as :class:`~citric.types.LanguagePropertiesUpdate`,
             which excludes the survey ID and language, as they can't be changed.
         """
@@ -2062,7 +2062,7 @@ class Client:  # ruff: ignore[too-many-public-methods]
         Returns:
             An dictionary with the outcome of the operation.
 
-        .. versionadded:: NEXT_VERSION
+        .. versionadded:: 3.0.0-rc1
         """
         r = self.session.call(
             "mail_registered_participants",
@@ -2101,7 +2101,7 @@ class Client:  # ruff: ignore[too-many-public-methods]
         Returns:
             An dictionary with the outcome of the operation.
 
-        .. versionadded:: NEXT_VERSION
+        .. versionadded:: 3.0.0-rc1
         """
         r = self.session.call(
             "remind_participants",

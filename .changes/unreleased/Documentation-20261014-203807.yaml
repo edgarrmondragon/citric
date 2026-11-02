@@ -1,5 +1,0 @@
-kind: Documentation
-body: Add samples of using the blocking client with `asyncio.to_thread`
-time: 2026-10-14T20:38:07.014268-06:00
-custom:
-    Issue: "1869"

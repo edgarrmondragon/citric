@@ -1,5 +1,0 @@
-kind: Documentation
-body: Document `hasResponsesTable` field of survey details REST response
-time: 2026-10-24T12:00:19.606016-06:00
-custom:
-    Issue: "1889"
