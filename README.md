@@ -78,14 +78,24 @@
 
 ## Installation
 
-```sh
-# PyPI
-pip install citric
-```
+From [PyPI](https://pypi.org/project/citric/):
 
 ```sh
-# or conda
+# using pip
+pip install citric
+
+# using uv
+uv add citric
+```
+
+or from [conda-forge](https://anaconda.org/channels/conda-forge/packages/citric/overview):
+
+```sh
+# using conda
 conda install -c conda-forge citric
+
+# using pixi
+pixi add citric
 ```
 
 ## Usage
