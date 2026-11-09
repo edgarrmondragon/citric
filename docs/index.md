@@ -37,7 +37,6 @@ But also the latest 6.x and 7.x are tested continuously and are expected to work
 - [Get surveys and questions](guide/cookbook.md#get-surveys-and-questions)
 - [Export responses to a `pandas` dataframe](guide/cookbook.md#export-responses-to-a-pandas-dataframe)
 - [Export responses to a DuckDB database and analyze with SQL](guide/cookbook.md#export-responses-to-a-duckdb-database-and-analyze-with-sql)
-- [Change the default HTTP transport attributes](guide/cookbook.md#change-the-default-http-transport-attributes)
 - [Use a different HTTP transport](guide/cookbook.md#use-a-different-http-transport)
 - [Use a different authentication plugin](guide/cookbook.md#use-a-different-authentication-plugin)
 - [Get files uploaded to a survey and move them to S3](guide/cookbook.md#get-files-uploaded-to-a-survey-and-move-them-to-s3)

@@ -27,7 +27,7 @@ also a valid transport, so you can use
 [`requests-cache`](inv:requests-cache:std#general) to cache the requests and
 reduce the load on your server in read-intensive applications:
 
-```{literalinclude} ../snippets/code_samples/custom_requests_session.py
+```{literalinclude} ../code_samples/custom_requests_session.py
 :start-after: start example
 :end-before: end example
 ```
