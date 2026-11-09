@@ -15,7 +15,8 @@ environment variables (`HTTP_PROXY`, `HTTPS_PROXY`, `NO_PROXY`), `.netrc`
 credentials and `REQUESTS_CA_BUNDLE`. Any subclass, or object compatible with
 it, is also a valid transport. For example, you can use
 [`requests-cache`](inv:requests-cache:std#general) to cache the requests and
-reduce the load on your server in read-intensive applications:
+reduce the load on your server in read-intensive applications (install it with
+`pip install requests-cache`):
 
 ```{literalinclude} ../code_samples/custom_requests_session.py
 :start-after: start example
