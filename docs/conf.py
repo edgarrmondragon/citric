@@ -4,6 +4,7 @@
 
 from __future__ import annotations
 
+import datetime as dt
 import sys
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
@@ -21,7 +22,7 @@ if TYPE_CHECKING:
 project = "citric"
 
 author = "Edgar Ramírez Mondragón"
-project_copyright = f"2020, {author}"
+project_copyright = f"{dt.datetime.now(tz=dt.UTC).year}, {author}"
 version = citric.__version__
 release = citric.__version__
 
