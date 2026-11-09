@@ -93,13 +93,6 @@ import them with {meth}`client.import_question() <citric.Client.import_question>
 :end-before: end example
 ```
 
-## Change the default HTTP transport attributes
-
-```{literalinclude} ../snippets/code_samples/transport_attributes.py
-:start-after: start example
-:end-before: end example
-```
-
 ## Use a different HTTP transport
 
 You can read more about the subject in the d[edicated guide](./transports.md).

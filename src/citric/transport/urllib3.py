@@ -74,7 +74,6 @@ class Urllib3Transport:
             will block for ``pool_timeout`` seconds and raise an exception if no
             connection is available within the time period. Set it to avoid hanging
             indefinitely while requests are waiting for a pool slot.
-        headers: Headers to include with all requests.
         **pool_kwargs: Additional keyword arguments passed to
             :py:class:`urllib3.PoolManager <urllib3.PoolManager>`, e.g. ``timeout``
             or ``retries``.
@@ -89,7 +88,6 @@ class Urllib3Transport:
         maxsize: int = 1,
         block: bool = False,
         pool_timeout: int | None = None,
-        headers: Mapping[str, str] | None = None,
         **pool_kwargs: Any,
     ) -> None:
         """Initialize the urllib3 transport."""
@@ -97,7 +95,6 @@ class Urllib3Transport:
             num_pools=num_pools,
             maxsize=maxsize,
             block=block,
-            headers=headers,
             **pool_kwargs,
         )
         self._pool_timeout = pool_timeout
