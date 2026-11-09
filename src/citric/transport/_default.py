@@ -5,14 +5,14 @@
 from __future__ import annotations
 
 __lazy_modules__ = {
-    "citric.transport.urllib3",
+    "requests",
     "warnings",
 }
 
 import warnings
 from typing import TYPE_CHECKING
 
-from citric.transport.urllib3 import Urllib3Transport
+import requests
 
 if TYPE_CHECKING:
     from citric.transport.protocol import HTTPTransport
@@ -31,8 +31,7 @@ def _transport_or_default(
         requests_session: The deprecated ``requests_session`` argument.
 
     Returns:
-        The given transport, or a new
-        :py:class:`citric.transport.urllib3.Urllib3Transport`.
+        The given transport, or a new :py:class:`requests.Session`.
 
     Raises:
         TypeError: If both ``transport`` and ``requests_session`` are set.
@@ -49,4 +48,4 @@ def _transport_or_default(
         )
         return requests_session
 
-    return transport if transport is not None else Urllib3Transport()
+    return transport if transport is not None else requests.Session()

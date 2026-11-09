@@ -1,5 +1,0 @@
-kind: Changed
-body: The default HTTP transport is now based on `urllib3` instead of `requests`, which is no longer installed with citric. Code that relies on the default transport being a `requests.Session`, or that passes `requests_session` (deprecated), must install `requests` and pass its session explicitly
-time: 2026-11-09T16:09:16.115162-06:00
-custom:
-    Issue: "1914"

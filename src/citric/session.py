@@ -76,9 +76,7 @@ class Session:
         url: LimeSurvey Remote Control endpoint.
         username: LimeSurvey user name.
         password: LimeSurvey password.
-        transport: An object implementing the
-            :doc:`HTTP Transport interface </guide/transports>`. Defaults to a
-            :class:`~citric.transport.urllib3.Urllib3Transport`.
+        transport: An :doc:`HTTP transport </guide/transports>` implementation.
         requests_session: Deprecated alias of ``transport``.
         auth_plugin: Name of the :ls_manual:`plugin <Authentication_plugins>` to use for
             authentication. For example,

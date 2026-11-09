@@ -34,6 +34,7 @@ classifiers = [
   "Typing :: Typed",
 ]
 dependencies = [
+  "requests>=2.30",
   "typing-extensions>=4.13; python_version<'3.15'",
   "urllib3>=2",
 ]
@@ -71,7 +72,6 @@ test = [
   "pytest-httpserver>=1.0.8",
   "pytest-randomly>=3.15",
   "python-dotenv>=1",
-  "requests>=2.30",
   "semver>=3.0.1",
   "tinydb>=4.8",
   "typeguard>=4.6",
@@ -251,6 +251,7 @@ DEP004 = [
   "httpx2",
 ]
 [tool.deptry.package_module_name_map]
+types-requests = "requests"
 typing-extensions = "typing_extensions"
 
 [tool.pyproject-fmt]
