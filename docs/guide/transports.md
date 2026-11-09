@@ -23,7 +23,8 @@ The library ships with a few transport implementations of its own:
 
 Any subclass of, or object compatible with, the
 [`requests.Session`](inv:requests:py:class#requests.Session) class is
-also a valid transport, so you can use
+also a valid transport. `requests` is not a dependency of citric, so install it
+separately (`pip install requests`) if you use it. For example, you can use
 [`requests-cache`](inv:requests-cache:std#general) to cache the requests and
 reduce the load on your server in read-intensive applications:
 
