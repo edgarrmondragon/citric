@@ -100,7 +100,7 @@ def docs_build(session: nox.Session) -> None:
     posargs = ["docs", "build"]
     extra_args = session.posargs or ("--quiet", "--builder=html")
 
-    args = (
+    args = [
         "python",
         "-m",
         "sphinx",
@@ -111,8 +111,8 @@ def docs_build(session: nox.Session) -> None:
         "--define=language=en",
         *posargs,
         *extra_args,
-    )
-    if not args and FORCE_COLOR in os.environ:
+    ]
+    if FORCE_COLOR in os.environ:
         args.insert(0, "--color")
 
     session.run(*args)
