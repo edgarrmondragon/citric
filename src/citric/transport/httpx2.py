@@ -38,6 +38,7 @@ class Httpx2Transport:
             sharing the transport to reuse connections between requests.
         keepalive_expiry: Seconds to keep idle connections alive, or ``None`` for no
             limit.
+        headers: Headers to include with all requests.
 
     .. versionadded:: NEXT_VERSION
     """
@@ -48,9 +49,11 @@ class Httpx2Transport:
         max_connections: int | None = 100,
         max_keepalive_connections: int | None = 20,
         keepalive_expiry: float | None = 5.0,
+        headers: Mapping[str, str] | None = None,
     ) -> None:
         """Initialize the httpx2 transport."""
         self._client = httpx2.Client(
+            headers=headers,
             limits=httpx2.Limits(
                 max_connections=max_connections,
                 max_keepalive_connections=max_keepalive_connections,
