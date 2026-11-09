@@ -1,6 +1,6 @@
 # HTTP Transport
 
-Citric uses the [_adapter pattern_][adapter] to make HTTP request-handling pluggable. Under normal circumstances, you won't need anything but the the default transport.
+Citric uses the [_adapter pattern_][adapter] to make HTTP request-handling pluggable. Under normal circumstances, you won't need anything but the default transport.
 
 The library ships with a few transport implementations of its own:
 
