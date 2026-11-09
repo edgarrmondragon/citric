@@ -97,10 +97,7 @@ def docs_build(session: nox.Session) -> None:
     session.install(".", "-r=requirements/docs.requirements.txt")
     shutil.rmtree("build", ignore_errors=True)
 
-    posargs = ["docs", "build"]
-    extra_args = session.posargs or ("--quiet", "--builder=html")
-
-    args = [
+    cmd = [
         "python",
         "-m",
         "sphinx",
@@ -109,13 +106,13 @@ def docs_build(session: nox.Session) -> None:
         "--keep-going",
         "--jobs=auto",
         "--define=language=en",
-        *posargs,
-        *extra_args,
+        "--quiet",
+        "--builder=html",
     ]
     if FORCE_COLOR in os.environ:
-        args.insert(0, "--color")
+        cmd.append("--color")
 
-    session.run(*args)
+    session.run(*cmd, "docs", "build")
 
 
 @nox.session(tags=["test"], allow_parallel=True)
