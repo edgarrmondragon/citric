@@ -7,7 +7,7 @@ The library ships with a few transport implementations of its own:
 - {class}`~citric.transport.urllib3.Urllib3Transport`
 - {class}`~citric.transport.httpx2.Httpx2Transport`
 
-but also, any object compatible with [`requests.Session`](inv:requests:py:class:api/#requests.Session) can be used. For example:
+but also, any object compatible with [`requests.Session`](inv:requests:py:class#requests.Session) can be used. For example:
 
 ```python
 >>> import niquests  # https://niquests.readthedocs.io
