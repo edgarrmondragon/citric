@@ -55,7 +55,7 @@ def dependencies(session: nox.Session) -> None:
 @nox.session(tags=["lint", "types"], allow_parallel=True)
 def typing(session: nox.Session) -> None:
     """Type-check using mypy."""
-    locations = ("src", "tests", "docs/conf.py", "code_samples")
+    locations = ("src", "tests", "docs/conf.py", "docs/snippets/code_samples")
     args = session.posargs or locations
     gha = os.getenv("GITHUB_ACTIONS") == "true"
 
@@ -97,12 +97,10 @@ def docs_build(session: nox.Session) -> None:
     session.install(".", "-r=requirements/docs.requirements.txt")
     shutil.rmtree("build", ignore_errors=True)
 
-    args = ["docs", "build"]
-    extra_args = session.posargs or ("--quiet",)
-    if not args and FORCE_COLOR in os.environ:
-        args.insert(0, "--color")
+    posargs = ["docs", "build"]
+    extra_args = session.posargs or ("--quiet", "--builder=html")
 
-    session.run(
+    args = (
         "python",
         "-m",
         "sphinx",
@@ -110,11 +108,14 @@ def docs_build(session: nox.Session) -> None:
         "--fail-on-warning",
         "--keep-going",
         "--jobs=auto",
-        "--builder=html",
         "--define=language=en",
-        *args,
+        *posargs,
         *extra_args,
     )
+    if not args and FORCE_COLOR in os.environ:
+        args.insert(0, "--color")
+
+    session.run(*args)
 
 
 @nox.session(tags=["test"], allow_parallel=True)

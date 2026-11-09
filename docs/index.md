@@ -39,7 +39,6 @@ But also the latest 6.x and 7.x are tested continuously and are expected to work
 - [Export responses to a DuckDB database and analyze with SQL](guide/cookbook.md#export-responses-to-a-duckdb-database-and-analyze-with-sql)
 - [Change the default HTTP transport attributes](guide/cookbook.md#change-the-default-http-transport-attributes)
 - [Use a different HTTP transport](guide/cookbook.md#use-a-different-http-transport)
-- [Use a custom `requests`-based transport](guide/cookbook.md#use-a-custom-requests-based-transport)
 - [Use a different authentication plugin](guide/cookbook.md#use-a-different-authentication-plugin)
 - [Get files uploaded to a survey and move them to S3](guide/cookbook.md#get-files-uploaded-to-a-survey-and-move-them-to-s3)
 - [Use the raw `Client.session` for low-level interaction](guide/cookbook.md#use-the-session-attribute-for-low-level-interaction)
@@ -64,19 +63,19 @@ guide/transports
 ```
 
 ```{toctree}
-:hidden:
-:caption: API coverage
-
-RPC method coverage <rpc_coverage>
-REST endpoints coverage <rest_coverage>
-```
-
-```{toctree}
 :maxdepth: 4
 :hidden:
 :caption: Reference
 
 Python API reference <_api/index>
+```
+
+```{toctree}
+:hidden:
+:caption: API coverage
+
+RPC method coverage <rpc_coverage>
+REST endpoints coverage <rest_coverage>
 ```
 
 ```{toctree}

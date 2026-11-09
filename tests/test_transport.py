@@ -383,7 +383,7 @@ def test_transport_timeout(transport_factory: TransportFactory):
         transport.close()
 
 
-def test_urllib3_transport_default_timeout():
+def test_urllib3_transport_default_timeout() -> None:
     """Without a timeout, the pool's own timeout applies."""
     transport = Urllib3Transport(timeout=7)
     calls: list[dict[str, object]] = []
@@ -403,7 +403,7 @@ def test_urllib3_transport_default_timeout():
     transport.close()
 
 
-def test_httpx2_transport_default_timeout():
+def test_httpx2_transport_default_timeout() -> None:
     """Without a timeout, the client's own timeout applies."""
     transport = Httpx2Transport()
     calls: list[dict[str, object]] = []

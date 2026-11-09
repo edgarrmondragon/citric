@@ -1,0 +1,5 @@
+kind: Changed
+body: Make `citric.transport.urllib3.Urllib3Transport` the default HTTP transport
+time: 2026-11-09T10:50:01.088465-06:00
+custom:
+    Issue: "1916"
