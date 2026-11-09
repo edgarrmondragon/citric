@@ -34,7 +34,6 @@ classifiers = [
   "Typing :: Typed",
 ]
 dependencies = [
-  "requests>=2.30",
   "typing-extensions>=4.13; python_version<'3.15'",
   "urllib3>=2",
 ]
@@ -55,7 +54,6 @@ Repository = "https://github.com/edgarrmondragon/citric"
 dev = [
   "colorama>=0.4.6",
   "deptry>=0.12",
-  "requests-cache>=1.1",
   { include-group = "docs" },
   { include-group = "samples" },
   { include-group = "test" },
@@ -73,6 +71,7 @@ test = [
   "pytest-httpserver>=1.0.8",
   "pytest-randomly>=3.15",
   "python-dotenv>=1",
+  "requests>=2.30",
   "semver>=3.0.1",
   "tinydb>=4.8",
   "typeguard>=4.6",
@@ -107,7 +106,6 @@ typing = [
   "pyright>=1.1.408",
   "sphinx",
   "ty>=0.0.1a15",
-  "types-requests>=2.31.0.2",
   { include-group = "test" },
 ]
 
@@ -236,6 +234,8 @@ pydocstyle.convention = "google"
 pylint.max-args = 10
 preview = true
 
+[tool.deptry]
+extend_exclude = [ "docs/code_samples" ]
 [tool.deptry.per_rule_ignores]
 DEP001 = [
   # Notebook dependencies
@@ -251,7 +251,6 @@ DEP004 = [
   "httpx2",
 ]
 [tool.deptry.package_module_name_map]
-types-requests = "requests"
 typing-extensions = "typing_extensions"
 
 [tool.pyproject-fmt]
