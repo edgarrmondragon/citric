@@ -122,6 +122,8 @@ Common plugins are `Authdb` (default), `AuthLDAP` and `Authwebserver`.
 :end-before: end example
 ```
 
+(cookbook-upload-s3)=
+
 ## Get files uploaded to a survey and move them to S3
 
 ```{literalinclude} ../code_samples/upload_s3.py

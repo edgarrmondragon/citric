@@ -1429,7 +1429,7 @@ class Client:  # ruff: ignore[too-many-public-methods]
         Yields:
             :class:`~citric.types.ReadableFile` dictionaries.
 
-        Example: `Get files uploaded to a survey and move them to S3 </guide/cookbook.html#get-files-uploaded-to-a-survey-and-move-them-to-s3>`__
+        Example: :ref:`Get files uploaded to a survey and move them to S3 <cookbook-upload-s3>`.
 
         .. versionadded:: 0.0.13
         .. versionchanged:: 2.0.0
