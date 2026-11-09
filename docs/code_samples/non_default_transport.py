@@ -1,6 +1,6 @@
 # Copyright (c) 2026 Edgar Ramírez-Mondragón
 
-"""Example of using a non-`requests` HTTP transport with the client."""
+"""Example of using a non-default HTTP transport with the client."""
 
 from __future__ import annotations
 

@@ -95,9 +95,9 @@ import them with {meth}`client.import_question() <citric.Client.import_question>
 
 ## Use a different HTTP transport
 
-You can read more about the subject in the d[edicated guide](./transports.md).
+You can read more about the subject in the [dedicated guide](./transports.md).
 
-```{literalinclude} ../code_samples/custom_transport.py
+```{literalinclude} ../code_samples/non_default_transport.py
 :start-after: start example
 :end-before: end example
 ```
