@@ -170,11 +170,9 @@ class RESTClient:
         url: LimeSurvey server URL. For example, ``http://www.yourdomain.com/rest/v1``.
         username: LimeSurvey user name.
         password: LimeSurvey password.
-        transport: An HTTP transport implementing
-            :class:`~citric.transport.protocol.HTTPTransport`, e.g. a
-            :py:class:`requests.Session <requests.Session>` or
-            :class:`~citric.transport.httpx2.Httpx2Transport`. Defaults to a new
-            :py:class:`requests.Session <requests.Session>`.
+        transport: An object implementing the
+            :doc:`HTTP Transport interface </guide/transports>`. Defaults to a
+            :class:`~citric.transport.urllib3.Urllib3Transport`.
         requests_session: Deprecated alias of ``transport``.
         timeout: Seconds to wait to connect to the server, and then to receive each
             chunk of the response. Use ``None`` to defer to the transport's own
