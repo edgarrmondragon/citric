@@ -1,5 +1,5 @@
 kind: Changed
-body: 'The default HTTP transport is now based on `urllib3` '
+body: The default HTTP transport is now based on `urllib3`
 time: 2026-11-09T16:09:16.115162-06:00
 custom:
     Issue: "1914"
