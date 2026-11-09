@@ -1,0 +1,5 @@
+kind: Documentation
+body: Added a dedicated guide for HTTP Transports
+time: 2026-11-09T15:00:33.687844-06:00
+custom:
+    Issue: "1914"
