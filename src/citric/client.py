@@ -124,7 +124,7 @@ class Client:  # ruff: ignore[too-many-public-methods]
         password: LimeSurvey password.
         transport: An object implementing the
             :doc:`HTTP Transport interface </guide/transports>`. Defaults to a
-            :py:class:`requests.Session <requests.Session>`.
+            :class:`~citric.transport.urllib3.Urllib3Transport`.
         requests_session: Deprecated alias of ``transport``.
         auth_plugin: Name of the :ls_manual:`plugin <Authentication_plugins>` to use for
             authentication. For example,
