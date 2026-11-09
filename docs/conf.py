@@ -106,10 +106,6 @@ extlinks = {
         "https://limesurvey.org/manual/%s",
         "%s",
     ),
-    "ls_tag": (
-        "https://github.com/LimeSurvey/LimeSurvey/releases/tag/%s",
-        "%s",
-    ),
 }
 
 # -- Options for intersphinx -----------------------------------------------------------

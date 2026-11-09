@@ -24,12 +24,9 @@ Release **v{sub-ref}`version`**. ([What's new?](./changelog.md))
 
 ## Supported versions
 
-Integration tests are run against a LimeSurvey instance, and both PostgreSQL and MySQL backends, using Docker Compose. The following versions of LimeSurvey were tested for this release:
-
-```{include} _partial/tags.md
-```
-
-But also the latest 6.x and 7.x are tested continuously and are expected to work.
+The latest 6.x and 7.x are tested continuously and are expected to work.
+Integration tests are run against a LimeSurvey instance, and both PostgreSQL
+and MySQL backends, using Docker Compose.
 
 ## How-to guides
 
