@@ -264,7 +264,7 @@ def test_requests_session_warning_location(
     assert [w.filename for w in record] == [__file__]
 
 
-def test_urllib3_transport_pool_options():
+def test_urllib3_transport_pool_options() -> None:
     """Pool options are passed to the underlying `PoolManager`."""
     transport = Urllib3Transport(num_pools=3, maxsize=16, block=True, timeout=7)
     pool = transport._pool
@@ -275,7 +275,7 @@ def test_urllib3_transport_pool_options():
     transport.close()
 
 
-def test_httpx2_transport_pool_options():
+def test_httpx2_transport_pool_options() -> None:
     """Pool options are passed to the underlying `httpx2.Client`."""
     transport = Httpx2Transport(
         max_connections=32,
@@ -383,7 +383,7 @@ def test_transport_timeout(transport_factory: TransportFactory):
         transport.close()
 
 
-def test_urllib3_transport_default_timeout():
+def test_urllib3_transport_default_timeout() -> None:
     """Without a timeout, the pool's own timeout applies."""
     transport = Urllib3Transport(timeout=7)
     calls: list[dict[str, object]] = []
@@ -403,7 +403,7 @@ def test_urllib3_transport_default_timeout():
     transport.close()
 
 
-def test_httpx2_transport_default_timeout():
+def test_httpx2_transport_default_timeout() -> None:
     """Without a timeout, the client's own timeout applies."""
     transport = Httpx2Transport()
     calls: list[dict[str, object]] = []

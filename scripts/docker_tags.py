@@ -129,7 +129,6 @@ def main() -> None:
 
         max_tags: int
         tags_file: pathlib.Path
-        markdown_block_file: pathlib.Path
 
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -138,12 +137,6 @@ def main() -> None:
         default=pathlib.Path(".github/tags.json"),
         help="Path to the target tags file.",
     )
-    parser.add_argument(
-        "--markdown-block-file",
-        type=pathlib.Path,
-        default=pathlib.Path("docs/_partial/tags.md"),
-        help="Path to the target markdown block file.",
-    )
     args = parser.parse_args(namespace=ParserNamespace)
 
     tags = list(filter_tags(sorted(get_tags(), key=_extract_version, reverse=True)))
@@ -151,21 +144,6 @@ def main() -> None:
     with args.tags_file.open("w") as file:
         json.dump(tags, file, indent=2)
         file.write("\n")
-
-    with args.markdown_block_file.open("w") as file:
-        # 1. Filter out  '<major>-apache' tags
-        # 2. Sort tags by version
-        # 3. Convert '6.10.5-250217-apache' to '- {ls_tag}`6.10.0+250
-        tags = [
-            tag
-            for tag in sorted(tags, key=_version_parts, reverse=True)
-            if tag not in {"7-apache", "6-apache"}
-        ]
-
-        for tag in tags:
-            # Convert '6.10.5-250217-apache' to '- {ls_tag}`6.10.0+250106'
-            version, date, _ = tag.split("-")
-            file.write(f"- {{ls_tag}}`{version}+{date}`\n")
 
 
 if __name__ == "__main__":

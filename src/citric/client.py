@@ -122,11 +122,7 @@ class Client:  # ruff: ignore[too-many-public-methods]
         url: LimeSurvey Remote Control endpoint.
         username: LimeSurvey user name.
         password: LimeSurvey password.
-        transport: An HTTP transport implementing
-            :class:`~citric.transport.protocol.HTTPTransport`, e.g. a
-            :py:class:`requests.Session <requests.Session>` or
-            :class:`~citric.transport.httpx2.Httpx2Transport`. Defaults to a new
-            :py:class:`requests.Session <requests.Session>`.
+        transport: An :doc:`HTTP transport </guide/transports>` implementation.
         requests_session: Deprecated alias of ``transport``.
         auth_plugin: Name of the :ls_manual:`plugin <Authentication_plugins>` to use for
             authentication. For example,
@@ -1433,7 +1429,7 @@ class Client:  # ruff: ignore[too-many-public-methods]
         Yields:
             :class:`~citric.types.ReadableFile` dictionaries.
 
-        Example: `Get files uploaded to a survey and move them to S3 </how-to.html#get-files-uploaded-to-a-survey-and-move-them-to-s3>`__
+        Example: `Get files uploaded to a survey and move them to S3 </guide/cookbook.html#get-files-uploaded-to-a-survey-and-move-them-to-s3>`__
 
         .. versionadded:: 0.0.13
         .. versionchanged:: 2.0.0

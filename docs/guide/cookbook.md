@@ -4,7 +4,7 @@
         How-to guides for the Citric LimeSurvey client.
 ```
 
-# How-to Guide
+# Cookbook
 
 For the full JSON-RPC reference, see the [RemoteControl 2 API docs][rc2api].
 
@@ -32,11 +32,14 @@ independent calls, like fetching the properties of many surveys, overlap instead
 running one after the other. Authentication is thread-safe, so concurrent calls on a
 new client share a single session key.
 
-Worker threads share the client's HTTP transport, so use one that is safe for concurrent
-use, like {class}`~citric.transport.urllib3.Urllib3Transport` or
-{class}`~citric.transport.httpx2.Httpx2Transport`. The default transport, a
-{py:class}`requests.Session`, is not guaranteed to be thread-safe, so pass `transport=`
-explicitly when sharing a client between threads.
+Worker threads share the client's HTTP transport. Both
+{class}`~citric.transport.urllib3.Urllib3Transport` and
+{class}`~citric.transport.httpx2.Httpx2Transport` are considered safe for
+concurrent use.
+
+:::{caution}
+If you pass a {py:class}`requests.Session` instance as the transport, note that it isn't 100% guaranteed to be thread-safe.
+:::
 
 The samples use {func}`asyncio.gather` with `return_exceptions=True` so that every worker
 thread has finished before the client is closed. Cancelling an `asyncio` task doesn't stop
@@ -90,47 +93,11 @@ import them with {meth}`client.import_question() <citric.Client.import_question>
 :end-before: end example
 ```
 
-## Change the default HTTP transport attributes
-
-```{literalinclude} ../code_samples/transport_attributes.py
-:start-after: start example
-:end-before: end example
-```
-
 ## Use a different HTTP transport
 
-By default, {class}`Client <citric.Client>` and
-{class}`Session <citric.session.Session>` send requests with `requests`. Any
-object that implements the
-{class}`HTTPTransport <citric.transport.protocol.HTTPTransport>` protocol (a
-`request` method and a `close` method) can be passed as `transport`
-instead, including a plain
-[`requests.Session`](inv:requests:py:class:api/#requests.Session) with a custom
-adapter mounted.
+You can read more about the subject in the [dedicated guide](./transports.md).
 
-citric ships two ready-made alternative transports:
-
-- {class}`citric.transport.httpx2.Httpx2Transport`, backed by
-  [`httpx2`](https://github.com/pydantic/httpx2). It isn't a dependency of
-  citric itself, so install it separately with `pip install httpx2`.
-- {class}`citric.transport.urllib3.Urllib3Transport`, backed by
-  [`urllib3`](https://urllib3.readthedocs.io) directly, without `requests` in
-  the loop. `urllib3` is a dependency of citric, so it is installed with it and
-  you don't need to install anything else.
-
-```{literalinclude} ../code_samples/custom_transport.py
-:start-after: start example
-:end-before: end example
-```
-
-## Use a custom `requests`-based transport
-
-Any subclass of [`requests.Session`](inv:requests:py:class:api/#requests.Session)
-is also a valid transport, so you can use
-[`requests-cache`](inv:requests-cache:std#general) to cache the requests and
-reduce the load on your server in read-intensive applications:
-
-```{literalinclude} ../code_samples/custom_requests_session.py
+```{literalinclude} ../code_samples/non_default_transport.py
 :start-after: start example
 :end-before: end example
 ```

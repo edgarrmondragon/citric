@@ -21,7 +21,7 @@ if TYPE_CHECKING:
 project = "citric"
 
 author = "Edgar Ramírez Mondragón"
-project_copyright = f"2020, {author}"
+project_copyright = f"2020-2026, {author}"
 version = citric.__version__
 release = citric.__version__
 
@@ -44,9 +44,10 @@ extensions = [
     "myst_parser",
     "sphinx_copybutton",
     "notfound.extension",
+    "sphinx_llm.txt",
+    "sphinx_reredirects",
     # Custom extensions
     "minlimesurvey",
-    "sphinx_llm.txt",
 ]
 
 source_suffix = {
@@ -79,7 +80,7 @@ html_theme_options = {
     "source_branch": "main",
     "source_directory": "docs/",
 }
-html_title = "Citric, a Python client for LimeSurvey"
+html_title = "Citric - Python client for LimeSurvey"
 html_short_title = "Citric"
 html_extra_path = [
     "googled10b55fb460af091.html",
@@ -102,10 +103,6 @@ extlinks = {
     ),
     "ls_manual": (
         "https://limesurvey.org/manual/%s",
-        "%s",
-    ),
-    "ls_tag": (
-        "https://github.com/LimeSurvey/LimeSurvey/releases/tag/%s",
         "%s",
     ),
 }
@@ -166,12 +163,21 @@ autoapi_root = "_api"
 # -- Options for Myst ------------------------------------------------------------------
 # https://myst-parser.readthedocs.io/en/latest/configuration.html
 
+myst_enable_extensions = [
+    "colon_fence",
+]
 myst_heading_anchors = 2
 
 # -- Options for sphinx-llm ------------------------------------------------------------
 # https://github.com/NVIDIA/sphinx-llm#configuration
 
 llms_txt_suppress_unknown_node_warnings = ["abbreviation", "meta"]
+
+# -- Options for sphinx-reredirects ----------------------------------------------------
+
+redirects = {
+    "how-to.html": "guide/cookbook.html",
+}
 
 
 # ruff: disable[unused-function-argument]
