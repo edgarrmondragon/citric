@@ -820,8 +820,8 @@ def test_participants(
             assert ple["participant_info"]["email"] == d["email"]
             assert ple["participant_info"]["firstname"] == d["firstname"]
             assert ple["participant_info"]["lastname"] == d["lastname"]
-            assert ple["attribute_1"] == d["attribute_1"]  # type: ignore[typeddict-item]  # ty:ignore[invalid-key]
-            assert ple["attribute_2"] == d["attribute_2"]  # type: ignore[typeddict-item]  # ty:ignore[invalid-key]
+            assert ple["attribute_1"] == d["attribute_1"]  # type: ignore[typeddict-item]  # ty:ignore[invalid-typed-dict-key]
+            assert ple["attribute_2"] == d["attribute_2"]  # type: ignore[typeddict-item]  # ty:ignore[invalid-typed-dict-key]
 
     # Get participant properties
     for p, d in zip(added, participants[:2], strict=False):

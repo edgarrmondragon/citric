@@ -55,7 +55,7 @@ def dependencies(session: nox.Session) -> None:
 @nox.session(tags=["lint", "types"], allow_parallel=True)
 def typing(session: nox.Session) -> None:
     """Type-check using mypy."""
-    locations = ("src", "tests", "docs/conf.py", "docs/snippets/code_samples")
+    locations = ("src", "tests", "docs/conf.py", "docs/code_samples")
     args = session.posargs or locations
     gha = os.getenv("GITHUB_ACTIONS") == "true"
 

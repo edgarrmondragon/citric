@@ -268,7 +268,7 @@ def test_urllib3_transport_pool_options() -> None:
     """Pool options are passed to the underlying `PoolManager`."""
     transport = Urllib3Transport(num_pools=3, maxsize=16, block=True, timeout=7)
     pool = transport._pool
-    assert pool.pools.maxsize == 3
+    assert pool.pools._maxsize == 3
     assert pool.connection_pool_kw["maxsize"] == 16
     assert pool.connection_pool_kw["block"] is True
     assert pool.connection_pool_kw["timeout"] == 7
