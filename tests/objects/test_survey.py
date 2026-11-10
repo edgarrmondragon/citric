@@ -175,6 +175,32 @@ def test_survey_question_attributes():
     assert not rows[1].findtext("value")
 
 
+def test_survey_declares_all_used_languages():
+    """Test languages used only by questions and answers are declared."""
+    q = Question(
+        title="Q1",
+        type=QuestionType.RADIO_BUTTONS_LIST,
+        l10ns={
+            "en": QuestionL10n(question="Pick"),
+            "es": QuestionL10n(question="Elige"),
+        },
+        answer_options=[AnswerOption(code="A1", l10ns={"en": "One", "fr": "Un"})],
+    )
+    s = Survey(
+        language="en",
+        title="Test",
+        l10ns={"de": SurveyL10n(title="Test DE")},
+        groups=[QuestionGroup(title="G1", questions=[q])],
+    )
+    root = _parse(s)
+
+    languages = [e.text for e in root.findall("languages/language")]
+    assert languages == ["en", "de", "es", "fr"]
+
+    group_rows = root.findall("group_l10ns/rows/row")
+    assert [r.findtext("language") for r in group_rows] == languages
+
+
 def test_survey_multiple_groups_and_questions():
     """Test survey multiple groups and questions."""
     q1 = Question(title="Q1", type="T", l10ns={"en": QuestionL10n(question="Q1?")})

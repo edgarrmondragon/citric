@@ -178,10 +178,8 @@ class Survey:
         ET.SubElement(doc, "DBVersion").text = str(db_version)
 
         langs_elem = ET.SubElement(doc, "languages")
-        ET.SubElement(langs_elem, "language").text = self.language
-        for lang in self.l10ns:
-            if lang != self.language:
-                ET.SubElement(langs_elem, "language").text = lang
+        for lang in self._languages():
+            ET.SubElement(langs_elem, "language").text = lang
 
         self._build_surveys(doc)
         self._build_surveys_languagesettings(doc)
@@ -197,6 +195,18 @@ class Survey:
         ET.ElementTree(doc).write(buffer, encoding="UTF-8", xml_declaration=True)
         buffer.seek(0)
         return buffer
+
+    def _languages(self) -> list[str]:
+        """Return all languages used by the survey, base language first."""
+        languages = {self.language: None, **dict.fromkeys(self.l10ns)}
+        for group in self.groups:
+            for question in group.questions:
+                languages.update(dict.fromkeys(question.l10ns))
+                for subquestion in question.subquestions:
+                    languages.update(dict.fromkeys(subquestion.l10ns))
+                for option in question.answer_options:
+                    languages.update(dict.fromkeys(option.l10ns))
+        return list(languages)
 
     def _build_surveys(self, doc: ET.Element) -> None:
         elem = ET.SubElement(doc, "surveys")
@@ -250,7 +260,7 @@ class Survey:
         l10n_rows = ET.SubElement(l10ns_elem, "rows")
         l10n_id = 1
         for i, group in enumerate(self.groups, start=1):
-            for lang in [self.language]:
+            for lang in self._languages():
                 row = ET.SubElement(l10n_rows, "row")
                 _add_val(row, "id", str(l10n_id))
                 _add_val(row, "gid", str(i))
