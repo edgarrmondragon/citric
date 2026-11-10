@@ -290,6 +290,7 @@ def test_survey_with_subquestions():
     assert len(sq_rows) == 2
     titles = [r.findtext("title") for r in sq_rows]
     assert titles == ["SQ1", "SQ2"]
+    assert [r.findtext("question_order") for r in sq_rows] == ["0", "1"]
 
     # All subquestion rows should reference sid=1
     for row in sq_rows:

@@ -305,7 +305,7 @@ class Survey:
         l10n_id = 1
         for gid, group in enumerate(self.groups, start=1):
             for question in group.questions:
-                for i, sq in enumerate(question.subquestions, start=1):
+                for i, sq in enumerate(question.subquestions):
                     for lang, l10n in sq.l10ns.items():
                         row = ET.SubElement(rows_elem, "row")
                         _add_base_question_fields(
