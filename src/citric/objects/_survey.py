@@ -138,7 +138,10 @@ _GROUP_L10N_FIELDS = [
 
 @dataclass(slots=True)
 class SurveyL10n:
-    """Localization data for a survey in one language."""
+    """Localization data for a survey in one language.
+
+    .. versionadded:: NEXT_VERSION
+    """
 
     title: str = ""
     description: str = ""
@@ -148,7 +151,10 @@ class SurveyL10n:
 
 @dataclass(slots=True)
 class QuestionGroup:
-    """A LimeSurvey question group."""
+    """A LimeSurvey question group.
+
+    .. versionadded:: NEXT_VERSION
+    """
 
     title: str
     description: str = ""
@@ -157,7 +163,10 @@ class QuestionGroup:
 
 @dataclass(slots=True)
 class Survey:
-    """A LimeSurvey survey that can export itself as an LSS file."""
+    """A LimeSurvey survey that can export itself as an LSS file.
+
+    .. versionadded:: NEXT_VERSION
+    """
 
     language: str
     title: str
@@ -170,8 +179,13 @@ class Survey:
     def to_lss(self, *, db_version: int = DEFAULT_DB_VERSION) -> io.BytesIO:
         """Generate an LSS XML stream for use with client.import_survey().
 
+        Args:
+            db_version: The database version to set in the generated LSS.
+
         Returns:
             A BytesIO object containing the LSS-format XML.
+
+        .. versionadded:: NEXT_VERSION
         """
         doc = ET.Element("document")
         ET.SubElement(doc, "LimeSurveyDocType").text = "Survey"
