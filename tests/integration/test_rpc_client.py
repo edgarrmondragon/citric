@@ -1460,10 +1460,8 @@ def test_cpdb(faker: Faker, client: citric.Client):
         ),
     ]
 
-    assert check_response(participants) == IsPartialDict(
-        ImportCount=2,
-        UpdateCount=0,
-    )
+    imported = check_response(participants)
+    assert imported == IsPartialDict(ImportCount=2, UpdateCount=0)
 
     more_participants = [
         Participant(
@@ -1482,10 +1480,8 @@ def test_cpdb(faker: Faker, client: citric.Client):
             participant_id=uuid.uuid4(),
         ),
     ]
-    assert check_response(more_participants, update=True) == IsPartialDict(
-        ImportCount=1,
-        UpdateCount=1,
-    )
+    imported = check_response(more_participants, update=True)
+    assert imported == IsPartialDict(ImportCount=1, UpdateCount=1)
 
 
 @pytest.mark.integration_test
