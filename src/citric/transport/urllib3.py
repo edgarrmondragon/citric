@@ -30,7 +30,7 @@ __all__ = [
 class Urllib3ResponseWrapper:
     """A urllib3 response object wrapper used for protocol compatibility.
 
-    .. versionadded:: NEXT_VERSION
+    .. versionadded:: 3.0.0
     """
 
     def __init__(self, response: urllib3.response.BaseHTTPResponse) -> None:
@@ -78,7 +78,7 @@ class Urllib3Transport:
             :py:class:`urllib3.PoolManager <urllib3.PoolManager>`, e.g. ``timeout``
             or ``retries``.
 
-    .. versionadded:: NEXT_VERSION
+    .. versionadded:: 3.0.0
     """
 
     def __init__(

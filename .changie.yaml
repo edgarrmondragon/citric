@@ -60,6 +60,9 @@ replacements:
 - path: src/citric/objects/*.py
   find: "NEXT_VERSION"
   replace: "{{.VersionNoPrefix}}"
+- path: src/citric/transport/*.py
+  find: "NEXT_VERSION"
+  replace: "{{.VersionNoPrefix}}"
 - path: .github/ISSUE_TEMPLATE/BUG.yml
   find: "^      placeholder: \".*\"$"
   replace: "      placeholder: \"{{.VersionNoPrefix}}\""

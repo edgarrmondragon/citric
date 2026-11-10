@@ -1,5 +1,0 @@
-kind: Added
-body: Added `RESTClient.get_survey_responses` to get survey responses with the `survey-responses` REST endpoint (LimeSurvey 7.8.0+)
-time: 2026-11-01T12:00:00.000000-06:00
-custom:
-    Issue: "1894"

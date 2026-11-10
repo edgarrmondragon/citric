@@ -1,5 +1,0 @@
-kind: Changed
-body: "`Client`, `Session` and `RESTClient` now authenticate lazily, the first time a session key or ID is needed, instead of on creation. Creating a client no longer contacts the server, so invalid credentials are reported by the first request"
-time: 2026-10-13T17:00:00.000000-06:00
-custom:
-    Issue: "1865"

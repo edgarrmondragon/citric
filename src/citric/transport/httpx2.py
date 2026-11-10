@@ -39,7 +39,7 @@ class Httpx2Transport:
         keepalive_expiry: Seconds to keep idle connections alive, or ``None`` for no
             limit.
 
-    .. versionadded:: NEXT_VERSION
+    .. versionadded:: 3.0.0
     """
 
     def __init__(
