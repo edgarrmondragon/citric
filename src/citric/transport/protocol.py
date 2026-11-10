@@ -53,7 +53,7 @@ class HTTPTransport(Protocol):
     :class:`citric.transport.urllib3.Urllib3Transport`, or write
     your own.
 
-    .. versionadded:: NEXT_VERSION
+    .. versionadded:: 3.0.0
     """
 
     def request(
