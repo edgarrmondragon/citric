@@ -133,9 +133,11 @@ def test_survey_groups_and_questions():
     s = Survey(language="en", title="Test Survey", groups=[group])
     root = _parse(s)
 
-    group_rows = root.findall("groups/rows/row")
+    assert len(root.findall("groups/rows/row")) == 1
+    group_rows = root.findall("group_l10ns/rows/row")
     assert len(group_rows) == 1
     assert group_rows[0].findtext("group_name") == "Group 1"
+    assert group_rows[0].findtext("language") == "en"
 
     question_rows = root.findall("questions/rows/row")
     assert len(question_rows) == 1
@@ -185,7 +187,8 @@ def test_survey_multiple_groups_and_questions():
     s = Survey(language="en", title="Test Survey", groups=groups)
     root = _parse(s)
 
-    group_rows = root.findall("groups/rows/row")
+    assert len(root.findall("groups/rows/row")) == 2
+    group_rows = root.findall("group_l10ns/rows/row")
     assert len(group_rows) == 2
     assert group_rows[0].findtext("group_name") == "Group A"
     assert group_rows[1].findtext("group_name") == "Group B"
@@ -332,7 +335,7 @@ def test_survey_group_description():
     group = QuestionGroup(title="My Group", description="Group description")
     s = Survey(language="en", title="Test Survey", groups=[group])
     root = _parse(s)
-    row = root.find("groups/rows/row")
+    row = root.find("group_l10ns/rows/row")
     assert row is not None
     assert row.findtext("description") == "Group description"
 

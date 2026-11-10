@@ -118,10 +118,19 @@ _SURVEY_L10N_FIELDS = [
 _GROUP_FIELDS = [
     "gid",
     "sid",
-    "group_name",
     "group_order",
+    "randomization_group",
+    "grelevance",
+]
+
+_GROUP_L10N_FIELDS = [
+    "id",
+    "gid",
+    "group_name",
     "description",
     "language",
+    "sid",
+    "group_order",
     "randomization_group",
     "grelevance",
 ]
@@ -228,16 +237,31 @@ class Survey:
         elem = ET.SubElement(doc, "groups")
         _add_fields(elem, _GROUP_FIELDS)
         rows_elem = ET.SubElement(elem, "rows")
-        for i, group in enumerate(self.groups, start=1):
+        for i, _ in enumerate(self.groups, start=1):
             row = ET.SubElement(rows_elem, "row")
             _add_val(row, "gid", str(i))
             _add_val(row, "sid", "1")
-            _add_val(row, "group_name", group.title)
             _add_val(row, "group_order", str(i))
-            _add_val(row, "description", group.description)
-            _add_val(row, "language", self.language)
             _add_val(row, "randomization_group", "")
             _add_val(row, "grelevance", "1")
+
+        l10ns_elem = ET.SubElement(doc, "group_l10ns")
+        _add_fields(l10ns_elem, _GROUP_L10N_FIELDS)
+        l10n_rows = ET.SubElement(l10ns_elem, "rows")
+        l10n_id = 1
+        for i, group in enumerate(self.groups, start=1):
+            for lang in [self.language]:
+                row = ET.SubElement(l10n_rows, "row")
+                _add_val(row, "id", str(l10n_id))
+                _add_val(row, "gid", str(i))
+                _add_val(row, "group_name", group.title)
+                _add_val(row, "description", group.description)
+                _add_val(row, "language", lang)
+                _add_val(row, "sid", "1")
+                _add_val(row, "group_order", str(i))
+                _add_val(row, "randomization_group", "")
+                _add_val(row, "grelevance", "1")
+                l10n_id += 1
 
     def _build_questions(self, doc: ET.Element) -> None:
         questions_elem = ET.SubElement(doc, "questions")
