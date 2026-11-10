@@ -196,9 +196,16 @@ def test_survey_declares_all_used_languages():
 
     languages = [e.text for e in root.findall("languages/language")]
     assert languages == ["en", "de", "es", "fr"]
+    assert root.findtext("surveys/rows/row/additional_languages") == "de es fr"
 
     group_rows = root.findall("group_l10ns/rows/row")
     assert [r.findtext("language") for r in group_rows] == languages
+
+
+def test_survey_single_language_has_no_additional_languages():
+    """Test additional_languages is empty for a single-language survey."""
+    root = _parse(Survey(language="en", title="Test"))
+    assert not root.findtext("surveys/rows/row/additional_languages")
 
 
 def test_survey_multiple_groups_and_questions():

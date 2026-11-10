@@ -218,6 +218,7 @@ class Survey:
         _add_val(row, "admin", self.admin)
         _add_val(row, "adminemail", self.adminemail)
         _add_val(row, "language", self.language)
+        _add_val(row, "additional_languages", " ".join(self._languages()[1:]) or None)
         _add_val(row, "format", self.format)
 
     def _build_surveys_languagesettings(self, doc: ET.Element) -> None:
