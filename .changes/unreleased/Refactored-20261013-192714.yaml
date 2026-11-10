@@ -1,5 +1,0 @@
-kind: Refactored
-body: Move RPC request dispatch to its own private method
-time: 2026-10-13T19:27:14.981749-06:00
-custom:
-    Issue: "1866"

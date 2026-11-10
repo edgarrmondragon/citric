@@ -1,5 +1,0 @@
-kind: Added
-body: Allow customizing connection pool options in the urllib3 and httpx2 transports
-time: 2026-10-14T20:37:51.266575-06:00
-custom:
-    Issue: "1870"
