@@ -1440,9 +1440,10 @@ def test_cpdb(
         participants: list[Participant],
         *,
         update: bool = False,
+        remove: bool = False,
     ) -> CPDBParticipantImportResult:
         return check_type(
-            client.import_cpdb_participants(participants, update=update),
+            client.import_cpdb_participants(participants, update=update, remove=remove),
             CPDBParticipantImportResult,
         )
 
@@ -1485,6 +1486,12 @@ def test_cpdb(
     ]
     imported = check_response(more_participants, update=True)
     assert imported == IsPartialDict(ImportCount=1, UpdateCount=1)
+
+    # TODO(edgarrmondragon): Update this version
+    # https://github.com/LimeSurvey/LimeSurvey/commit/d8b1b5f11f286dd47f85b35bf968560030a7705b
+    if server_version.major >= 8:
+        imported = check_response(more_participants[:1], update=True, remove=True)
+        assert imported == IsPartialDict(ImportCount=0, UpdateCount=1, RemoveCount=1)
 
     # Versions 3.0.0 to 7.8.0 don't return InvalidParticipantIds
     # https://github.com/LimeSurvey/LimeSurvey/commit/072449e7b87f94ca6c69771e98abcd56435e9697
