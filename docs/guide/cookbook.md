@@ -72,6 +72,19 @@ import them with {meth}`client.import_question() <citric.Client.import_question>
 :end-before: end example
 ```
 
+## Create and import surveys using Python objects
+
+Use {class}`citric.objects.Survey` to compose a whole survey, with its question
+groups, questions and translations, and import it with
+{meth}`client.import_survey() <citric.Client.import_survey>`.
+{meth}`Survey.to_lss() <citric.objects.Survey.to_lss>` generates the file that
+LimeSurvey imports.
+
+```{literalinclude} ../code_samples/import_survey.py
+:start-after: start example
+:end-before: end example
+```
+
 ## Update question answers using the REST API
 
 ```{literalinclude} ../code_samples/update_question_answer_rest.py
