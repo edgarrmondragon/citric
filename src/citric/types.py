@@ -1524,20 +1524,20 @@ class RESTSurveyDetail(TypedDict):
     hasResponsesTable: NotRequired[bool]
     """Whether the survey has a responses table in the backend.
 
-    .. version-added:: NEXT_VERSION
+    .. version-added:: 3.0.0
     """
 
     participantEncryptedAttributes: NotRequired[list[str] | None]
     """List of encrypted attributes in the survey.
 
-    .. version-added:: NEXT_VERSION
+    .. version-added:: 3.0.0
     """
 
 
 class RESTSurveyResponsesPagination(TypedDict):
     """Pagination metadata of a page of survey responses.
 
-    .. version-added:: NEXT_VERSION
+    .. version-added:: 3.0.0
     """
 
     pageSize: int
@@ -1556,7 +1556,7 @@ class RESTSurveyResponsesPagination(TypedDict):
 class RESTSurveyResponsesMeta(TypedDict):
     """Metadata of a page of survey responses.
 
-    .. version-added:: NEXT_VERSION
+    .. version-added:: 3.0.0
     """
 
     pagination: RESTSurveyResponsesPagination
@@ -1572,7 +1572,7 @@ class RESTSurveyResponsesMeta(TypedDict):
 class RESTSurveyResponsesPage(TypedDict):
     """A page of survey responses from the REST API.
 
-    .. version-added:: NEXT_VERSION
+    .. version-added:: 3.0.0
     """
 
     responses: list[dict[str, Any]]
@@ -1597,7 +1597,7 @@ class RESTSurveyResponsesPage(TypedDict):
 class RESTSurveyFile(TypedDict):
     """An uploaded file in a response to a file upload question.
 
-    .. version-added:: NEXT_VERSION
+    .. version-added:: 3.0.0
     """
 
     responseId: int
@@ -1625,7 +1625,7 @@ class RESTSurveyFile(TypedDict):
 class RESTSurveyFilesPage(TypedDict):
     """A page of files uploaded in survey responses from the REST API.
 
-    .. version-added:: NEXT_VERSION
+    .. version-added:: 3.0.0
     """
 
     files: list[RESTSurveyFile]
@@ -1638,7 +1638,7 @@ class RESTSurveyFilesPage(TypedDict):
 class RESTVersionInfo(TypedDict):
     """Version information, as returned by the REST API.
 
-    .. version-added:: NEXT_VERSION
+    .. version-added:: 3.0.0
     """
 
     dbVersion: int | None
@@ -1654,7 +1654,7 @@ class RESTVersionInfo(TypedDict):
 class RESTSurveyGroupList(TypedDict):
     """List of survey groups, as returned by the REST API.
 
-    .. version-added:: NEXT_VERSION
+    .. version-added:: 3.0.0
     """
 
     surveyGroups: list[RESTSurveyGroup]
@@ -1664,7 +1664,7 @@ class RESTSurveyGroupList(TypedDict):
 class RESTStatisticsOverview(TypedDict):
     """Response counts and completion figures of a survey.
 
-    .. version-added:: NEXT_VERSION
+    .. version-added:: 3.0.0
     """
 
     totalResponses: int
@@ -1686,7 +1686,7 @@ class RESTStatisticsOverview(TypedDict):
 class RESTStatisticsGlance(TypedDict):
     """Survey statistics at a glance, as returned by the REST API.
 
-    .. version-added:: NEXT_VERSION
+    .. version-added:: 3.0.0
     """
 
     statistics: RESTStatisticsOverview
@@ -1746,7 +1746,7 @@ class RESTStatisticsOverviewData(TypedDict):
 class RESTStatisticsOverviewResponse(TypedDict):
     """Statistics overview of a survey, as returned by the REST API.
 
-    .. version-added:: NEXT_VERSION
+    .. version-added:: 3.0.0
     """
 
     overview: RESTStatisticsOverviewData
@@ -1756,7 +1756,7 @@ class RESTStatisticsOverviewResponse(TypedDict):
 class RESTStatisticsPage(TypedDict):
     """A page of survey statistics from the REST API.
 
-    .. version-added:: NEXT_VERSION
+    .. version-added:: 3.0.0
     """
 
     statistics: list[RESTStatisticsItem]
@@ -1772,7 +1772,7 @@ class RESTSurveyImportResult(TypedDict):
     Derived from the value returned by LimeSurvey's ``XMLImportSurvey`` for
     LSS files, which ``importSurveyFile`` passes through.
 
-    .. version-added:: NEXT_VERSION
+    .. version-added:: 3.0.0
     """
 
     newsid: int | str
