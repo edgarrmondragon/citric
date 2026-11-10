@@ -360,25 +360,35 @@ class Survey:
         _add_fields(answer_l10ns_elem, _ANSWER_L10N_FIELDS)
         answer_l10ns_rows = ET.SubElement(answer_l10ns_elem, "rows")
 
-        qid = 1
-        aid = 1
+        questions = (q for g in self.groups for q in g.questions)
+        options = (
+            (qid, option)
+            for qid, question in enumerate(questions, start=1)
+            for option in question.answer_options
+        )
         l10n_id = 1
-        for group in self.groups:
-            for question in group.questions:
-                for option in question.answer_options:
-                    row = ET.SubElement(answers_rows, "row")
-                    _add_val(row, "aid", str(aid))
-                    _add_val(row, "qid", str(qid))
-                    _add_val(row, "code", option.code)
-                    _add_val(row, "sortorder", str(option.sort_order))
-                    _add_val(row, "assessment_value", str(option.assessment_value))
-                    _add_val(row, "scale_id", str(option.scale_id))
-                    for lang, answer_text in option.l10ns.items():
-                        l10n_row = ET.SubElement(answer_l10ns_rows, "row")
-                        _add_val(l10n_row, "id", str(l10n_id))
-                        _add_val(l10n_row, "aid", str(aid))
-                        _add_val(l10n_row, "answer", answer_text or None)
-                        _add_val(l10n_row, "language", lang)
-                        l10n_id += 1
-                    aid += 1
-                qid += 1
+        for aid, (qid, option) in enumerate(options, start=1):
+            row = ET.SubElement(answers_rows, "row")
+            _add_val(row, "aid", str(aid))
+            _add_val(row, "qid", str(qid))
+            _add_val(row, "code", option.code)
+            _add_val(row, "sortorder", str(option.sort_order))
+            _add_val(row, "assessment_value", str(option.assessment_value))
+            _add_val(row, "scale_id", str(option.scale_id))
+            for lang, text in option.l10ns.items():
+                _add_answer_l10n_row(answer_l10ns_rows, l10n_id, aid, lang, text)
+                l10n_id += 1
+
+
+def _add_answer_l10n_row(
+    rows_elem: ET.Element,
+    row_id: int,
+    aid: int,
+    lang: str,
+    text: str,
+) -> None:
+    row = ET.SubElement(rows_elem, "row")
+    _add_val(row, "id", str(row_id))
+    _add_val(row, "aid", str(aid))
+    _add_val(row, "answer", text or None)
+    _add_val(row, "language", lang)
