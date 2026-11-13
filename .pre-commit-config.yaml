@@ -87,7 +87,7 @@ repos:
         language: python
         args: [--inject-junk]
         additional_dependencies:
-          - hatchling==1.32.4
+          - hatchling==1.33.0
 
   - repo: https://github.com/rhysd/actionlint
     rev: v1.7.12
