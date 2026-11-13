@@ -22,7 +22,7 @@ repos:
       - id: trailing-whitespace
 
   - repo: https://github.com/python-jsonschema/check-jsonschema
-    rev: 0.38.2
+    rev: 0.39.0
     hooks:
       - id: check-circle-ci
       - id: check-citation-file-format
@@ -34,30 +34,30 @@ repos:
           - pyjson5==2.0.1
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.17.0
+    rev: v0.17.4
     hooks:
       - id: ruff-check
       - id: ruff-format
 
   - repo: https://github.com/crate-ci/typos
-    rev: v1.51.1
+    rev: v1.52.0
     hooks:
       - id: typos
         args: []
 
   - repo: https://github.com/hadialqattan/pycln
-    rev: v2.6.0
+    rev: v2.6.1
     hooks:
       - id: pycln
         args: [--all]
 
   - repo: https://github.com/tox-dev/pyproject-fmt
-    rev: v2.30.3
+    rev: v2.30.6
     hooks:
       - id: pyproject-fmt
 
   - repo: https://github.com/astral-sh/uv-pre-commit
-    rev: "0.13.1"
+    rev: "0.13.7"
     hooks:
       - id: pip-compile
         files: |

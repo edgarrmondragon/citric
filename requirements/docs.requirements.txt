@@ -10,11 +10,11 @@ babel==2.18.0
     # via sphinx
 beautifulsoup4==4.15.0
     # via furo
-certifi==2026.10.19
+certifi==2026.10.23
     # via requests
 charset-normalizer==3.5.2
     # via requests
-docutils==0.22.4
+docutils==0.23
     # via
     #   citric (pyproject.toml:docs)
     #   myst-parser
@@ -31,18 +31,18 @@ jinja2==3.1.6
     #   myst-parser
     #   sphinx
     #   sphinx-autoapi
-markdown-it-py==4.2.0
+markdown-it-py==4.3.0
     # via
     #   mdit-py-plugins
     #   myst-parser
     #   sphinx-llm
 markupsafe==3.0.4
     # via jinja2
-mdit-py-plugins==0.6.1
+mdit-py-plugins==0.7.0
     # via myst-parser
 mdurl==0.1.2
     # via markdown-it-py
-myst-parser==5.1.0
+myst-parser==5.2.0
     # via citric (pyproject.toml:docs)
 packaging==26.3
     # via sphinx
@@ -63,7 +63,7 @@ roman-numerals==4.1.0
     # via sphinx
 snowballstemmer==3.1.1
     # via sphinx
-soupsieve==4.0
+soupsieve==4.1
     # via beautifulsoup4
 sphinx==9.2.0
     # via
@@ -77,7 +77,7 @@ sphinx==9.2.0
     #   sphinx-markdown-builder
     #   sphinx-notfound-page
     #   sphinx-reredirects
-sphinx-autoapi==3.8.1
+sphinx-autoapi==3.9.0
     # via citric (pyproject.toml:docs)
 sphinx-basic-ng==1.0.0b2
     # via furo
