@@ -2,8 +2,11 @@
 
 ## Development Lead
 
-- Edgar Ramírez Mondragón edgarrm358@gmail.com
+- [Edgar Ramírez Mondragón](https://github.com/edgarrmondragon)
 
 ## Contributors
 
-None yet. Why not be the first?
+- [Mlbiche](https://github.com/mlbiche)
+- [Gaby Lopez](https://github.com/GabxTaro)
+- [Favian Hazman](https://github.com/vianhazman)
+- [@coeurdestenebres](https://github.com/coeurdestenebres)
