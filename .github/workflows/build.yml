@@ -31,6 +31,8 @@ jobs:
         ref: ${{ github.event.inputs.tag || github.ref }}
         persist-credentials: false
     - uses: hynek/build-and-inspect-python-package@v3.0.2
+      env:
+        PYTHON_SBOM_COMMIT: ${{ github.sha }}
       id: baipp
 
   publish:

@@ -88,6 +88,7 @@ repos:
         args: [--inject-junk]
         additional_dependencies:
           - hatchling==1.33.0
+          - python-sbom[hatch]==0.3.1
 
   - repo: https://github.com/rhysd/actionlint
     rev: v1.7.12
