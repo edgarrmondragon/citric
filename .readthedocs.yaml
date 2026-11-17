@@ -14,7 +14,7 @@ python:
   install:
     - method: uv
       command: pip
-      requirements: requirements/docs.requirements.txt
+      requirements: requirements/pylock.docs.toml
 
 sphinx:
   builder: html

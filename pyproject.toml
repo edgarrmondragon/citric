@@ -260,6 +260,8 @@ table_format = "long"
 
 [tool.typos]
 [tool.typos.default]
+extend-words.astroid = "astroid"  # https://pypi.org/project/astroid/
+extend-words.certifi = "certifi"  # https://pypi.org/project/certifi/
 extend-words.erronous = "erronous"  # This is a typo in a LimeSurvey API field name
 extend-words.intoto = "intoto"  # https://in-toto.io/
 
