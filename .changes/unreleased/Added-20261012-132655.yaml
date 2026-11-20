@@ -1,0 +1,5 @@
+kind: Added
+body: Support removing participants from the CPDB with `Client.import_cpdb_participants(..., remove=True)`
+time: 2026-10-12T13:26:55.092325-06:00
+custom:
+    Issue: "1859"
