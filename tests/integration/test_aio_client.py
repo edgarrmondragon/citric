@@ -48,7 +48,7 @@ class _RecordingTransport(AsyncHttpx2Transport):
         headers: Mapping[str, str] | None = None,
         timeout: float | None = None,
     ) -> HTTPResponse:
-        if isinstance(data, str):
+        if isinstance(data, str):  # pragma: no branch
             self.rpc_methods.append(json.loads(data)["method"])
         return await super().request(
             method,

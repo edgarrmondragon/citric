@@ -37,20 +37,18 @@ class _GoodTransport:
         headers: Mapping[str, str] | None = None,
         timeout: float | None = None,
     ) -> HTTPResponse:
-        raise NotImplementedError
+        raise NotImplementedError  # pragma: no cover
 
-    async def aclose(self) -> None:
-        pass
+    async def aclose(self) -> None: ...
 
 
 class _SyncCloseTransport:
     """Has the sync ``close`` of the sync protocol, not ``aclose``."""
 
     async def request(self, method: str, url: str) -> HTTPResponse:
-        raise NotImplementedError
+        raise NotImplementedError  # pragma: no cover
 
-    def close(self) -> None:
-        pass
+    def close(self) -> None: ...
 
 
 def test_object_with_request_and_aclose_satisfies_protocol():
@@ -160,8 +158,7 @@ class _TimeoutRecordingTransport:
             json={"id": request_id, "result": "key", "error": None},
         )
 
-    async def aclose(self) -> None:
-        pass
+    async def aclose(self) -> None: ...
 
 
 @pytest.mark.anyio
