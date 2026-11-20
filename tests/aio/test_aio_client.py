@@ -4,6 +4,7 @@
 
 from __future__ import annotations
 
+import datetime as dt
 import io
 from typing import TYPE_CHECKING
 
@@ -236,3 +237,36 @@ async def test_invite_participants_error(server: RPCServer, client: AsyncClient)
 
     with pytest.raises(LimeSurveyStatusError, match="Error: nope"):
         await client.invite_participants(123)
+
+
+async def test_invite_participants_unknown_status(
+    server: RPCServer,
+    client: AsyncClient,
+):
+    """A result without a recognizable status is an error."""
+    server.results["invite_participants"] = 5
+
+    with pytest.raises(RuntimeError, match="Could not determine invitation status"):
+        await client.invite_participants(123)
+
+
+async def test_export_timeline(server: RPCServer, client: AsyncClient):
+    """The period is validated and the dates are sent in ISO format."""
+    server.results["export_timeline"] = {"2022-01-01": 4}
+
+    assert await client.export_timeline(
+        123,
+        "hour",
+        dt.datetime(2020, 1, 1, tzinfo=dt.UTC),
+        dt.datetime(2020, 1, 2, tzinfo=dt.UTC),
+    ) == {"2022-01-01": 4}
+    assert server.calls[-1] == (
+        "export_timeline",
+        [
+            SESSION_KEY,
+            123,
+            "hour",
+            "2020-01-01T00:00:00+00:00",
+            "2020-01-02T00:00:00+00:00",
+        ],
+    )

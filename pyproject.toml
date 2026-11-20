@@ -319,6 +319,7 @@ log_cli_level = "INFO"
 log_level = "INFO"
 markers = [
   "integration_test: Integration and end-to-end tests",
+  "sync_only: Integration test that doesn't run against the async client",
   "xfail_mysql: Mark a test as expected to fail on MySQL",
 ]
 minversion = "9"

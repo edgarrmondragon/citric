@@ -4,6 +4,7 @@
 
 from __future__ import annotations
 
+import contextlib
 import json
 import sys
 from typing import TYPE_CHECKING, Any, ClassVar
@@ -19,6 +20,24 @@ else:
 
 if TYPE_CHECKING:
     from collections.abc import Mapping
+
+    import citric
+
+
+def delete_all_surveys(client: citric.Client, username: str) -> None:
+    """Delete the surveys left behind by the integration tests.
+
+    Args:
+        client: The client to delete the surveys with.
+        username: The user whose surveys are deleted.
+    """
+    from citric.exceptions import LimeSurveyStatusError  # ruff: ignore[import-outside-top-level]
+
+    # No surveys left is reported as an error status
+    with contextlib.suppress(LimeSurveyStatusError):  # pragma: no cover
+        for survey in client.list_surveys(username):
+            client.delete_survey(survey["sid"])
+
 
 requests_session_warning = pytest.warns(
     DeprecationWarning,
