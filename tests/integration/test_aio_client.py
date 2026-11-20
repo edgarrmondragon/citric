@@ -27,7 +27,6 @@ if TYPE_CHECKING:
     from collections.abc import AsyncIterator, Mapping
     from pathlib import Path
 
-    import semver
     from faker import Faker
 
     import citric
@@ -41,8 +40,6 @@ else:
     from typing_extensions import override
 
 pytestmark = [pytest.mark.integration_test, pytest.mark.anyio]
-
-MIN_SERVER_VERSION = "7.0.0-alpha0"
 
 
 class _RecordingTransport(AsyncHttpx2Transport):
@@ -84,12 +81,8 @@ async def aclient(
     rpc_url: str,
     integration_username: str,
     integration_password: str,
-    server_version: semver.Version,
 ) -> AsyncIterator[AsyncClient]:
     """Async RemoteControl 2 API client."""
-    if server_version < MIN_SERVER_VERSION:
-        pytest.skip("The async client only supports LimeSurvey 7.0 and later")
-
     async with AsyncClient(rpc_url, integration_username, integration_password) as c:
         yield c
 
@@ -117,7 +110,7 @@ async def test_responses_round_trip(
     aclient: AsyncClient,
     survey_id: int,
 ):
-    """Responses added with the async client can be exported, with Q-style keys."""
+    """Responses added with the async client can be exported, keyed by question code."""
     client.activate_survey(survey_id)
 
     assert (
@@ -155,12 +148,8 @@ async def test_concurrent_first_calls_authenticate_once(
     integration_username: str,
     integration_password: str,
     survey_id: int,
-    server_version: semver.Version,
 ):
     """Concurrent first calls on a new client authenticate only once."""
-    if server_version < MIN_SERVER_VERSION:
-        pytest.skip("The async client only supports LimeSurvey 7.0 and later")
-
     transport = _RecordingTransport()
     results: list[object] = []
 

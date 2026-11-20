@@ -74,7 +74,7 @@
 - Easily export survey data to CSV files, [Pandas DataFrames](https://citric.readthedocs.io/en/stable/guide/cookbook.html#export-responses-to-a-pandas-dataframe) and [DuckDB databases](https://citric.readthedocs.io/en/stable/guide/cookbook.html#export-responses-to-a-duckdb-database-and-analyze-with-sql).
 - Easily [download survey files](https://citric.readthedocs.io/en/stable/guide/cookbook.html#get-files-uploaded-to-a-survey-and-move-them-to-s3) (e.g. images, audio, etc.) to a local directory.
 - Tested against [LimeSurvey versions 6 and 7](https://www.limesurvey.org/manual/LimeSurvey_roadmap).
-- An [async client](https://citric.readthedocs.io/en/latest/how-to.html#use-the-async-client) for `asyncio` applications, for LimeSurvey 7+.
+- An [async client](https://citric.readthedocs.io/en/latest/guide/cookbook.html#use-the-async-client) for `asyncio` applications, for LimeSurvey 6+.
 - Experimental support for the new [REST API](https://manual.limesurvey.org/REST_API).
 
 ## Installation

@@ -16,8 +16,8 @@ source text of its methods and applies a few mechanical edits:
 - ``def`` becomes ``async def``.
 - Calls to ``self.session.<rpc>(...)`` and to other generated methods are awaited.
 - ``versionadded``/``versionchanged`` notes are dropped, since they describe the sync
-  method's history, and so are ``minlimesurvey`` notes for versions below
-  :data:`MIN_LIMESURVEY`, which the async client doesn't support.
+  method's history, and so are ``minlimesurvey`` notes for versions up to
+  :data:`MIN_LIMESURVEY`, which every server supported by the async client satisfies.
 
 Methods that can't be derived mechanically (``close``, file IO, ...) are written by hand
 in ``src/citric/aio/client.py`` and listed in :data:`HANDWRITTEN`.
@@ -58,10 +58,10 @@ HANDWRITTEN = frozenset({
 })
 
 #: The async client only supports this LimeSurvey version and later.
-MIN_LIMESURVEY = (7, 0, 0)
+MIN_LIMESURVEY = (6, 0, 0)
 
-#: ``Client`` attributes that depend on the server version, which the async client
-#: doesn't need, since it only supports LimeSurvey 7+.
+#: ``Client`` attributes that can't be awaited. Methods that use them are written by
+#: hand, e.g. ``server_version`` is replaced by ``AsyncClient._server_version()``.
 FORBIDDEN_ATTRIBUTES = frozenset({"server_version"})
 
 HEADER = '''\
@@ -258,7 +258,7 @@ class _Transformer:
 
 def _drop_old_minlimesurvey(match: re.Match[str]) -> str:
     version = tuple(int(part) for part in match["version"].split("."))
-    return "" if version < MIN_LIMESURVEY else match[0]
+    return "" if version <= MIN_LIMESURVEY else match[0]
 
 
 def _strip_version_notes(source: str) -> str:

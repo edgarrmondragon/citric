@@ -64,24 +64,55 @@ async def test_concurrent_calls_authenticate_once(
     assert server.methods().count("list_surveys") == 5
 
 
-async def test_add_response_maps_question_codes(server: RPCServer, client: AsyncClient):
-    """Question titles are mapped to Q-style field names."""
+@pytest.mark.parametrize(
+    ("version", "fieldname"),
+    [
+        pytest.param("7.0.0", "Q11", id="v7"),
+        pytest.param("6.15.0", "123X4X11", id="v6"),
+    ],
+)
+async def test_add_response_maps_question_codes(
+    server: RPCServer,
+    client: AsyncClient,
+    version: str,
+    fieldname: str,
+):
+    """Question titles are mapped to the field names of the server version."""
     server.results["list_questions"] = QUESTIONS
+    server.results["get_site_settings"] = version
     server.results["add_response"] = "42"
 
     assert await client.add_response(123, {"Q1": "yes", "other": "x"}) == 42
 
     assert server.calls[-1] == (
         "add_response",
-        [SESSION_KEY, 123, {"Q11": "yes", "other": "x"}],
+        [SESSION_KEY, 123, {fieldname: "yes", "other": "x"}],
     )
-    # The server version doesn't matter, so it isn't requested
-    assert "get_site_settings" not in server.methods()
+
+
+async def test_server_version_is_requested_once(
+    server: RPCServer,
+    client: AsyncClient,
+):
+    """Concurrent responses share a single, cached server version request."""
+    server.results["list_questions"] = QUESTIONS
+    server.results["get_site_settings"] = "6.15.0"
+    server.results["add_response"] = "1"
+
+    async with anyio.create_task_group() as tg:
+        for _ in range(5):
+            tg.start_soon(client.add_response, 123, {"Q1": "yes"})
+
+    await client.add_response(123, {"Q2": "no"})
+
+    assert server.methods().count("get_site_settings") == 1
+    assert server.methods().count("add_response") == 6
 
 
 async def test_add_responses(server: RPCServer, client: AsyncClient):
     """Several responses are added in order, after a single question lookup."""
     server.results["list_questions"] = QUESTIONS
+    server.results["get_site_settings"] = "7.0.0"
     server.results["add_response"] = "7"
 
     assert await client.add_responses(123, [{"Q1": "a"}, {"Q2": "b"}]) == [7, 7]

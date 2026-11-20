@@ -19,6 +19,7 @@ from typing import TYPE_CHECKING
 
 from citric.aio._client_methods import AsyncClientMethods
 from citric.aio.session import AsyncSession
+from citric.client import ServerVersion
 from citric.transport._constants import DEFAULT_TIMEOUT
 
 if sys.version_info >= (3, 12):
@@ -47,9 +48,7 @@ class AsyncClient(AsyncClientMethods):
 
     .. note::
 
-       The async client only supports LimeSurvey 7.0 and later. Older servers aren't
-       tested, and responses are always keyed by ``Q<question ID>`` fieldnames. Use
-       :class:`citric.Client` for older servers.
+       The async client supports LimeSurvey 6.0 and later.
 
     Args:
         url: LimeSurvey Remote Control endpoint.
@@ -89,6 +88,8 @@ class AsyncClient(AsyncClientMethods):
             transport=transport,
             timeout=timeout,
         )
+        self.__server_version: ServerVersion | None = None
+        self.__server_version_lock = asyncio.Lock()
 
     def _get_rpc_session(  # ruff: ignore[no-self-use]
         self,
@@ -122,6 +123,7 @@ class AsyncClient(AsyncClientMethods):
 
     async def aclose(self) -> None:
         """Close client session."""
+        self.__server_version = None
         await self.session.aclose()
 
     async def __aenter__(self: Self) -> Self:
@@ -141,12 +143,33 @@ class AsyncClient(AsyncClientMethods):
         """Safely exit the client context."""
         await self.aclose()
 
+    async def _server_version(self) -> ServerVersion:
+        """Get the LimeSurvey server version, requesting it only once.
+
+        Returns:
+            The server version.
+        """
+        if self.__server_version is not None:
+            return self.__server_version
+
+        # Concurrent first callers share a single request
+        async with self.__server_version_lock:
+            if self.__server_version is None:
+                self.__server_version = ServerVersion.parse(
+                    await self.get_server_version(),
+                )
+            return self.__server_version
+
     @override
     async def _fieldname_from_question(
         self, question: types.QuestionsListElement
     ) -> str:
-        # LimeSurvey 7+ names response fields after the question ID only
-        return f"Q{question['qid']}"
+        version = await self._server_version()
+        return (
+            f"Q{question['qid']}"
+            if version.major >= 7  # ruff: ignore[magic-value-comparison]
+            else f"{question['sid']}X{question['gid']}X{question['qid']}"
+        )
 
     async def save_responses(  # ruff: ignore[too-many-arguments]
         self,

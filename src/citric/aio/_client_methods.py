@@ -393,6 +393,8 @@ class AsyncClientMethods:  # ruff: ignore[too-many-public-methods]
 
         Returns:
             Dictionary of status message and the new survey ID.
+
+        .. minlimesurveyparam:: 6.4.0 destination_survey_id
         """
         return await self.session.copy_survey(survey_id, name, destination_survey_id)
 
@@ -1285,6 +1287,8 @@ class AsyncClientMethods:  # ruff: ignore[too-many-public-methods]
 
         Returns:
             List of surveys with basic information.
+
+        .. minlimesurveyparam:: 6.10.0 survey_group_id
         """
         return await self.session.list_surveys(username, survey_group_id)
 

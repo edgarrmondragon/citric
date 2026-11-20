@@ -122,7 +122,7 @@ pip install citric[async]
 
 Differences with the sync client to keep in mind:
 
-- It only supports LimeSurvey 7.0 and later.
+- It only supports LimeSurvey 6.0 and later.
 - Close it with {meth}`aclose() <citric.aio.client.AsyncClient.aclose>` or, better, use
   `async with`.
 - There is no `server_version` property, since it would need a request. Use
