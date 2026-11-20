@@ -28,6 +28,7 @@ from typing import IO, TYPE_CHECKING, Any, Literal, overload
 from citric import enums
 from citric._rpc import check_result_status
 from citric.session import Session
+from citric.transport._constants import DEFAULT_TIMEOUT
 from citric.transport._default import _transport_or_default
 from citric.transport.protocol import HTTPTransport  # ruff: ignore[typing-only-first-party-import]
 
@@ -122,33 +123,35 @@ class Client:  # ruff: ignore[too-many-public-methods]
         url: LimeSurvey Remote Control endpoint.
         username: LimeSurvey user name.
         password: LimeSurvey password.
-        transport: An HTTP transport implementing
-            :class:`~citric.transport.protocol.HTTPTransport`, e.g. a
-            :py:class:`requests.Session <requests.Session>` or
-            :class:`~citric.transport.httpx2.Httpx2Transport`. Defaults to a new
-            :py:class:`requests.Session <requests.Session>`.
+        transport: An :doc:`HTTP transport </guide/transports>` implementation.
         requests_session: Deprecated alias of ``transport``.
         auth_plugin: Name of the :ls_manual:`plugin <Authentication_plugins>` to use for
             authentication. For example,
             :ls_manual:`AuthLDAP <Authentication_plugins#LDAP>`. Defaults to using the
             :ls_manual:`internal database <Authentication_plugins#Internal_database>`
             (``"Authdb"``).
+        timeout: Seconds to wait to connect to the server, and then to receive each
+            chunk of the response. Use ``None`` to defer to the transport's own
+            default. Defaults to 300 seconds.
 
     .. versionadded:: 0.0.6
        Support Auth plugins with the ``auth_plugin`` parameter.
 
-    .. version-changed:: NEXT_VERSION
+    .. version-changed:: 3.0.0
         Authentication is deferred until the session key is first needed, instead of
         happening on creation, so bad credentials are reported by the first request.
 
-    .. version-changed:: NEXT_VERSION
+    .. version-changed:: 3.0.0
         The ``requests_session`` parameter was deprecated, use ``transport`` instead.
         It also now accepts any object implementing
         :class:`~citric.transport.protocol.HTTPTransport`, not just
         :py:class:`requests.Session <requests.Session>`.
 
-    .. version-changed:: NEXT_VERSION
+    .. version-changed:: 3.0.0
         The ``Client.session_class`` class attribute  was removed.
+
+    .. version-added:: 3.0.0
+        The ``timeout`` parameter.
     """
 
     def __init__(
@@ -160,6 +163,7 @@ class Client:  # ruff: ignore[too-many-public-methods]
         transport: HTTPTransport | None = None,
         requests_session: HTTPTransport | None = None,
         auth_plugin: str = "Authdb",
+        timeout: float | None = DEFAULT_TIMEOUT,
     ) -> None:
         self.__session = self._get_rpc_session(
             url=url,
@@ -167,6 +171,7 @@ class Client:  # ruff: ignore[too-many-public-methods]
             password=password,
             auth_plugin=auth_plugin,
             transport=_transport_or_default(transport, requests_session),
+            timeout=timeout,
         )
         self.__server_version: ServerVersion | None = None
 
@@ -183,6 +188,7 @@ class Client:  # ruff: ignore[too-many-public-methods]
         password: str,
         auth_plugin: str = "Authdb",
         transport: HTTPTransport | None = None,
+        timeout: float | None = DEFAULT_TIMEOUT,
     ) -> Session:
         """Get the RPC session.
 
@@ -195,6 +201,7 @@ class Client:  # ruff: ignore[too-many-public-methods]
             password,
             auth_plugin=auth_plugin,
             transport=transport,
+            timeout=timeout,
         )
 
     def __enter__(self: Self) -> Self:
@@ -1097,7 +1104,7 @@ class Client:  # ruff: ignore[too-many-public-methods]
 
         .. versionadded:: 0.0.10
 
-        .. version-changed:: NEXT_VERSION
+        .. version-changed:: 3.0.0
             The result is typed as :class:`~citric.types.LanguageProperties`, with
             all keys present, unless ``settings`` is given, in which case it is
             typed as :class:`~citric.types.PartialLanguageProperties`.
@@ -1423,7 +1430,7 @@ class Client:  # ruff: ignore[too-many-public-methods]
         Yields:
             :class:`~citric.types.ReadableFile` dictionaries.
 
-        Example: `Get files uploaded to a survey and move them to S3 </how-to.html#get-files-uploaded-to-a-survey-and-move-them-to-s3>`__
+        Example: :ref:`Get files uploaded to a survey and move them to S3 <cookbook-upload-s3>`.
 
         .. versionadded:: 0.0.13
         .. versionchanged:: 2.0.0
@@ -1832,7 +1839,7 @@ class Client:  # ruff: ignore[too-many-public-methods]
 
         .. versionadded:: 0.0.11
 
-        .. version-changed:: NEXT_VERSION
+        .. version-changed:: 3.0.0
             The properties are typed as :class:`~citric.types.LanguagePropertiesUpdate`,
             which excludes the survey ID and language, as they can't be changed.
         """
@@ -2052,7 +2059,7 @@ class Client:  # ruff: ignore[too-many-public-methods]
         Returns:
             An dictionary with the outcome of the operation.
 
-        .. versionadded:: NEXT_VERSION
+        .. versionadded:: 3.0.0
         """
         r = self.session.call(
             "mail_registered_participants",
@@ -2091,7 +2098,7 @@ class Client:  # ruff: ignore[too-many-public-methods]
         Returns:
             An dictionary with the outcome of the operation.
 
-        .. versionadded:: NEXT_VERSION
+        .. versionadded:: 3.0.0
         """
         r = self.session.call(
             "remind_participants",

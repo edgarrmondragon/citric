@@ -4,7 +4,7 @@
         How-to guides for the Citric LimeSurvey client.
 ```
 
-# How-to Guide
+# Cookbook
 
 For the full JSON-RPC reference, see the [RemoteControl 2 API docs][rc2api].
 
@@ -20,6 +20,45 @@ Otherwise, you can manually close the session with {meth}`client.close() <citric
 ## Get surveys and questions
 
 ```{literalinclude} ../code_samples/get_surveys.py
+:start-after: start example
+:end-before: end example
+```
+
+## Run requests concurrently with `asyncio`
+
+If you can't use {class}`AsyncClient <citric.aio.client.AsyncClient>` (see
+[Use the async client](#use-the-async-client)), the blocking client can be used from
+`asyncio` code with {func}`asyncio.to_thread`. Each call runs in a worker thread, so
+independent calls, like fetching the properties of many surveys, overlap instead of
+running one after the other. Authentication is thread-safe, so concurrent calls on a
+new client share a single session key.
+
+Worker threads share the client's HTTP transport. Both
+{class}`~citric.transport.urllib3.Urllib3Transport` and
+{class}`~citric.transport.httpx2.Httpx2Transport` are considered safe for
+concurrent use.
+
+:::{caution}
+If you pass a {py:class}`requests.Session` instance as the transport, note that it isn't 100% guaranteed to be thread-safe.
+:::
+
+The samples use {func}`asyncio.gather` with `return_exceptions=True` so that every worker
+thread has finished before the client is closed. Cancelling an `asyncio` task doesn't stop
+its thread, so if the surrounding coroutine itself is cancelled, calls already running
+may still be in flight when the client closes.
+
+```{literalinclude} ../code_samples/asyncio_to_thread.py
+:start-after: start example
+:end-before: end example
+```
+
+To limit the load on the server, bound the concurrency with a semaphore and size the
+connection pool accordingly. With {class}`~citric.transport.urllib3.Urllib3Transport`
+that's `maxsize`; with {class}`~citric.transport.httpx2.Httpx2Transport`, it's
+`max_connections` and `max_keepalive_connections`; with {py:class}`requests.Session`,
+mount an {py:class}`~requests.adapters.HTTPAdapter` with `pool_maxsize`:
+
+```{literalinclude} ../code_samples/asyncio_to_thread_bounded.py
 :start-after: start example
 :end-before: end example
 ```
@@ -55,35 +94,11 @@ import them with {meth}`client.import_question() <citric.Client.import_question>
 :end-before: end example
 ```
 
-## Change the default HTTP transport attributes
-
-```{literalinclude} ../code_samples/transport_attributes.py
-:start-after: start example
-:end-before: end example
-```
-
 ## Use a different HTTP transport
 
-By default, {class}`Client <citric.Client>` and
-{class}`Session <citric.session.Session>` send requests with `requests`. Any
-object that implements the
-{class}`HTTPTransport <citric.transport.protocol.HTTPTransport>` protocol (a
-`request` method and a `close` method) can be passed as `transport`
-instead, including a plain
-[`requests.Session`](inv:requests:py:class:api/#requests.Session) with a custom
-adapter mounted.
+You can read more about the subject in the [dedicated guide](./transports.md).
 
-citric ships two ready-made alternative transports:
-
-- {class}`citric.transport.httpx2.Httpx2Transport`, backed by
-  [`httpx2`](https://github.com/pydantic/httpx2). It isn't a dependency of
-  citric itself, so install it separately with `pip install httpx2`.
-- {class}`citric.transport.urllib3.Urllib3Transport`, backed by
-  [`urllib3`](https://urllib3.readthedocs.io) directly, without `requests` in
-  the loop. `urllib3` is a dependency of citric, so it is installed with it and
-  you don't need to install anything else.
-
-```{literalinclude} ../code_samples/custom_transport.py
+```{literalinclude} ../code_samples/non_default_transport.py
 :start-after: start example
 :end-before: end example
 ```
@@ -124,21 +139,8 @@ Differences with the sync client to keep in mind:
   {class}`AsyncHTTPTransport <citric.aio.transport.protocol.AsyncHTTPTransport>`, with
   `async request` and `async aclose` methods.
 
-If you can't switch to `AsyncClient`, the blocking client can also be used from
-`asyncio` code with {func}`asyncio.to_thread`, as long as its transport is safe for
-concurrent use, like {class}`~citric.transport.urllib3.Urllib3Transport`.
-
-## Use a custom `requests`-based transport
-
-Any subclass of [`requests.Session`](inv:requests:py:class:api/#requests.Session)
-is also a valid transport, so you can use
-[`requests-cache`](inv:requests-cache:std#general) to cache the requests and
-reduce the load on your server in read-intensive applications:
-
-```{literalinclude} ../code_samples/custom_requests_session.py
-:start-after: start example
-:end-before: end example
-```
+If you can't switch to `AsyncClient`, see
+[Run requests concurrently with `asyncio`](#run-requests-concurrently-with-asyncio).
 
 ## Use a different authentication plugin
 
@@ -159,6 +161,8 @@ Common plugins are `Authdb` (default), `AuthLDAP` and `Authwebserver`.
 :start-after: start example
 :end-before: end example
 ```
+
+(cookbook-upload-s3)=
 
 ## Get files uploaded to a survey and move them to S3
 

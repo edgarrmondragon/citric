@@ -1,5 +1,0 @@
-kind: Typing
-body: Update `Client.list_surveys` return type to mark `startdate` and `expires` as nullable
-time: 2026-10-15T00:08:25.746686-06:00
-custom:
-    Issue: "1871"

@@ -60,10 +60,17 @@ class _RecordingTransport(AsyncHttpx2Transport):
         *,
         data: str | None = None,
         headers: Mapping[str, str] | None = None,
+        timeout: float | None = None,
     ) -> HTTPResponse:
         if isinstance(data, str):
             self.rpc_methods.append(json.loads(data)["method"])
-        return await super().request(method, url, data=data, headers=headers)
+        return await super().request(
+            method,
+            url,
+            data=data,
+            headers=headers,
+            timeout=timeout,
+        )
 
 
 @pytest.fixture

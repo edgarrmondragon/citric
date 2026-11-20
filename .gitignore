@@ -2,7 +2,8 @@
 uv.lock
 
 # Agents
-.claude/
+.claude/*
+!.claude/skills/
 
 # Temp files
 *.temp.*

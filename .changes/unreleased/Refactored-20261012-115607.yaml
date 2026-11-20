@@ -1,5 +1,0 @@
-kind: Refactored
-body: Handle explicit RPC errors early
-time: 2026-10-12T11:56:07.145109-06:00
-custom:
-    Issue: "1857"

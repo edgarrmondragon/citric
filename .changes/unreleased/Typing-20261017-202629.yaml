@@ -1,5 +1,0 @@
-kind: Typing
-body: Fixed and added fields in `types.SurveyProperties` to match LimeSurvey responses, and added `welcomeImage` to the REST survey type
-time: 2026-10-17T20:26:29-06:00
-custom:
-    Issue: "1876"

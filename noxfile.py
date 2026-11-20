@@ -5,7 +5,7 @@
 # /// script
 # dependencies = [
 #   "nox>=2026.8.17",
-#   "pyyaml>=6",
+#   "yamlstar>=0.1.28",
 # ]
 # ///
 
@@ -18,19 +18,18 @@ import shutil
 from pathlib import Path
 
 import nox
-import yaml
+import yamlstar
 
 GH_ACTIONS_ENV_VAR = "GITHUB_ACTIONS"
 FORCE_COLOR = "FORCE_COLOR"
 
-with Path(".readthedocs.yaml").open(encoding="utf-8") as f:
-    readthedocs_config = yaml.safe_load(f)
-    DOCS_PYTHON = readthedocs_config["build"]["tools"]["python"]
+ys = yamlstar.YAMLStar()
+readthedocs_config = ys.load(Path(".readthedocs.yaml").read_text(encoding="utf-8"))
+DOCS_PYTHON = readthedocs_config["build"]["tools"]["python"]
 
 PYPROJECT = nox.project.load_toml()
 
-with Path(".pre-commit-config.yaml").open(encoding="utf-8") as f:
-    PRE_COMMIT_CONFIG = yaml.safe_load(f)
+PRE_COMMIT_CONFIG = ys.load(Path(".pre-commit-config.yaml").read_text(encoding="utf-8"))
 
 nox.needs_version = ">=2026.8.17"
 nox.options.default_venv_backend = "uv"
@@ -40,9 +39,8 @@ nox.options.reuse_venv = "yes"
 package = "citric"
 
 python_versions = [
-    *nox.project.python_versions(PYPROJECT),
-    "3.14t",
-    "3.15t",
+    *nox.project.python_versions(PYPROJECT, free_threaded=False),
+    "3.16t",
 ]
 
 
@@ -78,7 +76,7 @@ def async_client(session: nox.Session) -> None:
 @nox.session(tags=["lint", "types"], allow_parallel=True)
 def typing(session: nox.Session) -> None:
     """Type-check using mypy."""
-    locations = ("src", "tests", "docs/conf.py", "code_samples")
+    locations = ("src", "tests", "docs/conf.py", "docs/code_samples")
     args = session.posargs or locations
     gha = os.getenv("GITHUB_ACTIONS") == "true"
 
@@ -120,12 +118,7 @@ def docs_build(session: nox.Session) -> None:
     session.install(".", "-r=requirements/docs.requirements.txt")
     shutil.rmtree("build", ignore_errors=True)
 
-    args = ["docs", "build"]
-    extra_args = session.posargs or ("--quiet",)
-    if not args and FORCE_COLOR in os.environ:
-        args.insert(0, "--color")
-
-    session.run(
+    cmd = [
         "python",
         "-m",
         "sphinx",
@@ -133,11 +126,14 @@ def docs_build(session: nox.Session) -> None:
         "--fail-on-warning",
         "--keep-going",
         "--jobs=auto",
-        "--builder=html",
         "--define=language=en",
-        *args,
-        *extra_args,
-    )
+        "--quiet",
+        "--builder=html",
+    ]
+    if FORCE_COLOR in os.environ:
+        cmd.append("--color")
+
+    session.run(*cmd, "docs", "build")
 
 
 @nox.session(tags=["test"], allow_parallel=True)

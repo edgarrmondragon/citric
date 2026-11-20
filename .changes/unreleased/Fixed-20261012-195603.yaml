@@ -1,5 +1,0 @@
-kind: Fixed
-body: Anchor regex used to match the "emails left to send" count in `invite_participants`
-time: 2026-10-12T19:56:03.265334-06:00
-custom:
-    Issue: "1863"

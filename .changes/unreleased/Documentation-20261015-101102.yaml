@@ -1,5 +1,0 @@
-kind: Documentation
-body: Fix "Update question answers using the REST API" to use the correct method
-time: 2026-10-15T10:11:02.248517-06:00
-custom:
-    Issue: "1872"

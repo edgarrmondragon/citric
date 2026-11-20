@@ -1,6 +1,5 @@
 enabled: true
-titleAndCommits: true
-anyCommit: true
+titleOnly: true
 
 types:
 - feat

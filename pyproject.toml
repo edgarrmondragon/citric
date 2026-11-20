@@ -6,7 +6,7 @@ requires = [
 
 [project]
 name = "citric"
-version = "2.3.0"
+version = "3.0.0"
 description = "A client to the LimeSurvey Remote Control API 2, written in modern Python."
 readme = "README.md"
 keywords = [
@@ -59,7 +59,6 @@ Repository = "https://github.com/edgarrmondragon/citric"
 dev = [
   "colorama>=0.4.6",
   "deptry>=0.12",
-  "requests-cache>=1.1",
   { include-group = "docs" },
   { include-group = "samples" },
   { include-group = "test" },
@@ -80,7 +79,6 @@ test = [
   "python-dotenv>=1",
   "semver>=3.0.1",
   "tinydb>=4.8",
-  "tomli>=2.3",
   "typeguard>=4.6",
   "xdoctest[colors]>=1.1.1",
 ]
@@ -93,6 +91,7 @@ docs = [
   "sphinx-copybutton>=0.5.2",
   "sphinx-llm>=0.3",
   "sphinx-notfound-page>=1",
+  "sphinx-reredirects>=1.1",
 ]
 docs-serve = [
   "sphinx-autobuild>=2024.10.3",
@@ -112,8 +111,6 @@ typing = [
   "pyright>=1.1.408",
   "sphinx",
   "ty>=0.0.1a15",
-  "types-requests>=2.31.0.2",
-  "typing-extensions>=4.6; python_version<'3.12'",
   { include-group = "test" },
 ]
 
@@ -252,6 +249,8 @@ pydocstyle.convention = "google"
 pylint.max-args = 10
 preview = true
 
+[tool.deptry]
+extend_exclude = [ "docs/code_samples" ]
 [tool.deptry.per_rule_ignores]
 DEP001 = [
   # Notebook dependencies
@@ -276,6 +275,8 @@ table_format = "long"
 
 [tool.typos]
 [tool.typos.default]
+extend-words.astroid = "astroid"  # https://pypi.org/project/astroid/
+extend-words.certifi = "certifi"  # https://pypi.org/project/certifi/
 extend-words.erronous = "erronous"  # This is a typo in a LimeSurvey API field name
 extend-words.intoto = "intoto"  # https://in-toto.io/
 

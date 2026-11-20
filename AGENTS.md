@@ -8,6 +8,7 @@ Citric is a Python client for the LimeSurvey RemoteControl 2 (JSON-RPC) and REST
 | Run tests, integration tests, or choose a LimeSurvey version | [testing.md](docs/contributing/testing.md) |
 | Run a single test, debug a failure, clear stuck Docker ports, fix a TypedDict against LimeSurvey's source, add a changelog entry | [dev-tasks.md](docs/contributing/dev-tasks.md) |
 | Document a feature that needs a minimum LimeSurvey version | [new-limesurvey-features.md](docs/contributing/new-limesurvey-features.md) |
+| Check LimeSurvey's source for RPC or REST API changes to keep Citric in sync | [limesurvey-sync skill](.claude/skills/limesurvey-sync/SKILL.md) |
 | Build or serve the docs | [docs.md](docs/contributing/docs.md) |
 | Update dependencies | [update-dependencies.md](docs/contributing/update-dependencies.md) |
 | Cut a release | [release.md](docs/contributing/release.md) |

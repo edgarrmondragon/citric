@@ -1,5 +1,0 @@
-kind: Removed
-body: The `Client.session_class` class attribute was removed
-time: 2026-10-13T19:53:39.979801-06:00
-custom:
-    Issue: "1867"

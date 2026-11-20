@@ -5,12 +5,16 @@
 from __future__ import annotations
 
 import json
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
+from unittest.mock import AsyncMock, patch
 
 import anyio
+import httpx2
 import pytest
 from werkzeug.wrappers import Response
 
+from citric.aio.client import AsyncClient
+from citric.aio.session import AsyncSession
 from citric.aio.transport.httpx2 import AsyncHttpx2Transport
 from citric.aio.transport.protocol import AsyncHTTPTransport
 
@@ -31,6 +35,7 @@ class _GoodTransport:
         *,
         data: str | None = None,
         headers: Mapping[str, str] | None = None,
+        timeout: float | None = None,
     ) -> HTTPResponse:
         raise NotImplementedError
 
@@ -131,3 +136,70 @@ async def test_httpx2_transport_closed(httpserver: HTTPServer):
 
     with pytest.raises(RuntimeError):
         await transport.request("POST", httpserver.url_for("/"))
+
+
+class _TimeoutRecordingTransport:
+    """Transport that records the timeout of each request."""
+
+    def __init__(self) -> None:
+        self.timeouts: list[float | None] = []
+
+    async def request(
+        self,
+        method: str,
+        url: str,
+        *,
+        data: str | None = None,
+        headers: Mapping[str, str] | None = None,
+        timeout: float | None = None,
+    ) -> HTTPResponse:
+        self.timeouts.append(timeout)
+        request_id = json.loads(data)["id"] if data else None
+        return httpx2.Response(
+            200,
+            json={"id": request_id, "result": "key", "error": None},
+        )
+
+    async def aclose(self) -> None:
+        pass
+
+
+@pytest.mark.anyio
+@pytest.mark.parametrize(
+    ("kwargs", "expected"),
+    [
+        pytest.param({}, 300.0, id="default"),
+        pytest.param({"timeout": 5}, 5, id="custom"),
+        pytest.param({"timeout": None}, None, id="none"),
+    ],
+)
+async def test_clients_pass_timeout_to_transport(
+    kwargs: dict[str, Any],
+    expected: float | None,
+):
+    """`AsyncSession` and `AsyncClient` pass their timeout to the transport."""
+    transport = _TimeoutRecordingTransport()
+    session = AsyncSession("mock://lime.com", "u", "p", transport=transport, **kwargs)
+    await session.get_key()
+    assert transport.timeouts == [expected]
+
+    transport = _TimeoutRecordingTransport()
+    client = AsyncClient("mock://lime.com", "u", "p", transport=transport, **kwargs)
+    await client.session.get_key()
+    assert transport.timeouts == [expected]
+
+
+@pytest.mark.anyio
+async def test_httpx2_transport_default_timeout() -> None:
+    """Without a timeout, the client's own timeout applies."""
+    transport = AsyncHttpx2Transport()
+    request = AsyncMock(return_value=httpx2.Response(200, json={}))
+
+    with patch.object(transport._client, "request", request):
+        await transport.request("GET", "http://example.com")
+        await transport.request("GET", "http://example.com", timeout=3)
+
+    first, second = request.call_args_list
+    assert "timeout" not in first.kwargs
+    assert second.kwargs["timeout"] == 3
+    await transport.aclose()

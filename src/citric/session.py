@@ -18,6 +18,7 @@ from typing import TYPE_CHECKING, Any, Type  # ruff: ignore[deprecated-import]
 
 from citric import _rpc
 from citric.method import Method
+from citric.transport._constants import DEFAULT_TIMEOUT
 from citric.transport._default import _transport_or_default
 
 if TYPE_CHECKING:
@@ -45,11 +46,7 @@ class Session:
         url: LimeSurvey Remote Control endpoint.
         username: LimeSurvey user name.
         password: LimeSurvey password.
-        transport: An HTTP transport implementing
-            :class:`~citric.transport.protocol.HTTPTransport`, e.g. a
-            :py:class:`requests.Session <requests.Session>` or
-            :class:`~citric.transport.httpx2.Httpx2Transport`. Defaults to a new
-            :py:class:`requests.Session <requests.Session>`.
+        transport: An :doc:`HTTP transport </guide/transports>` implementation.
         requests_session: Deprecated alias of ``transport``.
         auth_plugin: Name of the :ls_manual:`plugin <Authentication_plugins>` to use for
             authentication. For example,
@@ -58,6 +55,9 @@ class Session:
             (``"Authdb"``).
         json_encoder: A :py:class:`json.Encoder <json.JSONEncoder>` subclass to use for
             encoding RPC parameters.
+        timeout: Seconds to wait to connect to the server, and then to receive each
+            chunk of the response. Use ``None`` to defer to the transport's own
+            default. Defaults to 300 seconds.
 
     .. versionchanged:: 0.0.4
        Replaced the ``requests_session_factory`` parameter with ``requests_session``.
@@ -68,17 +68,20 @@ class Session:
     .. versionadded:: 0.5.0
        The ``json_encoder`` parameter.
 
-    .. version-changed:: NEXT_VERSION
+    .. version-changed:: 3.0.0
         The ``requests_session`` parameter was deprecated, use ``transport`` instead.
         It also now accepts any object implementing
         :class:`~citric.transport.protocol.HTTPTransport`, not just
         :py:class:`requests.Session <requests.Session>`.
 
-    .. version-changed:: NEXT_VERSION
+    .. version-changed:: 3.0.0
         Authentication is deferred until the session key is first needed, instead of
         happening on creation. Credentials are kept in memory until then, or until
         the session is closed. Deferred authentication is thread-safe: concurrent
         users of a new session authenticate only once.
+
+    .. version-added:: 3.0.0
+        The ``timeout`` parameter.
 
     .. _key: #citric.session.Session.key
     .. _closure: #citric.session.Session.close
@@ -96,8 +99,10 @@ class Session:
         transport: HTTPTransport | None = None,
         requests_session: HTTPTransport | None = None,
         json_encoder: Type[json.JSONEncoder] | None = None,  # ruff: ignore[non-pep585-annotation]
+        timeout: float | None = DEFAULT_TIMEOUT,
     ) -> None:
         self.url: str = url
+        self._timeout = timeout
         self._transport = _transport_or_default(transport, requests_session)
         self._encoder = json_encoder or json.JSONEncoder
         self.__lock = threading.RLock()
@@ -178,6 +183,7 @@ class Session:
             self.url,
             data=_rpc.encode_request(payload, self._encoder),
             headers=_rpc.request_headers(),
+            timeout=self._timeout,
         )
 
     def _invoke(self, method: str, *params: Any) -> RPCResponse:

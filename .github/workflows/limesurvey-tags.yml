@@ -10,7 +10,7 @@ env:
   # renovate: datasource=pypi depName=nox
   NOX_VERSION: 2026.10.20
   # renovate: datasource=pypi depName=uv
-  UV_VERSION: 0.13.1
+  UV_VERSION: 0.13.7
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
@@ -25,7 +25,7 @@ jobs:
     permissions:
       pull-requests: write  # to create and update PRs
     steps:
-    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+    - uses: actions/checkout@v7.0.1
       with:
         persist-credentials: false
 
@@ -41,7 +41,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+    - uses: actions/create-github-app-token@v3.3.0
       id: generate-token
       with:
         client-id: ${{ vars.APP_ID }}

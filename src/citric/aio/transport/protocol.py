@@ -40,8 +40,22 @@ class AsyncHTTPTransport(Protocol):
         *,
         data: str | None = None,
         headers: Mapping[str, str] | None = None,
+        timeout: float | None = None,
     ) -> HTTPResponse:
-        """Send an HTTP request."""
+        """Send an HTTP request.
+
+        Args:
+            method: The HTTP method.
+            url: The server URL.
+            data: The request body.
+            headers: The HTTP headers.
+            timeout: Seconds to wait to connect to the server, and then to receive
+                each chunk of the response. If ``None``, use the transport's own
+                default.
+
+        Returns:
+            A response object, with its body already read.
+        """
         ...
 
     async def aclose(self) -> None:

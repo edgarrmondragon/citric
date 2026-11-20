@@ -17,6 +17,7 @@ from typing import TYPE_CHECKING, Any, Type  # ruff: ignore[deprecated-import]
 
 from citric import _rpc
 from citric.method import Method
+from citric.transport._constants import DEFAULT_TIMEOUT
 
 if TYPE_CHECKING:
     from collections.abc import Coroutine
@@ -74,6 +75,9 @@ class AsyncSession:
             (``"Authdb"``).
         json_encoder: A :py:class:`json.Encoder <json.JSONEncoder>` subclass to use for
             encoding RPC parameters.
+        timeout: Seconds to wait to connect to the server, and then to receive each
+            chunk of the response. Use ``None`` to defer to the transport's own
+            default. Defaults to 300 seconds.
 
     .. versionadded:: NEXT_VERSION
     """
@@ -89,11 +93,13 @@ class AsyncSession:
         auth_plugin: str = "Authdb",
         transport: AsyncHTTPTransport | None = None,
         json_encoder: Type[json.JSONEncoder] | None = None,  # ruff: ignore[non-pep585-annotation]
+        timeout: float | None = DEFAULT_TIMEOUT,
     ) -> None:
         if transport is None:
             transport = _default_transport()
 
         self.url: str = url
+        self._timeout = timeout
         self._transport = transport
         self._encoder = json_encoder or json.JSONEncoder
         self.__lock = asyncio.Lock()
@@ -178,6 +184,7 @@ class AsyncSession:
             self.url,
             data=_rpc.encode_request(payload, self._encoder),
             headers=_rpc.request_headers(),
+            timeout=self._timeout,
         )
         return _rpc.parse_response(res, payload)
 

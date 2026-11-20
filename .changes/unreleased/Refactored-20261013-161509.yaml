@@ -1,5 +1,0 @@
-kind: Refactored
-body: Renamed private `Session._session` and `RESTClient._session` attributes to `_transport`
-time: 2026-10-13T16:15:09.899778-06:00
-custom:
-    Issue: "1851"

@@ -19,6 +19,7 @@ from typing import TYPE_CHECKING
 
 from citric.aio._client_methods import AsyncClientMethods
 from citric.aio.session import AsyncSession
+from citric.transport._constants import DEFAULT_TIMEOUT
 
 if sys.version_info >= (3, 12):
     from typing import override
@@ -63,6 +64,9 @@ class AsyncClient(AsyncClientMethods):
             :ls_manual:`AuthLDAP <Authentication_plugins#LDAP>`. Defaults to using the
             :ls_manual:`internal database <Authentication_plugins#Internal_database>`
             (``"Authdb"``).
+        timeout: Seconds to wait to connect to the server, and then to receive each
+            chunk of the response. Use ``None`` to defer to the transport's own
+            default. Defaults to 300 seconds.
 
     .. versionadded:: NEXT_VERSION
     """
@@ -75,6 +79,7 @@ class AsyncClient(AsyncClientMethods):
         *,
         transport: AsyncHTTPTransport | None = None,
         auth_plugin: str = "Authdb",
+        timeout: float | None = DEFAULT_TIMEOUT,
     ) -> None:
         self.__session = self._get_rpc_session(
             url=url,
@@ -82,6 +87,7 @@ class AsyncClient(AsyncClientMethods):
             password=password,
             auth_plugin=auth_plugin,
             transport=transport,
+            timeout=timeout,
         )
 
     def _get_rpc_session(  # ruff: ignore[no-self-use]
@@ -92,6 +98,7 @@ class AsyncClient(AsyncClientMethods):
         password: str,
         auth_plugin: str = "Authdb",
         transport: AsyncHTTPTransport | None = None,
+        timeout: float | None = DEFAULT_TIMEOUT,
     ) -> AsyncSession:
         """Get the RPC session.
 
@@ -104,6 +111,7 @@ class AsyncClient(AsyncClientMethods):
             password,
             auth_plugin=auth_plugin,
             transport=transport,
+            timeout=timeout,
         )
 
     @property

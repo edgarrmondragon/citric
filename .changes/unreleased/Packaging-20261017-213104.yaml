@@ -1,5 +1,0 @@
-kind: Packaging
-body: Drop support for Python 3.10
-time: 2026-10-17T21:31:04.783713-06:00
-custom:
-    Issue: "1877"

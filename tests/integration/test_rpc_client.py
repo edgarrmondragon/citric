@@ -5,6 +5,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import csv
 import functools
 import io
@@ -12,11 +13,15 @@ import json
 import operator
 import random
 import string
+import sys
+import threading
+import time
 import uuid
+from concurrent.futures import ThreadPoolExecutor
 from contextlib import contextmanager
 from datetime import datetime
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 from unittest.mock import patch
 from urllib.parse import quote
 
@@ -31,18 +36,27 @@ import citric.objects
 from citric import enums
 from citric.exceptions import LimeSurveyApiError, LimeSurveyStatusError
 from citric.objects import Participant
+from citric.transport.urllib3 import Urllib3Transport
 from citric.types import (
+    CPDBParticipantImportResult,
     LanguageProperties,
     PartialLanguageProperties,
+    QuestionProperties,
     SurveyListElement,
     SurveyProperties,
 )
 
+if sys.version_info >= (3, 12):
+    from typing import override
+else:
+    from typing_extensions import override
+
 if TYPE_CHECKING:
-    from collections.abc import Generator, Iterable
+    from collections.abc import Generator, Iterable, Mapping
 
     import semver
 
+    from citric.transport.protocol import HTTPResponse
     from citric.types import (
         FileUploadResult,
         ParticipantData,
@@ -569,9 +583,11 @@ def test_import_question_answer_options(
 
     for language in ["en", "es"]:
         with subtests.test(msg=f"{language=}"):
-            props = get_props(language=language)
+            props = check_type(get_props(language=language), QuestionProperties)
+            answer_options_by_code = props["answeroptions"]
+            assert isinstance(answer_options_by_code, dict)
             options = sorted(
-                props["answeroptions"].values(),
+                answer_options_by_code.values(),
                 key=operator.itemgetter("order"),
             )
 
@@ -804,8 +820,8 @@ def test_participants(
             assert ple["participant_info"]["email"] == d["email"]
             assert ple["participant_info"]["firstname"] == d["firstname"]
             assert ple["participant_info"]["lastname"] == d["lastname"]
-            assert ple["attribute_1"] == d["attribute_1"]  # type: ignore[typeddict-item]  # ty:ignore[invalid-key]
-            assert ple["attribute_2"] == d["attribute_2"]  # type: ignore[typeddict-item]  # ty:ignore[invalid-key]
+            assert ple["attribute_1"] == d["attribute_1"]  # type: ignore[typeddict-item]  # ty:ignore[invalid-typed-dict-key]
+            assert ple["attribute_2"] == d["attribute_2"]  # type: ignore[typeddict-item]  # ty:ignore[invalid-typed-dict-key]
 
     # Get participant properties
     for p, d in zip(added, participants[:2], strict=False):
@@ -1413,8 +1429,23 @@ def test_missing_setting(client: citric.Client, server_version: semver.VersionIn
 
 
 @pytest.mark.integration_test
-def test_cpdb(faker: Faker, client: citric.Client):
+def test_cpdb(
+    faker: Faker,
+    client: citric.Client,
+    server_version: semver.VersionInfo,
+) -> None:
     """Test the CPDB methods."""
+
+    def check_response(
+        participants: list[Participant],
+        *,
+        update: bool = False,
+    ) -> CPDBParticipantImportResult:
+        return check_type(
+            client.import_cpdb_participants(participants, update=update),
+            CPDBParticipantImportResult,
+        )
+
     participants = [
         Participant(
             email=faker.email(),
@@ -1432,11 +1463,8 @@ def test_cpdb(faker: Faker, client: citric.Client):
             participant_id=uuid.uuid4(),
         ),
     ]
-
-    assert client.import_cpdb_participants(participants) == IsPartialDict(
-        ImportCount=2,
-        UpdateCount=0,
-    )
+    imported = check_response(participants)
+    assert imported == IsPartialDict(ImportCount=2, UpdateCount=0)
 
     more_participants = [
         Participant(
@@ -1455,13 +1483,31 @@ def test_cpdb(faker: Faker, client: citric.Client):
             participant_id=uuid.uuid4(),
         ),
     ]
-    assert client.import_cpdb_participants(
-        more_participants,
-        update=True,
-    ) == IsPartialDict(
-        ImportCount=1,
-        UpdateCount=1,
-    )
+    imported = check_response(more_participants, update=True)
+    assert imported == IsPartialDict(ImportCount=1, UpdateCount=1)
+
+    # Versions 3.0.0 to 7.8.0 don't return InvalidParticipantIds
+    # https://github.com/LimeSurvey/LimeSurvey/commit/072449e7b87f94ca6c69771e98abcd56435e9697
+    # https://github.com/LimeSurvey/LimeSurvey/commit/4cd281828422abf94468052016eba8897d5ec9aa
+    if (
+        # 6.17.19 and later 6.x
+        server_version.major == 6 and server_version >= (6, 17, 19)
+    ) or (
+        # 7.9.0 and later
+        server_version >= (7, 9, 0)
+    ):
+        invalid_participant_id = Participant(
+            email=faker.email(),
+            firstname=faker.first_name(),
+            lastname=faker.last_name(),
+            participant_id="not-a-valid-uuid",  # type: ignore[arg-type] # ty: ignore[invalid-argument-type]
+        )
+        imported = check_response([invalid_participant_id])
+        assert imported == IsPartialDict(
+            ImportCount=0,
+            UpdateCount=0,
+            InvalidParticipantIds=["not-a-valid-uuid"],
+        )
 
 
 @pytest.mark.integration_test
@@ -1659,3 +1705,86 @@ def test_save_statistics(client: citric.Client, survey_id: int, tmp_path: Path):
     # Find the table elements
     tables = soup.find_all("table")
     assert len(tables) == 4  # One for each question
+
+
+class _RecordingTransport(Urllib3Transport):
+    """Transport that records the RPC method of every request it sends.
+
+    Authentication requests are slowed down, so that concurrent callers overlap with
+    it and would each start their own session if the session weren't locked.
+    """
+
+    def __init__(self, **kwargs: Any) -> None:
+        super().__init__(**kwargs)
+        self.rpc_methods: list[str] = []
+        self._lock = threading.Lock()
+
+    @override
+    def request(
+        self,
+        method: str,
+        url: str,
+        *,
+        data: str | bytes | Iterable[bytes] | None = None,
+        headers: Mapping[str, str] | None = None,
+        timeout: float | None = None,
+    ) -> HTTPResponse:
+        rpc_method = json.loads(data)["method"] if isinstance(data, str) else None
+        assert rpc_method is not None, "RPC method should not be None"
+        with self._lock:
+            self.rpc_methods.append(rpc_method)
+        if rpc_method == "get_session_key":
+            time.sleep(0.5)
+        return super().request(
+            method,
+            url,
+            data=data,
+            headers=headers,
+            timeout=timeout,
+        )
+
+
+@pytest.mark.integration_test
+def test_async_to_thread(
+    integration_url: str,
+    integration_username: str,
+    integration_password: str,
+    client: citric.Client,
+    survey_id: int,
+):
+    """Concurrent first calls on a new client authenticate only once."""
+    # Use a different, already authenticated client to look up the questions, so
+    # the client under test makes its first request from the worker threads.
+    question_ids = [q["qid"] for q in client.list_questions(survey_id)]
+    assert len(question_ids) >= 3
+
+    transport = _RecordingTransport(maxsize=len(question_ids))
+
+    async def fetch_all(new_client: citric.Client) -> list[Any]:
+        # A dedicated executor with a thread per call guarantees the calls overlap.
+        with ThreadPoolExecutor(max_workers=len(question_ids)) as executor:
+            loop = asyncio.get_running_loop()
+            # Wait for every worker thread, even if some calls fail, before the
+            # client is closed.
+            return await asyncio.gather(
+                *(
+                    loop.run_in_executor(
+                        executor, new_client.get_question_properties, qid
+                    )
+                    for qid in question_ids
+                ),
+                return_exceptions=True,
+            )
+
+    with citric.Client(
+        f"{integration_url}/index.php/admin/remotecontrol",
+        integration_username,
+        integration_password,
+        transport=transport,
+    ) as new_client:
+        results = asyncio.run(fetch_all(new_client))
+
+    exceptions = [r for r in results if isinstance(r, BaseException)]
+    assert not exceptions
+    assert all("question" in props for props in results)
+    assert transport.rpc_methods.count("get_session_key") == 1
