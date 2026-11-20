@@ -19,8 +19,8 @@ update-tags:
 
 # Update docs requirements
 update-docs:
-    rm requirements/docs.requirements.txt
-    uv pip compile pyproject.toml --group=docs --python-version=3.14 --output-file=requirements/docs.requirements.txt
+    rm requirements/pylock.docs.toml
+    uv pip compile pyproject.toml --group=docs --python-platform=linux --python-version=3.14 --format=pylock.toml --output-file=requirements/pylock.docs.toml
 
 # Serve docs
 docs-serve:

@@ -115,7 +115,8 @@ def typing(session: nox.Session) -> None:
 @nox.session(name="docs-build", python=DOCS_PYTHON)
 def docs_build(session: nox.Session) -> None:
     """Build the documentation."""
-    session.install(".", "-r=requirements/docs.requirements.txt")
+    session.install("-r=requirements/pylock.docs.toml")
+    session.install(".")
     shutil.rmtree("build", ignore_errors=True)
 
     cmd = [
