@@ -42,7 +42,8 @@ async def main() -> None:
     finally:
         # `close` sends a blocking request to release the session key, so keep it
         # off the event loop. Shielding it lets the request finish even if this task
-        # is cancelled.
+        # is cancelled, but it doesn't wait for the other worker threads: calls from
+        # cancelled tasks may still be running when the session key is released.
         await asyncio.shield(asyncio.to_thread(client.close))
 
 
