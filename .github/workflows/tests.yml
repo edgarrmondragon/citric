@@ -167,7 +167,7 @@ jobs:
         uv-version: ${{ env.UV_VERSION }}
         uv-cache-suffix: lint
 
-    - uses: j178/prek-action@v3.1.0
+    - uses: j178/prek-action@v3.1.1
     - run: ./noxfile.py -t lint
 
   docker_tags:

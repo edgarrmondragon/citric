@@ -34,13 +34,13 @@ repos:
           - pyjson5==2.0.1
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.17.4
+    rev: v0.17.6
     hooks:
       - id: ruff-check
       - id: ruff-format
 
   - repo: https://github.com/crate-ci/typos
-    rev: v1.52.0
+    rev: v1.52.2
     hooks:
       - id: typos
         args: []
@@ -52,12 +52,12 @@ repos:
         args: [--all]
 
   - repo: https://github.com/tox-dev/pyproject-fmt
-    rev: v2.30.6
+    rev: v2.31.2
     hooks:
       - id: pyproject-fmt
 
   - repo: https://github.com/astral-sh/uv-pre-commit
-    rev: "0.13.7"
+    rev: "0.13.9"
     hooks:
       - id: pip-compile
         files: ^(pyproject\.toml|pylock\.docs\.toml)$

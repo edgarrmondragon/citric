@@ -36,9 +36,9 @@ wheels = [{ url = "https://files.pythonhosted.org/packages/88/c6/92fcd42f1ba33e1
 
 [[packages]]
 name = "certifi"
-version = "2026.10.23"
-sdist = { url = "https://files.pythonhosted.org/packages/fd/11/b524cbd9bbdaca58608e4cf4053fd463417549e1959fa8d3aa18319f9555/certifi-2026.10.23.tar.gz", upload-time = 2026-10-23T11:36:16Z, size = 136225, hashes = { sha256 = "a9895e6e2758b371e0545e321a3a8fd1fcfd9829ada8824a936dfb16aaaf36cd" } }
-wheels = [{ url = "https://files.pythonhosted.org/packages/32/d1/a3652fe2c19134d0d15922177821d863cbd7e842d53a21bbe7e8e3a1b5ac/certifi-2026.10.23-py3-none-any.whl", upload-time = 2026-10-23T11:36:14Z, size = 135082, hashes = { sha256 = "e9b54de76e530bb6cf0ccd036787103acb58fd42ba930ea8bf948ddbaa2f61d1" } }]
+version = "2026.11.20"
+sdist = { url = "https://files.pythonhosted.org/packages/51/33/4cd27639502f010084bcef7a2036391dd637439901341ce1a530f36f6e51/certifi-2026.11.20.tar.gz", upload-time = 2026-11-20T23:37:49Z, size = 128901, hashes = { sha256 = "af1cb240a8133f105aa52684a3a3258339d7f2fd0bd4e2812698ff5cf5588c4e" } }
+wheels = [{ url = "https://files.pythonhosted.org/packages/6d/39/5eec3296860b94ac20bb8ed807725b88f6adfab3f343df592afd975f5f86/certifi-2026.11.20-py3-none-any.whl", upload-time = 2026-11-20T23:37:48Z, size = 127913, hashes = { sha256 = "7422df25243767b9877031a2248cb14d09ddac9beee846f4cef3d5c9191d488f" } }]
 
 [[packages]]
 name = "charset-normalizer"
@@ -124,9 +124,9 @@ wheels = [{ url = "https://files.pythonhosted.org/packages/71/46/17f022dd3e953bf
 
 [[packages]]
 name = "pyyaml"
-version = "6.0.3"
-sdist = { url = "https://files.pythonhosted.org/packages/05/8e/961c0007c59b8dd7729d542c61a4d537767a59645b82a0b521206e1e25c2/pyyaml-6.0.3.tar.gz", upload-time = 2025-09-25T21:33:16Z, size = 130960, hashes = { sha256 = "d76623373421df22fb4cf8817020cbb7ef15c725b9d5e45f17e189bfc384190f" } }
-wheels = [{ url = "https://files.pythonhosted.org/packages/88/f9/16491d7ed2a919954993e48aa941b200f38040928474c9e85ea9e64222c3/pyyaml-6.0.3-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl", upload-time = 2025-09-25T21:32:40Z, size = 794175, hashes = { sha256 = "c458b6d084f9b935061bc36216e8a69a7e293a2f1e68bf956dcd9e6cbcd143f5" } }]
+version = "6.0.4"
+sdist = { url = "https://files.pythonhosted.org/packages/76/b8/c0b780928e2fb1c87e9e375818c6f121da2398b071012d1747be300b83f4/pyyaml-6.0.4.tar.gz", upload-time = 2026-11-20T23:37:05Z, size = 136336, hashes = { sha256 = "e24bf71af8a432d7808fabff134d38dfe16d3cbb41f2873bb4b1e42422de0a1a" } }
+wheels = [{ url = "https://files.pythonhosted.org/packages/ef/1b/54ce11b40c8fa1883f14eef46525c3c329509dcc268164074fbe60add8ed/pyyaml-6.0.4-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl", upload-time = 2026-11-20T23:36:29Z, size = 819491, hashes = { sha256 = "c604dc2613c417130479cdd6e55c2faa691b6365aa82b3dafddfcecc2eaf1ac7" } }]
 
 [[packages]]
 name = "requests"
@@ -148,9 +148,9 @@ wheels = [{ url = "https://files.pythonhosted.org/packages/4c/07/2ebca9b11fb9be7
 
 [[packages]]
 name = "soupsieve"
-version = "4.1.2"
-sdist = { url = "https://files.pythonhosted.org/packages/17/35/bf779c1cc376bc216a2d94e3b3d9ee48347296af29bedfc6caaf96bc132f/soupsieve-4.1.2.tar.gz", upload-time = 2026-11-18T17:21:03Z, size = 178884, hashes = { sha256 = "c6539a2638f26991463527337e39d630e3cbb86d024f52282a510535b8a7e09f" } }
-wheels = [{ url = "https://files.pythonhosted.org/packages/1e/33/f5082b3c480db024453077592057200955aed2a376327b8921d553404ca7/soupsieve-4.1.2-py3-none-any.whl", upload-time = 2026-11-18T17:21:02Z, size = 59295, hashes = { sha256 = "96b4115212a3abee1f572d62da706cca090b088cb5effa278db5702122e63a2c" } }]
+version = "4.1.3"
+sdist = { url = "https://files.pythonhosted.org/packages/82/77/d59ca6aa338bdd8d880234d15b7c466cb176e44502899a9df81ba2e13cd0/soupsieve-4.1.3.tar.gz", upload-time = 2026-11-20T12:58:27Z, size = 181564, hashes = { sha256 = "13f70186c8f40bf8d0ff7bbab09a18fb149600b465269207b5e5b588f55fda08" } }
+wheels = [{ url = "https://files.pythonhosted.org/packages/f6/f7/be207468cac6ad79389f36cf1fce4f2836960df91659979ec486c727bb2e/soupsieve-4.1.3-py3-none-any.whl", upload-time = 2026-11-20T12:58:26Z, size = 59792, hashes = { sha256 = "7a390d1a57d1ab7bb228531e9b8a750a5ebf87db774e0ef6faeeac057d22a5bf" } }]
 
 [[packages]]
 name = "sphinx"
