@@ -35,6 +35,7 @@ and MySQL backends, using Docker Compose.
 - [Export responses to a `pandas` dataframe](guide/cookbook.md#export-responses-to-a-pandas-dataframe)
 - [Export responses to a DuckDB database and analyze with SQL](guide/cookbook.md#export-responses-to-a-duckdb-database-and-analyze-with-sql)
 - [Use a different HTTP transport](guide/cookbook.md#use-a-different-http-transport)
+- [Use the async client](guide/cookbook.md#use-the-async-client)
 - [Use a different authentication plugin](guide/cookbook.md#use-a-different-authentication-plugin)
 - [Get files uploaded to a survey and move them to S3](guide/cookbook.md#get-files-uploaded-to-a-survey-and-move-them-to-s3)
 - [Use the raw `Client.session` for low-level interaction](guide/cookbook.md#use-the-session-attribute-for-low-level-interaction)

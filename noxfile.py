@@ -29,6 +29,8 @@ DOCS_PYTHON = readthedocs_config["build"]["tools"]["python"]
 
 PYPROJECT = nox.project.load_toml()
 
+PRE_COMMIT_CONFIG = ys.load(Path(".pre-commit-config.yaml").read_text(encoding="utf-8"))
+
 nox.needs_version = ">=2026.8.17"
 nox.options.default_venv_backend = "uv"
 nox.options.parallel = "auto"
@@ -49,6 +51,26 @@ def dependencies(session: nox.Session) -> None:
     session.install("citric @ .", "--group", "dev", env=install_env)
     session.install("deptry")
     session.run("deptry", "src", "tests", "docs")
+
+
+@nox.session(name="async-client", tags=["lint"], allow_parallel=True)
+def async_client(session: nox.Session) -> None:
+    """Check that the generated async client is up to date.
+
+    Regenerate it with ``nox -s async-client -- --write``.
+    """
+    # Use the same ruff as pre-commit, so the generated code is formatted identically
+    ruff_rev = next(
+        repo["rev"]
+        for repo in PRE_COMMIT_CONFIG["repos"]
+        if repo["repo"].endswith("/ruff-pre-commit")
+    )
+    session.install(f"ruff=={ruff_rev.removeprefix('v')}")
+    session.run(
+        "python",
+        "scripts/generate_async_client.py",
+        *(["--check"] if not session.posargs else []),
+    )
 
 
 @nox.session(tags=["lint", "types"], allow_parallel=True)
