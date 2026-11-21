@@ -1,0 +1,5 @@
+kind: Documentation
+body: Add a `TaskGroup` sample for using the blocking client with `asyncio.to_thread`, with a note about in-flight threads
+time: 2026-11-21T13:48:23.749978-06:00
+custom:
+    Issue: "1924"
