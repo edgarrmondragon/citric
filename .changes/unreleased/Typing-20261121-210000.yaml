@@ -1,0 +1,5 @@
+kind: Typing
+body: Added the `answerOptionLayouts` key to `citric.types.RESTSurveyDetail` and the `sortableColumns` key to `citric.types.RESTSurveyResponsesMeta`, which upcoming LimeSurvey releases return
+time: 2026-11-21T21:00:00.000000+00:00
+custom:
+    Issue: "1925"

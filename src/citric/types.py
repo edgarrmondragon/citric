@@ -1498,6 +1498,17 @@ class RESTSurveyDetail(TypedDict):
     questionGroups: list[RESTQuestionGroup]
     """Question groups, with their questions and answers."""
 
+    answerOptionLayouts: NotRequired[dict[str, str]]
+    """Answer option layout of each question type with answer options, keyed by type code.
+
+    The layout is ``<answer scales>-<subquestion scales>``, for example ``1-0``. Changing a
+    question to a type with the same layout keeps its answer options.
+
+    https://github.com/LimeSurvey/LimeSurvey/blob/db44bdc69f7c53e9f4de1e0839cbbf9b0b569782/application/models/services/QuestionAggregateService/QuestionService.php#L530-L547
+
+    .. version-added:: NEXT_VERSION
+    """
+
     templateInherited: str
     formatInherited: str
     isEditorCompatible: NotRequired[bool]
@@ -1567,6 +1578,14 @@ class RESTSurveyResponsesMeta(TypedDict):
 
     sort: Any
     """The sort definition sent in the request."""
+
+    sortableColumns: NotRequired[list[str]]
+    """Keys of the response columns that the responses can be sorted by.
+
+    https://github.com/LimeSurvey/LimeSurvey/blob/db44bdc69f7c53e9f4de1e0839cbbf9b0b569782/application/libraries/Api/Command/V1/SurveyResponses/Sorting/ResponseSort.php#L79-L93
+
+    .. version-added:: NEXT_VERSION
+    """
 
 
 class RESTSurveyResponsesPage(TypedDict):
