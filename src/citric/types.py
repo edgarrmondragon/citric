@@ -1499,10 +1499,11 @@ class RESTSurveyDetail(TypedDict):
     """Question groups, with their questions and answers."""
 
     answerOptionLayouts: NotRequired[dict[str, str]]
-    """Answer option layout of each question type with answer options, keyed by type code.
+    """Answer option layout of each question type that has answer options.
 
-    The layout is ``<answer scales>-<subquestion scales>``, for example ``1-0``. Changing a
-    question to a type with the same layout keeps its answer options.
+    Keyed by question type code. The layout is ``<answer scales>-<subquestion scales>``,
+    for example ``1-0``. Changing a question to a type with the same layout keeps its
+    answer options.
 
     https://github.com/LimeSurvey/LimeSurvey/blob/db44bdc69f7c53e9f4de1e0839cbbf9b0b569782/application/models/services/QuestionAggregateService/QuestionService.php#L530-L547
 
