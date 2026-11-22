@@ -1498,6 +1498,18 @@ class RESTSurveyDetail(TypedDict):
     questionGroups: list[RESTQuestionGroup]
     """Question groups, with their questions and answers."""
 
+    # TODO(edgarrmondragon): Add a `minlimesurveyattribute` directive once released.
+    # https://github.com/LimeSurvey/LimeSurvey/pull/5553
+    answerOptionLayouts: NotRequired[dict[str, str]]
+    """Answer option layout of each question type that has answer options.
+
+    Keyed by question type code. The layout is ``<answer scales>-<subquestion scales>``,
+    for example ``1-0``. Changing a question to a type with the same layout keeps its
+    answer options.
+
+    .. version-added:: NEXT_VERSION
+    """
+
     templateInherited: str
     formatInherited: str
     isEditorCompatible: NotRequired[bool]
@@ -1567,6 +1579,14 @@ class RESTSurveyResponsesMeta(TypedDict):
 
     sort: Any
     """The sort definition sent in the request."""
+
+    # TODO(edgarrmondragon): Add a `minlimesurveyattribute` directive once released.
+    # https://github.com/LimeSurvey/LimeSurvey/pull/5555
+    sortableColumns: NotRequired[list[str]]
+    """Keys of the response columns that the responses can be sorted by.
+
+    .. version-added:: NEXT_VERSION
+    """
 
 
 class RESTSurveyResponsesPage(TypedDict):
