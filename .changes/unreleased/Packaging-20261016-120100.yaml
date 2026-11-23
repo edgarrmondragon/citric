@@ -1,0 +1,5 @@
+kind: Packaging
+body: Added the `async` extra, which installs `httpx2`, the default transport of `citric.aio.AsyncClient`
+time: 2026-10-16T12:01:00.000000-06:00
+custom:
+    Issue: "1878"

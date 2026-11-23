@@ -5,7 +5,6 @@
 
 from __future__ import annotations
 
-import contextlib
 import hashlib
 from typing import TYPE_CHECKING
 
@@ -15,8 +14,7 @@ import requests
 import semver
 
 import citric
-from citric.exceptions import LimeSurveyStatusError
-from tests.fixtures import MailpitClient
+from tests.fixtures import MailpitClient, delete_all_surveys
 
 if TYPE_CHECKING:
     from collections.abc import Generator
@@ -145,10 +143,7 @@ def client(
         integration_password,
     ) as client:
         yield client
-
-        with contextlib.suppress(LimeSurveyStatusError):  # pragma: no cover
-            for survey in client.list_surveys(integration_username):
-                client.delete_survey(survey["sid"])
+        delete_all_surveys(client, integration_username)
 
 
 @pytest.fixture

@@ -22,7 +22,6 @@ from contextlib import contextmanager
 from datetime import datetime
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
-from unittest.mock import patch
 from urllib.parse import quote
 
 import bs4
@@ -45,6 +44,8 @@ from citric.types import (
     SurveyListElement,
     SurveyProperties,
 )
+from tests.fixtures import delete_all_surveys
+from tests.integration.async_adapter import blocking_async_client, patch_client_method
 
 if sys.version_info >= (3, 12):
     from typing import override
@@ -67,6 +68,37 @@ if TYPE_CHECKING:
 
 NEW_SURVEY_NAME = "New Survey"
 LS7_FIELDNAME_CHANGE_VERSION = "7.0.0-beta1"
+
+
+@pytest.fixture(scope="session", params=["sync", "async"])
+def client(
+    request: pytest.FixtureRequest,
+    integration_url: str,
+    integration_username: str,
+    integration_password: str,
+) -> Generator[citric.Client, None, None]:
+    """RemoteControl2 API client: the sync one, or the async one behind a proxy.
+
+    Overrides the fixture of the same name in ``conftest.py``, so that every test in
+    this module, and the fixtures it uses, runs against both clients.
+    """
+    url = f"{integration_url}/index.php/admin/remotecontrol"
+    factory = citric.Client if request.param == "sync" else blocking_async_client
+    with factory(url, integration_username, integration_password) as client:
+        yield client
+        delete_all_surveys(client, integration_username)
+
+
+@pytest.fixture(autouse=True)
+def _skip_sync_only_tests(request: pytest.FixtureRequest) -> None:
+    """Skip tests marked ``sync_only`` when they run against the async client."""
+    callspec = getattr(request.node, "callspec", None)
+    if (
+        callspec is not None
+        and callspec.params.get("client") == "async"
+        and request.node.get_closest_marker("sync_only")
+    ):
+        pytest.skip("Not applicable to the async client")
 
 
 @contextmanager
@@ -1072,7 +1104,7 @@ def test_responses(  # ruff:ignore[too-many-statements]
         assert len(dict_responses) == 3
 
         with (
-            patch.object(client, "export_responses", return_value='{"test": []}'),
+            patch_client_method(client, "export_responses", '{"test": []}'),
             pytest.raises(
                 ValueError, match=r"The received JSON has not the expected structure\."
             ),
@@ -1745,6 +1777,7 @@ class _RecordingTransport(Urllib3Transport):
 
 
 @pytest.mark.integration_test
+@pytest.mark.sync_only
 def test_async_to_thread(
     integration_url: str,
     integration_username: str,
