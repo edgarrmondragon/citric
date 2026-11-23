@@ -67,7 +67,7 @@ as integration tests), so make sure your changes are tested..
 ### Type checking
 
 ```shell
-./noxfile.py -s mypy
+./noxfile.py -s typing
 ```
 
 ### Dependency checks
