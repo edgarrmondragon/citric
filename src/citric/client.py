@@ -39,7 +39,7 @@ if TYPE_CHECKING:
 
     from citric import types
     from citric.objects import Participant
-    from citric.types import MailOutcome
+    from citric.types import MailOutcome, ResponseData
 
 __all__ = [
     "Client",
@@ -829,7 +829,7 @@ class Client:  # ruff: ignore[too-many-public-methods]
         to_response_id: int | None = None,
         fields: Sequence[str] | None = None,
         additional_options: types.ExportAdditionalOptions | None = None,
-    ) -> list[dict[str, Any]]:
+    ) -> list[ResponseData]:
         """Export responses represented as dictionaries.
 
         Calls :rpc_method:`export_responses`.
