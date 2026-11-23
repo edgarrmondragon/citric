@@ -1,0 +1,5 @@
+kind: Typing
+body: Add a ResponseData type and a RESTResponseData type for typing exported responses
+time: 2026-11-23T12:55:03.987900319+01:00
+custom:
+    Issue: "1927"

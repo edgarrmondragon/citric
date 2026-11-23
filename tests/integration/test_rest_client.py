@@ -119,6 +119,31 @@ def test_get_survey_responses(
     assert len(result["responses"]) == 1
     assert result["_meta"]["pagination"]["totalItems"] == 1
 
+    # Field names in the `fields` parameter don't match the names in the response
+    with pytest.raises(LimeSurveyApiError, match="No valid fields requested"):
+        _ = check_type(
+            rest_client.get_survey_responses(
+                survey_id,
+                page_size=10,
+                fields=["submitDate"],
+            ),
+            RESTSurveyResponsesPage,
+        )
+
+    result = check_type(
+        rest_client.get_survey_responses(
+            survey_id,
+            page_size=10,
+            fields=["submitdate"],
+        ),
+        RESTSurveyResponsesPage,
+    )
+    assert len(result["responses"]) == 1
+    assert set(result["responses"][0]) - {"submitdate"}, (
+        "The `fields` parameter is respected, update this test and the "
+        "`RESTSurveyResponsesPage` type"
+    )
+
     # No file upload question in the survey, so asking for files is a bad request
     with pytest.raises(LimeSurveyApiError):
         rest_client.get_survey_responses(survey_id, fields=["id"], unnest_files=True)
