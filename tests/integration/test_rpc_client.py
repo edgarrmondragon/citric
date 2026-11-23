@@ -1069,7 +1069,8 @@ def test_responses(  # ruff:ignore[too-many-statements]
     # Export responses as dictionaries
     with subtests.test(msg="Export responses as dictionaries"):
         dict_responses = check_type(
-            client.export_responses_dict(survey_id), list[ResponseData]
+            client.export_responses_dict(survey_id),
+            list[ResponseData],
         )
 
         assert len(dict_responses) == 3
