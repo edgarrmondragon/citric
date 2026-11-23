@@ -1249,7 +1249,7 @@ class ParticipantListElement(TypedDict, total=False):
     """End date of the participant access code."""
 
 
-class ResponseData(TypedDict, extra_items=Any):  # type: ignore[call-arg]
+class ResponseData(TypedDict, total=False, extra_items=Any):  # type: ignore[call-arg]
     """A survey response."""
 
     id: int

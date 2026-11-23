@@ -1069,11 +1069,12 @@ def test_responses(  # ruff:ignore[too-many-statements]
     # Export responses as dictionaries
     with subtests.test(msg="Export responses as dictionaries"):
         dict_responses = check_type(
-            client.export_responses_dict(survey_id),
+            client.export_responses_dict(survey_id, fields=["submitdate"]),
             list[ResponseData],
         )
 
         assert len(dict_responses) == 3
+        assert all(set(resp) == {"submitdate"} for resp in dict_responses)
 
         with (
             patch.object(client, "export_responses", return_value='{"test": []}'),
