@@ -1,0 +1,5 @@
+kind: Added
+body: Add `update_responses` method
+time: 2026-11-24T15:22:39.230059605+01:00
+custom:
+    Issue: "1926"

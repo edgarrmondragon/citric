@@ -23,7 +23,7 @@ import logging
 import re
 from dataclasses import dataclass
 from pathlib import Path
-from typing import IO, TYPE_CHECKING, Any, Literal, overload
+from typing import IO, TYPE_CHECKING, Any, Literal, cast, overload
 
 from citric import enums
 from citric.session import Session, _check_result_status
@@ -591,6 +591,32 @@ class Client:  # ruff: ignore[too-many-public-methods]
         questions = self._get_question_mapping(survey_id)
         data = self._map_response_keys(response_data, questions)
         return self.session.update_response(survey_id, data)
+
+    def update_responses(
+        self, survey_id: int, responses_data: Iterable[Mapping[str, Any]]
+    ) -> dict[int | str, bool]:
+        """Update multiple responses.
+
+        Args:
+            survey_id: Survey to update the responses in.
+            responses_data: Iterable of responses data to update.
+
+        Returns:
+            A dictionary that has response ID or token as keys and True if the response
+            was updated, False otherwise as value.
+
+        .. versionadded:: 3.0.1
+        """
+        results: dict[int | str, bool] = {}
+        questions = self._get_question_mapping(survey_id)
+        for response_data in responses_data:
+            data = self._map_response_keys(response_data, questions)
+            result = self.session.update_response(survey_id, data)
+            key = cast("int", response_data.get("id")) or cast(
+                "str", response_data.get("token")
+            )
+            results[key] = result
+        return results
 
     def copy_survey(
         self,

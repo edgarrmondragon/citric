@@ -1010,6 +1010,14 @@ def test_responses(  # ruff:ignore[too-many-statements]
     responses[2]["G01Q01"] = "New long text 3"
     assert client.update_response(survey_id, responses[2]) is True
 
+    responses[1]["G01Q02"] = "6"
+    responses[2]["G01Q01"] = "New new long text 3"
+    responses[2]["G02Q04"] = "N"
+    assert client.update_responses(survey_id, responses[1:3]) == {
+        "T00001": True,
+        "T00002": True,
+    }
+
     with io.BytesIO() as file, io.TextIOWrapper(file, encoding="utf-8-sig") as textfile:
         file.write(client.export_responses(survey_id, file_format="csv"))
         file.seek(0)
@@ -1027,7 +1035,7 @@ def test_responses(  # ruff:ignore[too-many-statements]
         file.seek(0)
         reader = csv.DictReader(textfile, delimiter=";")
         row = next(reader)
-        assert row["G01Q01"] == "New long text 3"
+        assert row["G01Q01"] == "New new long text 3"
         assert not row["G01Q02"]
         assert row["token"] == "T00002"
 
@@ -1115,6 +1123,13 @@ def test_responses(  # ruff:ignore[too-many-statements]
         error_code="ERR_NOT_FOUND",
     ):
         client.update_response(survey_id, responses[0])
+
+    with assert_status_error(
+        "No matching Response",
+        server_version,
+        error_code="ERR_NOT_FOUND",
+    ):
+        client.update_responses(survey_id, responses[0:2])
 
 
 @pytest.mark.integration_test
