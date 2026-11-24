@@ -89,11 +89,8 @@ Result: TypeAlias = Any
 YesNo: TypeAlias = Literal["Y", "N", "I"]
 
 
-class FileUploadResult(TypedDict):
-    """File upload result."""
-
-    success: bool
-    """Whether the file was uploaded successfully."""
+class _FileMetadataBase(TypedDict):
+    """Common metadata for file upload result or uploaded file."""
 
     size: int
     """The size of the file."""
@@ -106,6 +103,13 @@ class FileUploadResult(TypedDict):
 
     filename: str
     """The filename of the file."""
+
+
+class FileUploadResult(_FileMetadataBase):
+    """File upload result."""
+
+    success: bool
+    """Whether the file was uploaded successfully."""
 
     msg: str
     """The message of the file."""
@@ -1116,7 +1120,7 @@ class QuestionReference(TypedDict):
     """Question ID."""
 
 
-class FileMetadata(FileUploadResult):
+class FileMetadata(_FileMetadataBase):
     """Uploaded file metadata."""
 
     question: QuestionReference
