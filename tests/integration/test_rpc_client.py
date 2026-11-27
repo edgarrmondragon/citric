@@ -1013,10 +1013,7 @@ def test_responses(  # ruff:ignore[too-many-statements]
     responses[1]["G01Q02"] = "6"
     responses[2]["G01Q01"] = "New new long text 3"
     responses[2]["G02Q04"] = "N"
-    assert client.update_responses(survey_id, responses[1:3]) == {
-        "T00001": True,
-        "T00002": True,
-    }
+    assert client.update_responses(survey_id, responses[1:3]) == [True, True]
 
     with io.BytesIO() as file, io.TextIOWrapper(file, encoding="utf-8-sig") as textfile:
         file.write(client.export_responses(survey_id, file_format="csv"))
