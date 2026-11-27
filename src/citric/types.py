@@ -49,6 +49,7 @@ __all__ = [
     "RESTQuestionGroup",
     "RESTQuestionGroupL10n",
     "RESTQuestionL10n",
+    "RESTResponseData",
     "RESTShowGroupInfo",
     "RESTShowQNumCode",
     "RESTStatisticsDataPoint",
@@ -72,6 +73,7 @@ __all__ = [
     "RESTVersionInfo",
     "RPCResponse",
     "ReadableFile",
+    "ResponseData",
     "Result",
     "SetQuotaPropertiesResult",
     "SurveyListElement",
@@ -87,11 +89,8 @@ Result: TypeAlias = Any
 YesNo: TypeAlias = Literal["Y", "N", "I"]
 
 
-class FileUploadResult(TypedDict):
-    """File upload result."""
-
-    success: bool
-    """Whether the file was uploaded successfully."""
+class _FileMetadataBase(TypedDict):
+    """Common metadata for file upload result or uploaded file."""
 
     size: int
     """The size of the file."""
@@ -104,6 +103,13 @@ class FileUploadResult(TypedDict):
 
     filename: str
     """The filename of the file."""
+
+
+class FileUploadResult(_FileMetadataBase):
+    """File upload result."""
+
+    success: bool
+    """Whether the file was uploaded successfully."""
 
     msg: str
     """The message of the file."""
@@ -1114,7 +1120,7 @@ class QuestionReference(TypedDict):
     """Question ID."""
 
 
-class FileMetadata(FileUploadResult):
+class FileMetadata(_FileMetadataBase):
     """Uploaded file metadata."""
 
     question: QuestionReference
@@ -1245,6 +1251,43 @@ class ParticipantListElement(TypedDict, total=False):
 
     validuntil: str
     """End date of the participant access code."""
+
+
+class ResponseData(TypedDict, total=False, extra_items=Any):  # type: ignore[call-arg]
+    """A survey response."""
+
+    id: int
+    """The response ID."""
+
+    startlanguage: str
+    """The response language."""
+
+    seed: str | None
+    """A random seed."""
+
+    lastpage: int | None
+    """The last accessed paged in the survey."""
+
+    submitdate: str | None
+    """
+    The date when the response was submitted, if it has been, as an SQL datetime
+    (``YYYY-MM-DD HH:mm:ss``).
+    """
+
+    token: str | None
+    """The participant token associated to the response."""
+
+    startdate: str
+    """
+    The date when the response was created, as an SQL datetime
+    (``YYYY-MM-DD HH:mm:ss``).
+    """
+
+    datestamp: str
+    """
+    The date when the response was last updated, as an SQL datetime
+    (``YYYY-MM-DD HH:mm:ss``).
+    """
 
 
 class RESTSurveyLanguageSettings(TypedDict):
@@ -1589,13 +1632,50 @@ class RESTSurveyResponsesMeta(TypedDict):
     """
 
 
+class RESTResponseData(TypedDict, extra_items=Any):  # type: ignore[call-arg]
+    """A survey response."""
+
+    id: int
+    """The response ID."""
+
+    language: str
+    """The response language."""
+
+    seed: str | None
+    """A random seed."""
+
+    lastPage: int | None
+    """The last accessed paged in the survey."""
+
+    submitDate: str | None
+    """
+    The date when the response was submitted, if it has been, as an SQL datetime
+    (``YYYY-MM-DD HH:mm:ss``).
+    """
+
+    token: str | None
+    """The participant token associated to the response."""
+
+    startDate: str
+    """
+    The date when the response was created, as an SQL datetime
+    (``YYYY-MM-DD HH:mm:ss``).
+    """
+
+    dateLastAction: str
+    """
+    The date when the response was last updated, as an SQL datetime
+    (``YYYY-MM-DD HH:mm:ss``).
+    """
+
+
 class RESTSurveyResponsesPage(TypedDict):
     """A page of survey responses from the REST API.
 
     .. version-added:: 3.0.0
     """
 
-    responses: list[dict[str, Any]]
+    responses: list[RESTResponseData]
     """The responses, keyed by response column name.
 
     The columns depend on the survey.

@@ -39,7 +39,6 @@ if TYPE_CHECKING:
 
     from citric import types
     from citric.objects import Participant
-    from citric.types import MailOutcome
 
 __all__ = [
     "Client",
@@ -829,7 +828,7 @@ class Client:  # ruff: ignore[too-many-public-methods]
         to_response_id: int | None = None,
         fields: Sequence[str] | None = None,
         additional_options: types.ExportAdditionalOptions | None = None,
-    ) -> list[dict[str, Any]]:
+    ) -> list[types.ResponseData]:
         """Export responses represented as dictionaries.
 
         Calls :rpc_method:`export_responses`.
@@ -2040,7 +2039,7 @@ class Client:  # ruff: ignore[too-many-public-methods]
         survey_id: int,
         *,
         override_all_conditions: Mapping[str, Any] | None = None,
-    ) -> MailOutcome:
+    ) -> types.MailOutcome:
         """Send e-mails to registered participants in a survey.
 
         Calls :rpc_method:`mail_registered_participants`.
@@ -2078,7 +2077,7 @@ class Client:  # ruff: ignore[too-many-public-methods]
         max_reminders: int | None = None,
         token_ids: Sequence[int] | None = None,
         continue_on_error: bool = False,
-    ) -> MailOutcome:
+    ) -> types.MailOutcome:
         """Send a reminder to participants in a survey.
 
         Calls :rpc_method:`remind_participants`.

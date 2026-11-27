@@ -60,6 +60,7 @@ nitpick_ignore = {
     ("py:class", "citric.types.Result"),
     ("py:class", "Result"),
     ("py:class", "YesNo"),
+    ("py:obj", "_FileMetadataBase"),
     ("py:class", "T"),
     ("py:obj", "T"),
 }
@@ -154,6 +155,7 @@ autoapi_options = [
     "members",
     "undoc-members",
     "show-inheritance",
+    "inherited-members",
     "show-module-summary",
     "special-members",
     "imported-members",
