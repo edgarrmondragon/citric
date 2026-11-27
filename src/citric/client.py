@@ -4,6 +4,8 @@
 
 from __future__ import annotations
 
+from citric.exceptions import LimeSurveyApiError, LimeSurveyStatusError
+
 __lazy_modules__ = {
     "base64",
     "citric.session",
@@ -591,6 +593,32 @@ class Client:  # ruff: ignore[too-many-public-methods]
         questions = self._get_question_mapping(survey_id)
         data = self._map_response_keys(response_data, questions)
         return self.session.update_response(survey_id, data)
+
+    def update_responses(
+        self, survey_id: int, responses_data: Iterable[Mapping[str, Any]]
+    ) -> list[bool]:
+        """Update multiple responses.
+
+        Args:
+            survey_id: Survey to update the responses in.
+            responses_data: Iterable of responses data to update.
+
+        Returns:
+            A dictionary that has response ID or token as keys and True if the response
+            was updated, False otherwise as value.
+
+        .. versionadded:: 3.0.1
+        """
+        results: list[bool] = []
+        questions = self._get_question_mapping(survey_id)
+        for response_data in responses_data:
+            data = self._map_response_keys(response_data, questions)
+            try:
+                result = self.session.update_response(survey_id, data)
+            except (LimeSurveyStatusError, LimeSurveyApiError):
+                result = False
+            results.append(result)
+        return results
 
     def copy_survey(
         self,
