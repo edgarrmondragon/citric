@@ -1003,12 +1003,16 @@ def test_responses(  # ruff:ignore[too-many-statements]
     assert client.add_response(survey_id, responses[0]) == 1
 
     # Add multiple responses to a survey
-    assert client.add_responses(survey_id, responses[1:]) == [2, 3]
+    with patch.object(client, "list_questions") as mock_list_questions:
+        assert client.add_responses(survey_id, responses[1:]) == [2, 3]
+        mock_list_questions.assert_not_called()
 
     # Update a response
     client.set_survey_properties(survey_id, alloweditaftercompletion="Y")
     responses[2]["G01Q01"] = "New long text 3"
-    assert client.update_response(survey_id, responses[2]) is True
+    with patch.object(client, "list_questions") as mock_list_questions:
+        assert client.update_response(survey_id, responses[2]) is True
+        mock_list_questions.assert_not_called()
 
     with io.BytesIO() as file, io.TextIOWrapper(file, encoding="utf-8-sig") as textfile:
         file.write(client.export_responses(survey_id, file_format="csv"))
@@ -1109,12 +1113,16 @@ def test_responses(  # ruff:ignore[too-many-statements]
     ):
         client.export_responses(survey_id, token="T00000")
 
-    with assert_status_error(
-        "No matching Response",
-        server_version,
-        error_code="ERR_NOT_FOUND",
+    with (
+        assert_status_error(
+            "No matching Response",
+            server_version,
+            error_code="ERR_NOT_FOUND",
+        ),
+        patch.object(client, "list_questions") as mock_list_questions,
     ):
         client.update_response(survey_id, responses[0])
+        mock_list_questions.assert_not_called()
 
 
 @pytest.mark.integration_test

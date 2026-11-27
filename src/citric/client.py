@@ -172,6 +172,9 @@ class Client:  # ruff: ignore[too-many-public-methods]
             timeout=timeout,
         )
         self.__server_version: ServerVersion | None = None
+        self._question_mapping_cache: dict[
+            int, dict[str, types.QuestionsListElement]
+        ] = {}
 
     def close(self) -> None:
         """Close client session."""
@@ -463,7 +466,11 @@ class Client:  # ruff: ignore[too-many-public-methods]
         Returns:
             Question mapping.
         """
-        return {q["title"]: q for q in self.list_questions(survey_id)}
+        question_mapping = self._question_mapping_cache.get(survey_id)
+        if question_mapping is None:
+            question_mapping = {q["title"]: q for q in self.list_questions(survey_id)}
+            self._question_mapping_cache[survey_id] = question_mapping
+        return question_mapping
 
     def _fieldname_from_question(self, question: types.QuestionsListElement) -> str:
         return (
