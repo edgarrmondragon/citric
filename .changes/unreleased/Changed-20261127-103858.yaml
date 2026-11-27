@@ -1,0 +1,5 @@
+kind: Changed
+body: Cache surveys question mapping during the whole client session to avoid repetitive calls
+time: 2026-11-27T10:38:58.780881003+01:00
+custom:
+    Issue: "1926"
