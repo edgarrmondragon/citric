@@ -1769,17 +1769,18 @@ def test_async_to_thread(
         # A dedicated executor with a thread per call guarantees the calls overlap.
         with ThreadPoolExecutor(max_workers=len(question_ids)) as executor:
             loop = asyncio.get_running_loop()
-            # Wait for every worker thread, even if some calls fail, before the
-            # client is closed.
-            return await asyncio.gather(
-                *(
-                    loop.run_in_executor(
-                        executor, new_client.get_question_properties, qid
-                    )
-                    for qid in question_ids
-                ),
-                return_exceptions=True,
-            )
+
+            # `create_task` requires a coroutine, but `run_in_executor` returns a future
+            async def get_properties(qid: int) -> QuestionProperties:
+                return await loop.run_in_executor(
+                    executor,
+                    new_client.get_question_properties,
+                    qid,
+                )
+
+            async with asyncio.TaskGroup() as tg:
+                tasks = [tg.create_task(get_properties(qid)) for qid in question_ids]
+            return [task.result() for task in tasks]
 
     with citric.Client(
         f"{integration_url}/index.php/admin/remotecontrol",
@@ -1789,7 +1790,5 @@ def test_async_to_thread(
     ) as new_client:
         results = asyncio.run(fetch_all(new_client))
 
-    exceptions = [r for r in results if isinstance(r, BaseException)]
-    assert not exceptions
     assert all("question" in props for props in results)
     assert transport.rpc_methods.count("get_session_key") == 1

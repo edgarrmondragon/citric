@@ -41,10 +41,26 @@ concurrent use.
 If you pass a {py:class}`requests.Session` instance as the transport, note that it isn't 100% guaranteed to be thread-safe.
 :::
 
-The samples use {func}`asyncio.gather` with `return_exceptions=True` so that every worker
-thread has finished before the client is closed. Cancelling an `asyncio` task doesn't stop
-its thread, so if the surrounding coroutine itself is cancelled, calls already running
-may still be in flight when the client closes.
+{class}`asyncio.TaskGroup` is the most readable way to run the calls, and it cancels the
+remaining tasks as soon as one fails:
+
+```{literalinclude} ../code_samples/asyncio_to_thread_taskgroup.py
+:start-after: start example
+:end-before: end example
+```
+
+:::{warning}
+Cancelling an `asyncio` task doesn't stop its worker thread. When a task fails, the group
+exits right away, so the client can be closed while calls from the cancelled tasks are
+still running. Closing releases the session key on the server, so those calls fail with an
+invalid session error, and nobody is left to handle it.
+:::
+
+To be sure every worker thread has finished before the client is closed, use
+{func}`asyncio.gather` with `return_exceptions=True` instead. It waits for all the calls,
+failed or not, and you can then re-raise the first error. The samples below use this
+approach. If the surrounding coroutine itself is cancelled, calls already running may
+still be in flight when the client closes.
 
 ```{literalinclude} ../code_samples/asyncio_to_thread.py
 :start-after: start example
