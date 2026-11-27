@@ -4,6 +4,8 @@
 
 from __future__ import annotations
 
+from citric.exceptions import LimeSurveyApiError, LimeSurveyStatusError
+
 __lazy_modules__ = {
     "base64",
     "citric.session",
@@ -611,7 +613,10 @@ class Client:  # ruff: ignore[too-many-public-methods]
         questions = self._get_question_mapping(survey_id)
         for response_data in responses_data:
             data = self._map_response_keys(response_data, questions)
-            result = self.session.update_response(survey_id, data)
+            try:
+                result = self.session.update_response(survey_id, data)
+            except (LimeSurveyStatusError, LimeSurveyApiError):
+                result = False
             results.append(result)
         return results
 

@@ -1121,12 +1121,7 @@ def test_responses(  # ruff:ignore[too-many-statements]
     ):
         client.update_response(survey_id, responses[0])
 
-    with assert_status_error(
-        "No matching Response",
-        server_version,
-        error_code="ERR_NOT_FOUND",
-    ):
-        client.update_responses(survey_id, responses[0:2])
+    assert client.update_responses(survey_id, responses[0:2]) == [False, True]
 
 
 @pytest.mark.integration_test
